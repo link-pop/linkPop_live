@@ -50,7 +50,7 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   const { mongoUser } = await getMongoUser();
 
-  // test push 6
+  // c
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
