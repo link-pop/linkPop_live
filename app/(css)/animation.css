@@ -1,0 +1,118 @@
+/* ULTIMATE; animations everywhere */
+/* ??? can have problems with Lottie svg */
+.👋 * {
+  /* ! to disable use className "!animate-none" on the element */
+  @apply afade1;
+}
+/* repeat animations; some won't work */
+.infinite {
+  animation-iteration-count: infinite;
+}
+/* FADE */
+.afade {
+  @apply motion-preset-fade;
+}
+.afade1 {
+  @apply motion-preset-fade motion-duration-1000;
+}
+.afade11 {
+  @apply motion-preset-fade motion-duration-1000 motion-delay-1000;
+}
+.afade22 {
+  @apply motion-preset-fade motion-duration-2000 motion-delay-2000;
+}
+/* CONFETTI */
+.aconfetti {
+  @apply motion-preset-confetti motion-duration-2000 motion-delay-2000;
+}
+/* SLIDE */
+.aleft105 {
+  @apply motion-preset-slide-left motion-duration-1000 motion-delay-500;
+}
+.aleft11 {
+  @apply motion-preset-slide-left motion-duration-1000 motion-delay-1000;
+}
+/* FADE 2 */
+
+@keyframes afaderight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+.afaderight{
+  animation: afaderight 1s ease forwards;
+}
+.abounce {
+  @apply motion-preset-bounce;
+}
+
+/* SHINY GRADIENT BUTTON WITH ALWAYS-ON GLOW AND TEXT GRADIENT */
+.shiny-button {
+  @apply w-full py-2 px-4 rounded-md text-center text-white shadow-lg bg-gradient-to-r from-sky-400 via-pink-400 to-sky-400;
+  background-size: 1000% auto;
+  animation: shine 15s ease-in-out infinite;
+  background-clip: text; /* Clip the gradient to the text */
+  color: transparent;  /* Make text transparent so the gradient shows */
+  -webkit-background-clip: text; /* For Safari */
+  font-weight: bold;
+  font-size: 16px;
+  position: relative;
+  z-index: 0;
+}
+
+/* Glowing effect applied all the time (not just on hover) */
+.shiny-button:before {
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #ff0000,
+    #ff7300,
+    #fffb00,
+    #48ff00,
+    #00ffd5,
+    #002bff,
+    #7a00ff,
+    #ff00c8,
+    #ff0000
+  );
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing-button 20s linear infinite;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: 10px;
+}
+
+@keyframes glowing-button {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+/* Subtle background styling */
+.shiny-button:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--color-brand);
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}

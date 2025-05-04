@@ -1,0 +1,243 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+<style>
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes glow {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.3); }
+  }
+  @keyframes dash {
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes opacity {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  .float { animation: float 3s ease-in-out infinite; }
+  .pulse { animation: pulse 2s ease-in-out infinite; }
+  .rotate { animation: rotate 10s linear infinite; }
+  .glow { animation: glow 2s ease-in-out infinite; }
+  
+  <!-- ! -->
+  #key { animation: glow 3.5s ease-in-out infinite; }
+  
+  [id*="Line"] {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: dash 3s linear infinite;
+  }
+  [id*="whiteShape"], [id*="Rectangle"], [id*="Shape"], #key {
+    animation: float 3s linear infinite;
+  }
+
+  <!-- [id*="Bolt"], [id*="Bulb"], [id*="Cloud"], [id*="Layer"], [id*="File"] {
+    animation: opacity 3s linear infinite;
+  } -->
+</style>
+
+<g clip-path="url(#bannerClip)">
+<path id="backgroundRectangle" d="M1600 0H0V1200H1600V0Z" fill="white">
+  <title>Background Rectangle</title>
+</path>
+<path id="yellowRectangleFrame" d="M975.801 1011.3V653.398C975.801 631.098 993.901 612.898 1016.3 612.898H1285.8C1308.1 612.898 1326.3 630.998 1326.3 653.398V1011.3C1326.3 1033.6 1308.2 1051.8 1285.8 1051.8H1016.3C993.901 1051.7 975.801 1033.6 975.801 1011.3Z" fill="#FFD764">
+  <title>Yellow Rectangle Frame</title>
+</path>
+<path id="verticalLine1" d="M1225.3 452.699V610.899" stroke="#3C2C5B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>Vertical Line 1</title>
+</path>
+<path id="yellowCircle1" d="M1225.8 593.399C1232.48 593.399 1237.9 587.979 1237.9 581.299C1237.9 574.619 1232.48 569.199 1225.8 569.199C1219.12 569.199 1213.7 574.619 1213.7 581.299C1213.7 587.979 1219.12 593.399 1225.8 593.399Z" fill="#FFC930">
+  <title>Yellow Circle 1</title>
+</path>
+<path id="horizontalLine1" d="M708.898 872.898L997 872.996" stroke="#3C2C5B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>Horizontal Line 1</title>
+</path>
+<path id="blackCircle1" d="M977.5 894C989.377 894 999 884.371 999 872.5C999 860.629 989.377 851 977.5 851C965.629 851 956 860.629 956 872.5C956 884.371 965.629 894 977.5 894Z" fill="#3C2C5B">
+  <title>Black Circle 1</title>
+</path>
+<path id="verticalLine2" d="M792.102 872.902V951.102C792.102 966.802 804.802 979.502 820.502 979.502H975.002" stroke="#3C2C5B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>Vertical Line 2</title>
+</path>
+<path id="yellowCircle2" d="M792.6 884.501C799.28 884.501 804.7 879.081 804.7 872.401C804.7 865.721 799.28 860.301 792.6 860.301C785.92 860.301 780.5 865.721 780.5 872.401C780.5 879.081 785.92 884.501 792.6 884.501Z" fill="#FFC930">
+  <title>Yellow Circle 2</title>
+</path>
+<path id="verticalLine3" d="M1185 434.199V533.699C1185 549.399 1172.3 562.099 1156.6 562.099H1002" stroke="#3C2C5B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>Vertical Line 3</title>
+</path>
+<path id="verticalLine4" d="M619.102 877.801V977.301C619.102 993.001 606.402 1005.7 590.702 1005.7H436.102" stroke="#3C2C5B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>Vertical Line 4</title>
+</path>
+<path id="verticalLine5" d="M355.5 632.199V731.699C355.5 747.399 368.2 760.099 383.9 760.099H538.4" stroke="#3C2C5B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>Vertical Line 5</title>
+</path>
+<path id="yellowRectangle2" d="M452.398 632.199H666.098C688.398 632.199 706.598 650.299 706.598 672.699V886.399C706.598 908.699 688.498 926.899 666.098 926.899H452.398C430.098 926.899 411.898 908.799 411.898 886.399V672.599C411.898 650.299 429.998 632.199 452.398 632.199Z" fill="#FFD764">
+  <title>Yellow Rectangle 2</title>
+</path>
+<path id="whiteCloudShape1" d="M619.901 766.302C618.101 766.302 616.301 766.402 614.601 766.702C607.001 736.102 576.101 717.502 545.501 725.102C525.001 730.202 509.001 746.202 503.901 766.702C484.501 763.802 466.301 777.102 463.401 796.502C460.501 815.902 473.801 834.102 493.201 837.002C495.001 837.302 496.701 837.402 498.501 837.402H619.901C639.601 837.402 655.501 821.402 655.501 801.802C655.401 782.302 639.501 766.402 619.901 766.302Z" fill="white">
+  <title>White Shape 1</title>
+</path>
+<path id="blackRectangle1" d="M1293.7 685.199H1401.5C1423.8 685.199 1423.1 703.599 1423.1 725.999L1442 810.599V833.499C1442 855.799 1423.9 873.999 1401.5 873.999H1293.7C1271.4 873.999 1253.2 855.899 1253.2 833.499V810.599L1263.6 723.099C1263.7 700.799 1271.4 685.199 1293.7 685.199Z" fill="#3C2C5B">
+  <title>Black Rectangle 1</title>
+</path>
+<path id="pinkRectangle1" d="M1293.7 662.301H1401.5C1423.8 662.301 1442 680.401 1442 702.801V810.601C1442 832.901 1423.9 851.101 1401.5 851.101H1293.7C1271.4 851.101 1253.2 833.001 1253.2 810.601V702.701C1253.3 680.401 1271.4 662.301 1293.7 662.301Z" fill="#FFA0DC">
+  <title>Pink Rectangle 1</title>
+</path>
+<path id="horizontalLine2" d="M581.699 498.199H696.299" stroke="#3C2C5B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>Horizontal Line 2</title>
+</path>
+<path id="whiteBoltShape2" d="M1385.3 747.808H1359.9C1357.4 747.808 1355.4 745.808 1355.4 743.308C1355.4 742.808 1355.5 742.209 1355.7 741.709L1367.9 708.709C1368.8 706.409 1367.6 703.808 1365.2 702.908C1363.5 702.308 1361.7 702.708 1360.4 703.908L1306.8 757.509C1305 759.309 1305 762.108 1306.8 763.908C1307.6 764.708 1308.8 765.209 1310 765.209H1335.4C1337.9 765.209 1339.9 767.209 1339.9 769.709C1339.9 770.209 1339.8 770.808 1339.6 771.308L1327.4 804.308C1326.5 806.608 1327.7 809.208 1330.1 810.108C1331.8 810.708 1333.6 810.308 1334.9 809.108L1388.5 755.509C1390.3 753.709 1390.3 750.908 1388.5 749.108C1387.6 748.308 1386.5 747.808 1385.3 747.808Z" fill="white">
+  <title>White Shape 2</title>
+</path>
+<path id="verticalLine6" d="M706.68 226.48H764.98C771.08 226.48 775.99 231.39 775.99 237.49V410.33C775.99 416.43 771.08 421.34 764.98 421.34H673.23" stroke="#3C2C5B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>Vertical Line 6</title>
+</path>
+<path id="blackCircle2" d="M698.531 226.261C698.531 235.321 705.871 242.661 714.921 242.661C723.981 242.661 731.321 235.321 731.321 226.261C731.321 217.211 723.981 209.871 714.921 209.871C705.871 209.871 698.531 217.211 698.531 226.261Z" fill="#3C2C5B">
+  <title>Black Circle 2</title>
+</path>
+<path id="blackCircle3" d="M770.461 373.07C770.461 376 772.841 378.38 775.771 378.38C778.701 378.38 781.071 376 781.071 373.07C781.071 370.14 778.701 367.77 775.771 367.77C772.841 367.77 770.461 370.14 770.461 373.07Z" fill="#3C2C5B">
+  <title>Black Circle 3</title>
+</path>
+<path id="verticalLine7" d="M291.801 927.9H244.601C232.801 927.9 223.201 918.3 223.201 906.5V827.8L239.601 817.6L206.801 797.2L239.601 776.8L206.801 756.4L223.201 746.2V671" stroke="#3C2C5B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>Vertical Line 7</title>
+</path>
+<path id="blackCircle4" d="M270.901 939.899C277.581 939.899 283.001 934.479 283.001 927.799C283.001 921.119 277.581 915.699 270.901 915.699C264.221 915.699 258.801 921.119 258.801 927.799C258.801 934.479 264.221 939.899 270.901 939.899Z" fill="#3C2C5B">
+  <title>Black Circle 4</title>
+</path>
+<path id="blackShape1" d="M292.97 666.128C276.14 590.648 290.83 499.828 321.55 496.178C350.7 492.668 360.37 565.798 351.56 584.848C344.9 599.238 332.15 584.558 344.97 554.048C356.72 526.188 391.09 469.108 423.32 470.538C455.55 471.968 427.69 529.908 427.69 529.908L554.46 482.998" stroke="#3C2C5B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>Black Shape 1</title>
+</path>
+<path id="horizontalLine3" d="M1112.7 294.002H990.301L976.301 271.602L948.501 316.502L920.601 271.602L892.701 316.502L878.701 294.002H775.801" stroke="#3C2C5B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>Horizontal Line 3</title>
+</path>
+<path id="blueCircle1" d="M1190.11 479.429C1211.84 479.429 1229.47 461.799 1229.47 440.079C1229.47 418.349 1211.84 400.719 1190.11 400.719C1168.39 400.719 1150.76 418.349 1150.76 440.079C1150.76 461.799 1168.39 479.429 1190.11 479.429Z" fill="#6B9FFF">
+  <title>Blue Circle 1</title>
+</path>
+<path id="blackRectangle2" d="M238.976 386.918H532.323C550.601 386.918 511.832 404.294 511.832 422.654L565.518 621.087V641.004C565.518 659.282 550.683 674.199 532.323 674.199H238.976C220.699 674.199 205.781 659.364 205.781 641.004V624.693L233.239 422.654C233.239 404.376 220.699 386.918 238.976 386.918Z" fill="#3C2C5B">
+  <title>Black Rectangle 2</title>
+</path>
+<path id="blueRectangle1" d="M238.976 367H532.323C550.601 367 565.518 381.835 565.518 400.195V621.086C565.518 639.364 550.683 654.281 532.323 654.281H238.976C220.699 654.281 205.781 639.446 205.781 621.086V400.195C205.781 381.835 220.699 367 238.976 367Z" fill="#6B9FFF">
+  <title>Blue Rectangle 1</title>
+</path>
+<path id="whiteLine1" d="M474.481 441.668C419.697 441.668 437.745 508.058 384.887 508.058C357.175 508.058 367.486 556.4 343.635 556.4C315.923 556.4 327.521 486.141 295.293 486.141" stroke="white" stroke-width="4">
+  <title>White Line 1</title>
+</path>
+<path id="whiteLine2" d="M474.477 446.176V613.119" stroke="white" stroke-width="4">
+  <title>White Line 2</title>
+</path>
+<path id="whiteLine3" d="M384.762 510.633V613.12" stroke="white" stroke-width="4">
+  <title>White Line 3</title>
+</path>
+<path id="whiteLine4" d="M294.973 492.586V613.121" stroke="white" stroke-width="4">
+  <title>White Line 4</title>
+</path>
+<path id="whiteLine5" d="M288.199 612.48H480.928" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>White Line 5</title>
+</path>
+<path id="whiteCircle1" d="M294.97 497.101C301.027 497.101 305.929 492.191 305.929 486.142C305.929 480.093 301.027 475.184 294.97 475.184C288.921 475.184 284.012 480.093 284.012 486.142C284.012 492.191 288.921 497.101 294.97 497.101Z" fill="white">
+  <title>White Circle 1</title>
+</path>
+<path id="whiteCircle2" d="M384.884 519.019C390.941 519.019 395.842 514.109 395.842 508.06C395.842 502.003 390.941 497.102 384.884 497.102C378.835 497.102 373.934 502.003 373.934 508.06C373.934 514.109 378.835 519.019 384.884 519.019Z" fill="white">
+  <title>White Circle 2</title>
+</path>
+<path id="whiteCircle3" d="M474.478 452.628C480.535 452.628 485.436 447.718 485.436 441.669C485.436 435.612 480.535 430.711 474.478 430.711C468.429 430.711 463.527 435.612 463.527 441.669C463.527 447.718 468.429 452.628 474.478 452.628Z" fill="white">
+  <title>White Circle 3</title>
+</path>
+<path id="blackRectangle3" d="M1124 218.699H1355.7C1378 218.699 1366.5 235.799 1366.5 258.199L1396.2 466.599V490.899C1396.2 513.199 1378.1 531.399 1355.7 531.399H1124C1101.7 531.399 1083.5 513.299 1083.5 490.899V466.599L1126.9 271.699C1126.9 249.299 1101.6 218.699 1124 218.699Z" fill="#3C2C5B">
+  <title>Black Rectangle 3</title>
+</path>
+<path id="blueRectangle2" d="M1123.5 194.398H1355.2C1377.5 194.398 1395.7 212.498 1395.7 234.898V466.598C1395.7 488.898 1377.6 507.098 1355.2 507.098H1123.5C1101.2 507.098 1083 488.998 1083 466.598V234.798C1083.1 212.498 1101.2 194.398 1123.5 194.398Z" fill="#6B9FFF">
+  <title>Blue Rectangle 2</title>
+</path>
+<path id="whiteBulbShape3" d="M1237.6 249.298C1197.9 250.298 1166.6 283.198 1167.5 322.798C1168 344.398 1178.3 364.698 1195.4 377.898C1206.5 386.398 1213 399.498 1213.1 413.398L1216.9 421.398H1259.3L1265.6 413.398C1265.6 399.598 1272 386.498 1283 378.098C1314.5 353.998 1320.6 308.998 1296.5 277.398C1282.5 259.198 1260.6 248.698 1237.6 249.298Z" fill="white">
+  <title>White Shape 3</title>
+</path>
+<path id="blueRectangle3" d="M1213.1 413.496V431.796C1213.1 446.296 1224.8 457.996 1239.3 457.996C1253.8 457.996 1265.5 446.296 1265.5 431.796V413.496H1213.1Z" fill="#376BCB">
+  <title>Blue Rectangle 3</title>
+</path>
+<path id="blackLine1" d="M1213.1 413.398H1265.6" stroke="#0F0F0F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>Black Line 1</title>
+</path>
+<path id="blackLine2" d="M1213.1 427.898H1265.5" stroke="#0F0F0F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>Black Line 2</title>
+</path>
+<path id="wavyLine1" d="M1230.5 413.398V392.498C1230.5 378.498 1225 364.998 1215.1 355.098C1207.6 347.598 1203.5 337.498 1203.5 326.898C1203.5 319.398 1209.6 313.398 1217 313.398C1224.5 313.398 1230.5 319.498 1230.5 326.898V334.698C1230.5 339.498 1234.4 343.398 1239.2 343.398C1244 343.398 1247.9 339.498 1247.9 334.698V326.898C1247.9 319.398 1254 313.398 1261.4 313.398H1261.6C1269.1 313.398 1275.1 319.498 1275.1 326.898C1275.1 337.498 1270.9 347.698 1263.4 355.198C1253.5 365.198 1247.9 378.598 1247.9 392.698L1248 413.498" stroke="#353535" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>Wavy Line 1</title>
+</path>
+<path id="verticalLine8" d="M315.25 295.317V194.077C315.25 183.497 323.78 174.977 334.36 174.977H634.5C645.08 174.977 653.6 183.497 653.6 194.077V353.397" stroke="#3C2C5B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <title>Vertical Line 8</title>
+</path>
+<path id="blackCircle5" d="M314.868 309.479C330.598 309.479 343.338 296.739 343.338 281.009C343.338 265.289 330.598 252.539 314.868 252.539C299.148 252.539 286.398 265.289 286.398 281.009C286.398 296.739 299.148 309.479 314.868 309.479Z" fill="#3C2C5B">
+  <title>Black Circle 5</title>
+</path>
+<path id="blackCircle6" d="M569.8 184.568C574.88 184.568 579.01 180.438 579.01 175.358C579.01 170.268 574.88 166.148 569.8 166.148C564.71 166.148 560.59 170.268 560.59 175.358C560.59 180.438 564.71 184.568 569.8 184.568Z" fill="#3C2C5B">
+  <title>Black Circle 6</title>
+</path>
+<path id="blackShape3" d="M453.301 137.902H625.801C648.101 137.902 622.001 162.902 622.001 185.302L666.001 325.402C666.001 347.702 657.501 391.302 635.101 391.302H436.401C414.101 391.302 412.801 353.102 412.801 330.702L438.701 183.102C438.701 161.002 430.901 137.902 453.301 137.902Z" fill="#3C2C5B">
+  <title>Black Shape 3</title>
+</path>
+<path id="pinkRectangle2" d="M453.301 113.602H625.801C648.101 113.602 666.301 131.702 666.301 154.102V326.602C666.301 348.902 648.201 367.102 625.801 367.102H453.301C431.001 367.102 412.801 349.002 412.801 326.602V154.102C412.801 131.702 430.901 113.602 453.301 113.602Z" fill="#FFA0DC">
+  <title>Pink Rectangle 2</title>
+</path>
+<path id="blueShape1" d="M613 275.7L552.5 309.9C544.4 314.5 534.6 314.5 526.5 309.9L466 275.7C461.1 272.9 459.4 266.7 462.1 261.8C463 260.2 464.3 258.9 466 257.9L526.5 223.7C534.6 219.1 544.4 219.1 552.5 223.7L613 258C617.9 260.8 619.6 267 616.9 271.9C616 273.5 614.6 274.8 613 275.7Z" fill="#376BCB">
+  <title>Blue Shape 1</title>
+</path>
+<path id="whiteLayerShape4" d="M613 242.7L552.5 276.9C544.4 281.5 534.6 281.5 526.5 276.9L466 242.7C461.1 239.9 459.4 233.7 462.1 228.8C463 227.2 464.3 225.9 466 224.9L526.5 190.7C534.6 186.1 544.4 186.1 552.5 190.7L613 225C617.9 227.8 619.6 234 616.9 238.9C616 240.5 614.6 241.8 613 242.7Z" fill="white">
+  <title>White Shape 4</title>
+</path>
+<path id="blackRectangle4" d="M334.801 835.398H507.301C529.601 835.398 533.201 848.698 533.201 871.098L547.801 1024.2V1048.4C547.801 1070.7 529.701 1088.9 507.301 1088.9H334.801C312.501 1088.9 294.301 1070.8 294.301 1048.4V1024.2L319.101 876.598C319.101 854.198 312.401 835.398 334.801 835.398Z" fill="#3C2C5B">
+  <title>Black Rectangle 4</title>
+</path>
+<path id="pinkRectangle3" d="M334.801 811.199H507.301C529.601 811.199 547.801 829.299 547.801 851.699V1024.2C547.801 1046.5 529.701 1064.7 507.301 1064.7H334.801C312.501 1064.7 294.301 1046.6 294.301 1024.2V851.599C294.301 829.299 312.401 811.199 334.801 811.199Z" fill="#FFA0DC">
+  <title>Pink Rectangle 3</title>
+</path>
+<path id="whiteFileShape5" d="M378.208 1006.91H463.438C469.528 1006.91 474.498 1001.95 474.498 995.848V883.388C474.498 877.288 469.528 872.328 463.438 872.328H414.888C414.158 872.328 413.508 872.728 413.258 873.378L399.188 906.888L368.618 918.268C367.718 918.598 367.148 919.488 367.148 920.468V995.928C367.148 1002.03 372.108 1006.91 378.208 1006.91Z" fill="white">
+  <title>White Shape 5</title>
+</path>
+<path id="blueShape2" d="M368.047 918.598C367.887 918.758 368.047 919.168 368.367 919.168L402.847 918.918C408.947 918.918 413.907 913.958 413.907 907.858L413.587 872.898L368.047 918.598Z" fill="#376BCB">
+  <title>Blue Shape 2</title>
+</path>
+<path id="blackShape4" d="M690.659 404.961H1021.94C1046.68 404.961 1033.58 426.373 1033.58 451.224L1066.87 754.211V781.17C1066.87 805.91 1046.79 826.102 1021.94 826.102H690.659C665.918 826.102 645.727 806.021 645.727 781.17V758.537L664.92 450.448C664.92 425.596 665.807 404.961 690.659 404.961Z" fill="#3C2C5B">
+  <title>Black Shape 4</title>
+</path>
+<path id="grayRectangle1" d="M690.659 378H1021.94C1046.68 378 1066.87 398.081 1066.87 422.932V754.209C1066.87 778.949 1046.79 799.141 1021.94 799.141H690.659C665.918 799.141 645.727 779.06 645.727 754.209V422.821C645.727 398.081 665.807 378 690.659 378Z" fill="#F9F6F5">
+  <title>Gray Rectangle 1</title>
+</path>
+<path id="blueShape3" d="M1151.12 822.151V754.262C1113.63 754.262 1083.23 784.665 1083.23 822.102L1151.12 822.151Z" fill="#376BCB">
+  <title>Blue Shape 3</title>
+</path>
+<path id="pinkShape1" d="M1151.12 822.151L1206.63 861.143C1214.71 849.719 1219 836.072 1219 822.102L1151.12 822.151Z" fill="#FFA0DC">
+  <title>Pink Shape 1</title>
+</path>
+<path id="grayShape2" d="M1160.04 909.582C1182.14 909.582 1202.86 898.819 1215.57 880.734L1160.04 841.742V909.582Z" fill="#CECECE">
+  <title>Gray Shape 2</title>
+</path>
+<path id="blueShape4" d="M1182.27 761.86C1172.45 757.048 1161.93 754.213 1151.12 754.262V822.151L1182.27 761.86Z" fill="#376BCB">
+  <title>Blue Shape 4</title>
+</path>
+<path id="pinkShape2" d="M1219 822.149C1219 796.699 1205.22 772.577 1182.08 761.766L1151.07 822.149H1219Z" fill="#FFA0DC">
+  <title>Pink Shape 2</title>
+</path>
+<path id="blueShape5" d="M1151.12 822.149L1083.23 822.051C1083.23 859.537 1113.68 889.989 1151.16 889.989L1151.12 822.149Z" fill="#6B9FFF">
+  <title>Blue Shape 5</title>
+</path>
+<path id="key" d="M947 499.499C947 449.042 905.957 408 855.5 408C805.043 408 764 449.042 764 499.499C764 541.645 792.631 577.203 831.453 587.787V725.949C831.453 739.213 842.236 749.997 855.5 749.997C868.764 749.997 879.547 739.213 879.547 725.949V724.836H900.187C910.015 724.836 918.46 717.195 918.46 707.246C918.46 697.318 910.051 689.687 900.249 689.655V683.762C910.051 683.73 918.46 676.1 918.46 666.171C918.46 656.222 910.016 648.58 900.187 648.58H879.547V587.788C918.369 577.203 947 541.646 947 499.499ZM855.5 543.187C831.372 543.187 811.812 523.627 811.812 499.499C811.812 475.371 831.372 455.811 855.5 455.811C879.628 455.811 899.188 475.371 899.188 499.499C899.188 523.627 879.628 543.187 855.5 543.187Z" fill="#6B9FFF" stroke="#3C2C5B" stroke-width="10">
+  <title>Blue Circle with Border</title>
+</path>
+</g>
+<defs>
+<clipPath id="bannerClip">
+<rect width="1600" height="1200" fill="white"></rect>
+</clipPath>
+</defs>
+</svg>

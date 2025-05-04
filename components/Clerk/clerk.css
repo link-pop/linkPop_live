@@ -1,0 +1,61 @@
+/* ! NEW */
+[class^="cl-"]{
+  box-shadow: none !important;
+}
+/* .cl-footerAction{
+} */
+.cl-formFieldInput{
+  border-bottom: 1px solid #333333 !important;
+  border-radius: 0px !important;
+}
+.cl-socialButtonsIconButton{
+  background: #eaeaea !important;
+  /* background: var(--color-brand) !important; */
+}
+
+.cl-formFieldInputShowPasswordIcon{
+  color: var(--color-brand) !important;
+}
+/* ? NEW */
+
+/* hide footer in user button popover including: 
+"Secured by clerk" and "Development mode" 
+*/
+.cl-userButtonPopoverFooter, .cl-internal-1dauvpw, .cl-internal-16vtwdp {
+    display: none;
+}
+
+.cl-userButtonBox {
+  color: white;
+}
+
+/* Fixes that help button work inside Sheet */
+.cl-userButtonPopover {
+  position: fixed !important;
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+}
+
+.cl-userButtonPopoverCard {
+  position: fixed !important;
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+}
+
+.cl-userButtonPopoverActions {
+  position: relative !important;
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+}
+
+.cl-userButtonPopoverActionButton {
+  position: relative !important;
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+}
+
+.cl-userButtonPopover[data-state="open"] {
+  position: fixed !important;
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+}
