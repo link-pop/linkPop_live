@@ -787,7 +787,7 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
       </p>
 
       {/* Admin Test Controls */}
-      <AdminTestControls isAdmin={isAdmin} />
+      {/* <AdminTestControls isAdmin={isAdmin} /> */}
 
       <div
         className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto`}
