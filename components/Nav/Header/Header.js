@@ -8,7 +8,6 @@ import HeaderLikeIcon from "../../Like/HeaderLikeIcon";
 import { getAllMongoCollectionsData } from "@/lib/utils/mongo/getAllMongoCollectionsData";
 import HeaderOrderIcon from "./HeaderOrderIcon";
 import HeaderReviewIcon from "@/components/Review/HeaderReviewIcon";
-import HeaderViewIcon from "@/app/api/analytics/HeaderViewIcon";
 import HeaderPostsSearchIcon from "@/components/Post/Search/FromOtherPage/HeaderPostsSearchIcon";
 
 export default async function Header() {
@@ -32,7 +31,6 @@ export default async function Header() {
               {...{ cols, className: headerIconClassName }}
             />
             <div className="hidden min-[390px]:fcc !fwn g5">
-              <HeaderViewIcon {...{ cols, className: headerIconClassName }} />
               <HeaderLikeIcon {...{ cols, className: headerIconClassName }} />
               <HeaderReviewIcon {...{ cols, className: headerIconClassName }} />
               <HeaderOrderIcon

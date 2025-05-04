@@ -1,6 +1,5 @@
 "use client";
 
-import AnalyticPostsTopCustomContent from "./AnalyticPostsTopCustomContent";
 import DirectLinkLandingPagePostsTopCustomContent from "./DirectLinkLandingPagePostsTopCustomContent";
 import FeedPostsTopCustomContent from "./FeedPostsTopCustomContent";
 import NotificationPostsTopCustomContent from "./NotificationPostsTopCustomContent";
@@ -20,9 +19,6 @@ export default function PostsTopCustomContent({
         {...{ col, posts, showCategories, mongoUser }}
       />
       <NotificationPostsTopCustomContent
-        {...{ col, posts, showCategories, mongoUser }}
-      />
-      <AnalyticPostsTopCustomContent
         {...{ col, posts, showCategories, mongoUser }}
       />
       <OrderPostsTopCustomContent
