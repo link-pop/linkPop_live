@@ -72,14 +72,14 @@ export async function POST(req) {
   } catch (err) {
     console.error(`Webhook signature verification failed: ${err.message}`);
     // Send error notification to admin
-    await sendErrorToAdmin({
-      error: err,
-      subject: "Stripe Webhook Signature Verification Failed",
-      context: {
-        signatureHeader: signature,
-        eventType: "unknown",
-      },
-    });
+    // await sendErrorToAdmin({
+    //   error: err,
+    //   subject: "Stripe Webhook Signature Verification Failed",
+    //   context: {
+    //     signatureHeader: signature,
+    //     eventType: "unknown",
+    //   },
+    // });
     return NextResponse.json(
       { error: `Webhook signature verification failed: ${err.message}` },
       { status: 400 }
@@ -116,15 +116,15 @@ export async function POST(req) {
   } catch (error) {
     console.error(`Error handling webhook: ${error.message}`);
     // Send error notification to admin
-    await sendErrorToAdmin({
-      error,
-      subject: "Stripe Webhook Handler Error",
-      context: {
-        eventType: event.type,
-        eventId: event.id,
-        apiVersion: event.api_version,
-      },
-    });
+    // await sendErrorToAdmin({
+    //   error,
+    //   subject: "Stripe Webhook Handler Error",
+    //   context: {
+    //     eventType: event.type,
+    //     eventId: event.id,
+    //     apiVersion: event.api_version,
+    //   },
+    // });
     return NextResponse.json(
       { error: `Error handling webhook: ${error.message}` },
       { status: 500 }
@@ -197,15 +197,15 @@ async function handleCheckoutSessionCompleted(session) {
       });
     } catch (error) {
       console.error(`Error retrieving expanded session: ${error.message}`);
-      await sendErrorToAdmin({
-        error,
-        subject: "Stripe Checkout Session Retrieval Error",
-        context: {
-          sessionId: session.id,
-          userId: createdBy,
-          planId: planId,
-        },
-      });
+      // await sendErrorToAdmin({
+      //   error,
+      //   subject: "Stripe Checkout Session Retrieval Error",
+      //   context: {
+      //     sessionId: session.id,
+      //     userId: createdBy,
+      //     planId: planId,
+      //   },
+      // });
       return;
     }
 
@@ -234,16 +234,16 @@ async function handleCheckoutSessionCompleted(session) {
     console.log(`Successfully processed checkout session: ${session.id}`);
   } catch (error) {
     console.error(`Error handling checkout session: ${error.message}`);
-    await sendErrorToAdmin({
-      error,
-      subject: "Stripe Checkout Session Handler Error",
-      context: {
-        sessionId: session.id,
-        paymentStatus: session.payment_status,
-        sessionStatus: session.status,
-        metadata: session.metadata,
-      },
-    });
+    // await sendErrorToAdmin({
+    //   error,
+    //   subject: "Stripe Checkout Session Handler Error",
+    //   context: {
+    //     sessionId: session.id,
+    //     paymentStatus: session.payment_status,
+    //     sessionStatus: session.status,
+    //     metadata: session.metadata,
+    //   },
+    // });
   }
 }
 
@@ -331,15 +331,15 @@ async function handleSubscriptionCreated(subscription) {
     console.error(
       `Error handling subscription created event: ${error.message}`
     );
-    await sendErrorToAdmin({
-      error,
-      subject: "Stripe Subscription Created Handler Error",
-      context: {
-        subscriptionId: subscription.id,
-        customerId: subscription.customer,
-        metadata: subscription.metadata,
-      },
-    });
+    // await sendErrorToAdmin({
+    //   error,
+    //   subject: "Stripe Subscription Created Handler Error",
+    //   context: {
+    //     subscriptionId: subscription.id,
+    //     customerId: subscription.customer,
+    //     metadata: subscription.metadata,
+    //   },
+    // });
   }
 }
 
@@ -416,15 +416,15 @@ async function handleSubscriptionUpdated(subscription) {
     console.error(
       `Error handling subscription updated event: ${error.message}`
     );
-    await sendErrorToAdmin({
-      error,
-      subject: "Stripe Subscription Updated Handler Error",
-      context: {
-        subscriptionId: subscription.id,
-        customerId: subscription.customer,
-        status: subscription.status,
-      },
-    });
+    // await sendErrorToAdmin({
+    //   error,
+    //   subject: "Stripe Subscription Updated Handler Error",
+    //   context: {
+    //     subscriptionId: subscription.id,
+    //     customerId: subscription.customer,
+    //     status: subscription.status,
+    //   },
+    // });
   }
 }
 
@@ -478,14 +478,14 @@ async function handleSubscriptionDeleted(subscription) {
     console.error(
       `Error handling subscription deleted event: ${error.message}`
     );
-    await sendErrorToAdmin({
-      error,
-      subject: "Stripe Subscription Deleted Handler Error",
-      context: {
-        subscriptionId: subscription.id,
-        customerId: subscription.customer,
-      },
-    });
+    // await sendErrorToAdmin({
+    //   error,
+    //   subject: "Stripe Subscription Deleted Handler Error",
+    //   context: {
+    //     subscriptionId: subscription.id,
+    //     customerId: subscription.customer,
+    //   },
+    // });
   }
 }
 
@@ -519,15 +519,15 @@ async function handleInvoicePaymentSucceeded(invoice) {
     console.error(
       `Error handling invoice payment succeeded event: ${error.message}`
     );
-    await sendErrorToAdmin({
-      error,
-      subject: "Stripe Invoice Payment Succeeded Handler Error",
-      context: {
-        invoiceId: invoice.id,
-        subscriptionId: invoice.subscription,
-        customerId: invoice.customer,
-      },
-    });
+    // await sendErrorToAdmin({
+    //   error,
+    //   subject: "Stripe Invoice Payment Succeeded Handler Error",
+    //   context: {
+    //     invoiceId: invoice.id,
+    //     subscriptionId: invoice.subscription,
+    //     customerId: invoice.customer,
+    //   },
+    // });
   }
 }
 
@@ -580,33 +580,33 @@ async function handleInvoicePaymentFailed(invoice) {
     );
 
     // Send notification to admin about failed payment
-    await sendErrorToAdmin({
-      error: new Error(
-        `Payment failed for subscription ${invoice.subscription}`
-      ),
-      subject: "Stripe Payment Failed Alert",
-      context: {
-        invoiceId: invoice.id,
-        subscriptionId: invoice.subscription,
-        customerId: invoice.customer,
-        userId: subscription.createdBy,
-        planId: subscription.planId,
-        amount: invoice.amount_due / 100,
-      },
-    });
+    // await sendErrorToAdmin({
+    //   error: new Error(
+    //     `Payment failed for subscription ${invoice.subscription}`
+    //   ),
+    //   subject: "Stripe Payment Failed Alert",
+    //   context: {
+    //     invoiceId: invoice.id,
+    //     subscriptionId: invoice.subscription,
+    //     customerId: invoice.customer,
+    //     userId: subscription.createdBy,
+    //     planId: subscription.planId,
+    //     amount: invoice.amount_due / 100,
+    //   },
+    // });
   } catch (error) {
     console.error(
       `Error handling invoice payment failed event: ${error.message}`
     );
-    await sendErrorToAdmin({
-      error,
-      subject: "Stripe Invoice Payment Failed Handler Error",
-      context: {
-        invoiceId: invoice.id,
-        subscriptionId: invoice.subscription,
-        customerId: invoice.customer,
-      },
-    });
+    // await sendErrorToAdmin({
+    //   error,
+    //   subject: "Stripe Invoice Payment Failed Handler Error",
+    //   context: {
+    //     invoiceId: invoice.id,
+    //     subscriptionId: invoice.subscription,
+    //     customerId: invoice.customer,
+    //   },
+    // });
   }
 }
 
@@ -646,15 +646,15 @@ async function cancelPreviousSubscription(
         console.error(
           `Error canceling Stripe subscription: ${stripeCancelError.message}`
         );
-        await sendErrorToAdmin({
-          error: stripeCancelError,
-          subject: "Stripe Subscription Cancellation Error",
-          context: {
-            subscriptionId: oldSubscription.subscriptionId,
-            userId: oldSubscription.createdBy,
-            planId: oldSubscription.planId,
-          },
-        });
+        // await sendErrorToAdmin({
+        //   error: stripeCancelError,
+        //   subject: "Stripe Subscription Cancellation Error",
+        //   context: {
+        //     subscriptionId: oldSubscription.subscriptionId,
+        //     userId: oldSubscription.createdBy,
+        //     planId: oldSubscription.planId,
+        //   },
+        // });
         // Continue even if Stripe cancellation fails
       }
     }
@@ -698,16 +698,16 @@ async function cancelPreviousSubscription(
     );
   } catch (error) {
     console.error(`Error canceling subscription: ${error.message}`);
-    await sendErrorToAdmin({
-      error,
-      subject: "Error Canceling Previous Subscription",
-      context: {
-        subscriptionId: subscriptionId,
-        newPlanId: newPlanId,
-        extraLinksCount: extraLinksCount,
-        explicitReason: explicitReason,
-      },
-    });
+    // await sendErrorToAdmin({
+    //   error,
+    //   subject: "Error Canceling Previous Subscription",
+    //   context: {
+    //     subscriptionId: subscriptionId,
+    //     newPlanId: newPlanId,
+    //     extraLinksCount: extraLinksCount,
+    //     explicitReason: explicitReason,
+    //   },
+    // });
   }
 }
 
@@ -796,31 +796,31 @@ async function updateSubscriptionRecord(
             "Failed to find subscription record by subscriptionId:",
             subscriptionId
           );
-          await sendErrorToAdmin({
-            error: new Error(
-              `Failed to find subscription record by ID: ${subscriptionId}`
-            ),
-            subject: "Subscription Record Update Failure",
-            context: {
-              sessionId,
-              subscriptionId,
-              createdBy,
-              planId,
-            },
-          });
+          // await sendErrorToAdmin({
+          //   error: new Error(
+          //     `Failed to find subscription record by ID: ${subscriptionId}`
+          //   ),
+          //   subject: "Subscription Record Update Failure",
+          //   context: {
+          //     sessionId,
+          //     subscriptionId,
+          //     createdBy,
+          //     planId,
+          //   },
+          // });
           return;
         }
       } else {
         console.error("No subscription ID to use as fallback");
-        await sendErrorToAdmin({
-          error: new Error("No subscription ID to use as fallback"),
-          subject: "Subscription Record Update Failure",
-          context: {
-            sessionId,
-            createdBy,
-            planId,
-          },
-        });
+        // await sendErrorToAdmin({
+        //   error: new Error("No subscription ID to use as fallback"),
+        //   subject: "Subscription Record Update Failure",
+        //   context: {
+        //     sessionId,
+        //     createdBy,
+        //     planId,
+        //   },
+        // });
         return;
       }
     } else {
@@ -864,17 +864,17 @@ async function updateSubscriptionRecord(
     return updatedSubscription;
   } catch (error) {
     console.error("Error updating subscription record:", error.message);
-    await sendErrorToAdmin({
-      error,
-      subject: "Error Updating Subscription Record",
-      context: {
-        sessionId,
-        subscriptionId: subscription.id,
-        customerId: customer.id,
-        createdBy,
-        planId,
-      },
-    });
+    // await sendErrorToAdmin({
+    //   error,
+    //   subject: "Error Updating Subscription Record",
+    //   context: {
+    //     sessionId,
+    //     subscriptionId: subscription.id,
+    //     customerId: customer.id,
+    //     createdBy,
+    //     planId,
+    //   },
+    // });
     throw error;
   }
 }
@@ -983,15 +983,15 @@ async function processReferralCommission(subscription, userId) {
     );
   } catch (error) {
     console.error("Error processing referral commission:", error);
-    await sendErrorToAdmin({
-      error,
-      subject: "Error Processing Referral Commission",
-      context: {
-        subscriptionId: subscription._id,
-        userId,
-        amount: subscription.amount,
-      },
-    });
+    // await sendErrorToAdmin({
+    //   error,
+    //   subject: "Error Processing Referral Commission",
+    //   context: {
+    //     subscriptionId: subscription._id,
+    //     userId,
+    //     amount: subscription.amount,
+    //   },
+    // });
   }
 }
 // ? code end webhook handler
