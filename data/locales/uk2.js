@@ -304,6 +304,7 @@ const uk = {
   visitors: "Відвідувачі",
   source: "Джерело",
   visits: "Відвідування",
+  clicks: "кліки",
   devices: "Пристрої",
   browsers: "Браузери",
   demoDataShowcasingAppFeatures: "Демонстрація даних для аналітики",

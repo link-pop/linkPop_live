@@ -288,6 +288,7 @@ const hi = {
   visitors: "आगंतुक",
   source: "स्रोत",
   visits: "विज़िट",
+  clicks: "क्लिक्स",
   devices: "डिवाइस",
   browsers: "ब्राउज़र",
   demoDataShowcasingAppFeatures:

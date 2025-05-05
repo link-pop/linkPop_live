@@ -296,6 +296,7 @@ const fr = {
   visitors: "Visiteurs",
   source: "Source",
   visits: "Visites",
+  clicks: "clics",
   devices: "Appareils",
   browsers: "Navigateurs",
   demoDataShowcasingAppFeatures:

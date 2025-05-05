@@ -37,7 +37,10 @@ export default function VisitorTimeline({
   const [timeframe, setTimeframe] = useState("last30Days"); // Default to last 30 days
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
+
+  // Use the current language for date formatting
+  const userLocale = currentLang || "en";
 
   // Fetch click data using React Query (only if not in demo mode)
   const { data: fetchedLinks = [], isLoading: isLoadingLinks } = useQuery({
@@ -64,6 +67,27 @@ export default function VisitorTimeline({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // Define countries that use 12-hour time format (AM/PM)
+  const twelveHourTimeCountries = [
+    "en", // English (US, UK, etc.)
+    "es-US", // Spanish (US)
+    "fil", // Filipino
+    "hi", // Hindi
+    "ar", // Arabic
+    "bn", // Bengali
+    "fa", // Persian
+    "gu", // Gujarati
+    "mr", // Marathi
+    "my", // Burmese
+    "ne", // Nepali
+    "pa", // Punjabi
+    "ta", // Tamil
+    "ur", // Urdu
+  ];
+
+  // Check if the current language uses 12-hour time format
+  const uses12HourFormat = twelveHourTimeCountries.includes(currentLang);
 
   // Define time ranges with display names and processing logic
   const timeRanges = {
@@ -222,13 +246,20 @@ export default function VisitorTimeline({
     const max = Math.max(maxVisits, maxClicks);
     const stepSize = max <= 10 ? 1 : Math.ceil(max / 10);
 
+    // Use translated labels for datasets
+    const visitsLabel = t("visits");
+    const clicksLabel = t("clicks");
+
+    // For month view with many days, ensure all labels are visible
+    const shouldShowAllLabels = labels.length <= 31;
+
     return new Chart(ctx, {
       type: "line",
       data: {
         labels: labels,
         datasets: [
           {
-            label: "Visits",
+            label: visitsLabel,
             data: visitCounts,
             borderWidth: 3,
             borderColor: visitsLineGradient,
@@ -250,7 +281,7 @@ export default function VisitorTimeline({
           ...(!hideClicks
             ? [
                 {
-                  label: "Clicks",
+                  label: clicksLabel,
                   data: clickCounts,
                   borderWidth: 3,
                   borderColor: clicksLineGradient,
@@ -326,11 +357,11 @@ export default function VisitorTimeline({
                 size: 12,
                 weight: "500",
               },
-              maxRotation: 45,
+              maxRotation: shouldShowAllLabels ? 65 : 45, // Increase rotation for month views
               minRotation: 0,
               padding: 10,
-              autoSkip: true,
-              maxTicksLimit: 15,
+              autoSkip: !shouldShowAllLabels, // Only skip for very large datasets
+              maxTicksLimit: shouldShowAllLabels ? 1000 : 31, // Show all ticks for month view
             },
             border: {
               display: false,
@@ -373,9 +404,7 @@ export default function VisitorTimeline({
               label: function (context) {
                 const value = context.parsed.y;
                 const datasetLabel = context.dataset.label;
-                return `${datasetLabel}: ${value} ${
-                  value !== 1 ? "events" : "event"
-                }`;
+                return `${datasetLabel}: ${value}`;
               },
             },
           },
@@ -409,13 +438,21 @@ export default function VisitorTimeline({
 
   useEffect(() => {
     // Don't proceed if we don't have visitors or links aren't loaded yet
-    if (!visitors || visitors.length === 0 || isLoading) return;
+    if ((!visitors || visitors.length === 0) && !isDemoMode && isLoading)
+      return;
 
     // Process data based on selected timeframe
     const range = timeRanges[timeframe].getRange();
     const isHourly = range.hourly;
 
-    let filteredVisitors = visitors;
+    let filteredVisitors = visitors || [];
+
+    console.log(`Timeline - ${timeframe} mode:`, {
+      visitorsCount: visitors?.length || 0,
+      linksCount: links?.length || 0,
+      isAllTime: range.allTime,
+      isHourly: isHourly,
+    });
 
     // Changed approach: Extract individual click events from links
     // Rather than treating all clicks as occurring at the link creation time
@@ -456,6 +493,10 @@ export default function VisitorTimeline({
       }
     });
 
+    console.log("Timeline - Click events extracted:", {
+      extractedClickCount: allClickEvents.length,
+    });
+
     let periods = [];
     let periodFormat = {};
     let groupingFn;
@@ -467,7 +508,28 @@ export default function VisitorTimeline({
         const visitDate = new Date(visitor.createdAt);
         return visitDate >= range.start && visitDate <= endDate;
       });
+    } else {
+      // For allTime, use all visitors without filtering
+      filteredVisitors = [...visitors];
+
+      // If we have links with clickCounts but no clickHistory,
+      // ensure we include those dates too for better visualization
+      links.forEach((link) => {
+        if (
+          link.createdAt &&
+          !allClickEvents.some(
+            (e) => e.date.getTime() === new Date(link.createdAt).getTime()
+          )
+        ) {
+          allClickEvents.push({ date: new Date(link.createdAt) });
+        }
+      });
     }
+
+    console.log("Timeline - After filtering:", {
+      filteredVisitorsCount: filteredVisitors.length,
+      allClickEventsCount: allClickEvents.length,
+    });
 
     // For empty filtered results, show an empty chart
     if (filteredVisitors.length === 0 && allClickEvents.length === 0) {
@@ -481,50 +543,69 @@ export default function VisitorTimeline({
         ["No data"],
         [0],
         [0],
-        `No activity during this period`
+        t("noActivityData")
       );
       return;
     }
 
     // Handle hourly view for Today or Yesterday
     if (isHourly) {
-      // Create 24 hour periods
+      // Create 24 hour periods - all hours will be included
       for (let hour = 0; hour < 24; hour++) {
         const date = new Date(range.start);
         date.setHours(hour, 0, 0, 0);
         periods.push(date);
       }
 
-      periodFormat = { hour: "numeric", hour12: true };
+      // Use appropriate hour format based on user's locale
+      periodFormat = { hour: "numeric", hour12: uses12HourFormat };
       groupingFn = (date) => {
         const visitDate = new Date(date);
-        visitDate.setMinutes(0, 0, 0);
+        visitDate.setMinutes(0, 0, 0, 0);
         return visitDate.getTime();
       };
     }
     // Handle different date-based ranges
     else if (timeframe === "last7Days") {
-      // Last 7 days
-      for (let i = 6; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        date.setHours(0, 0, 0, 0);
-        periods.push(date);
+      // Last 7 days - ensure ALL consecutive days are created
+      // Create all 7 days in sequence without skipping
+      const end = new Date();
+      end.setHours(0, 0, 0, 0);
+      const start = new Date(end);
+      start.setDate(start.getDate() - 6);
+
+      // Clear periods array and rebuild with consecutive days
+      periods = [];
+      let currentDate = new Date(start);
+
+      while (currentDate <= end) {
+        periods.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
       }
-      periodFormat = { weekday: "short" };
+
+      periodFormat = { month: "short", day: "numeric" };
       groupingFn = (date) => {
         const visitDate = new Date(date);
         visitDate.setHours(0, 0, 0, 0);
         return visitDate.getTime();
       };
     } else if (timeframe === "last30Days") {
-      // Last 30 days
-      for (let i = 29; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        date.setHours(0, 0, 0, 0);
-        periods.push(date);
+      // Last 30 days - ensure ALL consecutive days are created
+      // Create all 30 days in sequence without skipping
+      const end = new Date();
+      end.setHours(0, 0, 0, 0);
+      const start = new Date(end);
+      start.setDate(start.getDate() - 29);
+
+      // Clear periods array and rebuild with consecutive days
+      periods = [];
+      let currentDate = new Date(start);
+
+      while (currentDate <= end) {
+        periods.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
       }
+
       periodFormat = { month: "short", day: "numeric" };
       groupingFn = (date) => {
         const visitDate = new Date(date);
@@ -532,16 +613,30 @@ export default function VisitorTimeline({
         return visitDate.getTime();
       };
     } else if (timeframe === "currentMonth" || timeframe === "lastMonth") {
-      // Current or last month - show all days in the month
+      // Current or last month - ensure ALL consecutive days are created
       const startDate = new Date(range.start);
       const endDate = range.end || new Date();
 
-      // Get all days in the month
+      // Clear the periods array and rebuild with all consecutive days
+      periods = [];
+
+      // Create a new date object to iterate through all days
       let currentDate = new Date(startDate);
       while (currentDate <= endDate) {
+        // Add a copy of the current date to the periods array
         periods.push(new Date(currentDate));
+
+        // Move to the next day
         currentDate.setDate(currentDate.getDate() + 1);
       }
+
+      console.log(`Timeline - ${timeframe} periods:`, {
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        periodsCreated: periods.length,
+        firstDay: periods[0]?.getDate(),
+        lastDay: periods[periods.length - 1]?.getDate(),
+      });
 
       periodFormat = { day: "numeric" };
       groupingFn = (date) => {
@@ -565,7 +660,11 @@ export default function VisitorTimeline({
         return visitDate.getTime();
       };
     } else if (timeframe === "allTime") {
-      // All time - group by month
+      console.log("Timeline - Setting up allTime view", {
+        filteredVisitorsLength: filteredVisitors.length,
+        allClickEventsLength: allClickEvents.length,
+      });
+
       if (filteredVisitors.length > 0 || allClickEvents.length > 0) {
         // Find the earliest and latest dates
         let earliestDate = new Date();
@@ -581,10 +680,20 @@ export default function VisitorTimeline({
         }
 
         // Check click events
-        allClickEvents.forEach((clickEvent) => {
-          const clickDate = clickEvent.date;
-          if (clickDate < earliestDate) earliestDate = clickDate;
-          if (clickDate > latestDate) latestDate = clickDate;
+        if (allClickEvents.length > 0) {
+          allClickEvents.forEach((clickEvent) => {
+            const clickDate = clickEvent.date;
+            if (clickDate < earliestDate) earliestDate = clickDate;
+            if (clickDate > latestDate) latestDate = clickDate;
+          });
+        }
+
+        console.log("Timeline - AllTime date range:", {
+          earliestDate,
+          latestDate,
+          rangeInMonths:
+            (latestDate.getTime() - earliestDate.getTime()) /
+            (1000 * 60 * 60 * 24 * 30),
         });
 
         // Create periods by month between earliest and latest
@@ -595,6 +704,47 @@ export default function VisitorTimeline({
           periods.push(new Date(currentDate));
           currentDate.setMonth(currentDate.getMonth() + 1);
         }
+
+        // Add one more period after the latest date to ensure we capture everything
+        if (periods.length > 0) {
+          const lastPeriod = new Date(periods[periods.length - 1]);
+          lastPeriod.setMonth(lastPeriod.getMonth() + 1);
+          periods.push(new Date(lastPeriod));
+        }
+
+        console.log("Timeline - AllTime periods created:", {
+          periodsCount: periods.length,
+        });
+
+        periodFormat = { year: "numeric", month: "short" };
+        groupingFn = (date) => {
+          const visitDate = new Date(date);
+          visitDate.setDate(1);
+          visitDate.setHours(0, 0, 0, 0);
+          return visitDate.getTime();
+        };
+      } else {
+        // If no data, create at least a 6-month period to show in the chart
+        const now = new Date();
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(now.getMonth() - 5);
+        sixMonthsAgo.setDate(1);
+
+        console.log("Timeline - Creating default 6-month period:", {
+          sixMonthsAgo,
+          now,
+        });
+
+        // Create 6 monthly periods
+        let currentDate = new Date(sixMonthsAgo);
+        while (currentDate <= now) {
+          periods.push(new Date(currentDate));
+          currentDate.setMonth(currentDate.getMonth() + 1);
+        }
+
+        console.log("Timeline - Default periods created:", {
+          periodsCount: periods.length,
+        });
 
         periodFormat = { year: "numeric", month: "short" };
         groupingFn = (date) => {
@@ -623,7 +773,33 @@ export default function VisitorTimeline({
       const visitDate = new Date(visitor.createdAt);
       const periodKey = groupingFn(visitDate);
 
-      if (visitPeriodMap.has(periodKey)) {
+      // For allTime view, we need to make sure we count the visit even if the
+      // exact period doesn't match (this could happen due to timezone differences)
+      if (timeframe === "allTime") {
+        // Find the closest period (month) for this visit
+        let closestPeriodKey = null;
+        let minDiff = Infinity;
+
+        // Iterate through periods to find the closest match
+        for (const period of periods) {
+          const periodTime = period.getTime();
+          const diff = Math.abs(periodTime - periodKey);
+          if (diff < minDiff) {
+            minDiff = diff;
+            closestPeriodKey = periodTime;
+          }
+        }
+
+        if (closestPeriodKey && visitPeriodMap.has(closestPeriodKey)) {
+          visitPeriodMap.set(
+            closestPeriodKey,
+            visitPeriodMap.get(closestPeriodKey) + 1
+          );
+        } else if (visitPeriodMap.has(periodKey)) {
+          // Fallback if no closest period found
+          visitPeriodMap.set(periodKey, visitPeriodMap.get(periodKey) + 1);
+        }
+      } else if (visitPeriodMap.has(periodKey)) {
         visitPeriodMap.set(periodKey, visitPeriodMap.get(periodKey) + 1);
       }
     });
@@ -639,11 +815,42 @@ export default function VisitorTimeline({
               clickEvent.date <= (range.end || new Date())
           );
 
+      console.log("Timeline - Processing click events:", {
+        totalClickEvents: allClickEvents.length,
+        filteredClickEvents: filteredClickEvents.length,
+      });
+
       // Count clicks by period
       filteredClickEvents.forEach((clickEvent) => {
         const periodKey = groupingFn(clickEvent.date);
 
-        if (clickPeriodMap.has(periodKey)) {
+        // For allTime view, we need to make sure we count the click even if the
+        // exact period doesn't match (this could happen due to timezone differences)
+        if (timeframe === "allTime") {
+          // Find the closest period (month) for this click
+          let closestPeriodKey = null;
+          let minDiff = Infinity;
+
+          // Iterate through periods to find the closest match
+          for (const period of periods) {
+            const periodTime = period.getTime();
+            const diff = Math.abs(periodTime - periodKey);
+            if (diff < minDiff) {
+              minDiff = diff;
+              closestPeriodKey = periodTime;
+            }
+          }
+
+          if (closestPeriodKey && clickPeriodMap.has(closestPeriodKey)) {
+            clickPeriodMap.set(
+              closestPeriodKey,
+              clickPeriodMap.get(closestPeriodKey) + 1
+            );
+          } else if (clickPeriodMap.has(periodKey)) {
+            // Fallback if no closest period found
+            clickPeriodMap.set(periodKey, clickPeriodMap.get(periodKey) + 1);
+          }
+        } else if (clickPeriodMap.has(periodKey)) {
           clickPeriodMap.set(periodKey, clickPeriodMap.get(periodKey) + 1);
         }
       });
@@ -655,25 +862,212 @@ export default function VisitorTimeline({
       clickCounts.push(clickPeriodMap.get(period.getTime()));
     });
 
-    // Format periods for the x-axis
-    const labels = periods.map((date) =>
-      date.toLocaleString("en-US", periodFormat)
-    );
+    // Format periods for the x-axis using the user's locale instead of hardcoded "en-US"
+    let labels = [];
 
-    // If a chart already exists, destroy it
-    if (chartInstance.current) {
-      chartInstance.current.destroy();
+    // Customize labels based on timeframe to ensure proper consecutive display
+    if (isHourly && uses12HourFormat) {
+      // For 12-hour format, ensure 12 AM, 1 AM, 2 AM... sequence
+      labels = periods.map((date) => {
+        let hour = date.getHours();
+        const ampm = hour >= 12 ? "PM" : "AM";
+        hour = hour % 12;
+        hour = hour ? hour : 12; // Convert 0 to 12 for 12 AM
+        return `${hour} ${ampm}`;
+      });
+
+      // Log each hour's timestamp to ensure proper sequence
+      console.log(
+        "Timeline - 12-hour format hours:",
+        periods.map(
+          (d) =>
+            `${d.toLocaleTimeString()} → ${d.getHours() % 12 || 12} ${
+              d.getHours() >= 12 ? "PM" : "AM"
+            }`
+        )
+      );
+    } else if (isHourly && !uses12HourFormat) {
+      // For 24-hour format, ensure 00, 01, 02... sequence with leading zeros for consistency
+      labels = periods.map((date) => {
+        const hour = date.getHours();
+        return `${hour.toString().padStart(2, "0")}:00`;
+      });
+
+      // Log each hour's timestamp to ensure proper sequence
+      console.log(
+        "Timeline - 24-hour format hours:",
+        periods.map(
+          (d) =>
+            `${d.toLocaleTimeString()} → ${d
+              .getHours()
+              .toString()
+              .padStart(2, "0")}:00`
+        )
+      );
+    } else if (
+      timeframe === "last7Days" ||
+      timeframe === "last30Days" ||
+      timeframe === "currentMonth" ||
+      timeframe === "lastMonth"
+    ) {
+      // For consecutive days, use a format that will clearly show all days
+      labels = periods.map((date) => {
+        // Format: "Apr 6", "Apr 7", etc.
+        return date.toLocaleString(userLocale, {
+          month: "short",
+          day: "numeric",
+        });
+      });
+
+      // Log detailed information about created labels
+      console.log(`Timeline - ${timeframe} formatted labels:`, {
+        labelsCount: labels.length,
+        labelsCreated: labels,
+      });
+    } else {
+      // Default formatting for other timeframes
+      labels = periods.map((date) =>
+        date.toLocaleString(userLocale, periodFormat)
+      );
     }
 
-    // Create a new chart with our improved function that includes both datasets
-    const ctx = chartRef.current.getContext("2d");
-    chartInstance.current = createChart(
-      ctx,
-      labels,
-      visitCounts,
-      clickCounts,
-      timeRanges[timeframe].label
-    );
+    // Log the labels to help diagnose issues
+    console.log("Timeline - Formatted labels:", labels);
+
+    console.log("Timeline - Final chart data:", {
+      timeframe,
+      periods: periods.length,
+      userLocale,
+      uses12HourFormat,
+      visitCounts: visitCounts.reduce((a, b) => a + b, 0),
+      clickCounts: clickCounts.reduce((a, b) => a + b, 0),
+      hasZeroValues:
+        visitCounts.every((count) => count === 0) &&
+        clickCounts.every((count) => count === 0),
+      labels, // Log the final formatted labels
+    });
+
+    // Additional debug information for "allTime" view
+    if (timeframe === "allTime") {
+      console.log("Timeline - 'allTime' view details:", {
+        totalVisitors: filteredVisitors.length,
+        totalClickEvents: allClickEvents.length,
+        periodsCreated: periods.length,
+        firstPeriod: periods.length > 0 ? periods[0].toISOString() : "none",
+        lastPeriod:
+          periods.length > 0
+            ? periods[periods.length - 1].toISOString()
+            : "none",
+        formattedLabels: labels,
+        visitCountsArray: visitCounts,
+        clickCountsArray: clickCounts,
+      });
+    }
+
+    // For hourly view, ensure all hours show and labels are properly aligned
+    if (isHourly) {
+      // Special handling for hourly charts
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+
+      const chartCtx = chartRef.current.getContext("2d");
+      chartInstance.current = createChart(
+        chartCtx,
+        labels,
+        visitCounts,
+        clickCounts,
+        timeRanges[timeframe].label
+      );
+
+      // Force all 24 hours to be shown
+      if (chartInstance.current) {
+        chartInstance.current.options.scales.x.ticks.autoSkip = false;
+        // Slightly increase rotation to prevent overlapping for hourly labels
+        chartInstance.current.options.scales.x.ticks.maxRotation = 45;
+        chartInstance.current.update();
+      }
+    }
+    // Special handling for month views to ensure all dates show
+    else if (timeframe === "lastMonth" || timeframe === "currentMonth") {
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+
+      const chartCtx = chartRef.current.getContext("2d");
+      chartInstance.current = createChart(
+        chartCtx,
+        labels,
+        visitCounts,
+        clickCounts,
+        timeRanges[timeframe].label
+      );
+
+      // Force all days to be shown for month view
+      if (chartInstance.current) {
+        chartInstance.current.options.scales.x.ticks.autoSkip = false;
+        chartInstance.current.options.scales.x.ticks.maxRotation = 65; // Higher rotation to fit all days
+        chartInstance.current.update();
+      }
+    }
+    // If we have too many labels and they're getting crowded, consider adjusting display
+    else if (!isHourly && labels.length > 15) {
+      // For the chart options to prevent overlapping labels
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+
+      // Create a new chart
+      const chartCtx = chartRef.current.getContext("2d");
+      chartInstance.current = createChart(
+        chartCtx,
+        labels,
+        visitCounts,
+        clickCounts,
+        timeRanges[timeframe].label
+      );
+
+      // For last7Days or last30Days, set better options for readability while showing all data
+      if (
+        timeframe === "last7Days" ||
+        timeframe === "last30Days" ||
+        timeframe === "currentMonth" ||
+        timeframe === "lastMonth"
+      ) {
+        if (chartInstance.current) {
+          // For these specific views, we want to ensure all dates are shown
+          // but adjust the rotation to prevent overlap
+          chartInstance.current.options.scales.x.ticks.maxRotation = 65;
+          chartInstance.current.options.scales.x.ticks.autoSkip = false;
+          chartInstance.current.update();
+        }
+      } else {
+        // For other views with many labels, use auto-skip but with a reasonable limit
+        if (chartInstance.current) {
+          chartInstance.current.options.scales.x.ticks.autoSkip = true;
+          // For other views, show a reasonable number
+          chartInstance.current.options.scales.x.ticks.maxTicksLimit = Math.min(
+            labels.length,
+            15
+          );
+          chartInstance.current.update();
+        }
+      }
+    } else {
+      // Create a new chart with our improved function that includes both datasets
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+
+      const ctx = chartRef.current.getContext("2d");
+      chartInstance.current = createChart(
+        ctx,
+        labels,
+        visitCounts,
+        clickCounts,
+        timeRanges[timeframe].label
+      );
+    }
 
     // Clean up
     return () => {
@@ -681,7 +1075,7 @@ export default function VisitorTimeline({
         chartInstance.current.destroy();
       }
     };
-  }, [visitors, links, timeframe, isLoading]);
+  }, [visitors, links, timeframe, isLoading, currentLang, uses12HourFormat]);
 
   if (
     (!visitors || visitors.length === 0) &&
@@ -701,6 +1095,7 @@ export default function VisitorTimeline({
 
   return (
     <div
+      suppressHydrationWarning
       className={`bg-background rounded-lg border border-border shadow-md p-6 transition-all duration-300 hover:shadow-lg`}
     >
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">

@@ -290,6 +290,7 @@ const es = {
   visitors: "Visitantes",
   source: "Fuente",
   visits: "Visitas",
+  clicks: "clics",
   devices: "Dispositivos",
   browsers: "Navegadores",
   demoDataShowcasingAppFeatures:

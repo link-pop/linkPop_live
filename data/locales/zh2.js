@@ -271,6 +271,7 @@ const zh = {
   visitors: "访问者",
   source: "来源",
   visits: "访问量",
+  clicks: "点击",
   devices: "设备",
   browsers: "浏览器",
   demoDataShowcasingAppFeatures: "展示应用功能的演示数据",

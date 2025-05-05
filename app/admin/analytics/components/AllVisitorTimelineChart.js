@@ -38,7 +38,31 @@ export default function VisitorTimelineChart({
   const [timeframe, setTimeframe] = useState("last30Days"); // Default to last 30 days
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
+
+  // Use the current language for date formatting
+  const userLocale = currentLang || "en";
+
+  // Define countries that use 12-hour time format (AM/PM)
+  const twelveHourTimeCountries = [
+    "en", // English (US, UK, etc.)
+    "es-US", // Spanish (US)
+    "fil", // Filipino
+    "hi", // Hindi
+    "ar", // Arabic
+    "bn", // Bengali
+    "fa", // Persian
+    "gu", // Gujarati
+    "mr", // Marathi
+    "my", // Burmese
+    "ne", // Nepali
+    "pa", // Punjabi
+    "ta", // Tamil
+    "ur", // Urdu
+  ];
+
+  // Check if the current language uses 12-hour time format
+  const uses12HourFormat = twelveHourTimeCountries.includes(currentLang);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -110,6 +134,31 @@ export default function VisitorTimelineChart({
 
         const end = new Date();
         end.setDate(0); // Last day of previous month
+        end.setHours(23, 59, 59, 999);
+
+        return { start, end, hourly: false };
+      },
+    },
+    currentYear: {
+      label: t("currentYear"),
+      getRange: () => {
+        const start = new Date();
+        start.setMonth(0, 1);
+        start.setHours(0, 0, 0, 0);
+        return { start, hourly: false };
+      },
+    },
+    lastYear: {
+      label: t("lastYear"),
+      getRange: () => {
+        const start = new Date();
+        start.setFullYear(start.getFullYear() - 1);
+        start.setMonth(0, 1);
+        start.setHours(0, 0, 0, 0);
+
+        const end = new Date();
+        end.setFullYear(end.getFullYear() - 1);
+        end.setMonth(11, 31);
         end.setHours(23, 59, 59, 999);
 
         return { start, end, hourly: false };
@@ -288,11 +337,11 @@ export default function VisitorTimelineChart({
                     index === totalLabels - 1 ||
                     index % Math.ceil(totalLabels / 20) === 0
                   ) {
-                    return value;
+                    return labels[index]; // Return directly from our labels array
                   }
                   return "";
                 }
-                return value;
+                return labels[index]; // Always return from our labels array rather than the value parameter
               },
             },
             border: {
@@ -438,7 +487,7 @@ export default function VisitorTimelineChart({
                 const value = context.parsed.y;
                 const datasetLabel = context.dataset.label;
                 return `${datasetLabel}: ${value} ${
-                  value !== 1 ? "visitors" : "visitor"
+                  value !== 1 ? t("visitors") : t("visitor")
                 }`;
               },
             },
@@ -510,7 +559,11 @@ export default function VisitorTimelineChart({
         periods.push(date);
       }
 
-      periodFormat = { hour: "numeric", hour12: true };
+      periodFormat = {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: uses12HourFormat,
+      };
       groupingFn = (date) => {
         const visitDate = new Date(date);
         visitDate.setMinutes(0, 0, 0);
@@ -526,6 +579,7 @@ export default function VisitorTimelineChart({
         date.setHours(0, 0, 0, 0);
         periods.push(date);
       }
+      // Fix: Explicitly set the weekday format to ensure it shows as Mon, Tue, Wed, etc.
       periodFormat = { weekday: "short" };
       groupingFn = (date) => {
         const visitDate = new Date(date);
@@ -558,14 +612,33 @@ export default function VisitorTimelineChart({
         currentDate.setDate(currentDate.getDate() + 1);
       }
 
-      periodFormat = { day: "numeric" };
+      periodFormat = { month: "short", day: "numeric" };
       groupingFn = (date) => {
         const visitDate = new Date(date);
         visitDate.setHours(0, 0, 0, 0);
         return visitDate.getTime();
       };
+    } else if (timeframe === "currentYear" || timeframe === "lastYear") {
+      // Current or last year - show by month
+      const year = range.start.getFullYear();
+      for (let month = 0; month < 12; month++) {
+        const date = new Date(year, month, 1);
+        periods.push(date);
+      }
+
+      periodFormat = { month: "short" };
+      groupingFn = (date) => {
+        const visitDate = new Date(date);
+        visitDate.setDate(1);
+        visitDate.setHours(0, 0, 0, 0);
+        return visitDate.getTime();
+      };
     } else if (timeframe === "allTime") {
       // All time - group by month
+      console.log("Timeline - Setting up allTime view", {
+        filteredVisitorsLength: filteredVisitors.length,
+      });
+
       if (filteredVisitors.length > 0) {
         // Find the earliest and latest dates
         let earliestDate = new Date();
@@ -577,6 +650,14 @@ export default function VisitorTimelineChart({
           if (visitDate > latestDate) latestDate = visitDate;
         });
 
+        console.log("Timeline - AllTime date range:", {
+          earliestDate,
+          latestDate,
+          rangeInMonths:
+            (latestDate.getTime() - earliestDate.getTime()) /
+            (1000 * 60 * 60 * 24 * 30),
+        });
+
         // Create periods by month between earliest and latest
         let currentDate = new Date(earliestDate);
         currentDate.setDate(1); // Start at first day of month
@@ -585,6 +666,47 @@ export default function VisitorTimelineChart({
           periods.push(new Date(currentDate));
           currentDate.setMonth(currentDate.getMonth() + 1);
         }
+
+        // Add one more period after the latest date to ensure we capture everything
+        if (periods.length > 0) {
+          const lastPeriod = new Date(periods[periods.length - 1]);
+          lastPeriod.setMonth(lastPeriod.getMonth() + 1);
+          periods.push(new Date(lastPeriod));
+        }
+
+        console.log("Timeline - AllTime periods created:", {
+          periodsCount: periods.length,
+        });
+
+        periodFormat = { year: "numeric", month: "short" };
+        groupingFn = (date) => {
+          const visitDate = new Date(date);
+          visitDate.setDate(1);
+          visitDate.setHours(0, 0, 0, 0);
+          return visitDate.getTime();
+        };
+      } else {
+        // If no data, create at least a 6-month period to show in the chart
+        const now = new Date();
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(now.getMonth() - 5);
+        sixMonthsAgo.setDate(1);
+
+        console.log("Timeline - Creating default 6-month period:", {
+          sixMonthsAgo,
+          now,
+        });
+
+        // Create 6 monthly periods
+        let currentDate = new Date(sixMonthsAgo);
+        while (currentDate <= now) {
+          periods.push(new Date(currentDate));
+          currentDate.setMonth(currentDate.getMonth() + 1);
+        }
+
+        console.log("Timeline - Default periods created:", {
+          periodsCount: periods.length,
+        });
 
         periodFormat = { year: "numeric", month: "short" };
         groupingFn = (date) => {
@@ -597,9 +719,33 @@ export default function VisitorTimelineChart({
     }
 
     // Format periods for the x-axis
-    const labels = periods.map((date) =>
-      date.toLocaleString("en-US", periodFormat)
-    );
+    const labels = periods.map((date) => {
+      // When using last7Days, ensure we're getting weekday names
+      if (timeframe === "last7Days") {
+        // Use Intl.DateTimeFormat for more consistent cross-browser formatting
+        const formatter = new Intl.DateTimeFormat(userLocale, {
+          weekday: "short",
+        });
+        const weekdayLabel = formatter.format(date);
+
+        // Debug logging
+        if (periods.indexOf(date) === 0) {
+          console.log("Last7Days format example:", {
+            date: date.toISOString(),
+            weekdayLabel,
+            userLocale,
+            dayOfWeek: date.getDay(), // 0 = Sunday, 1 = Monday, etc.
+          });
+        }
+        return weekdayLabel;
+      }
+      return date.toLocaleString(userLocale, periodFormat);
+    });
+
+    // Additional logging for last7Days
+    if (timeframe === "last7Days") {
+      console.log("Last7Days - all formatted labels:", labels);
+    }
 
     // Create a dataset for each item - show all items, not just top 5
     const itemVisitorCounts = Object.keys(visitorsByItem)
@@ -640,11 +786,29 @@ export default function VisitorTimelineChart({
     const allItemsCounts = [];
     periods.forEach((period) => {
       const periodKey = period.getTime();
-      const count = filteredVisitors.filter((visitor) => {
-        const visitDate = new Date(visitor.createdAt);
-        const visitorPeriodKey = groupingFn(visitDate);
-        return visitorPeriodKey === periodKey;
-      }).length;
+      let count = 0;
+
+      if (timeframe === "allTime") {
+        // For allTime view, find closest period match
+        filteredVisitors.forEach((visitor) => {
+          const visitDate = new Date(visitor.createdAt);
+          const visitorPeriodKey = groupingFn(visitDate);
+
+          // Calculate time difference between this period and visitor's period
+          const timeDiff = Math.abs(periodKey - visitorPeriodKey);
+          // Consider it a match if it's the closest period or within one month
+          if (timeDiff <= 30 * 24 * 60 * 60 * 1000) {
+            count++;
+          }
+        });
+      } else {
+        // Standard period matching for other timeframes
+        count = filteredVisitors.filter((visitor) => {
+          const visitDate = new Date(visitor.createdAt);
+          const visitorPeriodKey = groupingFn(visitDate);
+          return visitorPeriodKey === periodKey;
+        }).length;
+      }
 
       allItemsCounts.push(count);
     });
@@ -914,11 +1078,29 @@ export default function VisitorTimelineChart({
           const periodKey = period.getTime();
           const itemVisitors = visitorsByItem[itemId] || [];
 
-          const count = itemVisitors.filter((visitor) => {
-            const visitDate = new Date(visitor.createdAt);
-            const visitorPeriodKey = groupingFn(visitDate);
-            return visitorPeriodKey === periodKey;
-          }).length;
+          let count = 0;
+
+          if (timeframe === "allTime") {
+            // For allTime view, find closest period match
+            itemVisitors.forEach((visitor) => {
+              const visitDate = new Date(visitor.createdAt);
+              const visitorPeriodKey = groupingFn(visitDate);
+
+              // Calculate time difference between this period and visitor's period
+              const timeDiff = Math.abs(periodKey - visitorPeriodKey);
+              // Consider it a match if it's within one month (approximate match)
+              if (timeDiff <= 30 * 24 * 60 * 60 * 1000) {
+                count++;
+              }
+            });
+          } else {
+            // Standard period matching for other timeframes
+            count = itemVisitors.filter((visitor) => {
+              const visitDate = new Date(visitor.createdAt);
+              const visitorPeriodKey = groupingFn(visitDate);
+              return visitorPeriodKey === periodKey;
+            }).length;
+          }
 
           itemCounts.push(count);
         });
@@ -996,6 +1178,24 @@ export default function VisitorTimelineChart({
       `Creating chart with ${datasets.length} datasets, showing a total of ${items.length} items`
     );
 
+    // Additional debug information for "allTime" view
+    if (timeframe === "allTime") {
+      console.log("Timeline - 'allTime' view details:", {
+        totalVisitors: filteredVisitors.length,
+        userLocale: userLocale,
+        uses12HourFormat: uses12HourFormat,
+        periodsCreated: periods.length,
+        firstPeriod: periods.length > 0 ? periods[0].toISOString() : "none",
+        lastPeriod:
+          periods.length > 0
+            ? periods[periods.length - 1].toISOString()
+            : "none",
+        formattedLabels: labels,
+        allItemsCountsTotal: allItemsCounts.reduce((a, b) => a + b, 0),
+        allItemsCountsArray: allItemsCounts,
+      });
+    }
+
     // Check if all items are processed
     if (datasets.length < items.length + 1) {
       // +1 for the "All" dataset
@@ -1033,7 +1233,10 @@ export default function VisitorTimelineChart({
   }
 
   return (
-    <div className="p-3 bg-background rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
+    <div
+      suppressHydrationWarning
+      className="p-3 bg-background rounded-lg shadow-md transition-all duration-300 hover:shadow-lg"
+    >
       <div className="flex flex-col space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 mb-4 md:mb-6">
         <h2 className="text-lg md:text-xl font-semibold text-foreground flex items-center">
           <TrendingUp size={18} className="mr-2 text-primary" />
@@ -1108,6 +1311,26 @@ export default function VisitorTimelineChart({
                   className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
                 >
                   {t("lastMonth")}
+                </button>
+              </div>
+              <div className="py-1">
+                <button
+                  onClick={() => {
+                    setTimeframe("currentYear");
+                    setShowDropdown(false);
+                  }}
+                  className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
+                >
+                  {t("currentYear")}
+                </button>
+                <button
+                  onClick={() => {
+                    setTimeframe("lastYear");
+                    setShowDropdown(false);
+                  }}
+                  className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
+                >
+                  {t("lastYear")}
                 </button>
               </div>
               <div className="py-1">

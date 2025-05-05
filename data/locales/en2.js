@@ -298,6 +298,7 @@ const en = {
   visitors: "Visitors",
   source: "Source",
   visits: "Visits",
+  clicks: "clicks",
   devices: "Devices",
   browsers: "Browsers",
   demoDataShowcasingAppFeatures: "Demo data showcasing analytics capabilities",
