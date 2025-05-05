@@ -7,6 +7,7 @@ import {
   filterValidEarnings,
   groupEarningsByReferral,
 } from "@/lib/utils/referral/calculateReferralEarnings";
+import HorizontalTableScroll from "@/components/ui/shared/HorizontalScroll/HorizontalTableScroll";
 
 export default async function AdminReferrals() {
   const { mongoUser } = await getMongoUser();
@@ -39,8 +40,8 @@ export default async function AdminReferrals() {
     <div className="space-y-6 p-4 bg-background rounded-lg shadow-sm">
       <h2 className="text-2xl font-bold text-foreground">All Referrals</h2>
 
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
+      <HorizontalTableScroll className="pb-2">
+        <table className="w-full border-collapse min-w-[800px]">
           <thead>
             <tr className="bg-accent">
               <th className="p-2 text-left">Referrer</th>
@@ -177,7 +178,7 @@ export default async function AdminReferrals() {
             )}
           </tbody>
         </table>
-      </div>
+      </HorizontalTableScroll>
     </div>
   );
 }

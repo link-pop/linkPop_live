@@ -4,6 +4,7 @@ import CreatedBy from "@/components/Post/Post/CreatedBy";
 import AdminSubscriptions2Revenue from "./AdminSubscriptions2Revenue";
 import { getPaymentInfo } from "@/lib/utils/subscription/paymentUtils";
 import { getPriceByPlanId } from "@/lib/utils/pricing/getPlanPrices";
+import HorizontalTableScroll from "@/components/ui/shared/HorizontalScroll/HorizontalTableScroll";
 
 export default async function AdminSubscriptions2() {
   const { mongoUser } = await getMongoUser();
@@ -289,8 +290,8 @@ export default async function AdminSubscriptions2() {
       {/* Subscriptions Table */}
       <div className="mt-8">
         <h3 className="text-lg font-medium mb-4">Subscription Details</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+        <HorizontalTableScroll className="pb-2">
+          <table className="w-full border-collapse min-w-[900px]">
             <thead>
               <tr className="bg-accent">
                 <th className="p-2 text-center">User</th>
@@ -466,7 +467,7 @@ export default async function AdminSubscriptions2() {
               )}
             </tbody>
           </table>
-        </div>
+        </HorizontalTableScroll>
       </div>
     </div>
   );

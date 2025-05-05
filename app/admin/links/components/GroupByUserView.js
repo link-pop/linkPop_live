@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import CreatedBy from "@/components/Post/Post/CreatedBy";
+import HorizontalTableScroll from "@/components/ui/shared/HorizontalScroll/HorizontalTableScroll";
 
 export default function GroupByUserView({
   data,
@@ -126,8 +127,8 @@ export default function GroupByUserView({
 
   return (
     <div className="fc g20">
-      <div className="overflow-x-auto">
-        <table className="w-full bg-background rounded-lg shadow">
+      <HorizontalTableScroll>
+        <table className="w-full bg-background rounded-lg shadow min-w-[800px]">
           <thead>
             <tr className="border-b">
               {columns.map((column, index) => (
@@ -154,7 +155,7 @@ export default function GroupByUserView({
                 ))}
           </tbody>
         </table>
-      </div>
+      </HorizontalTableScroll>
 
       {/* Loading indicator and observer element */}
       {hasNextPage && (
