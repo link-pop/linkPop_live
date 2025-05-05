@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import ClickForSupport from "@/components/ui/shared/ClickForSupport/ClickForSupport";
 import { ThemeToggle } from "@/components/ui/shared/ThemeToggle/ThemeToggle";
@@ -14,6 +14,7 @@ import {
   AFFILIATE_ROUTE,
   PRICING_ROUTE,
   MAIN_ROUTE,
+  LOGIN_ROUTE,
 } from "@/lib/utils/constants";
 
 // ! code start Footer2
@@ -21,6 +22,11 @@ export default function Footer2() {
   const { t, currentLang } = useTranslation();
   const currentYear = new Date().getFullYear();
   const router = useRouter();
+  const pathname = usePathname();
+
+  // don't show footer on sign-in page
+  const isSignInPage = pathname === LOGIN_ROUTE;
+  if (isSignInPage) return null;
 
   const handleScrollWithNavigation = (e, sectionId) => {
     e.preventDefault();
