@@ -21,6 +21,11 @@ body {
   overflow-x: hidden !important;
 }
 
+/* Chart container specific styles */
+.overflow-x-auto canvas {
+  max-width: none !important; /* Override the global max-width constraint for charts */
+}
+
 .title{
   @apply fz19 fw500 text-[var(--color-black)] dark:text-white;
 }

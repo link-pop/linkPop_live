@@ -253,6 +253,10 @@ export default function VisitorTimeline({
     // For month view with many days, ensure all labels are visible
     const shouldShowAllLabels = labels.length <= 31;
 
+    // Calculate minimum width needed to display all labels properly
+    // Make sure there's at least 40px per label on mobile to avoid cramping
+    const minWidth = Math.max(labels.length * 40, 300);
+
     return new Chart(ctx, {
       type: "line",
       data: {
@@ -357,11 +361,11 @@ export default function VisitorTimeline({
                 size: 12,
                 weight: "500",
               },
-              maxRotation: shouldShowAllLabels ? 65 : 45, // Increase rotation for month views
+              maxRotation: 45,
               minRotation: 0,
               padding: 10,
-              autoSkip: !shouldShowAllLabels, // Only skip for very large datasets
-              maxTicksLimit: shouldShowAllLabels ? 1000 : 31, // Show all ticks for month view
+              autoSkip: false, // Show all labels on x-axis
+              maxTicksLimit: 1000, // Allow all labels to be shown
             },
             border: {
               display: false,
@@ -1214,8 +1218,11 @@ export default function VisitorTimeline({
         </div>
       </div>
 
-      <div className={`h-80 mt-2`}>
-        <canvas ref={chartRef}></canvas>
+      {/* Scrollable chart container */}
+      <div className={`overflow-x-auto scrollbar-hide pb-2`}>
+        <div className={`h-80 mt-2 min-w-[600px]`}>
+          <canvas ref={chartRef}></canvas>
+        </div>
       </div>
     </div>
   );

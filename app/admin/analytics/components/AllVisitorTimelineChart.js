@@ -208,6 +208,10 @@ export default function VisitorTimelineChart({
 
     const stepSize = maxValue <= 10 ? 1 : Math.ceil(maxValue / 10);
 
+    // Calculate minimum width based on number of labels to ensure readability
+    // Allow at least 40px per label on mobile to prevent crowding
+    const minWidth = Math.max(labels.length * 40, 300);
+
     return new Chart(ctx, {
       type: "line",
       data: {
@@ -1349,8 +1353,11 @@ export default function VisitorTimelineChart({
         </div>
       </div>
 
-      <div className="h-60 md:h-80 mt-2">
-        <canvas ref={chartRef}></canvas>
+      {/* Scrollable chart container */}
+      <div className="overflow-x-auto scrollbar-hide pb-2">
+        <div className="h-60 md:h-80 mt-2 min-w-[600px]">
+          <canvas ref={chartRef}></canvas>
+        </div>
       </div>
     </div>
   );
