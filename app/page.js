@@ -4,14 +4,18 @@ import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import Posts from "@/components/Post/Posts/Posts";
 import { SITE1, SITE2 } from "@/config/env";
 import LandingPage from "@/components/Custom/LinkPop/LandingPage";
+import { currentUser } from "@clerk/nextjs/server";
 
 export default async function Home({ searchParams }) {
-  const { mongoUser, isAdmin } = await getMongoUser();
+  // First check if the user is authenticated with Clerk
+  const clerkUser = await currentUser();
 
-  // If no user, redirect to login
-  if (!mongoUser) {
+  // If not authenticated at all, redirect to login
+  if (!clerkUser) {
     redirect(LOGIN_ROUTE);
   }
+
+  const { mongoUser, isAdmin } = await getMongoUser();
 
   // ! Base search params for NON-ADMIN users
   if (!isAdmin) {
