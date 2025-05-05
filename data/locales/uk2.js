@@ -1163,6 +1163,18 @@ const uk = {
   noReferralCodeYet: "У вас ще немає реферального коду",
   extraLinksUpdateSuccess: "Додаткові посилання успішно оновлено",
   baseLinksIncluded: "Включені базові посилання",
+
+  // ExtraLinks select options
+  linksOption50: "50 посилань - $39.99/міс",
+  linksOption100: "100 посилань - $89.99/міс",
+  linksOption150: "150 посилань - $139.99/міс",
+  linksOption200: "200 посилань - $189.99/міс",
+  linksOption250: "250 посилань - $239.99/міс",
+  linksOption300: "300 посилань - $289.99/міс",
+  linksOption350: "350 посилань - $339.99/міс",
+  linksOption400: "400 посилань - $389.99/міс",
+  linksOption450: "450 посилань - $439.99/міс",
+  linksOption500: "500 посилань - $489.99/міс",
 };
 
 export default uk;

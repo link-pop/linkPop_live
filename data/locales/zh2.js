@@ -1108,6 +1108,18 @@ const zh = {
 
   extraLinksUpdateSuccess: "额外链接成功更新",
   baseLinksIncluded: "基本链接已包含",
+
+  // ExtraLinks select options
+  linksOption50: "50 个链接 - $39.99/月",
+  linksOption100: "100 个链接 - $89.99/月",
+  linksOption150: "150 个链接 - $139.99/月",
+  linksOption200: "200 个链接 - $189.99/月",
+  linksOption250: "250 个链接 - $239.99/月",
+  linksOption300: "300 个链接 - $289.99/月",
+  linksOption350: "350 个链接 - $339.99/月",
+  linksOption400: "400 个链接 - $389.99/月",
+  linksOption450: "450 个链接 - $439.99/月",
+  linksOption500: "500 个链接 - $489.99/月",
 };
 
 export default zh;

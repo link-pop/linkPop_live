@@ -1174,6 +1174,18 @@ const es = {
   locationAlreadyInList: "Esta ubicación ya está en la lista",
   geoFilterSaved: "Configuración de filtro geográfico guardada con éxito",
   geoFilterSaveFailed: "Error al guardar la configuración de filtro geográfico",
+
+  // ExtraLinks select options
+  linksOption50: "50 enlaces - $39.99/mes",
+  linksOption100: "100 enlaces - $89.99/mes",
+  linksOption150: "150 enlaces - $139.99/mes",
+  linksOption200: "200 enlaces - $189.99/mes",
+  linksOption250: "250 enlaces - $239.99/mes",
+  linksOption300: "300 enlaces - $289.99/mes",
+  linksOption350: "350 enlaces - $339.99/mes",
+  linksOption400: "400 enlaces - $389.99/mes",
+  linksOption450: "450 enlaces - $439.99/mes",
+  linksOption500: "500 enlaces - $489.99/mes",
 };
 
 export default es;

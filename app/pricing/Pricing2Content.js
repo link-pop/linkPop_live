@@ -854,20 +854,21 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
                         value={String(linksCount)}
                         onValueChange={(value) => setLinksCount(Number(value))}
                         options={[
-                          { value: "0", label: "50 links - $39.99/mo" },
-                          { value: "50", label: "100 links - $89.99/mo" },
-                          { value: "100", label: "150 links - $139.99/mo" },
-                          { value: "150", label: "200 links - $189.99/mo" },
-                          { value: "200", label: "250 links - $239.99/mo" },
-                          { value: "250", label: "300 links - $289.99/mo" },
-                          { value: "300", label: "350 links - $339.99/mo" },
-                          { value: "350", label: "400 links - $389.99/mo" },
-                          { value: "400", label: "450 links - $439.99/mo" },
-                          { value: "450", label: "500 links - $489.99/mo" },
+                          { value: "0", label: t("linksOption50") },
+                          { value: "50", label: t("linksOption100") },
+                          { value: "100", label: t("linksOption150") },
+                          { value: "150", label: t("linksOption200") },
+                          { value: "200", label: t("linksOption250") },
+                          { value: "250", label: t("linksOption300") },
+                          { value: "300", label: t("linksOption350") },
+                          { value: "350", label: t("linksOption400") },
+                          { value: "400", label: t("linksOption450") },
+                          { value: "450", label: t("linksOption500") },
                         ]}
                         className="w-full border-border"
                         placeholder={t("selectNumberOfLinks")}
                         renderOption={(option) => option.label}
+                        version={"new"}
                       />
                     </div>
 

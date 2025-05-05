@@ -1176,6 +1176,18 @@ const hi = {
   baseLinksIncluded: "आधार लिंक्स शामिल",
   promotionTextColor: "प्रमोशन टेक्स्ट रंग",
   goBackTo: "वापस जाएं",
+
+  // ExtraLinks select options
+  linksOption50: "50 लिंक्स - $39.99/माह",
+  linksOption100: "100 लिंक्स - $89.99/माह",
+  linksOption150: "150 लिंक्स - $139.99/माह",
+  linksOption200: "200 लिंक्स - $189.99/माह",
+  linksOption250: "250 लिंक्स - $239.99/माह",
+  linksOption300: "300 लिंक्स - $289.99/माह",
+  linksOption350: "350 लिंक्स - $339.99/माह",
+  linksOption400: "400 लिंक्स - $389.99/माह",
+  linksOption450: "450 लिंक्स - $439.99/माह",
+  linksOption500: "500 लिंक्स - $489.99/माह",
 };
 
 export default hi;

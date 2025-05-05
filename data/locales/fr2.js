@@ -1173,6 +1173,18 @@ const fr = {
     "Remarque : Vos propres visites sur ce profil ne sont pas suivies dans les analyses",
 
   noReferralCodeYet: "Vous n'avez pas encore de code de parrainage",
+
+  // ExtraLinks select options
+  linksOption50: "50 liens - 39,99$/mois",
+  linksOption100: "100 liens - 89,99$/mois",
+  linksOption150: "150 liens - 139,99$/mois",
+  linksOption200: "200 liens - 189,99$/mois",
+  linksOption250: "250 liens - 239,99$/mois",
+  linksOption300: "300 liens - 289,99$/mois",
+  linksOption350: "350 liens - 339,99$/mois",
+  linksOption400: "400 liens - 389,99$/mois",
+  linksOption450: "450 liens - 439,99$/mois",
+  linksOption500: "500 liens - 489,99$/mois",
 };
 
 export default fr;
