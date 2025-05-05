@@ -1100,17 +1100,17 @@ export default function VisitorTimeline({
   return (
     <div
       suppressHydrationWarning
-      className={`bg-background rounded-lg border border-border shadow-md p-6 transition-all duration-300 hover:shadow-lg`}
+      className={`bg-background rounded-lg border border-border shadow-md transition-all duration-300 hover:shadow-lg`}
     >
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <h2
-          className={`text-xl font-semibold text-foreground flex items-center mb-4 md:mb-0`}
+          className={`p15 text-xl font-semibold text-foreground flex items-center mb-4 md:mb-0`}
         >
           <TrendingUp size={20} className="mr-2 text-primary" />
           {t("activityTimeline")}
         </h2>
 
-        <div className="relative" ref={dropdownRef}>
+        <div className="p15 relative" ref={dropdownRef}>
           <button
             onClick={() => setShowDropdown(!showDropdown)}
             className={`flex items-center px-4 py-2 border rounded-md bg-background text-sm font-medium text-foreground hover:bg-muted transition-colors duration-200 shadow-sm`}
