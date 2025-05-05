@@ -6,20 +6,26 @@ import { useRouter } from "next/navigation";
 
 // ! code start ClickForSupport
 export default function ClickForSupport({
-  title = "Support",
+  title,
   hrefs = ["link.pop.com@gmail.com", "whatsapp.com/send?phone=380950168170"],
   labels = [],
   className = "",
-  buttonText = "Get Support",
+  buttonText,
   mini = false,
   textOnly = false,
-  supportSectionTitle = "Need Help With Your Subscription?",
-  supportSectionText = "Our support team is here to help with any questions about plans, payments, or features.",
+  supportSectionTitle,
+  supportSectionText,
   ...props
 }) {
   const { dialogSet } = useContext();
   const { t } = useTranslation();
   const router = useRouter();
+
+  // Set translated defaults after getting translation function
+  title = title || t("support");
+  buttonText = buttonText || t("getSupport");
+  supportSectionTitle = supportSectionTitle || t("needHelp");
+  supportSectionText = supportSectionText || t("supportTeamHere");
 
   // Helper function to determine if a string is a valid email
   const isValidEmail = (email) => {
@@ -96,7 +102,7 @@ export default function ClickForSupport({
     // If multiple hrefs are provided, show dialog with options
     dialogSet({
       isOpen: true,
-      title: title || t("support"),
+      title: title,
       text: t("selectSupportOption"),
       hasCloseIcon: true,
       comp: (
@@ -217,7 +223,7 @@ export default function ClickForSupport({
             className={`cursor-pointer text-foreground hover:underline ${className}`}
             {...props}
           >
-            {buttonText || t("support")}
+            {buttonText}
           </span>
         );
       }
@@ -230,7 +236,7 @@ export default function ClickForSupport({
           className={`text-foreground hover:underline ${className}`}
           {...props}
         >
-          {buttonText || t("support")}
+          {buttonText}
         </a>
       );
     }
@@ -242,7 +248,7 @@ export default function ClickForSupport({
         className={`cursor-pointer text-foreground hover:underline ${className}`}
         {...props}
       >
-        {buttonText || t("support")}
+        {buttonText}
       </span>
     );
   }
@@ -253,7 +259,7 @@ export default function ClickForSupport({
       className={`py-2 px-4 bg-purple-100 brand hover:bg-purple-200 rounded-md ${className}`}
       {...props}
     >
-      {buttonText || t("getSupport")}
+      {buttonText}
     </button>
   );
 
@@ -265,12 +271,8 @@ export default function ClickForSupport({
   // Otherwise, return the full support section
   return (
     <div className={`mt-12 p-6 bg-accent rounded-xl shadow-md text-center`}>
-      <h2 className={`text-xl font-semibold mb-4`}>
-        {supportSectionTitle || t("needHelp")}
-      </h2>
-      <p className={`text-gray-500 mb-6`}>
-        {supportSectionText || t("supportTeamHere")}
-      </p>
+      <h2 className={`text-xl font-semibold mb-4`}>{supportSectionTitle}</h2>
+      <p className={`text-gray-500 mb-6`}>{supportSectionText}</p>
       <div className={`flex justify-center`}>
         <SupportButton />
       </div>
