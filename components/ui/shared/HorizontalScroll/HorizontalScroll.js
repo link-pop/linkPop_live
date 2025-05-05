@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef } from "react";
+import { forwardRef, useEffect } from "react";
 import useHorizontalScroll from "@/hooks/useHorizontalScroll";
 
 /**
@@ -23,6 +23,88 @@ const HorizontalScroll = forwardRef(function HorizontalScroll(
     else if (ref) ref.current = node;
     scrollRef.current = node;
   };
+
+  // Add effect to fix right padding and touch scrolling
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    // Helper function to detect if device has touch capability
+    const isTouchDevice = () => {
+      return (
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        navigator.msMaxTouchPoints > 0
+      );
+    };
+
+    const isTouch = isTouchDevice();
+
+    const fixScrolling = () => {
+      const childContainer = container.firstElementChild;
+      if (!childContainer || !childContainer.children.length) return;
+
+      // Only apply special padding for touch devices
+      if (isTouch) {
+        // Ensure adequate padding to allow scrolling to the last item
+        // This needs to be large enough on mobile to allow the last item to be fully visible
+        const viewportWidth = window.innerWidth;
+        const rightPadding = Math.max(viewportWidth / 2, 80);
+        childContainer.style.paddingRight = `${rightPadding}px`;
+
+        // Make sure the container has full width to enable scrolling to the end
+        container.style.width = "100%";
+        container.style.overscrollBehaviorX = "contain";
+      }
+    };
+
+    fixScrolling();
+    window.addEventListener("resize", fixScrolling);
+
+    // Only apply touch event handlers for touch devices
+    let startX, scrollLeft;
+    let touchListenersAdded = false;
+
+    const touchStart = (e) => {
+      startX = e.touches[0].pageX - container.offsetLeft;
+      scrollLeft = container.scrollLeft;
+    };
+
+    const touchMove = (e) => {
+      if (!startX) return;
+      const x = e.touches[0].pageX - container.offsetLeft;
+      const walk = (x - startX) * 1.5; // Multiply by factor for faster scrolling
+      container.scrollLeft = scrollLeft - walk;
+
+      // Prevent page scrolling when horizontally scrolling the container
+      if (Math.abs(walk) > 10) {
+        e.preventDefault();
+      }
+    };
+
+    const touchEnd = () => {
+      startX = null;
+    };
+
+    // Only add touch event listeners if this is a touch device
+    if (isTouch) {
+      container.addEventListener("touchstart", touchStart, { passive: false });
+      container.addEventListener("touchmove", touchMove, { passive: false });
+      container.addEventListener("touchend", touchEnd, { passive: false });
+      touchListenersAdded = true;
+    }
+
+    return () => {
+      window.removeEventListener("resize", fixScrolling);
+
+      // Only remove event listeners if they were added
+      if (touchListenersAdded) {
+        container.removeEventListener("touchstart", touchStart);
+        container.removeEventListener("touchmove", touchMove);
+        container.removeEventListener("touchend", touchEnd);
+      }
+    };
+  }, [scrollRef]);
 
   return (
     <div
