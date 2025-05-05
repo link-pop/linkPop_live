@@ -26,6 +26,9 @@ const es = {
   secureDesc:
     "Tus enlaces están protegidos y solo son accesibles para usuarios autorizados",
   login: "Iniciar sesión",
+  redirectsTo: "Redirige a",
+  freeOffer: "Oferta gratuita",
+  safePage: "Página segura",
 
   // Auth layout translations
   toSupportYour: "para apoyar a tus",

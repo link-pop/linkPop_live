@@ -25,6 +25,9 @@ const uk = {
   secureDesc:
     "Ваші посилання захищені та доступні лише авторизованим користувачам",
   login: "Увійти",
+  redirectsTo: "Перенаправляє на",
+  freeOffer: "Безкоштовна пропозиція",
+  safePage: "Безпечна сторінка",
 
   // Auth layout translations
   toSupportYour: "щоб підтримати ваших",

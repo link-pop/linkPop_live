@@ -24,6 +24,9 @@ const zh = {
   secure: "安全",
   secureDesc: "您的链接受到保护，只有授权用户才能访问",
   login: "登录",
+  redirectsTo: "重定向到",
+  freeOffer: "免费优惠",
+  safePage: "安全页面",
 
   // Auth layout translations
   toSupportYour: "支持您的",

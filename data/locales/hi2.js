@@ -26,6 +26,9 @@ const hi = {
   secureDesc:
     "आपके लिंक्स सुरक्षित हैं और केवल अधिकृत उपयोगकर्ताओं के लिए पहुंच योग्य हैं",
   login: "लॉगिन",
+  redirectsTo: "यहां पुनर्निर्देशित करता है",
+  freeOffer: "मुफ्त प्रस्ताव",
+  safePage: "सुरक्षित पेज",
 
   // Auth layout translations
   toSupportYour: "आपके पसंदीदा",
