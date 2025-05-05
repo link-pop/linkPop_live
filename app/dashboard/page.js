@@ -136,7 +136,11 @@ export default async function DashboardPage() {
   }
 
   // If no access to dashboard, show upgrade card
-  if (!dashboardAccess.hasAccess && landingpages.length > 0 && directlinks.length > 0) {
+  if (
+    !dashboardAccess.hasAccess &&
+    landingpages.length > 0 &&
+    directlinks.length > 0
+  ) {
     return (
       <UpgradeMessageCard
         title="analyticsDashboardAccessRequired"
@@ -310,7 +314,7 @@ export default async function DashboardPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="sm:p15">
       <DashboardClient
         mongoUser={mongoUser}
         {...{ directlinksData, landingpagesData }}
