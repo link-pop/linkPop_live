@@ -57,7 +57,7 @@ export default function ClerkSignInButton({
               : "por f jcfe"
           }
         >
-          <UserPlanLabel {...{ mongoUser }} />
+          {/* <UserPlanLabel {...{ mongoUser }} /> */}
           <div className={isMobile ? "fcc" : "mla"}>
             <CustomUserMenu
               {...{
