@@ -2,6 +2,7 @@
 
 import { forwardRef, useEffect } from "react";
 import useHorizontalScroll from "@/hooks/useHorizontalScroll";
+import { cn } from "@/lib/utils";
 
 /**
  * A component that enables horizontal scrolling with the mouse wheel
@@ -106,7 +107,12 @@ const HorizontalScroll = forwardRef(function HorizontalScroll(
     <div
       ref={combinedRef}
       // ! SENSITIVE: very important to use flex and items-center to make it work on mobile
-      className={`flex md:items-center fwn overflow-x-auto scrollbar-hide ${className}`}
+      className={cn(
+        "fwn overflow-x-auto scrollbar-hide",
+        "max-[600px]:!wfc max-[600px]:!fcc mxa", // mobile
+        "min-[600px]:!maw600 min-[600px]:!wf", // desktop
+        `${className}`
+      )}
       style={{
         WebkitOverflowScrolling: "touch",
         paddingTop: "10px",
@@ -116,7 +122,7 @@ const HorizontalScroll = forwardRef(function HorizontalScroll(
       }}
       {...props}
     >
-      <div className="f fwn g10" style={{ overflow: "visible" }}>
+      <div className={cn("f fwn g10")} style={{ overflow: "visible" }}>
         {children}
       </div>
     </div>
