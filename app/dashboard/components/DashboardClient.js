@@ -141,7 +141,9 @@ export default function DashboardClient({
 
   return (
     <div className="bg-background rounded-lg">
-      <h1 className="text-2xl font-bold mb-6">{t("analyticsAndStats")}</h1>
+      <h1 className="tac p15 text-2xl font-bold mb-6">
+        {t("analyticsAndStats")}
+      </h1>
       <Toggle
         labels={tabs}
         contents={contents}
