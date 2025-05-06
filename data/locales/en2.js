@@ -1177,6 +1177,9 @@ const en = {
   linksOption400: "400 links - $389.99/mo",
   linksOption450: "450 links - $439.99/mo",
   linksOption500: "500 links - $489.99/mo",
+
+  // Analytics export
+  export: "CSV",
 };
 
 export default en;

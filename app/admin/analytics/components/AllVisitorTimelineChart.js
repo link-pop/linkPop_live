@@ -2,8 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Chart } from "chart.js/auto";
-import { Calendar, ChevronDown, TrendingUp } from "lucide-react";
+import {
+  Calendar,
+  ChevronDown,
+  TrendingUp,
+  Check,
+} from "lucide-react";
 import { useTranslation } from "@/components/Context/TranslationContext";
+import { ExportButton } from "./ChartExport";
 
 // ! code start chart theme colors
 const chartColors = {
@@ -39,6 +45,25 @@ export default function VisitorTimelineChart({
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const { t, currentLang } = useTranslation();
+  // States for custom legend visibility
+  const [datasetVisibility, setDatasetVisibility] = useState({});
+
+  // Toggle dataset visibility
+  const toggleDataset = (datasetIndex) => {
+    if (!chartInstance.current || typeof window === "undefined") return;
+
+    const meta = chartInstance.current.getDatasetMeta(datasetIndex);
+    if (!meta) return;
+
+    meta.hidden = !meta.hidden;
+
+    setDatasetVisibility((prev) => ({
+      ...prev,
+      [datasetIndex]: !meta.hidden,
+    }));
+
+    chartInstance.current.update();
+  };
 
   // Use the current language for date formatting
   const userLocale = currentLang || "en";
@@ -199,6 +224,20 @@ export default function VisitorTimelineChart({
       },
     };
 
+    // Custom plugin for title alignment
+    const customTitlePlugin = {
+      id: "customTitlePlugin",
+      beforeInit: (chart) => {
+        // For mobile screens, update alignment
+        if (window.innerWidth < 768) {
+          // Set the title to start (left-aligned)
+          if (chart.options.plugins.title) {
+            chart.options.plugins.title.align = "start";
+          }
+        }
+      },
+    };
+
     // Find the maximum value across all datasets for scaling
     const maxValue = Math.max(
       ...datasets.map((dataset) =>
@@ -245,7 +284,7 @@ export default function VisitorTimelineChart({
         },
         layout: {
           padding: {
-            top: 25,
+            top: 20, // Reduced top padding since we're using custom HTML legend
             right: 25,
             bottom: 15,
             left: 15,
@@ -355,117 +394,7 @@ export default function VisitorTimelineChart({
         },
         plugins: {
           legend: {
-            display: true,
-            position: "top",
-            align: "start",
-            // Optimize legend for large datasets
-            labels: {
-              usePointStyle: true,
-              padding: datasets.length > 100 ? 8 : 16,
-              font: {
-                size: datasets.length > 200 ? 10 : 12,
-                weight: "500",
-              },
-              color: chartColors.legendText, // Fix legend item color
-              boxWidth: datasets.length > 200 ? 6 : 8,
-              boxHeight: datasets.length > 200 ? 6 : 8,
-              // Allow more legend items to be displayed
-              generateLabels: function (chart) {
-                const datasets = chart.data.datasets;
-                // For very large datasets, only show the first dataset (All) and the top most active ones
-                const maxVisibleItems = 100; // Maximum number of items to show in legend
-
-                let datasetsToShow = datasets;
-                if (datasets.length > maxVisibleItems) {
-                  // Keep "All" dataset plus the top active ones
-                  const firstDataset = datasets.slice(0, 1);
-                  const otherDatasets = datasets
-                    .slice(1)
-                    .map((dataset, index) => ({ dataset, index: index + 1 }))
-                    .sort((a, b) => {
-                      // Sort by activity level (sum of data points)
-                      const sumA = a.dataset.data.reduce(
-                        (sum, val) => sum + (val || 0),
-                        0
-                      );
-                      const sumB = b.dataset.data.reduce(
-                        (sum, val) => sum + (val || 0),
-                        0
-                      );
-                      return sumB - sumA;
-                    })
-                    .slice(0, maxVisibleItems - 1)
-                    .sort((a, b) => a.index - b.index) // Restore original order
-                    .map((item) => item.dataset);
-
-                  datasetsToShow = [...firstDataset, ...otherDatasets];
-
-                  // Add indication that not all items are shown in legend
-                  if (datasets.length > maxVisibleItems) {
-                    console.log(
-                      `Showing ${maxVisibleItems} out of ${datasets.length} datasets in legend`
-                    );
-                  }
-                }
-
-                return datasetsToShow.map((dataset, i) => {
-                  return {
-                    text: dataset.label,
-                    fillStyle: dataset.backgroundColor || dataset.borderColor,
-                    strokeStyle: dataset.borderColor,
-                    lineWidth: dataset.borderWidth,
-                    hidden: !chart.isDatasetVisible(i),
-                    index: i,
-                    datasetIndex: i,
-                    // Force the legend text color
-                    fontColor: chartColors.legendText,
-                  };
-                });
-              },
-              // Do not automatically filter out any items
-              filter: function () {
-                return true;
-              },
-            },
-            // Allow scrolling in legend if there are too many items
-            maxHeight: 200,
-            maxWidth: "100%",
-            fullSize: true,
-            onClick: function (e, legendItem, legend) {
-              const index = legendItem.datasetIndex;
-              const chart = legend.chart;
-              const meta = chart.getDatasetMeta(index);
-
-              meta.hidden =
-                meta.hidden === null
-                  ? !chart.data.datasets[index].hidden
-                  : null;
-
-              if (
-                chart.data.datasets.length > 20 &&
-                index > 0 &&
-                !meta.hidden
-              ) {
-                chart.data.datasets.forEach((dataset, idx) => {
-                  if (idx !== 0 && idx !== index) {
-                    const otherMeta = chart.getDatasetMeta(idx);
-                    otherMeta.hidden = true;
-                  }
-                });
-              }
-
-              if (index === 0) {
-                const allVisible = !meta.hidden;
-                chart.data.datasets.forEach((dataset, idx) => {
-                  if (idx !== 0) {
-                    const otherMeta = chart.getDatasetMeta(idx);
-                    otherMeta.hidden = !allVisible;
-                  }
-                });
-              }
-
-              chart.update();
-            },
+            display: false, // Hide the built-in legend since we're using custom HTML legend
           },
           tooltip: {
             backgroundColor: "rgba(17, 24, 39, 0.9)",
@@ -494,11 +423,43 @@ export default function VisitorTimelineChart({
                   value !== 1 ? t("visitors") : t("visitor")
                 }`;
               },
+              // Filter to show only first 10 items in tooltip
+              afterBody: function (context) {
+                if (context.length > 10) {
+                  const hiddenCount = context.length - 10;
+                  return [`\n... ${hiddenCount} more items not shown`];
+                }
+                return [];
+              },
+              // Limit tooltip to first 10 items
+              beforeLabel: function (context) {
+                // Hide all except first 10
+                if (context.datasetIndex >= 10 && context.datasetIndex !== 0) {
+                  return null;
+                }
+              },
+            },
+            // Limit number of items shown in tooltip
+            itemSort: function (a, b) {
+              // Always show 'All' dataset first (usually index 0)
+              if (a.datasetIndex === 0) return -1;
+              if (b.datasetIndex === 0) return 1;
+
+              // Otherwise sort by value (descending)
+              return b.raw - a.raw;
+            },
+            filter: function (tooltipItem) {
+              // Always show the 'All' dataset (index 0)
+              if (tooltipItem.datasetIndex === 0) return true;
+
+              // Only show first 9 individual datasets (plus 'All' makes 10 total)
+              return tooltipItem.datasetIndex < 10;
             },
           },
           title: {
             display: true,
             text: chartTitle,
+            align: window.innerWidth < 768 ? "start" : "center", // Left-align on mobile
             color: chartColors.text,
             font: {
               size: 16,
@@ -506,7 +467,8 @@ export default function VisitorTimelineChart({
               family: "system-ui, sans-serif",
             },
             padding: {
-              bottom: 20,
+              top: 10,
+              bottom: 20, // Reduced since we have custom legend with its own spacing
             },
           },
         },
@@ -519,15 +481,35 @@ export default function VisitorTimelineChart({
           intersect: true,
         },
       },
-      plugins: [shadowPlugin],
+      plugins: [shadowPlugin, customTitlePlugin],
     });
   };
   // ? code end create chart function
 
   useEffect(() => {
+    // Safety check for server-side rendering or missing ref
+    if (!chartRef.current || typeof window === "undefined") {
+      return;
+    }
+
     // Don't proceed if we don't have visitors or items
     if (!visitors || visitors.length === 0 || !items || items.length === 0)
       return;
+
+    // Add responsive listener to update chart alignment when window size changes
+    const handleResize = () => {
+      if (chartInstance.current) {
+        // Update title alignment
+        if (window.innerWidth < 768) {
+          chartInstance.current.options.plugins.title.align = "start";
+        } else {
+          chartInstance.current.options.plugins.title.align = "center";
+        }
+        chartInstance.current.update();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
 
     console.log("Total items in chart:", items.length);
 
@@ -1045,7 +1027,7 @@ export default function VisitorTimelineChart({
       }
 
       // Create a threshold for very large datasets to improve performance
-      const useSimplifiedRendering = itemVisitorCounts.length > 200;
+      const useSimplifiedRendering = datasets.length > 200;
 
       // Process datasets - for large datasets, process in batches to avoid UI freeze
       const batchSize = 100;
@@ -1111,26 +1093,26 @@ export default function VisitorTimelineChart({
 
         // For performance with large datasets, use smaller point size
         const pointRadius =
-          itemVisitorCounts.length > 200
+          datasets.length > 200
             ? 0 // Hide points for extremely large datasets
-            : itemVisitorCounts.length > 100
+            : datasets.length > 100
             ? 1 // Tiny points for large datasets
-            : itemVisitorCounts.length > 50
+            : datasets.length > 50
             ? 2 // Small points for medium datasets
-            : itemVisitorCounts.length > 20
+            : datasets.length > 20
             ? 3
             : 4; // Normal points for small datasets
 
         const pointHoverRadius =
-          itemVisitorCounts.length > 200
+          datasets.length > 200
             ? 2
-            : itemVisitorCounts.length > 100
+            : datasets.length > 100
             ? 3
-            : itemVisitorCounts.length > 50
+            : datasets.length > 50
             ? 4
-            : itemVisitorCounts.length > 20
-            ? 5
-            : 6;
+            : datasets.length > 20
+            ? 6
+            : 8;
 
         // Simplified dataset configuration for better performance with large datasets
         const datasetConfig = useSimplifiedRendering
@@ -1151,14 +1133,14 @@ export default function VisitorTimelineChart({
           : {
               label: `@${itemName}`,
               data: itemCounts,
-              borderWidth: itemVisitorCounts.length > 50 ? 1 : 2,
+              borderWidth: datasets.length > 50 ? 1 : 2,
               borderColor: color,
               backgroundColor: "transparent",
               tension: 0.4,
               fill: false,
               pointBackgroundColor: color,
               pointBorderColor: "#fff",
-              pointBorderWidth: itemVisitorCounts.length > 50 ? 1 : 2,
+              pointBorderWidth: datasets.length > 50 ? 1 : 2,
               pointRadius: pointRadius,
               pointHoverRadius: pointHoverRadius,
               pointHoverBackgroundColor: color,
@@ -1177,46 +1159,57 @@ export default function VisitorTimelineChart({
     }
 
     // Create a new chart
-    const ctx = chartRef.current.getContext("2d");
-    console.log(
-      `Creating chart with ${datasets.length} datasets, showing a total of ${items.length} items`
-    );
-
-    // Additional debug information for "allTime" view
-    if (timeframe === "allTime") {
-      console.log("Timeline - 'allTime' view details:", {
-        totalVisitors: filteredVisitors.length,
-        userLocale: userLocale,
-        uses12HourFormat: uses12HourFormat,
-        periodsCreated: periods.length,
-        firstPeriod: periods.length > 0 ? periods[0].toISOString() : "none",
-        lastPeriod:
-          periods.length > 0
-            ? periods[periods.length - 1].toISOString()
-            : "none",
-        formattedLabels: labels,
-        allItemsCountsTotal: allItemsCounts.reduce((a, b) => a + b, 0),
-        allItemsCountsArray: allItemsCounts,
-      });
-    }
-
-    // Check if all items are processed
-    if (datasets.length < items.length + 1) {
-      // +1 for the "All" dataset
-      console.warn(
-        `Warning: Not all items are shown in the chart. Datasets: ${datasets.length}, Items: ${items.length}`
+    if (chartRef.current) {
+      const ctx = chartRef.current.getContext("2d");
+      console.log(
+        `Creating chart with ${datasets.length} datasets, showing a total of ${items.length} items`
       );
-    }
 
-    chartInstance.current = createChart(
-      ctx,
-      labels,
-      datasets,
-      timeRanges[timeframe].label
-    );
+      // Additional debug information for "allTime" view
+      if (timeframe === "allTime") {
+        console.log("Timeline - 'allTime' view details:", {
+          totalVisitors: filteredVisitors.length,
+          userLocale: userLocale,
+          uses12HourFormat: uses12HourFormat,
+          periodsCreated: periods.length,
+          firstPeriod: periods.length > 0 ? periods[0].toISOString() : "none",
+          lastPeriod:
+            periods.length > 0
+              ? periods[periods.length - 1].toISOString()
+              : "none",
+          formattedLabels: labels,
+          allItemsCountsTotal: allItemsCounts.reduce((a, b) => a + b, 0),
+          allItemsCountsArray: allItemsCounts,
+        });
+      }
+
+      // Check if all items are processed
+      if (datasets.length < items.length + 1) {
+        // +1 for the "All" dataset
+        console.warn(
+          `Warning: Not all items are shown in the chart. Datasets: ${datasets.length}, Items: ${items.length}`
+        );
+      }
+
+      chartInstance.current = createChart(
+        ctx,
+        labels,
+        datasets,
+        timeRanges[timeframe].label
+      );
+
+      // Initialize dataset visibility state
+      const newVisibility = {};
+      datasets.forEach((dataset, index) => {
+        const meta = chartInstance.current.getDatasetMeta(index);
+        newVisibility[index] = !meta.hidden;
+      });
+      setDatasetVisibility(newVisibility);
+    }
 
     // Clean up
     return () => {
+      window.removeEventListener("resize", handleResize);
       if (chartInstance.current) {
         chartInstance.current.destroy();
       }
@@ -1236,122 +1229,183 @@ export default function VisitorTimelineChart({
     );
   }
 
+  // Safety check for server-side rendering
+  const isClient = typeof window !== "undefined";
+
   return (
     <div
       suppressHydrationWarning
       className="p-3 bg-background rounded-lg shadow-md transition-all duration-300 hover:shadow-lg"
     >
-      <div className="flex flex-col space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 mb-4 md:mb-6">
+      <div className="flex flex-col space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 mb-2">
         <h2 className="text-lg md:text-xl font-semibold text-foreground flex items-center">
           <TrendingUp size={18} className="mr-2 text-primary" />
           {t(title.toLowerCase().replace(" ", ""))} {t("visitorTimeline")}
         </h2>
 
-        <div className="relative" ref={dropdownRef}>
-          <button
-            onClick={() => setShowDropdown(!showDropdown)}
-            className="flex items-center px-3 py-1.5 md:px-4 md:py-2 border rounded-md bg-background text-xs md:text-sm font-medium text-foreground hover:bg-muted transition-colors duration-200 shadow-sm"
-          >
-            <Calendar size={14} className="mr-1.5 text-primary" />
-            {timeRanges[timeframe].label}
-            <ChevronDown size={14} className="ml-1.5 text-muted-foreground" />
-          </button>
+        <div className="flex items-center space-x-2">
+          <ExportButton
+            chartInstance={chartInstance}
+            title={title}
+            timeRangeLabel={timeRanges[timeframe].label}
+          />
 
-          {showDropdown && (
-            <div className="absolute top-full right-0 mt-1 w-44 md:w-56 rounded-md shadow-lg bg-popover ring-1 ring-border ring-opacity-5 z-10 divide-y divide-border overflow-hidden">
-              <div className="py-1">
-                <button
-                  onClick={() => {
-                    setTimeframe("today");
-                    setShowDropdown(false);
-                  }}
-                  className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
-                >
-                  {t("today")}
-                </button>
-                <button
-                  onClick={() => {
-                    setTimeframe("yesterday");
-                    setShowDropdown(false);
-                  }}
-                  className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
-                >
-                  {t("yesterday")}
-                </button>
-                <button
-                  onClick={() => {
-                    setTimeframe("last7Days");
-                    setShowDropdown(false);
-                  }}
-                  className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
-                >
-                  {t("last7Days")}
-                </button>
-                <button
-                  onClick={() => {
-                    setTimeframe("last30Days");
-                    setShowDropdown(false);
-                  }}
-                  className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
-                >
-                  {t("last30Days")}
-                </button>
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setShowDropdown(!showDropdown)}
+              className="flex items-center px-3 py-1.5 md:px-4 md:py-2 border rounded-md bg-background text-xs md:text-sm font-medium text-foreground hover:bg-muted transition-colors duration-200 shadow-sm"
+            >
+              <Calendar size={14} className="mr-1.5 text-primary" />
+              {timeRanges[timeframe].label}
+              <ChevronDown size={14} className="ml-1.5 text-muted-foreground" />
+            </button>
+
+            {showDropdown && (
+              <div className="absolute top-full right-0 mt-1 w-44 md:w-56 rounded-md shadow-lg bg-popover ring-1 ring-border ring-opacity-5 z-10 divide-y divide-border overflow-hidden">
+                <div className="py-1">
+                  <button
+                    onClick={() => {
+                      setTimeframe("today");
+                      setShowDropdown(false);
+                    }}
+                    className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
+                  >
+                    {t("today")}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setTimeframe("yesterday");
+                      setShowDropdown(false);
+                    }}
+                    className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
+                  >
+                    {t("yesterday")}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setTimeframe("last7Days");
+                      setShowDropdown(false);
+                    }}
+                    className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
+                  >
+                    {t("last7Days")}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setTimeframe("last30Days");
+                      setShowDropdown(false);
+                    }}
+                    className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
+                  >
+                    {t("last30Days")}
+                  </button>
+                </div>
+                <div className="py-1">
+                  <button
+                    onClick={() => {
+                      setTimeframe("currentMonth");
+                      setShowDropdown(false);
+                    }}
+                    className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
+                  >
+                    {t("currentMonth")}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setTimeframe("lastMonth");
+                      setShowDropdown(false);
+                    }}
+                    className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
+                  >
+                    {t("lastMonth")}
+                  </button>
+                </div>
+                <div className="py-1">
+                  <button
+                    onClick={() => {
+                      setTimeframe("currentYear");
+                      setShowDropdown(false);
+                    }}
+                    className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
+                  >
+                    {t("currentYear")}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setTimeframe("lastYear");
+                      setShowDropdown(false);
+                    }}
+                    className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
+                  >
+                    {t("lastYear")}
+                  </button>
+                </div>
+                <div className="py-1">
+                  <button
+                    onClick={() => {
+                      setTimeframe("allTime");
+                      setShowDropdown(false);
+                    }}
+                    className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
+                  >
+                    {t("allTime")}
+                  </button>
+                </div>
               </div>
-              <div className="py-1">
-                <button
-                  onClick={() => {
-                    setTimeframe("currentMonth");
-                    setShowDropdown(false);
-                  }}
-                  className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
-                >
-                  {t("currentMonth")}
-                </button>
-                <button
-                  onClick={() => {
-                    setTimeframe("lastMonth");
-                    setShowDropdown(false);
-                  }}
-                  className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
-                >
-                  {t("lastMonth")}
-                </button>
-              </div>
-              <div className="py-1">
-                <button
-                  onClick={() => {
-                    setTimeframe("currentYear");
-                    setShowDropdown(false);
-                  }}
-                  className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
-                >
-                  {t("currentYear")}
-                </button>
-                <button
-                  onClick={() => {
-                    setTimeframe("lastYear");
-                    setShowDropdown(false);
-                  }}
-                  className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
-                >
-                  {t("lastYear")}
-                </button>
-              </div>
-              <div className="py-1">
-                <button
-                  onClick={() => {
-                    setTimeframe("allTime");
-                    setShowDropdown(false);
-                  }}
-                  className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-popover-foreground hover:bg-muted transition-colors duration-150"
-                >
-                  {t("allTime")}
-                </button>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
+
+      {/* Custom legend section with interactive functionality */}
+      {chartInstance.current && chartInstance.current.data && (
+        <div className="px-4 pb-8 pt-2 flex flex-col w-full">
+          <div className="flex flex-wrap items-center gap-2 justify-start md:justify-center overflow-y-auto max-h-60 pr-2 scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent">
+            {chartInstance.current.data.datasets.map((dataset, index) => {
+              // Calculate total visits for this dataset (sum of all data points)
+              const totalVisits = dataset.data.reduce(
+                (sum, value) => sum + (value || 0),
+                0
+              );
+
+              return (
+                <div
+                  key={index}
+                  className={`flex items-center mb-2 cursor-pointer px-3 py-1.5 rounded-md transition-all duration-200 ${
+                    !datasetVisibility[index]
+                      ? "opacity-60 bg-background/50"
+                      : "hover:bg-muted/40"
+                  }`}
+                  onClick={() => toggleDataset(index)}
+                  role="button"
+                  aria-label={`Toggle ${dataset.label} visibility`}
+                >
+                  <div className="w-5 h-5 flex items-center justify-center mr-1.5">
+                    {datasetVisibility[index] ? (
+                      <Check size={14} className="text-primary" />
+                    ) : (
+                      <span className="w-3.5 h-3.5 rounded-sm border border-muted-foreground"></span>
+                    )}
+                  </div>
+                  <span
+                    className="inline-block w-3 h-3 rounded-full mr-2"
+                    style={{
+                      backgroundColor:
+                        dataset.borderColor || dataset.backgroundColor,
+                    }}
+                  ></span>
+                  <span className="text-xs md:text-sm font-medium truncate max-w-[120px]">
+                    {dataset.label}
+                  </span>
+                  <span className="text-xs ml-1.5 text-muted-foreground">
+                    ({totalVisits})
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Scrollable chart container */}
       <div className="overflow-x-auto scrollbar-hide pb-2">

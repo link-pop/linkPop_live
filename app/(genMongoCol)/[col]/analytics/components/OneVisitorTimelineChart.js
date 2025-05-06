@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Chart } from "chart.js/auto";
-import { Calendar, ChevronDown, TrendingUp } from "lucide-react";
+import { Calendar, ChevronDown, TrendingUp, Check } from "lucide-react";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { useQuery } from "@tanstack/react-query";
 import { getSocialMediaLinks } from "@/lib/actions/getSocialMediaLinks";
@@ -38,9 +38,30 @@ export default function VisitorTimeline({
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const { t, currentLang } = useTranslation();
+  // State for custom legend visibility
+  const [visitsVisible, setVisitsVisible] = useState(true);
+  const [clicksVisible, setClicksVisible] = useState(true);
 
   // Use the current language for date formatting
   const userLocale = currentLang || "en";
+
+  // Toggle dataset visibility
+  const toggleDataset = (datasetIndex) => {
+    if (!chartInstance.current || typeof window === "undefined") return;
+
+    const meta = chartInstance.current.getDatasetMeta(datasetIndex);
+    if (!meta) return;
+
+    meta.hidden = !meta.hidden;
+
+    if (datasetIndex === 0) {
+      setVisitsVisible(!meta.hidden);
+    } else if (datasetIndex === 1) {
+      setClicksVisible(!meta.hidden);
+    }
+
+    chartInstance.current.update();
+  };
 
   // Fetch click data using React Query (only if not in demo mode)
   const { data: fetchedLinks = [], isLoading: isLoadingLinks } = useQuery({
@@ -240,6 +261,20 @@ export default function VisitorTimeline({
       },
     };
 
+    // Custom plugin for title alignment only, since we're using custom HTML legend
+    const customTitlePlugin = {
+      id: "customTitlePlugin",
+      beforeInit: (chart) => {
+        // For mobile screens, update alignment
+        if (window.innerWidth < 768) {
+          // Set the title to start (left-aligned)
+          if (chart.options.plugins.title) {
+            chart.options.plugins.title.align = "start";
+          }
+        }
+      },
+    };
+
     // Determine max for y-axis scaling
     const maxVisits = Math.max(...visitCounts);
     const maxClicks = hideClicks ? 0 : Math.max(...clickCounts);
@@ -316,7 +351,7 @@ export default function VisitorTimeline({
         },
         layout: {
           padding: {
-            top: 25,
+            top: 20, // Reduced top padding since we're using custom HTML legend
             right: 25,
             bottom: 15,
             left: 15,
@@ -373,17 +408,9 @@ export default function VisitorTimeline({
           },
         },
         plugins: {
+          // Using custom HTML legend instead of Chart.js legend
           legend: {
-            display: true,
-            position: "top",
-            labels: {
-              usePointStyle: true,
-              padding: 16,
-              font: {
-                size: 12,
-                weight: "500",
-              },
-            },
+            display: false, // Hide the built-in legend since we're using custom HTML legend
           },
           tooltip: {
             backgroundColor: "rgba(17, 24, 39, 0.9)",
@@ -415,6 +442,7 @@ export default function VisitorTimeline({
           title: {
             display: true,
             text: title,
+            align: window.innerWidth < 768 ? "start" : "center", // Left-align on mobile
             color: chartColors.text,
             font: {
               size: 16,
@@ -422,7 +450,8 @@ export default function VisitorTimeline({
               family: "system-ui, sans-serif",
             },
             padding: {
-              bottom: 20,
+              top: 10,
+              bottom: 20, // Reduced since we have custom legend with its own spacing
             },
           },
         },
@@ -435,15 +464,35 @@ export default function VisitorTimeline({
           intersect: true,
         },
       },
-      plugins: [shadowPlugin],
+      plugins: [shadowPlugin, customTitlePlugin],
     });
   };
   // ? code end create chart function
 
   useEffect(() => {
+    // Safety check for server-side rendering or missing ref
+    if (!chartRef.current || typeof window === "undefined") {
+      return;
+    }
+
     // Don't proceed if we don't have visitors or links aren't loaded yet
     if ((!visitors || visitors.length === 0) && !isDemoMode && isLoading)
       return;
+
+    // Add responsive listener to update chart alignment when window size changes
+    const handleResize = () => {
+      if (chartInstance.current) {
+        // Update title and legend alignment
+        if (window.innerWidth < 768) {
+          chartInstance.current.options.plugins.title.align = "start";
+        } else {
+          chartInstance.current.options.plugins.title.align = "center";
+        }
+        chartInstance.current.update();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
 
     // Process data based on selected timeframe
     const range = timeRanges[timeframe].getRange();
@@ -541,14 +590,17 @@ export default function VisitorTimeline({
         chartInstance.current.destroy();
       }
 
-      const ctx = chartRef.current.getContext("2d");
-      chartInstance.current = createChart(
-        ctx,
-        ["No data"],
-        [0],
-        [0],
-        t("noActivityData")
-      );
+      // Check if chartRef.current exists before trying to get its context
+      if (chartRef.current) {
+        const ctx = chartRef.current.getContext("2d");
+        chartInstance.current = createChart(
+          ctx,
+          ["No data"],
+          [0],
+          [0],
+          t("noActivityData")
+        );
+      }
       return;
     }
 
@@ -975,21 +1027,24 @@ export default function VisitorTimeline({
         chartInstance.current.destroy();
       }
 
-      const chartCtx = chartRef.current.getContext("2d");
-      chartInstance.current = createChart(
-        chartCtx,
-        labels,
-        visitCounts,
-        clickCounts,
-        timeRanges[timeframe].label
-      );
+      // Check if chartRef.current exists before trying to get its context
+      if (chartRef.current) {
+        const chartCtx = chartRef.current.getContext("2d");
+        chartInstance.current = createChart(
+          chartCtx,
+          labels,
+          visitCounts,
+          clickCounts,
+          timeRanges[timeframe].label
+        );
 
-      // Force all 24 hours to be shown
-      if (chartInstance.current) {
-        chartInstance.current.options.scales.x.ticks.autoSkip = false;
-        // Slightly increase rotation to prevent overlapping for hourly labels
-        chartInstance.current.options.scales.x.ticks.maxRotation = 45;
-        chartInstance.current.update();
+        // Force all 24 hours to be shown
+        if (chartInstance.current) {
+          chartInstance.current.options.scales.x.ticks.autoSkip = false;
+          // Slightly increase rotation to prevent overlapping for hourly labels
+          chartInstance.current.options.scales.x.ticks.maxRotation = 45;
+          chartInstance.current.update();
+        }
       }
     }
     // Special handling for month views to ensure all dates show
@@ -998,20 +1053,23 @@ export default function VisitorTimeline({
         chartInstance.current.destroy();
       }
 
-      const chartCtx = chartRef.current.getContext("2d");
-      chartInstance.current = createChart(
-        chartCtx,
-        labels,
-        visitCounts,
-        clickCounts,
-        timeRanges[timeframe].label
-      );
+      // Check if chartRef.current exists before trying to get its context
+      if (chartRef.current) {
+        const chartCtx = chartRef.current.getContext("2d");
+        chartInstance.current = createChart(
+          chartCtx,
+          labels,
+          visitCounts,
+          clickCounts,
+          timeRanges[timeframe].label
+        );
 
-      // Force all days to be shown for month view
-      if (chartInstance.current) {
-        chartInstance.current.options.scales.x.ticks.autoSkip = false;
-        chartInstance.current.options.scales.x.ticks.maxRotation = 65; // Higher rotation to fit all days
-        chartInstance.current.update();
+        // Force all days to be shown for month view
+        if (chartInstance.current) {
+          chartInstance.current.options.scales.x.ticks.autoSkip = false;
+          chartInstance.current.options.scales.x.ticks.maxRotation = 65; // Higher rotation to fit all days
+          chartInstance.current.update();
+        }
       }
     }
     // If we have too many labels and they're getting crowded, consider adjusting display
@@ -1021,40 +1079,41 @@ export default function VisitorTimeline({
         chartInstance.current.destroy();
       }
 
-      // Create a new chart
-      const chartCtx = chartRef.current.getContext("2d");
-      chartInstance.current = createChart(
-        chartCtx,
-        labels,
-        visitCounts,
-        clickCounts,
-        timeRanges[timeframe].label
-      );
+      // Check if chartRef.current exists before trying to get its context
+      if (chartRef.current) {
+        // Create a new chart
+        const chartCtx = chartRef.current.getContext("2d");
+        chartInstance.current = createChart(
+          chartCtx,
+          labels,
+          visitCounts,
+          clickCounts,
+          timeRanges[timeframe].label
+        );
 
-      // For last7Days or last30Days, set better options for readability while showing all data
-      if (
-        timeframe === "last7Days" ||
-        timeframe === "last30Days" ||
-        timeframe === "currentMonth" ||
-        timeframe === "lastMonth"
-      ) {
-        if (chartInstance.current) {
-          // For these specific views, we want to ensure all dates are shown
-          // but adjust the rotation to prevent overlap
-          chartInstance.current.options.scales.x.ticks.maxRotation = 65;
-          chartInstance.current.options.scales.x.ticks.autoSkip = false;
-          chartInstance.current.update();
-        }
-      } else {
-        // For other views with many labels, use auto-skip but with a reasonable limit
-        if (chartInstance.current) {
-          chartInstance.current.options.scales.x.ticks.autoSkip = true;
-          // For other views, show a reasonable number
-          chartInstance.current.options.scales.x.ticks.maxTicksLimit = Math.min(
-            labels.length,
-            15
-          );
-          chartInstance.current.update();
+        // For last7Days or last30Days, set better options for readability while showing all data
+        if (
+          timeframe === "last7Days" ||
+          timeframe === "last30Days" ||
+          timeframe === "currentMonth" ||
+          timeframe === "lastMonth"
+        ) {
+          if (chartInstance.current) {
+            // For these specific views, we want to ensure all dates are shown
+            // but adjust the rotation to prevent overlap
+            chartInstance.current.options.scales.x.ticks.maxRotation = 65;
+            chartInstance.current.options.scales.x.ticks.autoSkip = false;
+            chartInstance.current.update();
+          }
+        } else {
+          // For other views with many labels, use auto-skip but with a reasonable limit
+          if (chartInstance.current) {
+            chartInstance.current.options.scales.x.ticks.autoSkip = true;
+            // For other views, show a reasonable number
+            chartInstance.current.options.scales.x.ticks.maxTicksLimit =
+              Math.min(labels.length, 15);
+            chartInstance.current.update();
+          }
         }
       }
     } else {
@@ -1063,18 +1122,22 @@ export default function VisitorTimeline({
         chartInstance.current.destroy();
       }
 
-      const ctx = chartRef.current.getContext("2d");
-      chartInstance.current = createChart(
-        ctx,
-        labels,
-        visitCounts,
-        clickCounts,
-        timeRanges[timeframe].label
-      );
+      // Check if chartRef.current exists before trying to get its context
+      if (chartRef.current) {
+        const ctx = chartRef.current.getContext("2d");
+        chartInstance.current = createChart(
+          ctx,
+          labels,
+          visitCounts,
+          clickCounts,
+          timeRanges[timeframe].label
+        );
+      }
     }
 
     // Clean up
     return () => {
+      window.removeEventListener("resize", handleResize);
       if (chartInstance.current) {
         chartInstance.current.destroy();
       }
@@ -1097,12 +1160,15 @@ export default function VisitorTimeline({
     );
   }
 
+  // Safety check for server-side rendering
+  const isClient = typeof window !== "undefined";
+
   return (
     <div
       suppressHydrationWarning
       className={`bg-background rounded-lg border border-border shadow-md transition-all duration-300 hover:shadow-lg`}
     >
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
         <h2
           className={`p15 text-xl font-semibold text-foreground flex items-center mb-4 md:mb-0`}
         >
@@ -1218,7 +1284,51 @@ export default function VisitorTimeline({
         </div>
       </div>
 
-      {/* Scrollable chart container */}
+      {/* Custom legend section with interactive functionality */}
+      <div className="px-4 pb-12 pt-2 flex flex-wrap items-center gap-2 justify-start md:justify-center">
+        <div
+          className={`flex items-center mr-2 mb-2 cursor-pointer px-3 py-1.5 rounded-md transition-all duration-200 ${
+            !visitsVisible ? "opacity-60 bg-background/50" : "hover:bg-muted/40"
+          }`}
+          onClick={() => toggleDataset(0)}
+          role="button"
+          aria-label={`Toggle ${t("visits")} visibility`}
+        >
+          <div className="w-5 h-5 flex items-center justify-center mr-1.5">
+            {visitsVisible ? (
+              <Check size={14} className="text-primary" />
+            ) : (
+              <span className="w-3.5 h-3.5 rounded-sm border border-muted-foreground"></span>
+            )}
+          </div>
+          <span className="inline-block w-3 h-3 rounded-full bg-[#FB75CC] mr-2"></span>
+          <span className="text-sm font-medium">{t("visits")}</span>
+        </div>
+        {!hideClicks && (
+          <div
+            className={`flex items-center mb-2 cursor-pointer px-3 py-1.5 rounded-md transition-all duration-200 ${
+              !clicksVisible
+                ? "opacity-60 bg-background/50"
+                : "hover:bg-muted/40"
+            }`}
+            onClick={() => toggleDataset(1)}
+            role="button"
+            aria-label={`Toggle ${t("clicks")} visibility`}
+          >
+            <div className="w-5 h-5 flex items-center justify-center mr-1.5">
+              {clicksVisible ? (
+                <Check size={14} className="text-primary" />
+              ) : (
+                <span className="w-3.5 h-3.5 rounded-sm border border-muted-foreground"></span>
+              )}
+            </div>
+            <span className="inline-block w-3 h-3 rounded-full bg-[#8b5cf6] mr-2"></span>
+            <span className="text-sm font-medium">{t("clicks")}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Scrollable chart container with increased spacing */}
       <div className={`overflow-x-auto scrollbar-hide pb-2`}>
         <div className={`h-80 mt-2 min-w-[600px]`}>
           <canvas ref={chartRef}></canvas>
