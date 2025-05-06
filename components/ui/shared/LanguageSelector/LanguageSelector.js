@@ -12,14 +12,16 @@ export default function LanguageSelector({ className = "" }) {
 
   const showLanguagePopup = () => {
     dialogSet({ isOpen: false });
-    dialogSet({
-      isOpen: true,
-      showBtns: false,
-      contentClassName: "!w250 max-h-[90dvh] oys",
-      hasCloseIcon: true,
-      fixedCloseIcon: true,
-      comp: <LanguagePopup {...{ dialogSet }} />,
-    });
+    setTimeout(() => {
+      dialogSet({
+        isOpen: true,
+        showBtns: false,
+        contentClassName: "!w250 max-h-[90dvh] oys",
+        hasCloseIcon: true,
+        fixedCloseIcon: true,
+        comp: <LanguagePopup {...{ dialogSet }} />,
+      });
+    }, 100);
   };
 
   return (
