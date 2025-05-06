@@ -40,6 +40,7 @@ import FormSection from "./FormSection";
 import FormUsernameInput from "./FormUsernameInput";
 import FormBioTextarea from "./FormBioTextarea";
 import FormSubmitButton from "./FormSubmitButton";
+import TitleWithBackButton from "@/components/ui/shared/PageHeading/TitleWithBackButton";
 
 function AddLandingPageForm({
   col = "landingpages",
@@ -1065,11 +1066,14 @@ function AddLandingPageForm({
 
   return (
     <div className="pt100 maw1000 wf mxa p15">
-      <h2 className="title tac mb15">
-        {isUpdateMode
-          ? t("editLandingPage") || "Update Landing Page"
-          : t("addLandingPage") || "Add Landing Page"}
-      </h2>
+      <TitleWithBackButton
+        title={
+          isUpdateMode
+            ? t("editLandingPage") || "Update Landing Page"
+            : t("addLandingPage") || "Add Landing Page"
+        }
+        className="fcc mb15"
+      />
 
       <FormErrorDisplay error={errors.general} />
 

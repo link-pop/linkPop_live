@@ -8,6 +8,7 @@ import AnalyticsCards from "@/app/admin/analytics/components/AnalyticsCards";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import LeftNavNewPostBtn from "@/components/Nav/LeftNav/LeftNavNewPostBtn";
 import LeftNavNewLandingPageBtn from "@/components/Nav/LeftNav/LeftNavNewLandingPageBtn";
+import TitleWithBackButton from "@/components/ui/shared/PageHeading/TitleWithBackButton";
 
 // ! code start DashboardClient
 export default function DashboardClient({
@@ -141,9 +142,10 @@ export default function DashboardClient({
 
   return (
     <div className="bg-background rounded-lg">
-      <h1 className="tac p15 text-2xl font-bold mb-6">
-        {t("analyticsAndStats")}
-      </h1>
+      <TitleWithBackButton
+        title={t("analyticsAndStats")}
+        className="fcc p15 text-2xl font-bold mb-6"
+      />
       <Toggle
         labels={tabs}
         contents={contents}

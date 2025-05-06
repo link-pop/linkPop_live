@@ -32,6 +32,7 @@ import FormUrlInput from "./FormUrlInput";
 import FormSection from "./FormSection";
 import FormSubmitButton from "./FormSubmitButton";
 import FormShieldProtectionSection from "./FormShieldProtectionSection";
+import TitleWithBackButton from "@/components/ui/shared/PageHeading/TitleWithBackButton";
 
 export default function AddDirectlinkForm({
   col = "directlinks",
@@ -380,11 +381,14 @@ export default function AddDirectlinkForm({
 
   return (
     <div className="p15 pt100 wf maw600 mxa">
-      <h2 className="title tac mb15">
-        {isUpdateMode
-          ? t("updateDirectLink") || "Update Direct Link"
-          : t("addDirectLink") || "Add Direct Link"}
-      </h2>
+      <TitleWithBackButton
+        title={
+          isUpdateMode
+            ? t("updateDirectLink") || "Update Direct Link"
+            : t("addDirectLink") || "Add Direct Link"
+        }
+        className="fcc mb15"
+      />
 
       {!isExistingDirectlink && (
         <Subscription2LimitInfo displayInfo={displayInfo} errors={errors} />

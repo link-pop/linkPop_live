@@ -32,6 +32,7 @@ import CreatedBy from "@/components/Post/Post/CreatedBy";
 import { processReferralEarnings } from "@/lib/utils/referral/calculateReferralEarnings";
 import { getUserReferralData } from "@/lib/actions/referral/getUserReferralData";
 import useShareHelper from "@/components/ui/shared/Share/ShareHelper";
+import TitleWithBackButton from "@/components/ui/shared/PageHeading/TitleWithBackButton";
 
 export default function AffiliateClient({ data }) {
   const [copyState, setCopyState] = useState({
@@ -236,7 +237,10 @@ export default function AffiliateClient({ data }) {
   return (
     <div className={`container mx-auto p-4`}>
       <div className={`mb-8`}>
-        <h1 className={`text-3xl font-bold mb-2`}>{t("affiliateProgram")}</h1>
+        <TitleWithBackButton
+          title={t("affiliateProgram")}
+          className="text-3xl font-bold mb-2"
+        />
         <p className={`text-muted-foreground`}>
           {t("earnCommissionWhenReferralsSubscribe")}
         </p>
