@@ -1180,6 +1180,16 @@ const en = {
 
   // Analytics export
   export: "CSV",
+
+  // Add these crop-related translations
+  cropImage: "Crop Image",
+  applyCrop: "Apply Crop",
+  processingImage: "Processing image...",
+  imageCroppedAndSaved: "Image cropped and saved successfully",
+  errorProcessingImage: "Error processing image",
+  reCropImage: "Re-crop Image",
+  originalImageNotAvailable: "Original image not available for re-cropping",
+  usingCroppedImageInstead: "Using cropped image instead of original",
 };
 
 export default en;

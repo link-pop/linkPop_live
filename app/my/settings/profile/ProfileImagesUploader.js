@@ -1,12 +1,12 @@
 "use client";
 
+// ! code start ProfileImagesUploader
 import { useState, useEffect } from "react";
 import ProfileImages from "@/app/my/settings/profile/ProfileImages";
 import { useContext } from "@/components/Context/Context";
 import ImageCropper from "@/components/ui/shared/ImageCropper/ImageCropper";
 import getCroppedImg from "@/lib/utils/files/getCroppedImg";
 import uploadFilesToCloudinary from "@/components/Cloudinary/uploadFilesToCloudinary";
-import { formatFileData } from "@/lib/utils/files/formatFileData";
 import { useTranslation } from "@/components/Context/TranslationContext";
 
 export default function ProfileImagesUploader({
@@ -42,11 +42,11 @@ export default function ProfileImagesUploader({
     }
   }, [propOriginalProfileImage, propOriginalCoverImage]);
 
-  // Create an adapted landing page object to simulate a visited user
-  const adaptedLandingPage = {
+  // Create an adapted user object to simulate a visited user
+  const adaptedUser = {
     profileImage: profileImage,
     coverImage: coverImage,
-    name: "New Landing Page",
+    name: mongoUser?.name || "",
     isOwner: true,
   };
 
@@ -178,7 +178,7 @@ export default function ProfileImagesUploader({
         // First upload the original file
         const originalFiles = await uploadFilesToCloudinary(
           files,
-          "landingpages"
+          "users" // Use "users" folder instead of "landingpages"
         );
 
         if (!originalFiles || originalFiles.length === 0) {
@@ -209,7 +209,7 @@ export default function ProfileImagesUploader({
       // Upload the cropped image
       const uploadedFiles = await uploadFilesToCloudinary(
         [file],
-        "landingpages",
+        "users", // Use "users" folder instead of "landingpages"
         null,
         uploadOptions
       );
@@ -287,8 +287,8 @@ export default function ProfileImagesUploader({
     <div className="">
       <ProfileImages
         mongoUser={mongoUser}
-        visitedMongoUser={adaptedLandingPage}
-        isLandingPage={true}
+        visitedMongoUser={adaptedUser}
+        isLandingPage={false}
         onImageChange={handleImageChange}
         directImageUpdate={true}
         externalToast={toastSet}
@@ -298,3 +298,4 @@ export default function ProfileImagesUploader({
     </div>
   );
 }
+// ? code end ProfileImagesUploader

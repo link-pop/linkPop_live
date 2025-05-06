@@ -1179,6 +1179,18 @@ const uk = {
   linksOption400: "400 посилань - $389.99/міс",
   linksOption450: "450 посилань - $439.99/міс",
   linksOption500: "500 посилань - $489.99/міс",
+
+  // crop-related translations
+  cropImage: "Обрізати зображення",
+  applyCrop: "Застосувати обрізку",
+  processingImage: "Обробка зображення...",
+  imageCroppedAndSaved: "Зображення успішно обрізано та збережено",
+  errorProcessingImage: "Помилка обробки зображення",
+  reCropImage: "Повторно обрізати зображення",
+  originalImageNotAvailable:
+    "Оригінальне зображення недоступне для повторної обрізки",
+  usingCroppedImageInstead:
+    "Використовується обрізане зображення замість оригінального",
 };
 
 export default uk;

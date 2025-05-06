@@ -6,7 +6,7 @@ import Input from "@/components/ui/shared/Input/Input";
 import Textarea from "@/components/ui/shared/Textarea/Textarea";
 import { update } from "@/lib/actions/crud";
 import { checkNameUniqueness } from "@/lib/actions/checkNameUniqueness";
-import ProfileImages from "./ProfileImages";
+import ProfileImagesUploader from "./ProfileImagesUploader";
 import Button from "../../../../components/ui/shared/Button/Button2";
 import { useContext } from "../../../../components/Context/Context";
 import useProfileFormValidation from "./useProfileFormValidation";
@@ -26,6 +26,18 @@ export default function ProfileForm({ mongoUser }) {
     website: mongoUser.website || "",
     amazonWishlist: mongoUser.amazonWishlist || "",
   });
+
+  // Add state for images
+  const [profileImage, setProfileImage] = useState(
+    mongoUser.profileImage || ""
+  );
+  const [coverImage, setCoverImage] = useState(mongoUser.coverImage || "");
+  const [originalProfileImage, setOriginalProfileImage] = useState(
+    mongoUser.originalProfileImage || ""
+  );
+  const [originalCoverImage, setOriginalCoverImage] = useState(
+    mongoUser.originalCoverImage || ""
+  );
 
   const { toastSet } = useContext();
   const { validateURL, validateForm, formatUrl } = useProfileFormValidation();
@@ -100,6 +112,11 @@ export default function ProfileForm({ mongoUser }) {
         location: profile.location,
         website: formatUrl(profile.website),
         amazonWishlist: formatUrl(profile.amazonWishlist),
+        // Add image fields
+        profileImage: profileImage,
+        coverImage: coverImage,
+        originalProfileImage: originalProfileImage,
+        originalCoverImage: originalCoverImage,
       },
       revalidate: "/my/settings/profile",
     });
@@ -112,8 +129,18 @@ export default function ProfileForm({ mongoUser }) {
 
   return (
     <div className={`fc g30 p15 wf maw600`}>
-      {/* // TODO !!! ??? */}
-      <ProfileImages {...{ mongoUser, visitedMongoUser: mongoUser }} />
+      {/* Replace ProfileImages with ProfileImagesUploader */}
+      <ProfileImagesUploader
+        mongoUser={mongoUser}
+        profileImage={profileImage}
+        coverImage={coverImage}
+        setProfileImage={setProfileImage}
+        setCoverImage={setCoverImage}
+        originalProfileImage={originalProfileImage}
+        originalCoverImage={originalCoverImage}
+        setOriginalProfileImage={setOriginalProfileImage}
+        setOriginalCoverImage={setOriginalCoverImage}
+      />
 
       {/* FORM */}
       <form onSubmit={handleSubmit} className={`fc g20 wf maw600`}>

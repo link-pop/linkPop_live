@@ -1190,6 +1190,17 @@ const es = {
   linksOption400: "400 enlaces - $389.99/mes",
   linksOption450: "450 enlaces - $439.99/mes",
   linksOption500: "500 enlaces - $489.99/mes",
+
+  // crop-related translations
+  cropImage: "Recortar Imagen",
+  applyCrop: "Aplicar Recorte",
+  processingImage: "Procesando imagen...",
+  imageCroppedAndSaved: "Imagen recortada y guardada correctamente",
+  errorProcessingImage: "Error al procesar la imagen",
+  reCropImage: "Volver a Recortar Imagen",
+  originalImageNotAvailable:
+    "Imagen original no disponible para volver a recortar",
+  usingCroppedImageInstead: "Usando imagen recortada en lugar de la original",
 };
 
 export default es;

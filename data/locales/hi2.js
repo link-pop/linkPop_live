@@ -1192,6 +1192,17 @@ const hi = {
   linksOption400: "400 लिंक्स - $389.99/माह",
   linksOption450: "450 लिंक्स - $439.99/माह",
   linksOption500: "500 लिंक्स - $489.99/माह",
+
+  // crop-related translations
+  cropImage: "छवि क्रॉप करें",
+  applyCrop: "क्रॉप लागू करें",
+  processingImage: "छवि प्रोसेसिंग हो रही है...",
+  imageCroppedAndSaved: "छवि सफलतापूर्वक क्रॉप की गई और सहेजी गई",
+  errorProcessingImage: "छवि प्रोसेस करने में त्रुटि",
+  reCropImage: "छवि पुनः क्रॉप करें",
+  originalImageNotAvailable: "मूल छवि पुनः क्रॉप करने के लिए उपलब्ध नहीं है",
+  usingCroppedImageInstead:
+    "मूल के बजाय क्रॉप की गई छवि का उपयोग किया जा रहा है",
 };
 
 export default hi;

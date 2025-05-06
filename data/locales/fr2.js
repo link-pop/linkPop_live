@@ -1189,6 +1189,18 @@ const fr = {
   linksOption400: "400 liens - 389,99$/mois",
   linksOption450: "450 liens - 439,99$/mois",
   linksOption500: "500 liens - 489,99$/mois",
+
+  // crop-related translations
+  cropImage: "Recadrer l'image",
+  applyCrop: "Appliquer le recadrage",
+  processingImage: "Traitement de l'image...",
+  imageCroppedAndSaved: "Image recadrée et enregistrée avec succès",
+  errorProcessingImage: "Erreur lors du traitement de l'image",
+  reCropImage: "Recadrer à nouveau l'image",
+  originalImageNotAvailable:
+    "Image originale non disponible pour un nouveau recadrage",
+  usingCroppedImageInstead:
+    "Utilisation de l'image recadrée au lieu de l'originale",
 };
 
 export default fr;

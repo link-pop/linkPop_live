@@ -8,7 +8,7 @@ import { formatFileData } from "@/lib/utils/files/formatFileData";
 import { useContext } from "../../../../components/Context/Context";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { BRAND_INVERT_CLASS, ICONBUTTON_CLASS } from "@/lib/utils/constants";
-import { Trash2 } from "lucide-react";
+import { Trash2, Crop } from "lucide-react";
 
 export default function ProfileImages({
   mongoUser,
@@ -20,6 +20,8 @@ export default function ProfileImages({
   previewMode = false,
   previewClasses = null,
   customBgColor = null,
+  onReCrop = null,
+  disableUpload = false,
 }) {
   const { dialogSet, toastSet } = useContext();
   const [isUploading, setIsUploading] = useState(false);
@@ -50,9 +52,17 @@ export default function ProfileImages({
   useEffect(() => {
     if (coverFiles[0] && !isUploading && !previewMode) {
       const fileUrl = URL.createObjectURL(coverFiles[coverFiles.length - 1]);
-      showImageDialog("coverImage", fileUrl, [
-        coverFiles[coverFiles.length - 1],
-      ]);
+
+      // If onReCrop is available, it means we're using the crop functionality
+      if (onReCrop) {
+        // Instead of showing the image preview, trigger crop dialog directly
+        onReCrop("coverImage", fileUrl, [coverFiles[coverFiles.length - 1]]);
+      } else {
+        // Use the traditional preview dialog if no crop functionality
+        showImageDialog("coverImage", fileUrl, [
+          coverFiles[coverFiles.length - 1],
+        ]);
+      }
     }
   }, [coverFiles, isUploading, previewMode]);
 
@@ -61,9 +71,19 @@ export default function ProfileImages({
       const fileUrl = URL.createObjectURL(
         profileFiles[profileFiles.length - 1]
       );
-      showImageDialog("profileImage", fileUrl, [
-        profileFiles[profileFiles.length - 1],
-      ]);
+
+      // If onReCrop is available, it means we're using the crop functionality
+      if (onReCrop) {
+        // Instead of showing the image preview, trigger crop dialog directly
+        onReCrop("profileImage", fileUrl, [
+          profileFiles[profileFiles.length - 1],
+        ]);
+      } else {
+        // Use the traditional preview dialog if no crop functionality
+        showImageDialog("profileImage", fileUrl, [
+          profileFiles[profileFiles.length - 1],
+        ]);
+      }
     }
   }, [profileFiles, isUploading, previewMode]);
 
@@ -89,12 +109,21 @@ export default function ProfileImages({
           title: t("imageUploaded"),
         });
       } else {
+        const updateData = { [type]: fileUrl };
+
+        // Also store the original image URL in the appropriate field
+        if (isLandingPage) {
+          updateData[
+            type === "profileImage"
+              ? "originalProfileImage"
+              : "originalCoverImage"
+          ] = fileUrl;
+        }
+
         await update({
           col: isLandingPage ? "landingpages" : "users",
           data: { _id: mongoUser._id },
-          update: {
-            [type]: fileUrl,
-          },
+          update: updateData,
           revalidate: isLandingPage ? "/landingpages" : "/my/settings/profile",
         });
 
@@ -156,12 +185,23 @@ export default function ProfileImages({
               title: t("imageDeleted"),
             });
           } else {
+            const updateData = {
+              [type]: null,
+            };
+
+            // Also clear the original image field
+            if (isLandingPage) {
+              updateData[
+                type === "profileImage"
+                  ? "originalProfileImage"
+                  : "originalCoverImage"
+              ] = null;
+            }
+
             await update({
               col: isLandingPage ? "landingpages" : "users",
               data: { _id: mongoUser._id },
-              update: {
-                [type]: null,
-              },
+              update: updateData,
               revalidate: isLandingPage
                 ? "/landingpages"
                 : "/my/settings/profile",
@@ -191,6 +231,13 @@ export default function ProfileImages({
       });
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  // Handle re-cropping an existing image
+  const handleReCropImage = (type) => {
+    if (onReCrop) {
+      onReCrop(type);
     }
   };
 
@@ -311,16 +358,28 @@ export default function ProfileImages({
                 filesSet={setProfileFiles}
                 usePreview={false}
                 addFilesIconClassName={`${BRAND_INVERT_CLASS}`}
+                disabled={disableUpload}
               />
 
               {localProfileImage && (
-                <div
-                  onClick={() => handleDeleteImage("profileImage")}
-                  className={`TrashFilesIcon ${ICONBUTTON_CLASS} ${BRAND_INVERT_CLASS}`}
-                  title={t("deleteImage")}
-                >
-                  <Trash2 size={25} />
-                </div>
+                <>
+                  {onReCrop && (
+                    <div
+                      onClick={() => handleReCropImage("profileImage")}
+                      className={`ReCropIcon ${ICONBUTTON_CLASS} ${BRAND_INVERT_CLASS}`}
+                      title={t("reCropImage")}
+                    >
+                      <Crop size={25} />
+                    </div>
+                  )}
+                  <div
+                    onClick={() => handleDeleteImage("profileImage")}
+                    className={`TrashFilesIcon ${ICONBUTTON_CLASS} ${BRAND_INVERT_CLASS}`}
+                    title={t("deleteImage")}
+                  >
+                    <Trash2 size={25} />
+                  </div>
+                </>
               )}
             </div>
           )}
@@ -346,16 +405,28 @@ export default function ProfileImages({
               filesSet={setCoverFiles}
               usePreview={false}
               addFilesIconClassName={`${BRAND_INVERT_CLASS}`}
+              disabled={disableUpload}
             />
 
             {localCoverImage && (
-              <div
-                onClick={() => handleDeleteImage("coverImage")}
-                className={`TrashFilesIcon ${ICONBUTTON_CLASS} ${BRAND_INVERT_CLASS}`}
-                title={t("deleteImage")}
-              >
-                <Trash2 size={25} />
-              </div>
+              <>
+                {onReCrop && (
+                  <div
+                    onClick={() => handleReCropImage("coverImage")}
+                    className={`ReCropIcon ${ICONBUTTON_CLASS} ${BRAND_INVERT_CLASS}`}
+                    title={t("reCropImage")}
+                  >
+                    <Crop size={25} />
+                  </div>
+                )}
+                <div
+                  onClick={() => handleDeleteImage("coverImage")}
+                  className={`TrashFilesIcon ${ICONBUTTON_CLASS} ${BRAND_INVERT_CLASS}`}
+                  title={t("deleteImage")}
+                >
+                  <Trash2 size={25} />
+                </div>
+              </>
             )}
           </div>
         )}

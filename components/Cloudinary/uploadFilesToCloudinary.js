@@ -5,9 +5,15 @@ import axios from "axios";
 export default async function uploadFilesToCloudinary(
   files,
   uploadedFrom,
-  relatedPostId = null
+  relatedPostId = null,
+  options = {}
 ) {
   if (!files) return;
+
+  // Handle the special case for cropped images
+  const isCroppedImage = options.isCroppedImage || false;
+  const originalFileId = options.originalFileId || null;
+
   const promises = files.map((file) => {
     // * 1: if fileUrl exists in file =>
     // file is already uploaded to cloudinary =>
@@ -24,6 +30,8 @@ export default async function uploadFilesToCloudinary(
           uploadedFrom: file.uploadedFrom || uploadedFrom, // Keep existing or use new
           relatedPostId: file.relatedPostId || relatedPostId, // Keep existing or use new
           blurred_url: file.blurredUrl || null, // Include blurred URL if exists
+          is_cropped: isCroppedImage, // Add flag for cropped images
+          original_file_id: isCroppedImage ? originalFileId : null, // Add reference to original image
         },
       });
     }
@@ -34,6 +42,11 @@ export default async function uploadFilesToCloudinary(
       "upload_preset",
       process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET_NAME
     );
+
+    // Add folder information for cropped images
+    if (isCroppedImage) {
+      formData.append("folder", "cropped");
+    }
 
     // Determine resource type based on file type
     const resourceType = file.type.startsWith("video") ? "video" : "image";
@@ -65,6 +78,8 @@ export default async function uploadFilesToCloudinary(
             data: {
               ...response.data,
               blurred_url: blurredUrl,
+              is_cropped: isCroppedImage,
+              original_file_id: isCroppedImage ? originalFileId : null,
             },
           };
         });
@@ -96,6 +111,8 @@ export default async function uploadFilesToCloudinary(
             data: {
               ...response.data,
               blurred_url: blurredUrl,
+              is_cropped: isCroppedImage,
+              original_file_id: isCroppedImage ? originalFileId : null,
             },
           };
         });
@@ -114,6 +131,8 @@ export default async function uploadFilesToCloudinary(
       uploadedFrom: existingUploadedFrom,
       relatedPostId: existingRelatedPostId,
       blurred_url,
+      is_cropped,
+      original_file_id,
     } = response.data;
     return {
       fileUrl: secure_url,
@@ -124,6 +143,8 @@ export default async function uploadFilesToCloudinary(
       uploadedFrom: existingUploadedFrom || uploadedFrom,
       relatedPostId: existingRelatedPostId || relatedPostId,
       blurredUrl: blurred_url || null,
+      isCropped: is_cropped || false,
+      originalFileId: original_file_id || null,
     };
   });
 

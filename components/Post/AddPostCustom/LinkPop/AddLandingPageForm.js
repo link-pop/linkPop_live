@@ -117,6 +117,9 @@ function AddLandingPageForm({
         ? updatingPost.disableLinkLogos
         : false,
     facebookPixelId: updatingPost?.facebookPixelId || "",
+    // Add fields for original images
+    originalProfileImage: updatingPost?.originalProfileImage || "",
+    originalCoverImage: updatingPost?.originalCoverImage || "",
   };
 
   // Remove React Query setup that's causing issues
@@ -228,6 +231,9 @@ function AddLandingPageForm({
             ? landingPageData.disableLinkLogos
             : false,
         facebookPixelId: landingPageData.facebookPixelId || "",
+        // Add original image fields
+        originalProfileImage: landingPageData.originalProfileImage || "",
+        originalCoverImage: landingPageData.originalCoverImage || "",
       });
       setProfileImage(landingPageData.profileImage || "");
       setCoverImage(landingPageData.coverImage || "");
@@ -301,6 +307,9 @@ function AddLandingPageForm({
       distanceFromVisitor: "",
       disableLinkLogos: false,
       facebookPixelId: "",
+      // Reset original image fields
+      originalProfileImage: "",
+      originalCoverImage: "",
     });
     setProfileImage("");
     setCoverImage("");
@@ -400,6 +409,10 @@ function AddLandingPageForm({
         ...processedFormData,
         profileImage,
         coverImage,
+        // Include original images if they exist, otherwise use the current images
+        originalProfileImage:
+          processedFormData.originalProfileImage || profileImage,
+        originalCoverImage: processedFormData.originalCoverImage || coverImage,
         // Clean up the username to remove @ prefix if present
         username: processedFormData.username
           ? processedFormData.username.replace("@", "")
@@ -707,6 +720,14 @@ function AddLandingPageForm({
             setProfileImage={setProfileImage}
             setCoverImage={setCoverImage}
             mongoUser={mongoUser}
+            originalProfileImage={formData.originalProfileImage}
+            originalCoverImage={formData.originalCoverImage}
+            setOriginalProfileImage={(url) =>
+              setFormData((prev) => ({ ...prev, originalProfileImage: url }))
+            }
+            setOriginalCoverImage={(url) =>
+              setFormData((prev) => ({ ...prev, originalCoverImage: url }))
+            }
           />
 
           <FormUniqueNameInput
