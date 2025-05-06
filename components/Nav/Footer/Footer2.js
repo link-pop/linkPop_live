@@ -24,9 +24,13 @@ export default function Footer2() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // don't show footer on sign-in page
+  // don't show footer on sign-in page or add/update routes
   const isSignInPage = pathname === LOGIN_ROUTE;
-  if (isSignInPage) return null;
+  const isAddRoute = pathname === "/add" || pathname.startsWith("/add/");
+  const isUpdateRoute =
+    pathname === "/update" || pathname.startsWith("/update/");
+
+  if (isSignInPage || isAddRoute || isUpdateRoute) return null;
 
   const handleScrollWithNavigation = (e, sectionId) => {
     e.preventDefault();

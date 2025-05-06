@@ -939,22 +939,24 @@ function AddLandingPageForm({
             </div>
           </FormSection>
 
-          <div className="fcc">
-            {/* Show button in the following cases:
-                1. Always show when we have a landingPageId (either from updatingPost or from URL or from previous steps)
-                2. In add mode when not explicitly on step 1 URL param
-            */}
-            {(isExistingLandingPage || searchParams.get("step") !== "1") && (
-              <FormSubmitButton
-                loading={loading}
-                isUpdateMode={isUpdateMode}
-                isLoadingData={!isExistingLandingPage && isLoadingData}
-                hasReachedLimits={hasReachedSubscriptionLimits}
-                isAdmin={mongoUser?.isAdmin}
-                additionalText={t("landingPage")}
-              />
-            )}
-          </div>
+          {/* Add margin at the bottom to prevent content from being hidden behind the fixed button */}
+          <div className="mb-20"></div>
+
+          {/* Replaced standard button container with fixed position container */}
+          {(isExistingLandingPage || searchParams.get("step") !== "1") && (
+            <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-t border-border pb-4 pt-4">
+              <div className="maw1000 mxa fcc">
+                <FormSubmitButton
+                  loading={loading}
+                  isUpdateMode={isUpdateMode}
+                  isLoadingData={!isExistingLandingPage && isLoadingData}
+                  hasReachedLimits={hasReachedSubscriptionLimits}
+                  isAdmin={mongoUser?.isAdmin}
+                  additionalText={t("landingPage")}
+                />
+              </div>
+            </div>
+          )}
         </>
       );
     } else if (step === 2) {
@@ -969,22 +971,25 @@ function AddLandingPageForm({
             setRefreshPreviewTrigger={setRefreshPreviewTrigger}
           />
 
-          <div className="fcc g15 mt25">
-            <div className="wf fz12 tac text-red-400">
-              {createdLinksCount === 0 &&
-                (t("pleaseAddAtLeastOneLink") ||
-                  "Please add at least one link")}
+          <div className="wf fz12 tac text-red-400 mb-20">
+            {createdLinksCount === 0 &&
+              (t("pleaseAddAtLeastOneLink") || "Please add at least one link")}
+          </div>
+
+          {/* Fixed submit button for step 2 */}
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-t border-border pb-4 pt-4">
+            <div className="maw1000 mxa fcc">
+              <Button
+                as="div"
+                onClick={() => setStep(3)}
+                disabled={createdLinksCount === 0}
+              >
+                <div className="fcc g10 !fwn !wsn">
+                  {t("continueToCustomization") || "Continue to Customization"}
+                  <ArrowRight size={20} />
+                </div>
+              </Button>
             </div>
-            <Button
-              as="div"
-              onClick={() => setStep(3)}
-              disabled={createdLinksCount === 0}
-            >
-              <div className="fcc g10 !fwn !wsn">
-                {t("continueToCustomization") || "Continue to Customization"}
-                <ArrowRight size={20} />
-              </div>
-            </Button>
           </div>
         </>
       );
@@ -1015,13 +1020,19 @@ function AddLandingPageForm({
             refreshPreview={refreshPreview}
           />
 
-          <div className="fcc g15 mt25">
-            <Button as="div" onClick={() => setStep(4)}>
-              <div className="fcc g10 !fwn !wsn">
-                {t("continueToGeoFiltering")}
-                <ArrowRight size={20} />
-              </div>
-            </Button>
+          {/* Add margin at the bottom to prevent content from being hidden behind the fixed button */}
+          <div className="mb-20"></div>
+
+          {/* Fixed submit button for step 3 */}
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-t border-border pb-4 pt-4">
+            <div className="maw1000 mxa fcc">
+              <Button as="div" onClick={() => setStep(4)}>
+                <div className="fcc g10 !fwn !wsn">
+                  {t("continueToGeoFiltering")}
+                  <ArrowRight size={20} />
+                </div>
+              </Button>
+            </div>
           </div>
         </>
       );
@@ -1036,10 +1047,16 @@ function AddLandingPageForm({
             onComplete={handleGeoFilterComplete}
           />
 
-          <div className="fcc g15 mt25">
-            <Button as="div" variant="outline" onClick={handleFinish}>
-              {t("finish") || "Finish Setup"}
-            </Button>
+          {/* Add margin at the bottom to prevent content from being hidden behind the fixed button */}
+          <div className="mb-20"></div>
+
+          {/* Fixed submit button for step 4 */}
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-t border-border pb-4 pt-4">
+            <div className="maw1000 mxa fcc">
+              <Button as="div" variant="outline" onClick={handleFinish}>
+                {t("finish") || "Finish Setup"}
+              </Button>
+            </div>
           </div>
         </>
       );
