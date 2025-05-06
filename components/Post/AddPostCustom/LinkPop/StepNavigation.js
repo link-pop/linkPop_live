@@ -54,7 +54,7 @@ export default function StepNavigation({
   };
 
   return (
-    <div className="h55 fixed t15 md:ml30 cx oyh mx-auto br20 wfc fcc shadow-lg dark:shadow-[0_4px_24px_rgba(255,255,255,0.10)] z99 bg-background">
+    <div className="h55 fixed t15 md:ml30 cx oyh mx-auto br20 wfc fcc shadow-lg dark:shadow-[0_4px_24px_rgba(255,255,255,0.10)] z49 bg-background">
       <div className="f fwn oxa aistr g15 mb25 hf text-neutral-900 dark:text-white">
         {steps.map((step, index) => {
           const stepNumber = index + 1;
