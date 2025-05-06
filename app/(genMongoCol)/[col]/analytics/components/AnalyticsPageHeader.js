@@ -11,7 +11,7 @@ const AnalyticsPageHeader = ({
   const { t } = useTranslation();
 
   return (
-    <header className="mb-8">
+    <header className="tac mb-8">
       <h1 className="text-2xl font-bold text-foreground">
         {t("analyticsFor")} @{profileName}
       </h1>

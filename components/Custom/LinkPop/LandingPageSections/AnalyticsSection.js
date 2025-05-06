@@ -14,8 +14,8 @@ export default function AnalyticsSection({ mongoUser }) {
       className="bg-background py-12 md:py-16 lg:py-24 overflow-hidden"
     >
       <div className="container mx-auto">
-        <div className="text-center mb-8 md:mb-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-foreground">
+        <div className="text-center mb30">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
             <span className="inline-block bg-gradient-to-r from-[#38BDF8] to-[#F75C9D] text-transparent bg-clip-text animate-gradient-x">
               {t("analytics")}
             </span>{" "}

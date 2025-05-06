@@ -154,7 +154,7 @@ function SocialLinksAnalyticsContent({
           {t("socialLinksPerformance")} ({totalClicks} {t("linkClicks")})
         </h2>
       </div>
-      {!isDemoMode && (
+      {true && (
         <p className="mb-4 fz12 text-muted-foreground">
           {t("socialLinksPerformanceDescription")}
         </p>
