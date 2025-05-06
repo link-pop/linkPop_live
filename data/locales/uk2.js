@@ -1184,9 +1184,9 @@ const uk = {
 
   // crop-related translations
   cropImage: "Обрізати зображення",
-  applyCrop: "Застосувати обрізку",
+  applyCrop: "Застосувати",
   processingImage: "Обробка зображення...",
-  imageCroppedAndSaved: "Зображення успішно обрізано та збережено",
+  imageCroppedAndSaved: "Зображення успішно обрізано",
   errorProcessingImage: "Помилка обробки зображення",
   reCropImage: "Повторно обрізати зображення",
   originalImageNotAvailable:

@@ -1194,9 +1194,9 @@ const fr = {
 
   // crop-related translations
   cropImage: "Recadrer l'image",
-  applyCrop: "Appliquer le recadrage",
+  applyCrop: "Appliquer",
   processingImage: "Traitement de l'image...",
-  imageCroppedAndSaved: "Image recadrée et enregistrée avec succès",
+  imageCroppedAndSaved: "Image recadrée",
   errorProcessingImage: "Erreur lors du traitement de l'image",
   reCropImage: "Recadrer à nouveau l'image",
   originalImageNotAvailable:

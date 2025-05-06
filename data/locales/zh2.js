@@ -1131,7 +1131,7 @@ const zh = {
   cropImage: "裁剪图片",
   applyCrop: "应用裁剪",
   processingImage: "处理图片中...",
-  imageCroppedAndSaved: "图片已成功裁剪并保存",
+  imageCroppedAndSaved: "图片已成功裁剪",
   errorProcessingImage: "处理图片时出错",
   reCropImage: "重新裁剪图片",
   originalImageNotAvailable: "原始图片不可用于重新裁剪",

@@ -1195,9 +1195,9 @@ const es = {
 
   // crop-related translations
   cropImage: "Recortar Imagen",
-  applyCrop: "Aplicar Recorte",
+  applyCrop: "Aplicar",
   processingImage: "Procesando imagen...",
-  imageCroppedAndSaved: "Imagen recortada y guardada correctamente",
+  imageCroppedAndSaved: "Imagen recortada",
   errorProcessingImage: "Error al procesar la imagen",
   reCropImage: "Volver a Recortar Imagen",
   originalImageNotAvailable:

@@ -1184,9 +1184,9 @@ const en = {
 
   // Add these crop-related translations
   cropImage: "Crop Image",
-  applyCrop: "Apply Crop",
+  applyCrop: "Apply",
   processingImage: "Processing image...",
-  imageCroppedAndSaved: "Image cropped and saved successfully",
+  imageCroppedAndSaved: "Image cropped",
   errorProcessingImage: "Error processing image",
   reCropImage: "Re-crop Image",
   originalImageNotAvailable: "Original image not available for re-cropping",

@@ -54,7 +54,7 @@ export default function AlertDialog() {
         )}
 
         <div
-          className={`oa`}
+          className={`oa max-w-full`}
           // TODO !!! ??? can brake user attachments dialog
           // style={{ overflow: "hidden" }}
         >
@@ -82,7 +82,7 @@ export default function AlertDialog() {
 
         {dialog?.showBtns !== false && (
           <AlertDialogFooter
-            className={`fcc g5 px15 ${dialog.footerClassName}`}
+            className={`fcc g5 px-4 w-full max-w-full flex-wrap justify-center ${dialog.footerClassName}`}
           >
             {dialog.showCancelBtn !== false && (
               <Button2

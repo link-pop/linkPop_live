@@ -66,7 +66,7 @@ const ImageCropper = ({
         </div>
       </div>
 
-      <div className="fcc g15">
+      <div className="flex justify-center items-center gap-4 w-full px-4 pb-4">
         <Button variant="outline" onClick={onCancel} className="min-w-24">
           {t("cancel")}
         </Button>

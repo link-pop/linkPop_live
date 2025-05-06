@@ -97,7 +97,7 @@ export default function ProfileImagesUploader({
     dialogSet({
       className: "fixed inset-0 w-screen h-screen",
       contentClassName:
-        "border-none max-w-full max-h-[100dvh] h-screen w-screen m-0 rounded-none",
+        "border-none max-w-full max-h-[100dvh] h-screen w-screen m-0 rounded-none overflow-hidden",
       isOpen: true,
       hasCloseIcon: false,
       title: t("cropImage"),

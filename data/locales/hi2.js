@@ -1199,7 +1199,7 @@ const hi = {
   cropImage: "छवि क्रॉप करें",
   applyCrop: "क्रॉप लागू करें",
   processingImage: "छवि प्रोसेसिंग हो रही है...",
-  imageCroppedAndSaved: "छवि सफलतापूर्वक क्रॉप की गई और सहेजी गई",
+  imageCroppedAndSaved: "छवि सफलतापूर्वक क्रॉप की गई",
   errorProcessingImage: "छवि प्रोसेस करने में त्रुटि",
   reCropImage: "छवि पुनः क्रॉप करें",
   originalImageNotAvailable: "मूल छवि पुनः क्रॉप करने के लिए उपलब्ध नहीं है",
