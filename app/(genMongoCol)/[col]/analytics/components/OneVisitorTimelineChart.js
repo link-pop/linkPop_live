@@ -6,6 +6,7 @@ import { Calendar, ChevronDown, TrendingUp, Check } from "lucide-react";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { useQuery } from "@tanstack/react-query";
 import { getSocialMediaLinks } from "@/lib/actions/getSocialMediaLinks";
+import { ExportButton } from "@/app/admin/analytics/components/ChartExport";
 
 // ! code start chart theme colors
 const chartColors = {
@@ -1176,111 +1177,119 @@ export default function VisitorTimeline({
           {t("activityTimeline")}
         </h2>
 
-        <div className="p15 relative" ref={dropdownRef}>
-          <button
-            onClick={() => setShowDropdown(!showDropdown)}
-            className={`flex items-center px-4 py-2 border rounded-md bg-background text-sm font-medium text-foreground hover:bg-muted transition-colors duration-200 shadow-sm`}
-          >
-            <Calendar size={16} className="mr-2 text-primary" />
-            {timeRanges[timeframe].label}
-            <ChevronDown size={16} className="ml-2 text-muted-foreground" />
-          </button>
+        <div className="p15 flex items-center space-x-2">
+          <ExportButton
+            chartInstance={chartInstance}
+            title="VisitorTimeline"
+            timeRangeLabel={timeRanges[timeframe].label}
+          />
 
-          {showDropdown && (
-            <div
-              className={`absolute top-full right-0 mt-1 w-56 rounded-md shadow-lg bg-popover ring-1 ring-border ring-opacity-5 z-10 divide-y divide-border overflow-hidden`}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setShowDropdown(!showDropdown)}
+              className={`flex items-center px-4 py-2 border rounded-md bg-background text-sm font-medium text-foreground hover:bg-muted transition-colors duration-200 shadow-sm`}
             >
-              <div className="py-1">
-                <button
-                  onClick={() => {
-                    setTimeframe("today");
-                    setShowDropdown(false);
-                  }}
-                  className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
-                >
-                  {t("today")}
-                </button>
-                <button
-                  onClick={() => {
-                    setTimeframe("yesterday");
-                    setShowDropdown(false);
-                  }}
-                  className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
-                >
-                  {t("yesterday")}
-                </button>
-                <button
-                  onClick={() => {
-                    setTimeframe("last7Days");
-                    setShowDropdown(false);
-                  }}
-                  className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
-                >
-                  {t("last7Days")}
-                </button>
-                <button
-                  onClick={() => {
-                    setTimeframe("last30Days");
-                    setShowDropdown(false);
-                  }}
-                  className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
-                >
-                  {t("last30Days")}
-                </button>
+              <Calendar size={16} className="mr-2 text-primary" />
+              {timeRanges[timeframe].label}
+              <ChevronDown size={16} className="ml-2 text-muted-foreground" />
+            </button>
+
+            {showDropdown && (
+              <div
+                className={`absolute top-full right-0 mt-1 w-56 rounded-md shadow-lg bg-popover ring-1 ring-border ring-opacity-5 z-10 divide-y divide-border overflow-hidden`}
+              >
+                <div className="py-1">
+                  <button
+                    onClick={() => {
+                      setTimeframe("today");
+                      setShowDropdown(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
+                  >
+                    {t("today")}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setTimeframe("yesterday");
+                      setShowDropdown(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
+                  >
+                    {t("yesterday")}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setTimeframe("last7Days");
+                      setShowDropdown(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
+                  >
+                    {t("last7Days")}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setTimeframe("last30Days");
+                      setShowDropdown(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
+                  >
+                    {t("last30Days")}
+                  </button>
+                </div>
+                <div className="py-1">
+                  <button
+                    onClick={() => {
+                      setTimeframe("currentMonth");
+                      setShowDropdown(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
+                  >
+                    {t("currentMonth")}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setTimeframe("lastMonth");
+                      setShowDropdown(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
+                  >
+                    {t("lastMonth")}
+                  </button>
+                </div>
+                <div className="py-1">
+                  <button
+                    onClick={() => {
+                      setTimeframe("currentYear");
+                      setShowDropdown(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
+                  >
+                    {t("currentYear")}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setTimeframe("lastYear");
+                      setShowDropdown(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
+                  >
+                    {t("lastYear")}
+                  </button>
+                </div>
+                <div className="py-1">
+                  <button
+                    onClick={() => {
+                      setTimeframe("allTime");
+                      setShowDropdown(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
+                  >
+                    {t("allTime")}
+                  </button>
+                </div>
               </div>
-              <div className="py-1">
-                <button
-                  onClick={() => {
-                    setTimeframe("currentMonth");
-                    setShowDropdown(false);
-                  }}
-                  className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
-                >
-                  {t("currentMonth")}
-                </button>
-                <button
-                  onClick={() => {
-                    setTimeframe("lastMonth");
-                    setShowDropdown(false);
-                  }}
-                  className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
-                >
-                  {t("lastMonth")}
-                </button>
-              </div>
-              <div className="py-1">
-                <button
-                  onClick={() => {
-                    setTimeframe("currentYear");
-                    setShowDropdown(false);
-                  }}
-                  className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
-                >
-                  {t("currentYear")}
-                </button>
-                <button
-                  onClick={() => {
-                    setTimeframe("lastYear");
-                    setShowDropdown(false);
-                  }}
-                  className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
-                >
-                  {t("lastYear")}
-                </button>
-              </div>
-              <div className="py-1">
-                <button
-                  onClick={() => {
-                    setTimeframe("allTime");
-                    setShowDropdown(false);
-                  }}
-                  className={`w-full text-left px-4 py-2 text-sm text-popover-foreground hover:bg-muted transition-colors duration-150`}
-                >
-                  {t("allTime")}
-                </button>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
