@@ -32,7 +32,7 @@ import GeoFilterForm from "./GeoFilterForm";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import Switch2 from "@/components/ui/shared/Switch/Switch2";
 import Select from "@/components/ui/shared/Select/Select";
-import { MapPin } from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
 import { SmartDatetimeInput } from "@/components/ui/shared/SmartDatetimeInput/SmartDatetimeInput";
 import FormPixelIdInput from "./FormPixelIdInput";
 import FormUniqueNameInput from "./FormUniqueNameInput";
@@ -980,7 +980,10 @@ function AddLandingPageForm({
               onClick={() => setStep(3)}
               disabled={createdLinksCount === 0}
             >
-              {t("continueToCustomization") || "Continue to Customization"}
+              <div className="fcc g10 !fwn !wsn">
+                {t("continueToCustomization") || "Continue to Customization"}
+                <ArrowRight size={20} />
+              </div>
             </Button>
           </div>
         </>
@@ -1014,7 +1017,10 @@ function AddLandingPageForm({
 
           <div className="fcc g15 mt25">
             <Button as="div" onClick={() => setStep(4)}>
-              {t("continueToGeoFiltering")}
+              <div className="fcc g10 !fwn !wsn">
+                {t("continueToGeoFiltering")}
+                <ArrowRight size={20} />
+              </div>
             </Button>
           </div>
         </>

@@ -768,7 +768,7 @@ const uk = {
     "Пряме посилання успішно створено! Тепер налаштуйте гео-фільтрацію.",
   skipGeoFilter: "Пропустити гео-фільтр і завершити",
   directlinkConfigurationComplete: "Налаштування прямого посилання завершено!",
-  continueToGeoFiltering: "Продовжити до гео-фільтрації",
+  continueToGeoFiltering: "До гео-фільтрації",
   finish: "Завершити налаштування",
 
   // Shield Protection
@@ -943,7 +943,7 @@ const uk = {
   createAndContinue: "Створити та продовжити",
   saving: "Збереження...",
   pleaseAddAtLeastOneLink: "Будь ласка, додайте хоча б одне посилання",
-  continueToCustomization: "Продовжити до налаштування",
+  continueToCustomization: "До налаштування",
   landingPage: "Лендінг сторінка",
   createdAndConfigured: "створено та налаштовано",
   successfully: "успішно",

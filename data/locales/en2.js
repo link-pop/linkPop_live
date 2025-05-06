@@ -771,7 +771,7 @@ const en = {
     "Direct link created successfully! Now set up geo filtering.",
   skipGeoFilter: "Skip Geo Filter & Finish",
   directlinkConfigurationComplete: "Direct link configuration complete!",
-  continueToGeoFiltering: "Continue to Geo Filtering",
+  continueToGeoFiltering: "To Geo Filtering",
   finish: "Finish Setup",
 
   // Shield Protection
@@ -941,7 +941,7 @@ const en = {
   createAndContinue: "Create & Continue",
   saving: "Saving...",
   pleaseAddAtLeastOneLink: "Please add at least one link",
-  continueToCustomization: "Continue to Customization",
+  continueToCustomization: "To Customization",
   landingPage: "Landing page",
   createdAndConfigured: "created and configured",
   successfully: "successfully",

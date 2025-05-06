@@ -766,7 +766,7 @@ const fr = {
     "Lien direct créé avec succès ! Configurez maintenant le filtrage géographique.",
   skipGeoFilter: "Ignorer le filtre géographique et terminer",
   directlinkConfigurationComplete: "Configuration du lien direct terminée !",
-  continueToGeoFiltering: "Continuer vers le filtrage géographique",
+  continueToGeoFiltering: "Filtrage géographique",
   finish: "Terminer la configuration",
 
   // Shield Protection
@@ -944,7 +944,7 @@ const fr = {
   createAndContinue: "Créer et continuer",
   saving: "Enregistrement...",
   pleaseAddAtLeastOneLink: "Veuillez ajouter au moins un lien",
-  continueToCustomization: "Continuer vers la personnalisation",
+  continueToCustomization: "personnalisation",
   createdAndConfigured: "créée et configurée",
   successfully: "avec succès",
 

@@ -838,7 +838,7 @@ const es = {
   createAndContinue: "Crear y Continuar",
   saving: "Guardando...",
   pleaseAddAtLeastOneLink: "Por favor, añade al menos un enlace",
-  continueToCustomization: "Continuar a Personalización",
+  continueToCustomization: "Personalización",
   landingPage: "Página de destino",
   createdAndConfigured: "creada y configurada",
   successfully: "con éxito",
@@ -1128,7 +1128,7 @@ const es = {
   skipGeoFilter: "Omitir filtro geográfico y finalizar",
   directlinkConfigurationComplete:
     "¡Configuración del enlace directo completa!",
-  continueToGeoFiltering: "Continuar al filtrado geográfico",
+  continueToGeoFiltering: "Filtrado geográfico",
   finish: "Finalizar configuración",
 
   // Shield Protection
