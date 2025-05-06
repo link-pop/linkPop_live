@@ -875,7 +875,7 @@ function AddLandingPageForm({
             </div>
 
             {/* Promotion End Time */}
-            <div className="mt-4">
+            <div className="mt-4 pt10">
               <div className="setEndTimeForPromotion">
                 <SmartDatetimeInput
                   label={t("promotionEndsIn") || "Promotion Ends At"}
