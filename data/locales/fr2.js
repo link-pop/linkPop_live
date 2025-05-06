@@ -136,7 +136,7 @@ const fr = {
   linksUsed: "liens utilisés",
   linksUsageSummary:
     "{used} sur {limit} liens utilisés ({directLinks} liens directs, {landingPages} pages d'atterrissage, {remaining} restants)",
-  landingPages: "pages d'atterrissage",
+  landingPages: "Pages d'atterrissage",
   remaining: "restants",
   trialSubscriptionActive:
     "Abonnement d'essai actif. Accès complet jusqu'à la fin de l'essai.",

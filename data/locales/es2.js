@@ -133,7 +133,7 @@ const es = {
   linksUsed: "enlaces usados",
   linksUsageSummary:
     "{used} de {limit} enlaces usados ({directLinks} enlaces directos, {landingPages} páginas de destino, {remaining} restantes)",
-  landingPages: "páginas de destino",
+  landingPages: "Páginas de destino",
   remaining: "restantes",
   trialSubscriptionActive:
     "Suscripción de prueba activa. Acceso completo hasta que finalice la prueba.",

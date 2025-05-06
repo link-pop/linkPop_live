@@ -32,7 +32,7 @@ export default function Toggle({
                 label.className
               } cp py-2 px-4 text-center transition-colors duration-200 flex-1`}
             >
-              {t(label.text.toLowerCase().replace(" ", ""))}
+              {t(label.text)}
             </div>
           ))}
         </div>
