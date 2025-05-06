@@ -19,6 +19,7 @@ const hi = {
   welcome: "स्वागत है",
   welcomeToSite2: "Link Pop में आपका स्वागत है",
   other: "अन्य",
+  preview: "पूर्वावलोकन",
   directLinksDesc:
     "अपने महत्वपूर्ण लिंक्स प्रबंधित और साझा करने के लिए एक सुरक्षित प्लेटफॉर्म",
   getStarted: "शुरू करें",

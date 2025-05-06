@@ -19,6 +19,7 @@ const zh = {
   welcome: "欢迎",
   welcomeToSite2: "欢迎来到 Link Pop",
   other: "其他",
+  preview: "预览",
   directLinksDesc: "一个安全的平台，用于管理和分享您的重要链接",
   getStarted: "开始使用",
   easyToUse: "易于使用",

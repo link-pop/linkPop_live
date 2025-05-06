@@ -19,6 +19,7 @@ const fr = {
   welcome: "Bienvenue",
   welcomeToSite2: "Bienvenue sur Link Pop",
   other: "Autre",
+  preview: "Aperçu",
   directLinksDesc:
     "Une plateforme sécurisée pour gérer et partager vos liens importants",
   getStarted: "Commencer",

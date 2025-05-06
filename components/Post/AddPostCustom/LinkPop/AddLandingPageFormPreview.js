@@ -329,7 +329,7 @@ const AddLandingPageFormPreview = memo(function AddLandingPageFormPreview({
   };
 
   return (
-    <div className="!oyh !oxh fc g15 max-h-[85dvh]">
+    <div className="!oyh !oxh !fc !fwn g15 max-h-[85dvh]">
       {/* Add CSS to remove transitions from social links */}
       <style jsx global>{`
         .SocialLinkNoAnimation a:not(.OtherLinkButton) {
@@ -345,6 +345,11 @@ const AddLandingPageFormPreview = memo(function AddLandingPageFormPreview({
           border-radius: 32px !important;
         }
       `}</style>
+
+      {/* Mobile Preview Title */}
+      <h2 className="!wf tac fz20 mt25 landing-page-text md:hidden">
+        {t("preview") || "Preview"}
+      </h2>
 
       {/* iPhone Frame Container */}
       <div className="por mxa" style={{ width: "320px", marginTop: "20px" }}>

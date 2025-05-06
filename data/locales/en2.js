@@ -19,6 +19,7 @@ const en = {
   welcome: "Welcome",
   welcomeToSite2: "Welcome to Link Pop",
   other: "Other",
+  preview: "Preview",
   directLinksDesc:
     "A secure platform for managing and sharing your important links",
   getStarted: "Get Started",

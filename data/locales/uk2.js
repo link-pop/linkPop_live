@@ -18,6 +18,7 @@ const uk = {
   welcome: "Ласкаво просимо",
   welcomeToSite2: "Ласкаво просимо до Link Pop",
   other: "Інше",
+  preview: "Попередній перегляд",
   directLinksDesc:
     "Безпечна платформа для керування та обміну важливими посиланнями",
   getStarted: "Почати",
