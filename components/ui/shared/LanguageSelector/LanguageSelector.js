@@ -11,6 +11,7 @@ export default function LanguageSelector({ className = "" }) {
   const { currentLang, languages } = useTranslation();
 
   const showLanguagePopup = () => {
+    dialogSet({ isOpen: false });
     dialogSet({
       isOpen: true,
       showBtns: false,
