@@ -1297,7 +1297,9 @@ export default function VisitorTimeline({
       <div className="px-4 pb-12 pt-2 flex flex-wrap items-center gap-2 justify-start md:justify-center">
         <div
           className={`flex items-center mr-2 mb-2 cursor-pointer px-3 py-1.5 rounded-md transition-all duration-200 ${
-            !visitsVisible ? "opacity-60 bg-background/50" : "hover:bg-muted/40"
+            !visitsVisible
+              ? "opacity-60 bg-background/50"
+              : "bg-background hover:bg-muted/40 border border-border shadow-sm"
           }`}
           onClick={() => toggleDataset(0)}
           role="button"
@@ -1318,7 +1320,7 @@ export default function VisitorTimeline({
             className={`flex items-center mb-2 cursor-pointer px-3 py-1.5 rounded-md transition-all duration-200 ${
               !clicksVisible
                 ? "opacity-60 bg-background/50"
-                : "hover:bg-muted/40"
+                : "bg-background hover:bg-muted/40 border border-border shadow-sm"
             }`}
             onClick={() => toggleDataset(1)}
             role="button"

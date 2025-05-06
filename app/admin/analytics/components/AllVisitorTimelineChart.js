@@ -2,12 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Chart } from "chart.js/auto";
-import {
-  Calendar,
-  ChevronDown,
-  TrendingUp,
-  Check,
-} from "lucide-react";
+import { Calendar, ChevronDown, TrendingUp, Check } from "lucide-react";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { ExportButton } from "./ChartExport";
 
@@ -1374,7 +1369,7 @@ export default function VisitorTimelineChart({
                   className={`flex items-center mb-2 cursor-pointer px-3 py-1.5 rounded-md transition-all duration-200 ${
                     !datasetVisibility[index]
                       ? "opacity-60 bg-background/50"
-                      : "hover:bg-muted/40"
+                      : "bg-background hover:bg-muted/40 border border-border shadow-sm"
                   }`}
                   onClick={() => toggleDataset(index)}
                   role="button"
