@@ -29,8 +29,18 @@ export default function Footer2() {
   const isAddRoute = pathname === "/add" || pathname.startsWith("/add/");
   const isUpdateRoute =
     pathname === "/update" || pathname.startsWith("/update/");
+  // don't show on directlinks or landingpages routes
+  const isDirectlinksRoute = pathname === DIRECTLINKS_ROUTE;
+  const isLandingpagesRoute = pathname === LANDINGPAGES_ROUTE;
 
-  if (isSignInPage || isAddRoute || isUpdateRoute) return null;
+  if (
+    isSignInPage ||
+    isAddRoute ||
+    isUpdateRoute ||
+    isDirectlinksRoute ||
+    isLandingpagesRoute
+  )
+    return null;
 
   const handleScrollWithNavigation = (e, sectionId) => {
     e.preventDefault();
