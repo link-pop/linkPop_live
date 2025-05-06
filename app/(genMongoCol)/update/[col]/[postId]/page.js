@@ -12,7 +12,7 @@ export default async function updatePostPage({ params }) {
   const col = await getAllMongoCollectionsData(params.col);
   let updatingPost = await getOne({ col, data: { _id: params.postId } });
   const { mongoUser, isDev } = await getMongoUser();
-  // TODO !! await checkCollectionAccess({ col, place: "addPost" });
+  await checkCollectionAccess({ col, place: "addPost", postId: params.postId });
 
   // Check the specific collection name from params
   if (SITE1) {

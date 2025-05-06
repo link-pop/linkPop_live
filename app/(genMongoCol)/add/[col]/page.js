@@ -10,7 +10,7 @@ import AddLandingPageForm from "@/components/Post/AddPostCustom/LinkPop/AddLandi
 export default async function addPostPage({ params }) {
   const { mongoUser, isDev } = await getMongoUser();
   const col = await getAllMongoCollectionsData(params.col);
-  // TODO !! await checkCollectionAccess({ col, place: "addPost" });
+  await checkCollectionAccess({ col, place: "addPost" });
 
   // Check the specific collection name from params
   if (SITE1) {
