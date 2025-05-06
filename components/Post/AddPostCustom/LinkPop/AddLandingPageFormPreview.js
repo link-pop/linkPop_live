@@ -11,6 +11,7 @@ import useLandingPageCustomization from "@/hooks/useLandingPageCustomization";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { Clock, MapPin } from "lucide-react";
 import ViewPreviewButton from "@/components/Custom/ViewPreviewButton";
+import CopyLinkButton from "@/components/Custom/CopyLinkButton";
 import { fetchGeoData } from "@/lib/utils/fetchGeoData";
 
 // Countdown timer component that updates every second
@@ -348,7 +349,10 @@ const AddLandingPageFormPreview = memo(function AddLandingPageFormPreview({
       {/* iPhone Frame Container */}
       <div className="por mxa" style={{ width: "320px", marginTop: "20px" }}>
         {formData.landingPageId && (
-          <ViewPreviewButton name={formData.name} label="view" />
+          <div className="f aic g10 jcc mb-2">
+            <ViewPreviewButton name={formData.name} label="view" />
+            <CopyLinkButton name={formData.name} label="copy" />
+          </div>
         )}
 
         <div className="por" style={{ width: "320px", height: "630px" }}>

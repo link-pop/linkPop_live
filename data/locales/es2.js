@@ -9,6 +9,8 @@ const es = {
   delete: "Eliminar",
   edit: "Editar",
   view: "Ver",
+  copy: "Copiar",
+  copied: "¡Copiado!",
   continue: "Continuar",
   confirm: "Confirmar",
   enabled: "Habilitado",

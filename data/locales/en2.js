@@ -9,6 +9,8 @@ const en = {
   delete: "Delete",
   edit: "Edit",
   view: "View",
+  copy: "Copy",
+  copied: "Copied!",
   continue: "Continue",
   confirm: "Confirm",
   enabled: "Enabled",
@@ -743,7 +745,6 @@ const en = {
   socialLinks: "Social Links",
   customization: "Customization",
   finish: "Finish Setup",
-  copy: "Copy",
   analytics: "Analytics",
 
   // Geo Filtering

@@ -9,6 +9,8 @@ const zh = {
   delete: "删除",
   edit: "编辑",
   view: "查看",
+  copy: "复制",
+  copied: "已复制！",
   continue: "继续",
   confirm: "确认",
   enabled: "已启用",

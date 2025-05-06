@@ -9,6 +9,8 @@ const fr = {
   delete: "Supprimer",
   edit: "Modifier",
   view: "Voir",
+  copy: "Copier",
+  copied: "Copié !",
   continue: "Continuer",
   confirm: "Confirmer",
   enabled: "Activé",

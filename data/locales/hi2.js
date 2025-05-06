@@ -9,6 +9,8 @@ const hi = {
   delete: "हटाएं",
   edit: "संपादित करें",
   view: "देखें",
+  copy: "कॉपी करें",
+  copied: "कॉपी हो गया!",
   continue: "जारी रखें",
   confirm: "पुष्टि करें",
   enabled: "सक्षम",
