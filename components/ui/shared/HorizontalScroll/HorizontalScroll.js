@@ -48,10 +48,6 @@ const HorizontalScroll = forwardRef(function HorizontalScroll(
       if (isTouch) {
         // Ensure adequate padding to allow scrolling to the last item
         // This needs to be large enough on mobile to allow the last item to be fully visible
-        const viewportWidth = window.innerWidth;
-        const rightPadding = Math.max(viewportWidth / 2, 80);
-        childContainer.style.paddingRight = `${rightPadding}px`;
-
         // Make sure the container has full width to enable scrolling to the end
         container.style.width = "100%";
         container.style.overscrollBehaviorX = "contain";
@@ -109,11 +105,13 @@ const HorizontalScroll = forwardRef(function HorizontalScroll(
   return (
     <div
       ref={combinedRef}
-      className={`f fwn overflow-x-auto scrollbar-hide ${className}`}
+      // ! SENSITIVE: very important to use flex and items-center to make it work on mobile
+      className={`flex md:items-center fwn overflow-x-auto scrollbar-hide ${className}`}
       style={{
         WebkitOverflowScrolling: "touch",
         paddingTop: "10px",
         paddingBottom: "10px",
+        paddingLeft: "10px",
         ...style,
       }}
       {...props}
