@@ -263,6 +263,9 @@ export default function CustomUserMenu({
                 ? {
                     onSelect: () => {
                       setIsOpen(false);
+                      setTimeout(() => {
+                        setIsOpen(false);
+                      }, 300);
                       isBurgerClickedSet && isBurgerClickedSet(false);
                     },
                   }
