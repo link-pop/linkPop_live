@@ -308,7 +308,7 @@ export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
             </div>
 
             {/* Display Online and City indicators */}
-            <div className="fc aic jcc g10 my-2">
+            <div className="fc aic jcc g10">
               {/* Group Online status and response time together in a single flex container */}
               <div className="f aic jcc g10 wrap">
                 {post.showOnline && (
@@ -340,14 +340,14 @@ export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
 
             {/* Location indicator with fixed layout */}
             {post.showCity && (
-              <div className="tac mt-1 mb-2">
+              <div className="tac mb15">
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    gap: "6px",
-                    padding: "15px",
+                    gap: "0px",
+                    padding: "0px",
                   }}
                 >
                   <MapPin
