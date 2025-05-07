@@ -329,7 +329,7 @@ const AddLandingPageFormPreview = memo(function AddLandingPageFormPreview({
   };
 
   return (
-    <div className="!oyh !oxh !fc !fwn g15 max-h-[85dvh]">
+    <div className="!oyh !oxh !fc !fwn g15 max-h-[88dvh]">
       {/* Add CSS to remove transitions from social links */}
       <style jsx global>{`
         .SocialLinkNoAnimation a:not(.OtherLinkButton) {
@@ -344,17 +344,29 @@ const AddLandingPageFormPreview = memo(function AddLandingPageFormPreview({
           max-height: 602px !important;
           border-radius: 32px !important;
         }
+
+        @media (max-width: 640px) {
+          .iphone-frame-container {
+            transform: scale(0.9);
+            transform-origin: top center;
+            margin-top: 0 !important;
+            padding-bottom: 15px;
+          }
+        }
       `}</style>
 
       {/* Mobile Preview Title */}
-      <h2 className="!wf tac fz20 mt25 landing-page-text md:hidden">
+      <h2 className="!wf tac fz20 mt15 mb5 landing-page-text md:hidden">
         {t("preview") || "Preview"}
       </h2>
 
       {/* iPhone Frame Container */}
-      <div className="por mxa" style={{ width: "320px", marginTop: "20px" }}>
+      <div
+        className="por mxa iphone-frame-container w-full flex flex-col items-center justify-center pb-4"
+        style={{ maxWidth: "320px" }}
+      >
         {formData.landingPageId && (
-          <div className="f aic g10 jcc mb-2">
+          <div className="f aic g10 jcc mb-2 w-full">
             <ViewPreviewButton name={formData.name} label="view" />
             <CopyLinkButton name={formData.name} label="copy" />
           </div>
