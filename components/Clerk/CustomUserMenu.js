@@ -258,7 +258,16 @@ export default function CustomUserMenu({
 
             <ThemeToggle />
             {SITE1 && <ThemeSettings />}
-            <LanguageSelector isBurgerClickedSet={isBurgerClickedSet} />
+            <LanguageSelector
+              {...(isMobile
+                ? {
+                    onSelect: () => {
+                      setIsOpen(false);
+                      isBurgerClickedSet && isBurgerClickedSet(false);
+                    },
+                  }
+                : {})}
+            />
 
             <div>
               {menuItems.map((item, index) =>

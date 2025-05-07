@@ -6,19 +6,14 @@ import LanguagePopup from "./LanguagePopup";
 import { Globe } from "lucide-react";
 import { MENU_CLASS } from "@/lib/utils/constants";
 
-export default function LanguageSelector({
-  className = "",
-  isBurgerClickedSet,
-}) {
+export default function LanguageSelector({ className = "", onSelect }) {
   const { dialogSet } = useContext();
   const { currentLang, languages } = useTranslation();
 
   const showLanguagePopup = () => {
-    // Close the parent menu if on mobile
-    if (isBurgerClickedSet) {
-      isBurgerClickedSet(false);
+    if (onSelect) {
+      onSelect();
     }
-
     dialogSet({ isOpen: false });
     setTimeout(() => {
       dialogSet({
