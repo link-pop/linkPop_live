@@ -33,6 +33,12 @@ const hi = {
   freeOffer: "मुफ्त प्रस्ताव",
   safePage: "सुरक्षित पेज",
 
+  // Share modal categories (single-word translations)
+  mainTab: "लोकप्रिय",
+  networkTab: "सोशल",
+  chatTab: "मैसेजिंग",
+  moreTab: "अन्य",
+
   // Auth layout translations
   toSupportYour: "आपके पसंदीदा",
   favoriteCreators: "निर्माताओं का समर्थन करने के लिए",
@@ -1206,6 +1212,18 @@ const hi = {
   originalImageNotAvailable: "मूल छवि पुनः क्रॉप करने के लिए उपलब्ध नहीं है",
   usingCroppedImageInstead:
     "मूल के बजाय क्रॉप की गई छवि का उपयोग किया जा रहा है",
+
+  // Add these translations to the appropriate location in the file
+
+  shareSuccess: "सफलतापूर्वक साझा किया गया",
+  shareError: "सामग्री साझा करने में त्रुटि",
+  useDefaultShareTool: "डिफ़ॉल्ट शेयर टूल का उपयोग करें",
+  popular: "लोकप्रिय",
+  social: "सामाजिक",
+  messaging: "मैसेजिंग",
+  other: "अन्य",
+  shareWith: "साझा करें",
+  shareThisLink: "अपने दोस्तों के साथ यह लिंक साझा करें",
 };
 
 export default hi;

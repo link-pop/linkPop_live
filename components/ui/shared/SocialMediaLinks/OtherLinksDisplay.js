@@ -3,6 +3,7 @@
 import { ExternalLink, Share2 } from "lucide-react";
 import TrackableSocialMediaLink from "./TrackableSocialMediaLink";
 import useShareHelper from "../Share/ShareHelper";
+import ShareModal from "../Share/ShareModal";
 
 export default function OtherLinksDisplay({
   links = [],
@@ -12,7 +13,7 @@ export default function OtherLinksDisplay({
   hideIcons = false,
 }) {
   // Get the shareContent function from our reusable hook
-  const { shareContent } = useShareHelper();
+  const { shareContent, shareModalState, closeShareModal } = useShareHelper();
 
   // Make sure links is always an array to prevent runtime errors
   const linksArray = Array.isArray(links) ? links : [];
@@ -39,34 +40,45 @@ export default function OtherLinksDisplay({
   };
 
   return (
-    <div className={`maw500 wf mxa fcc g10 overflow-visible ${className}`}>
-      {otherLinks.map((link) => (
-        <TrackableSocialMediaLink
-          key={link._id || link.id}
-          href={link.websiteUrl}
-          linkId={link._id || link.id}
-          className={`f aic jcsb wf py15 px20 br15 hover:opacity-80 transition-all group cp overflow-visible OtherLinkButton ${buttonClassName}`}
-        >
-          <div className="f fwn aic g10">
-            {!hideIcons && (
-              <ExternalLink
+    <>
+      <div className={`maw500 wf mxa fcc g10 overflow-visible ${className}`}>
+        {otherLinks.map((link) => (
+          <TrackableSocialMediaLink
+            key={link._id || link.id}
+            href={link.websiteUrl}
+            linkId={link._id || link.id}
+            className={`f aic jcsb wf py15 px20 br15 hover:opacity-80 transition-all group cp overflow-visible OtherLinkButton ${buttonClassName}`}
+          >
+            <div className="f fwn aic g10">
+              {!hideIcons && (
+                <ExternalLink
+                  size={iconSize}
+                  className="group-hover:text-brand transition-colors"
+                />
+              )}
+              <span className="fz16 fw600">{link.label}</span>
+            </div>
+            <div
+              className="share-button"
+              onClick={(e) => handleShare(e, link.websiteUrl, link.label)}
+            >
+              <Share2
                 size={iconSize}
                 className="group-hover:text-brand transition-colors"
               />
-            )}
-            <span className="fz16 fw600">{link.label}</span>
-          </div>
-          <div
-            className="share-button"
-            onClick={(e) => handleShare(e, link.websiteUrl, link.label)}
-          >
-            <Share2
-              size={iconSize}
-              className="group-hover:text-brand transition-colors"
-            />
-          </div>
-        </TrackableSocialMediaLink>
-      ))}
-    </div>
+            </div>
+          </TrackableSocialMediaLink>
+        ))}
+      </div>
+
+      {/* Render ShareModal component */}
+      <ShareModal
+        isOpen={shareModalState.isOpen}
+        onClose={closeShareModal}
+        url={shareModalState.url}
+        title={shareModalState.title}
+        text={shareModalState.text}
+      />
+    </>
   );
 }

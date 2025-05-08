@@ -32,6 +32,12 @@ const uk = {
   freeOffer: "Безкоштовна пропозиція",
   safePage: "Безпечна сторінка",
 
+  // Share modal categories (single-word translations)
+  mainTab: "Популярні",
+  networkTab: "Соцмережі",
+  chatTab: "Месенджери",
+  moreTab: "Інше",
+
   // Auth layout translations
   toSupportYour: "щоб підтримати ваших",
   favoriteCreators: "улюблених творців",
@@ -1194,6 +1200,16 @@ const uk = {
     "Оригінальне зображення недоступне для повторної обрізки",
   usingCroppedImageInstead:
     "Використовується обрізане зображення замість оригінального",
+
+  shareSuccess: "Успішно поділилися",
+  shareError: "Помилка під час обміну вмістом",
+  useDefaultShareTool: "Використовувати стандартний інструмент обміну",
+  popular: "Популярні",
+  social: "Соціальні",
+  messaging: "Обмін повідомленнями",
+  other: "Інше",
+  shareWith: "Поділитися",
+  shareThisLink: "Поділіться цим посиланням з друзями",
 };
 
 export default uk;

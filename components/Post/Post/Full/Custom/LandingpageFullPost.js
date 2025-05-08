@@ -19,6 +19,7 @@ import { useContext } from "@/components/Context/Context";
 import RoundIconButton from "@/components/ui/shared/RoundIconButton/RoundIconButton";
 import useShareHelper from "@/components/ui/shared/Share/ShareHelper";
 import { fetchGeoData } from "@/lib/utils/fetchGeoData";
+import ShareModal from "@/components/ui/shared/Share/ShareModal";
 
 // Countdown timer component that updates every second
 const PromotionCountdown = ({ endsAt }) => {
@@ -94,7 +95,7 @@ export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
   const [socialLinks, setSocialLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const { shareContent } = useShareHelper();
+  const { shareContent, shareModalState, closeShareModal } = useShareHelper();
   const [visitorCity, setVisitorCity] = useState("");
 
   // Fetch visitor's city on component mount
@@ -465,6 +466,16 @@ export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
             <Logo height="30px" />
           </div>
         }
+      />
+
+      {/* Render ShareModal component */}
+      <ShareModal
+        isOpen={shareModalState.isOpen}
+        onClose={closeShareModal}
+        url={shareModalState.url}
+        title={shareModalState.title}
+        text={shareModalState.text}
+        image={post?.profileImage}
       />
     </>
   );

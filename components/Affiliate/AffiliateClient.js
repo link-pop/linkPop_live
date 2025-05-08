@@ -33,6 +33,7 @@ import { processReferralEarnings } from "@/lib/utils/referral/calculateReferralE
 import { getUserReferralData } from "@/lib/actions/referral/getUserReferralData";
 import useShareHelper from "@/components/ui/shared/Share/ShareHelper";
 import TitleWithBackButton from "@/components/ui/shared/PageHeading/TitleWithBackButton";
+import ShareModal from "@/components/ui/shared/Share/ShareModal";
 
 export default function AffiliateClient({ data }) {
   const [copyState, setCopyState] = useState({
@@ -49,7 +50,7 @@ export default function AffiliateClient({ data }) {
   const [referralData, setReferralData] = useState(data);
   const { t } = useTranslation();
   const { toastSet, dialogSet } = useContext();
-  const { shareContent } = useShareHelper();
+  const { shareContent, shareModalState, closeShareModal } = useShareHelper();
 
   // Filter out trial subscriptions from earnings
   useEffect(() => {
@@ -627,10 +628,22 @@ export default function AffiliateClient({ data }) {
       {/* Apply Referral Code section (show only if user hasn't been referred yet) */}
       {!referralData.isReferred && (
         <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-4">{t("applyReferralCode")}</h2>
+          <h2 className="tac text-2xl font-bold mb-4">
+            {t("applyReferralCode")}
+          </h2>
           <ApplyReferralCodeForm onSuccess={() => window.location.reload()} />
         </div>
       )}
+
+      {/* Render ShareModal component */}
+      <ShareModal
+        isOpen={shareModalState.isOpen}
+        onClose={closeShareModal}
+        url={shareModalState.url}
+        title={shareModalState.title}
+        text={shareModalState.text}
+        image={shareModalState.image}
+      />
     </div>
   );
 }

@@ -33,6 +33,12 @@ const fr = {
   freeOffer: "Offre gratuite",
   safePage: "Page sécurisée",
 
+  // Share modal categories (single-word translations)
+  mainTab: "Populaires",
+  networkTab: "Sociaux",
+  chatTab: "Messages",
+  moreTab: "Autres",
+
   // Auth layout translations
   toSupportYour: "pour soutenir vos",
   favoriteCreators: "créateurs préférés",
@@ -1204,6 +1210,16 @@ const fr = {
     "Image originale non disponible pour un nouveau recadrage",
   usingCroppedImageInstead:
     "Utilisation de l'image recadrée au lieu de l'originale",
+
+  shareSuccess: "Partagé avec succès",
+  shareError: "Erreur lors du partage du contenu",
+  useDefaultShareTool: "Utiliser l'outil de partage par défaut",
+  popular: "Populaire",
+  social: "Social",
+  messaging: "Messagerie",
+  other: "Autre",
+  shareWith: "Partager",
+  shareThisLink: "Partagez ce lien avec vos amis",
 };
 
 export default fr;

@@ -1137,6 +1137,22 @@ const zh = {
   reCropImage: "重新裁剪图片",
   originalImageNotAvailable: "原始图片不可用于重新裁剪",
   usingCroppedImageInstead: "使用已裁剪的图片代替原始图片",
+
+  shareSuccess: "分享成功",
+  shareError: "分享内容时出错",
+  useDefaultShareTool: "使用默认分享工具",
+  popular: "热门",
+  social: "社交",
+  messaging: "消息",
+  other: "其他",
+  shareWith: "分享",
+  shareThisLink: "与朋友分享此链接",
+
+  // Share modal categories (single-word translations)
+  mainTab: "热门",
+  networkTab: "社交",
+  chatTab: "消息",
+  moreTab: "其他",
 };
 
 export default zh;

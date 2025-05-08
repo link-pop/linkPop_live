@@ -33,6 +33,12 @@ const en = {
   freeOffer: "Free offer",
   safePage: "Safe Page",
 
+  // Share modal categories (single-word translations)
+  mainTab: "Popular",
+  networkTab: "Social",
+  chatTab: "Messaging",
+  moreTab: "Other",
+
   // Auth layout translations
   toSupportYour: "to support your",
   favoriteCreators: "favorite creators",
@@ -1192,6 +1198,20 @@ const en = {
   reCropImage: "Re-crop Image",
   originalImageNotAvailable: "Original image not available for re-cropping",
   usingCroppedImageInstead: "Using cropped image instead of original",
+
+  // Share modal translations
+  shareWith: "Share",
+  shareThisLink: "Share this link with your friends",
+  copy: "Copy",
+  copied: "Copied!",
+  shareReferralLink: "Share Referral Link",
+  shareSuccess: "Shared successfully",
+  shareError: "Error sharing content",
+  useDefaultShareTool: "Use default share tool",
+  popular: "Popular",
+  social: "Social",
+  messaging: "Messaging",
+  other: "Other",
 };
 
 export default en;
