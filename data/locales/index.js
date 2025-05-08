@@ -12,7 +12,7 @@ if (SITE2) {
   fr = require("./fr2").default;
   zh = require("./zh2").default;
 } else if (SITE1) {
-  en = require("./en2").default; // add en1 later
+  en = require("./en1").default; // add en1 later
   uk = require("./uk2").default; // add en1 later
   es = require("./es2").default; // add en1 later
   hi = require("./hi2").default; // add hi1 later
