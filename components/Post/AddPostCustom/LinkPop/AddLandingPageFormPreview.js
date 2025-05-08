@@ -66,7 +66,7 @@ const PromotionCountdown = ({ endsAt }) => {
   if (!timeLeft) return null;
 
   return (
-    <span className="text-xs landing-page-text opacity-75 ml-1">
+    <span className="text-xs landing-page-text opacity-75 ml-1 wf tac">
       {t("endsIn") || "ends in"} {timeLeft}
     </span>
   );
