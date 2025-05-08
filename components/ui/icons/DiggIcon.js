@@ -14,21 +14,13 @@ const DiggIcon = React.forwardRef(
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        role="img"
         {...rest}
       >
+        <title>Digg</title>
         <path
+          d="M17.76 8.16v8.16h3.84v.96h-3.84v1.92H24V8.16h-6.24zm-7.2 0v8.16h3.84v.96h-3.84v1.92h6.24V8.16h-6.24zM3.84 4.8v3.36H0v8.16h6.24V4.8h-2.4zM9.6 8.16H7.2v8.16h2.4V8.16zm12 6.24h-1.44v-4.32h1.44v4.32zm-17.76 0H2.4v-4.32h1.44v4.32zm10.56 0h-1.44v-4.32h1.44v4.32zM9.6 4.8H7.2v2.4h2.4V4.8z"
           fill={color}
-          d="M8.5 5v5h-3V5H3v9h2.5v-2h3v2H11V5H8.5z"
-          stroke="none"
-        />
-        <path
-          fill={color}
-          d="M13 5v7h-2.5v2H14c.55 0 1-.45 1-1V5h-2z"
-          stroke="none"
-        />
-        <path
-          fill={color}
-          d="M18.5 5v7h-3V5h-2v9c0 .55.45 1 1 1h5c.55 0 1-.45 1-1V5h-2z"
           stroke="none"
         />
       </svg>
