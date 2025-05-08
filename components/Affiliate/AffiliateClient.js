@@ -628,9 +628,6 @@ export default function AffiliateClient({ data }) {
       {/* Apply Referral Code section (show only if user hasn't been referred yet) */}
       {!referralData.isReferred && (
         <div className="mt-12">
-          <h2 className="tac text-2xl font-bold mb-4">
-            {t("applyReferralCode")}
-          </h2>
           <ApplyReferralCodeForm onSuccess={() => window.location.reload()} />
         </div>
       )}
