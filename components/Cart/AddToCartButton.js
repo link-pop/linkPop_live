@@ -21,8 +21,9 @@ export default function AddToCartButton({
 
   // ! skip render if viewing another user's cart: only show button for cart owner
   const pathname = usePathname();
-  const pageUserId = pathname.split("/")?.[2];
-  if (pathname.includes("/users/") && pageUserId !== mongoUser?._id)
+  // Extract username from path when it matches the pattern /username
+  const pageUserId = pathname.match(/^\/([^\/]+)$/) ? pathname.slice(1) : null;
+  if (pathname.match(/^\/[^\/]+$/) && pageUserId !== mongoUser?._id)
     return null;
 
   const handleAddToCart = (e) => {

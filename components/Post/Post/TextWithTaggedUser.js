@@ -9,8 +9,8 @@ export default function TextWithTaggedUser({ post }) {
               <Link
                 className={`brand`}
                 key={index}
-                // go to user eg: /users/olivia
-                href={`/users/${part
+                // go to user eg: /olivia
+                href={`/${part
                   .slice(1)
                   .match(/^([^,]+)/)[1]
                   .trim()}`}

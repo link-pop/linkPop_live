@@ -65,7 +65,8 @@ export function CartProvider({ children }) {
   // ! 1. load my cart on mount (=> 2 load = passed user's cart)
   useEffect(() => {
     // don't load MY cart here, coz we're loading passed user's cart
-    if (pathname.includes("/users/")) return;
+    // Check if viewing a user profile directly from root
+    if (pathname.match(/^\/[^\/]+$/)) return;
     loadCart(mongoUser?._id);
   }, [mongoUser, pathname]);
 

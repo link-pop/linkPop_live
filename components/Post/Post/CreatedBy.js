@@ -50,7 +50,7 @@ export default function CreatedBy({
     // ??? was createdBy?._id
     <Link
       className={`${wrapClassName}`}
-      href={`${hasProfile ? `/users/${createdBy?.name}` : ""}`}
+      href={`${hasProfile ? `/${createdBy?.name}` : ""}`}
     >
       <div
         className={`f aic g10 ${className} ${

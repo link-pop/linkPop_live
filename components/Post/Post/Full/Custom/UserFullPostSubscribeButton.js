@@ -112,7 +112,7 @@ export default function UserFullPostSubscribeButton({
           sourceId: mongoUser._id,
           sourceModel: "users",
           sourceUserId: mongoUser._id,
-          link: `/users/${mongoUser.name}`,
+          link: `/${mongoUser.name}`,
           socket,
         });
 
@@ -192,7 +192,7 @@ export default function UserFullPostSubscribeButton({
           sourceId: mongoUser._id,
           sourceModel: "users",
           sourceUserId: mongoUser._id,
-          link: `/users/${mongoUser.name}`,
+          link: `/${mongoUser.name}`,
           socket,
         });
 
@@ -241,7 +241,7 @@ export default function UserFullPostSubscribeButton({
               sourceId: subscribedToUser._id,
               sourceModel: "users",
               sourceUserId: subscribedToUser._id,
-              link: `/users/${subscribedToUser.name}`,
+              link: `/${subscribedToUser.name}`,
               socket,
             });
           }

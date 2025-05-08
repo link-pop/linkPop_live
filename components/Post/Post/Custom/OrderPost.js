@@ -63,7 +63,7 @@ export default function OrderPost(props) {
             {/* CUSTOMER */}
             <div className="f jcc !w150 wf px5 asfs">
               <Link
-                href={`/users/${post.createdBy?._id}`}
+                href={`/${post.createdBy?._id}`}
                 onClick={(e) => e.stopPropagation()} // ! let each item be clickable inside "table" (OrderPost)
                 className={`fcc`}
               >

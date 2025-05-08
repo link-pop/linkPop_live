@@ -22,7 +22,8 @@ export default function PostIcons({
 }) {
   // ! skip render if viewing another user's cart
   const pathname = usePathname();
-  if (pathname.includes("/users/")) return null;
+  // Check if viewing a user profile directly from root (without /users/)
+  if (pathname.match(/^\/[^\/]+$/)) return null;
 
   return (
     <div

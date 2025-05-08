@@ -6,7 +6,7 @@ export default async function qrcodepage() {
 
   // Create initial profile URL as fallback
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com";
-  const initialProfileUrl = `${baseUrl}/users/${mongoUser?.name}`;
+  const initialProfileUrl = `${baseUrl}/${mongoUser?.name}`;
 
   return (
     <QRCodePage mongoUser={mongoUser} initialProfileUrl={initialProfileUrl} />

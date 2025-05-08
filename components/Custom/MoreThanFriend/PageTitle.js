@@ -31,7 +31,7 @@ const PageTitle = () => {
     title = t("editPost");
   } else if (pathname === FEEDS_ROUTE) {
     title = t("feed");
-  } else if (pathname.includes("/users/")) {
+  } else if (pathname.match(/^\/[^\/]+$/)) {
     title = t("profile");
   } else if (pathname.includes("/feeds/")) {
     title = t("post");

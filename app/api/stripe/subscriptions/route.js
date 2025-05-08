@@ -79,7 +79,7 @@ export async function POST(req) {
       ],
       mode: "subscription",
       success_url: `${getBaseUrl()}/api/stripe/subscriptions/success?userId=${userId}&creatorId=${creatorId}&sessionId={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${getBaseUrl()}/users/${creator.name}`,
+      cancel_url: `${getBaseUrl()}/${creator.name}`,
       customer_email: userEmail,
       metadata: {
         userId: userId.toString(),

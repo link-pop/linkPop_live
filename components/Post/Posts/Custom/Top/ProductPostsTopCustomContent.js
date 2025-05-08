@@ -10,7 +10,8 @@ export default function ProductPostsTopCustomContent({
 }) {
   if (col.name !== "products") return null;
   const pathname = usePathname();
-  if (pathname.includes("/users/")) return null;
+  // Check if viewing a user profile directly from root
+  if (pathname.match(/^\/[^\/]+$/)) return null;
 
   return (
     showCategories &&

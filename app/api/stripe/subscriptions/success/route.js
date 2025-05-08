@@ -103,7 +103,7 @@ export async function GET(req) {
         sourceId: userId,
         sourceModel: "users",
         sourceUserId: userId,
-        link: `/users/${subscriber?.name}`,
+        link: `/${subscriber?.name}`,
       });
 
       // Check if auto follow back is enabled AND subscription price is 0
@@ -143,7 +143,7 @@ export async function GET(req) {
             sourceId: creatorId,
             sourceModel: "users",
             sourceUserId: creatorId,
-            link: `/users/${creator.name}`,
+            link: `/${creator.name}`,
           });
         }
       }
@@ -197,7 +197,7 @@ export async function GET(req) {
 
     // Redirect to success page
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000"}/users/${
+      `${process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000"}/${
         creator.name
       }?subscribed=true`
     );

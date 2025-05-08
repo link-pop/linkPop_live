@@ -129,7 +129,7 @@ export default function CustomUserMenu({
       ? [
           {
             label: t("profile"),
-            href: `/users/${mongoUser?.name}`,
+            href: `/${mongoUser?.name}`,
             icon: <User />,
           },
           {

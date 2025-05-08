@@ -14,7 +14,7 @@ export default function QRCodePage({ mongoUser, initialProfileUrl }) {
   useEffect(() => {
     // Update the profile URL with the current origin
     const origin = window.location.origin;
-    setProfileUrl(`${origin}/users/${mongoUser.name}`);
+    setProfileUrl(`${origin}/${mongoUser.name}`);
 
     // Make sure avatar URL is absolute
     const avatar = mongoUser.profileImage || mongoUser.avatar;
