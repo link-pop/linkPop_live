@@ -23,7 +23,7 @@ export default function AdvancedVisitorInsights({ visitors, isDev = false }) {
 
   if (!visitors || visitors.length === 0) {
     return (
-      <div className="text-center p-4 bg-accent rounded-lg shadow">
+      <div className="text-center p-4 backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 rounded-lg shadow">
         <h2 className="text-xl font-semibold mb-4">
           {t("advancedVisitorInsights")}
         </h2>
@@ -282,7 +282,7 @@ export default function AdvancedVisitorInsights({ visitors, isDev = false }) {
   };
 
   return (
-    <div className="bg-accent p-6 rounded-lg shadow">
+    <div className="backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 p-6 rounded-lg shadow">
       <h2 className="text-xl font-semibold mb-4">
         {t("advancedVisitorInsights")}
       </h2>

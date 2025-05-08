@@ -249,15 +249,15 @@ export default async function AnalyticsPage({ params }) {
 
           {/* Three columns for other analytics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-            <div className="bg-accent p-4 rounded-lg shadow">
+            <div className="backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 p-4 rounded-lg shadow">
               <GeoDistribution visitors={visitors} />
             </div>
 
-            <div className="bg-accent p-4 rounded-lg shadow">
+            <div className="backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 p-4 rounded-lg shadow">
               <DeviceAnalytics visitors={visitors} />
             </div>
 
-            <div className="bg-accent p-4 rounded-lg shadow">
+            <div className="backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 p-4 rounded-lg shadow">
               <ReferrerAnalytics visitors={visitors} />
             </div>
           </div>

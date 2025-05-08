@@ -363,15 +363,15 @@ export default function DemoAnalyticsPage({ className }) {
 
       {/* Three columns for other analytics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-accent p-4 rounded-lg shadow">
+        <div className="backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 p-4 rounded-lg shadow">
           <GeoDistribution visitors={demoVisitors} isDemoMode={true} />
         </div>
 
-        <div className="bg-accent p-4 rounded-lg shadow">
+        <div className="backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 p-4 rounded-lg shadow">
           <DeviceAnalytics visitors={demoVisitors} isDemoMode={true} />
         </div>
 
-        <div className="bg-accent p-4 rounded-lg shadow">
+        <div className="backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 p-4 rounded-lg shadow">
           <ReferrerAnalytics visitors={demoVisitors} isDemoMode={true} />
         </div>
       </div>

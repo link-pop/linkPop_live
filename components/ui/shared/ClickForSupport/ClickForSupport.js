@@ -270,7 +270,9 @@ export default function ClickForSupport({
 
   // Otherwise, return the full support section
   return (
-    <div className={`mt-12 p-6 bg-accent rounded-xl shadow-md text-center`}>
+    <div
+      className={`mt-12 p-6 backdrop-blur-sm bg-accent/70 dark:bg-accent/40 rounded-xl shadow-md text-center border border-accent/30`}
+    >
       <h2 className={`text-xl font-semibold mb-4`}>{supportSectionTitle}</h2>
       <p className={`text-gray-500 mb-6`}>{supportSectionText}</p>
       <div className={`flex justify-center`}>

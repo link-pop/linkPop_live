@@ -62,7 +62,7 @@ export default function ShieldProtectionDemoSection() {
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
         {/* Text Content with Icons Above */}
         <div className="fcc grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-16 items-start">
-          <div className="maw600 wf bg-accent/5 p-4 md:p-8 rounded-2xl shadow-md">
+          <div className="maw600 wf backdrop-blur-sm bg-accent/10 dark:bg-accent/5 border border-accent/10 p-4 md:p-8 rounded-2xl shadow-md">
             {/* Shield Icon - smaller and closer to text */}
             <div className="flex justify-center mb-4 md:mb-6">
               <div
@@ -96,7 +96,7 @@ export default function ShieldProtectionDemoSection() {
             </p>
           </div>
 
-          <div className="maw600 wf bg-accent/5 p-4 md:p-8 rounded-2xl shadow-md">
+          <div className="maw600 wf backdrop-blur-sm bg-accent/10 dark:bg-accent/5 border border-accent/10 p-4 md:p-8 rounded-2xl shadow-md">
             {/* Link Icon - smaller and closer to text */}
             <div className="flex justify-center mb-4 md:mb-6">
               <div

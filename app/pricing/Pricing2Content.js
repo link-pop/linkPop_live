@@ -798,7 +798,7 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
           return (
             <div
               key={index}
-              className={`bg-accent rounded-xl shadow-md overflow-hidden flex flex-col h-full ${
+              className={`backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 rounded-xl shadow-md overflow-hidden flex flex-col h-full ${
                 isCurrent(plan.planId) ? "ring-2 ring-pink-500" : ""
               }`}
             >
@@ -1058,7 +1058,9 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
           userSubscription.status === "trialing" ||
           userSubscription.status === "canceled" ||
           userSubscription.isTrialHistoryOnly) && (
-          <div className={`mt-12 p-6 bg-accent rounded-xl shadow-md`}>
+          <div
+            className={`mt-12 p-6 backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 rounded-xl shadow-md`}
+          >
             <h2 className={`text-xl font-semibold mb-4`}>
               {userSubscription.isTrialHistoryOnly
                 ? t("subscriptionHistory")

@@ -86,33 +86,33 @@ export default function ReferrerAnalytics({ visitors, isDemoMode = false }) {
     : 0;
 
   return (
-    <div className="bg-accent overflow-hidden">
+    <div className="!bg-transparent overflow-hidden">
       <h2 className="text-xl font-semibold mb-4">{t("referrerSources")}</h2>
       <div className="overflow-x-auto max-h-64">
-        <table className="bg-accent w-full divide-y divide-gray-200 table-fixed">
-          <thead className="bg-gray-50">
+        <table className="!bg-transparent w-full divide-y divide-gray-200 table-fixed">
+          <thead className="">
             <tr>
               <th
                 scope="col"
-                className="bg-accent px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/2"
+                className="!bg-transparent px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/2"
               >
                 {t("source")}
               </th>
               <th
                 scope="col"
-                className="bg-accent px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4"
+                className="!bg-transparent px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4"
               >
                 {t("visits")}
               </th>
               <th
                 scope="col"
-                className="bg-accent px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4"
+                className="!bg-transparent px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4"
               >
                 %
               </th>
             </tr>
           </thead>
-          <tbody className="bg-accent divide-y divide-gray-200">
+          <tbody className="!bg-transparent divide-y divide-gray-200">
             {referrerData.map((referrer, idx) => (
               <tr key={idx}>
                 <td className="px-3 py-4 whitespace-nowrap overflow-hidden text-ellipsis">

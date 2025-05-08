@@ -147,7 +147,7 @@ function SocialLinksAnalyticsContent({
   };
 
   return (
-    <div className="bg-accent p-4 rounded-lg shadow">
+    <div className="backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 p-4 rounded-lg shadow">
       <div className="flex items-center">
         <BarChart className="mr-2" size={20} />
         <h2 className="text-xl font-semibold">

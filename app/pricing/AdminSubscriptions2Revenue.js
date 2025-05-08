@@ -484,7 +484,7 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
     <div className="space-y-8">
       {/* Header Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-accent rounded-xl shadow-sm p-6">
+        <div className="bg-white/80 dark:bg-accent/40 backdrop-blur-sm border border-accent/30 rounded-xl shadow-sm p-6">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -510,7 +510,7 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
           </div> */}
         </div>
 
-        <div className="bg-white dark:bg-accent rounded-xl shadow-sm p-6">
+        <div className="bg-white/80 dark:bg-accent/40 backdrop-blur-sm border border-accent/30 rounded-xl shadow-sm p-6">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -528,13 +528,12 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
             <span className="text-xs text-gray-500 ml-2">in commissions</span>
           </div>
         </div>
-
       </div>
 
       {/* Plan Distribution and Subscription Status in one row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Plan Distribution */}
-        <div className="bg-white dark:bg-accent rounded-xl shadow-sm p-6">
+        <div className="bg-white/80 dark:bg-accent/40 backdrop-blur-sm border border-accent/30 rounded-xl shadow-sm p-6">
           <h3 className="text-lg font-medium mb-2">Plan Distribution</h3>
           <p className="text-sm text-gray-500 mb-4">
             Total Users: {stats.totalUsers}
@@ -588,7 +587,7 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
         </div>
 
         {/* Subscription Status */}
-        <div className="bg-white dark:bg-accent rounded-xl shadow-sm p-6">
+        <div className="bg-white/80 dark:bg-accent/40 backdrop-blur-sm border border-accent/30 rounded-xl shadow-sm p-6">
           <h3 className="text-lg font-medium mb-2">Subscription Status</h3>
           <p className="text-sm text-gray-500 mb-4">
             Total:{" "}
