@@ -17,6 +17,7 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 import { LogIn } from "lucide-react";
+import LeftNavNewPostBtn1 from "./LeftNavNewPostBtn1";
 
 export default function LeftNav({ mongoUser }) {
   const pathname = usePathname();
@@ -188,7 +189,7 @@ export default function LeftNav({ mongoUser }) {
             showLabels={showLabels}
           />
           {SITE2 ? null : (
-            <LeftNavNewPostBtn
+            <LeftNavNewPostBtn1
               isMobile={false}
               isExpanded={isNavExpanded}
               showLabels={showLabels}
