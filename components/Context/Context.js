@@ -2,6 +2,7 @@
 
 import React, { useState, useContext as _useContext } from "react";
 import useRegisterOrReturnMongoUser from "./useRegisterOrReturnMongoUser";
+import { NavPositionProvider } from "./NavPositionContext";
 
 const Context = React.createContext();
 const useContext = () => _useContext(Context);
@@ -42,7 +43,7 @@ function ContextProvider({ children }) {
         isBurgerClickedSet,
       }}
     >
-      {children}
+      <NavPositionProvider>{children}</NavPositionProvider>
     </Context.Provider>
   );
 }

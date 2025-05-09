@@ -18,12 +18,14 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 import { LogIn } from "lucide-react";
 import LeftNavNewPostBtn1 from "./LeftNavNewPostBtn1";
+import { useNavPosition } from "@/components/Context/NavPositionContext";
 
 export default function LeftNav({ mongoUser }) {
   const pathname = usePathname();
   const { isMobile } = useWindowWidth();
   const searchParams = useSearchParams();
   const { t } = useTranslation();
+  const { isAttachedToContent, isExpandable } = useNavPosition();
   useLayoutWidth();
   const [isNavExpanded, setIsNavExpanded] = useState(false);
   const [showLabels, setShowLabels] = useState(false);
@@ -33,6 +35,11 @@ export default function LeftNav({ mongoUser }) {
 
   // Handle hover effects with delay for text labels and animations
   useEffect(() => {
+    if (!isExpandable) {
+      setShowLabels(true);
+      return;
+    }
+
     if (isNavExpanded) {
       // Clear any pending collapse timers
       if (collapseTimeoutRef.current) {
@@ -76,7 +83,7 @@ export default function LeftNav({ mongoUser }) {
         collapseDelayRef.current = null;
       }
     };
-  }, [isNavExpanded]);
+  }, [isNavExpanded, isExpandable]);
 
   // Get base nav items
   const baseNavItems = navItems();
@@ -111,12 +118,12 @@ export default function LeftNav({ mongoUser }) {
     return null;
 
   const handleMouseEnter = () => {
-    if (isMobile) return;
+    if (isMobile || !isExpandable) return;
     setIsNavExpanded(true);
   };
 
   const handleMouseLeave = () => {
-    if (isMobile) return;
+    if (isMobile || !isExpandable) return;
 
     // Delay the collapse animation
     collapseDelayRef.current = setTimeout(() => {
@@ -124,25 +131,31 @@ export default function LeftNav({ mongoUser }) {
     }, 200); // Increased delay before starting to collapse
   };
 
+  // Determine if we should show the expanded nav
+  const shouldShowExpanded = isExpandable ? isNavExpanded : true;
+
   return (
     <nav
       className={`LeftNav ${!isMobile ? "t10" : ""} fixed z-50 ${
         isMobile
           ? "bottom-0 left-0 w-full flex flex-row justify-around items-center py-3 px-2 border-t"
           : `fc g8 ${
-              isNavExpanded ? "w-64" : "w-16"
-            } p-2 transition-all duration-500 ease-in-out left-0 top-0 h-screen sticky border-r border-border/30`
+              shouldShowExpanded ? "w-64" : "w-16"
+            } p-2 transition-all duration-500 ease-in-out ${
+              isAttachedToContent ? "sticky" : "left-0"
+            } top-0 h-screen border-r border-border/30`
       } bg-background`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      style={{ left: !isMobile && !isAttachedToContent ? "0" : undefined }}
     >
       {!isMobile && (
-        <div className={`fc g8 wf ${isNavExpanded ? "" : "items-center"}`}>
+        <div className={`fc g8 wf ${shouldShowExpanded ? "" : "items-center"}`}>
           <SignedOut>
             <Link
               href={LOGIN_ROUTE}
               className={`f fwn g8 p10 wf rounded-md transition-all duration-300 ease-in-out hover:bg-muted ${
-                isNavExpanded ? "" : "fcc"
+                shouldShowExpanded ? "" : "fcc"
               } overflow-hidden`}
             >
               <div className="text-xl flex-shrink-0">
@@ -150,7 +163,7 @@ export default function LeftNav({ mongoUser }) {
               </div>
               <span
                 className={`transition-all duration-300 ease-in-out whitespace-nowrap ${
-                  isNavExpanded
+                  shouldShowExpanded
                     ? showLabels
                       ? "opacity-100 translate-x-0 max-w-[200px]"
                       : "opacity-0 -translate-x-4 max-w-0"
@@ -162,9 +175,26 @@ export default function LeftNav({ mongoUser }) {
             </Link>
           </SignedOut>
           <SignedIn>
+            {/* // desktop user image trace_1 */}
+            {!isMobile && mongoUser.imageUrl && (
+              <img
+                src={mongoUser.imageUrl}
+                alt="Profile"
+                style={{
+                  position: "absolute",
+                  top: 5,
+                  left: 15,
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  display: "block",
+                }}
+              />
+            )}
             <ClerkSignInButton
               openMenuClassName="left-0"
-              className={`${isNavExpanded ? "mra ml8" : "mx-auto"}`}
+              className={`${shouldShowExpanded ? "mra ml8" : "mx-auto"}`}
               mongoUser={mongoUser}
             />
           </SignedIn>
@@ -185,13 +215,13 @@ export default function LeftNav({ mongoUser }) {
             getLinkHref={getLinkHref}
             isActiveLink={(item) => isActiveLink(pathname, item, mongoUser)}
             mongoUser={mongoUser}
-            isExpanded={isNavExpanded}
+            isExpanded={shouldShowExpanded}
             showLabels={showLabels}
           />
           {SITE2 ? null : (
             <LeftNavNewPostBtn1
               isMobile={false}
-              isExpanded={isNavExpanded}
+              isExpanded={shouldShowExpanded}
               showLabels={showLabels}
             />
           )}

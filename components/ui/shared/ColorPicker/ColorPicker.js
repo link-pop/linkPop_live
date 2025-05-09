@@ -3,7 +3,14 @@
 import { useEffect, useState, forwardRef, useRef } from "react";
 
 export default forwardRef(function ColorPicker(
-  { defaultColor, color, onColorChange, label, className = "" },
+  {
+    defaultColor,
+    color,
+    onColorChange,
+    label,
+    className = "",
+    labelClassName = "",
+  },
   ref
 ) {
   const [selectedColor, setSelectedColor] = useState(
@@ -48,7 +55,7 @@ export default forwardRef(function ColorPicker(
         />
         {label && (
           <span
-            className={`text-sm text-foreground cp ml-1 relative z-10 transition-opacity duration-200`}
+            className={`text-sm text-foreground cp ml-1 relative z-10 transition-opacity duration-200 ${labelClassName}`}
           >
             {label}
           </span>

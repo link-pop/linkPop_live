@@ -40,6 +40,7 @@ export default function ThemeSettings({ className = "" }) {
         onColorChange={handleColorChange}
         ref={ref}
         label={t("customColor")}
+        labelClassName="ml-[-1px]"
       />
     </div>
   );

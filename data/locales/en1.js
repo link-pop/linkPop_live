@@ -623,6 +623,9 @@ const en = {
   // URL validation
   invalidUrl: "Invalid URL",
   urlValidationError: "URL validation error",
+
+  navAttachedToContent: "Nav Position",
+  navExpandable: "Nav Animation",
 };
 
 export default en;

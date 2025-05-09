@@ -13,6 +13,8 @@ export default function Switch({
   defaultValue,
   required = false,
   className = "",
+  inputClassName = "",
+  labelClassName = "",
 }) {
   // Use local state for uncontrolled component (with defaultValue)
   const [localChecked, setLocalChecked] = useState(defaultValue);
@@ -41,14 +43,18 @@ export default function Switch({
 
   return (
     <Label className={`wfc f aic g5 cp ${className}`}>
-      <_Switch checked={checked} onCheckedChange={handleChange} />
-      <span>
+      <_Switch
+        checked={checked}
+        onCheckedChange={handleChange}
+        className={inputClassName}
+      />
+      <span className={labelClassName}>
         {label}
         {required && " *"}
       </span>
       {name && (
         <input
-          className="sr-only"
+          className={`sr-only`}
           type="checkbox"
           name={name}
           required={required}

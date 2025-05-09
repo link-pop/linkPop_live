@@ -56,9 +56,13 @@ export default function ClerkSignInButton({
               ? "flex flex-col items-center justify-center"
               : "por f jcfe"
           }
+          style={{ transition: "none" }}
         >
           {/* <UserPlanLabel {...{ mongoUser }} /> */}
-          <div className={isMobile ? "fcc" : "mla"}>
+          <div
+            className={isMobile ? "fcc" : "mla"}
+            style={{ transition: "none" }}
+          >
             <CustomUserMenu
               {...{
                 isBurgerClickedSet,

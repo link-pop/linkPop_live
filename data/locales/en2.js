@@ -32,6 +32,8 @@ const en = {
   redirectsTo: "Redirects to",
   freeOffer: "Free offer",
   safePage: "Safe Page",
+  navAttachedToContent: "Nav Position",
+  navExpandable: "Nav Animation",
 
   // Share modal categories (single-word translations)
   mainTab: "Popular",

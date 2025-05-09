@@ -27,6 +27,8 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 import { createPortal } from "react-dom";
 import { SITE1, SITE2 } from "@/config/env";
 import { useRouter } from "next/navigation";
+import { useNavPosition } from "@/components/Context/NavPositionContext";
+import Switch from "@/components/ui/shared/Switch/Switch";
 
 export default function CustomUserMenu({
   isBurgerClickedSet,
@@ -39,21 +41,28 @@ export default function CustomUserMenu({
   const [isOpen, setIsOpen] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const menuRef = useRef(null);
-  const buttonRef = useRef(null);
+  const containerRef = useRef(null);
   const { t } = useTranslation();
+  const {
+    isAttachedToContent,
+    toggleNavPosition,
+    isExpandable,
+    toggleNavExpandable,
+  } = useNavPosition();
   const [menuPosition, setMenuPosition] = useState({
     top: 0,
     left: 0,
     right: 0,
   });
   const [portalElement, setPortalElement] = useState(null);
-  const [isHoveringButton, setIsHoveringButton] = useState(false);
+  const [isHoveringContainer, setIsHoveringContainer] = useState(false);
   const [isHoveringMenu, setIsHoveringMenu] = useState(false);
   const hoverTimeoutRef = useRef(null);
   const router = useRouter();
+
   // Handle menu visibility based on hover states
   useEffect(() => {
-    if (isHoveringButton || isHoveringMenu) {
+    if (isHoveringContainer || isHoveringMenu) {
       setIsOpen(true);
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current);
@@ -63,7 +72,7 @@ export default function CustomUserMenu({
       hoverTimeoutRef.current = setTimeout(() => {
         setIsOpen(false);
         isBurgerClickedSet(false);
-      }, 150); // Small delay to allow moving between button and menu
+      }, 150); // Small delay to allow moving between container and menu
     }
 
     return () => {
@@ -71,7 +80,7 @@ export default function CustomUserMenu({
         clearTimeout(hoverTimeoutRef.current);
       }
     };
-  }, [isHoveringButton, isHoveringMenu, isBurgerClickedSet]);
+  }, [isHoveringContainer, isHoveringMenu, isBurgerClickedSet]);
 
   useEffect(() => {
     // Set portal element
@@ -81,8 +90,8 @@ export default function CustomUserMenu({
       if (
         menuRef.current &&
         !menuRef.current.contains(event.target) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(event.target)
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
       ) {
         setIsOpen(false);
         isBurgerClickedSet(false);
@@ -98,8 +107,8 @@ export default function CustomUserMenu({
 
   // Calculate position when menu opens
   useEffect(() => {
-    if (isOpen && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
+    if (isOpen && containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
       if (isMobile) {
         setMenuPosition({
           bottom: window.innerHeight - rect.top + 10,
@@ -199,41 +208,38 @@ export default function CustomUserMenu({
   if (!user) return null;
 
   return (
-    <div className="relative">
-      <Button
-        ref={buttonRef}
-        onTouchEnd={() => {
-          setIsOpen(!isOpen);
-        }}
-        onMouseEnter={() => {
-          setIsHoveringButton(true);
-          setIsHovering(true);
-        }}
-        onMouseLeave={() => {
-          setIsHoveringButton(false);
-          setIsHovering(false);
-        }}
-        className="!px0 py8 bg-background text-foreground f fwn aic gap8 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 overflow-hidden"
-      >
-        {user.imageUrl && (
-          <img
-            src={user.imageUrl}
-            alt="Profile"
-            className="w-8 h-8 rounded-full flex-shrink-0"
-          />
-        )}
-        {!isMobile && (
-          <span
-            className={`transition-all duration-300 ease-in-out whitespace-nowrap ${
-              isHovering
-                ? "max-w-[200px] opacity-100 pr15 transform-none"
-                : "max-w-0 opacity-0 pr0 -translate-x-4"
-            }`}
-          >
-            {user.fullName || user.emailAddresses[0].emailAddress}
-          </span>
-        )}
-      </Button>
+    <div
+      ref={containerRef}
+      style={{ position: "relative", width: "32px", height: "32px" }}
+      onTouchEnd={() => {
+        setIsOpen(!isOpen);
+      }}
+      onMouseEnter={() => {
+        setIsHoveringContainer(true);
+        setIsHovering(true);
+      }}
+      onMouseLeave={() => {
+        setIsHoveringContainer(false);
+        setIsHovering(false);
+      }}
+    >
+      {/* // mobile user image trace_1*/}
+      {isMobile && user.imageUrl && (
+        <img
+          src={user.imageUrl}
+          alt="Profile"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "32px",
+            height: "32px",
+            borderRadius: "50%",
+            objectFit: "cover",
+            display: "block",
+          }}
+        />
+      )}
 
       {isOpen &&
         portalElement &&
@@ -271,6 +277,25 @@ export default function CustomUserMenu({
                   }
                 : {})}
             />
+
+            <div className="border-t border-b border-border">
+              <Switch
+                label={t("navAttachedToContent")}
+                isChecked={isAttachedToContent}
+                onCheckedChange={toggleNavPosition}
+                className={`${MENU_CLASS} miwf fw400`}
+                inputClassName="ml-[-7px]"
+                labelClassName="ml-[-5px]"
+              />
+              <Switch
+                label={t("navExpandable")}
+                isChecked={isExpandable}
+                onCheckedChange={toggleNavExpandable}
+                className={`${MENU_CLASS} miwf fw400`}
+                inputClassName="ml-[-7px]"
+                labelClassName="ml-[-5px]"
+              />
+            </div>
 
             <div>
               {menuItems.map((item, index) =>
