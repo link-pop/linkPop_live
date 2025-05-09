@@ -100,7 +100,7 @@ export default function ProfileImagesUploader({
         "border-none max-w-full max-h-[100dvh] h-screen w-screen m-0 rounded-none overflow-hidden",
       isOpen: true,
       hasCloseIcon: false,
-      title: t("cropImage"),
+      // title: t("cropImage"),
       // Hide the default dialog buttons
       showBtns: false,
       comp: (
