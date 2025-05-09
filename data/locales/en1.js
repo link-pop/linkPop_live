@@ -8,6 +8,9 @@ const en = {
   close: "Close",
   delete: "Delete",
   edit: "Edit",
+  view: "View",
+  copy: "Copy",
+  copied: "Copied!",
   continue: "Continue",
   confirm: "Confirm",
   enabled: "Enabled",
@@ -15,6 +18,8 @@ const en = {
   directlinks: "Direct Links",
   welcome: "Welcome",
   welcomeToSite2: "Welcome to Link Pop",
+  other: "Other",
+  preview: "Preview",
   directLinksDesc:
     "A secure platform for managing and sharing your important links",
   getStarted: "Get Started",
@@ -23,6 +28,16 @@ const en = {
   secure: "Secure",
   secureDesc:
     "Your links are protected and only accessible to authorized users",
+  login: "Login",
+  redirectsTo: "Redirects to",
+  freeOffer: "Free offer",
+  safePage: "Safe Page",
+
+  // Share modal categories (single-word translations)
+  mainTab: "Popular",
+  networkTab: "Social",
+  chatTab: "Messaging",
+  moreTab: "Other",
 
   // Auth layout translations
   toSupportYour: "to support your",
@@ -55,8 +70,93 @@ const en = {
   vault: "Vault",
   myProfile: "My Profile",
   more: "More",
+
+  // Footer Navigation Items
+  company: "Company",
+  products: "Products",
+  create: "Create",
+  legal: "Legal",
+  directLinks: "Direct Links",
   landingPages: "Landing Pages",
+  createDirectLink: "Create Direct Link",
+  createLandingPage: "Create Landing Page",
+  directLinkInfo: "Direct Links Info",
+  landingPageInfo: "Landing Pages Info",
+
+  noPosts: "Nothing found",
+  home: "Home",
+  admin: "Admin",
+  // Landing Page Sections
+  landingPageHeroTitle:
+    "All-in-one solution to Grow Your Audience & Protect Your Instagram",
+  landingPageHeroDesc:
+    "Break through Instagram's limits with direct links, custom landing pages, and built-in protection to secure your account and boost conversions.",
+  landingPageFeaturesTitle: "Everything You Need to Maximize Reach:",
+  landingPageFeature1:
+    "Direct users to their native browser for higher engagement",
+  landingPageFeature2: "Build clean, branded landing pages for your links",
+  landingPageFeature3: "Shield your account from bots and unwanted access",
+  landingPageFeature4: "Filter visitors by location for targeted traffic",
+  landingPageFeature5: "Skip intermediaries with direct linking",
+  landingPageFeature6: "Track real-time clicks, devices, and user data",
+  landingPagesButton: "Landing Pages",
+  directLinksButton: "Direct Links",
+  geoFilterButton: "Geo Filter",
+  analyticsButton: "Analytics",
+  shieldProtectionButton: "Shield Protection",
+  freeTrialButton: "14-Day Free Trial",
+  beginnerFriendlyButton: "Beginner Friendly",
   pricing: "Pricing",
+
+  // Landing Page Demo Section
+  landingPageDemoTitle: "Showcase Your Brand with Beautiful Landing Pages",
+  landingPageDemoDesc:
+    "Creating a Landing Page lets you showcase your links and socials on an attractive webpage. A Direct Link instantly redirects users to any website, for example, by placing your https://linkpop/your-unique-link in your Instagram bio, users are immediately taken to your chosen website outside of Instagram.",
+  createLandingPageButton: "Create Your Landing Page",
+  name: "Name",
+  active: "Active",
+
+  // Direct Link Demo Section
+  directLinkDemoTitle: "Direct Links for Instant Redirection",
+  directLinkDemoDesc:
+    "In contrast, a direct link immediately redirects users to a specific external website without displaying an intermediary page. For example, placing your unique LinkPop url in your Instagram bio can either lead users to your landing page or directly to a chosen website outside of Instagram, depending on your setup.",
+  createDirectLinkButton: "Create Your Direct Link",
+
+  // Geo Filter Demo Section
+  geoFilterDemoTitle: "Geo Filter",
+  geoFilterDemoDesc:
+    "Geo-target your content or restrict access based on user location.",
+  geoFilterAvailability: "Available for landing pages and direct links",
+
+  // Shield Protection Demo Section
+  shieldProtectionTitle: "Shield Protection",
+  shieldProtectionDesc:
+    "Activate Shield Protection to protect your Instagram account against mods & bots.",
+  deeplinkTechnologyTitle: "Deeplink Technology",
+  deeplinkTechnologyDesc:
+    "Direct Instagram users straight to your page on their native browser, like Safari.",
+
+  // Subscription Limits
+  subscriptionLimitReached: "Subscription limit reached",
+  upgradeNowBtn: "Upgrade now",
+  freePlanLimitMessage:
+    "You've reached the free plan limit. Upgrade to create more links.",
+  trialExpiredMessage:
+    "Your trial has expired. Please upgrade to continue using premium features.",
+  creatorPlanLimitMessage:
+    "You've reached the Creator plan limit. Upgrade to Agency plan for more links.",
+  limitOf: "of",
+  linksUsed: "links used",
+  linksUsageSummary:
+    "{used} of {limit} links used ({directLinks} direct links, {landingPages} landing pages, {remaining} remaining)",
+  landingPages: "landing pages",
+  remaining: "remaining",
+  trialSubscriptionActive:
+    "Trial subscription active. Full access until trial ends.",
+  trialHasExpired:
+    "Your trial has expired. You are now limited to the free plan.",
+  upgradeSubscriptionText:
+    "Upgrade your subscription to create more direct links and landing pages.",
 
   // Advanced Visitor Insights
   engagementMetrics: "Engagement Metrics",
@@ -83,6 +183,21 @@ const en = {
   noCityData: "No city data available",
   languagePreferences: "Language Preferences",
   noLanguageData: "No language data available",
+
+  // Day parts
+  morning: "Morning",
+  afternoon: "Afternoon",
+  evening: "Evening",
+  night: "Night",
+
+  // Days of week
+  monday: "Monday",
+  tuesday: "Tuesday",
+  wednesday: "Wednesday",
+  thursday: "Thursday",
+  friday: "Friday",
+  saturday: "Saturday",
+  sunday: "Sunday",
 
   // Navigation
   homeNavItem: "Home",
@@ -126,9 +241,24 @@ const en = {
   yourProfiles: "Your Profiles",
   yourDirectLinks: "Your Direct Links",
   yourLandingPages: "Your Landing Pages",
+  fiftyLandingPagesOrDirectLinks: "50 Landing Pages or Direct Links",
+
+  // Owner Dashboard Analytics
+  yourDirectLinksAnalytics: "Your Direct Links Analytics",
+  yourLandingPagesAnalytics: "Your Landing Pages Analytics",
+  noDirectLinksFound: "No Direct Links Found",
+  noLandingPagesFound: "No Landing Pages Found",
+  notCreatedDirectLinksYet: "You haven't created any direct links yet.",
+  notCreatedLandingPagesYet: "You haven't created any landing pages yet.",
+  createYourFirstDirectLink: "Create Your First Direct Link",
+  createYourFirstLandingPage: "Create Your First Landing Page",
+  createNewDirectLink: "Create New Direct Link",
+  createNewLandingPage: "Create New Landing Page",
+  directLinksNotAvailable: "Direct links are not available on this site.",
+  landingPagesNotAvailable: "Landing pages are not available on this site.",
 
   // Dashboard
-  dashboard: "Dashboard",
+  dashboard: "Analytics",
   viewDashboard: "View Dashboard",
   analyticsAndStats: "Analytics",
   viewAllAnalytics: "View All Analytics",
@@ -194,6 +324,7 @@ const en = {
   visitors: "Visitors",
   source: "Source",
   visits: "Visits",
+  clicks: "clicks",
   devices: "Devices",
   browsers: "Browsers",
   demoDataShowcasingAppFeatures: "Demo data showcasing analytics capabilities",
@@ -282,6 +413,125 @@ const en = {
   deleteImageDescription: "Are you sure you want to delete this image?",
   imageDeleted: "Image deleted",
 
+  creatorPlan: "Creator Plan",
+  agencyPlan: "Agency Plan",
+  premiumPlan: "Premium Plan",
+  premiumSubscription: "Premium Subscription",
+  freeTrialPeriod: "Free Trial Period",
+  upgradeRequired: "Upgrade Required",
+  youHave: "You Have",
+  day: "Day",
+  days: "Days",
+  remaining: "Remaining",
+  inYourFreeTrialOf: "In Your Free Trial Of",
+  afterTrialEnds: "After Trial Ends",
+  youWillNeed: "You Will Need",
+  toContinueUsingFeature: "To Continue Using Feature",
+  thisFeatureRequires: "This feature requires",
+  viewPricingPlans: "View Pricing Plans",
+
+  // New translation keys for UpgradeMessageCard instances
+  analyticsDashboardAccessRequired: "Analytics Dashboard Access Required",
+  dashboardRequiresAgencyPlan:
+    "The Analytics Dashboard requires an Agency plan for full access.",
+  analyticsAccessRequired: "Analytics Access Required",
+  analyticsRequiresSubscription:
+    "Analytics for landing pages older than 7 days require a premium subscription.",
+  geoFilterRequiresCreatorPlan: "Geo Filtering requires a Creator plan.",
+  geoFiltering: "Geo Filtering",
+  analyticsDashboardAccessRequired: "Analytics Dashboard Access Required",
+  dashboardRequiresAgencyPlan:
+    "The Analytics Dashboard requires an Agency plan for full access.",
+
+  // Pricing
+  pricing: "Pricing",
+  agency: "Agency",
+  creator: "Creator",
+  agencyPlan: "Agency Plan",
+  creatorPlan: "Creator Plan",
+  starter: "Starter",
+  mo: "mo",
+  currentPlan: "Current Plan",
+  freePlan: "Free Plan",
+  processing: "Processing...",
+  upgradePlan: "Upgrade Plan",
+  downgradePlan: "Downgrade Plan",
+  choosePlan: "Choose Your Plan",
+  choosePlanDesc:
+    "Select the plan that best fits your needs. Upgrade anytime to unlock more features.",
+  subscribeTo: "Subscribe to {{planName}}",
+  changeTo: "Change to {{planName}}",
+  becomeCreator: "Become a Creator",
+  becomeAgency: "Become an Agency",
+  subscriptionHistory: "Subscription History",
+  yourSubscription: "Your Subscription",
+  trialEndingSoon: "Your trial is ending soon! Only {{days}} days left.",
+  previouslyUsedTrial:
+    "You've previously used a trial. Choose a plan above to subscribe.",
+  trialEndedOn: "Your trial ended on {{date}}",
+  status: "Status",
+  canceled: "Canceled",
+  trialExpired: "Trial Expired",
+  trialDaysLeft: "Trial ({{days}} days left)",
+  canceledActiveUntilPeriodEnd: "Canceled (Active until period end)",
+  active: "Active",
+  canceledOn: "Canceled on",
+  trialEndsOn: "Trial ends on",
+  trialEndedOn: "Trial ended on",
+  activeUntil: "Active until",
+  nextBillingDate: "Next billing date",
+  actionNeeded: "Action needed",
+  subscription: "Subscription",
+  manageSubscription: "Manage subscription",
+  upgradeNow: "Upgrade Now",
+  cancellationScheduled: "Cancellation scheduled",
+  subscriptionRemainsActiveUntil:
+    "Your subscription will remain active until {{date}}, after which it will be canceled and you'll revert to the free plan.",
+  subscriptionCanceled:
+    "Your subscription has been canceled. You can upgrade to a new plan.",
+  trialExpiredUpgradeNow:
+    "Your trial has expired. You can upgrade to a new plan.",
+  fiveLandingPagesOrDirectLinks: "5 Landing Pages or Direct Links",
+  twentyFiveLandingPagesOrDirectLinks: "25 Landing Pages or Direct Links",
+  shieldProtection: "Shield Protection",
+  startFreeTrial: "Start {{days}}-Day Free Trial",
+  everythingInStarter: "Everything in Starter",
+  everythingInCreator: "Everything in Creator",
+  unlimitedContent: "Unlimited Content",
+  beautifulDesigns: "Beautiful Designs",
+  deeplinkTechnology: "Deeplink Technology",
+  oneLandingPageOrDirectLink: "1 Landing Page or Direct Link",
+  shieldsForAllLinks: "Shields for All Links",
+  allInOneDashboard: "All-in-One Dashboard",
+  customTracking: "Custom Tracking",
+  whiteLabelExperience: "White-Label Experience",
+  vipSupport: "VIP Support",
+  linkAnalytics: "Link Analytics",
+  clicksTracking: "Clicks Tracking",
+  engagementBoost: "Engagement Boost",
+  needHelp: "Need Help?",
+  supportTeamHere:
+    "Our support team is here to help with any questions about plans, payments, or features.",
+  contactSupport: "Contact Support",
+  contactUs: "Contact Us",
+  name: "Name",
+  message: "Message",
+  submit: "Submit",
+  emailSupport: "Email Support",
+  whatsappSupport: "WhatsApp Support",
+  telegramSupport: "Telegram Support",
+  email: "Email",
+  whatsapp: "WhatsApp",
+  telegram: "Telegram",
+  starterPlanDesc:
+    "Create a beautiful page, share all your content, and bypass Instagram limitations",
+  creatorPlanDesc:
+    "Send fans directly to your page, protect your social accounts and customize content by location",
+  agencyPlanDesc:
+    "Manage all your creators' links in one place and analyze your traffic and creators' performances",
+
+  links: "Links",
+  pages: "Pages",
   affiliateShort: "Affiliate",
 
   // Auth
@@ -421,6 +671,8 @@ const en = {
   addComment: "Add a comment...",
   viewMoreComments: "View more comments",
 
+  needMoreContactUs: "Need more links? Contact us!",
+
   // Posts Fetched Type Switch
   all: "All",
   visible: "Visible",
@@ -450,6 +702,8 @@ const en = {
   security: "Privacy and safety",
   subscription: "Subscription price",
   subscriptionSuccess: "Subscribed successfully",
+  subscriptionProcessing:
+    "Your subscription is being processed. This page will refresh shortly.",
   fans: "Followers",
   messaging: "Chats",
   story: "Story",
@@ -487,6 +741,7 @@ const en = {
   noSocialMediaLinks: "No links added yet",
   allPlatformsAdded: "All platforms have been added",
   dragToReorder: "Drag to reorder",
+  noOtherLinks: "No other links added yet",
 
   // Social Media Links
   platformLabel: "Platform",
@@ -500,6 +755,18 @@ const en = {
   socialLinksPerformance: "Links Performance",
   mostClickedLinks: "Most Clicked Links",
   peakVisitDay: "Peak Visit Day",
+
+  // Landing Page
+  landingPage: "Landing Page",
+  landingPageCreated: "Landing page created successfully",
+  landingPageUpdated: "Landing page updated successfully",
+  addLandingPage: "Add Landing Page",
+  editLandingPage: "Edit Landing Page",
+  pageInfo: "Page Info",
+  socialLinks: "Social Links",
+  customization: "Customization",
+  finish: "Finish Setup",
+  analytics: "Analytics",
 
   // Geo Filtering
   geoFilter: "Geo Filter",
@@ -518,6 +785,26 @@ const en = {
   locationAlreadyInList: "This location is already in the list",
   geoFilterSaved: "Geo filter settings saved successfully",
   geoFilterSaveFailed: "Failed to save geo filter settings",
+
+  // Direct Link Steps
+  directlinkInfo: "Link Info",
+  directlinkCreated:
+    "Direct link created successfully! Now set up geo filtering.",
+  skipGeoFilter: "Skip Geo Filter & Finish",
+  directlinkConfigurationComplete: "Direct link configuration complete!",
+  continueToGeoFiltering: "To Geo Filtering",
+  finish: "Finish Setup",
+
+  // Shield Protection
+  shieldProtection: "Shield Protection",
+  shieldProtectionDesc:
+    "Shield Protection redirects bots and moderators to a safe page instead of your destination URL. This helps protect your links from being blocked by social media platforms.",
+  shieldProtectionHelp:
+    "Shield Protection safeguards your links by redirecting bots and moderators to a safe page",
+  enableShieldProtection: "Enable Shield Protection",
+  safePageUrl: "Safe Page URL",
+  safePageUrlHelp: "The URL where bots and moderators will be redirected",
+  shieldProtectionSettings: "Shield Protection Settings",
 
   // Affiliate Program
   affiliateProgram: "Affiliate Program",
@@ -584,11 +871,176 @@ const en = {
   minimumPayoutNote:
     "Note: Minimum payout threshold is $50. Earnings below this amount will roll over to the next payout period.",
 
+  // Cancel Subscription
+  cancelSubscription: "Cancel Subscription",
+  cancelTrial: "Cancel Trial",
+  cancelSubscriptionDesc:
+    "Are you sure you want to cancel your subscription? Your current plan will remain active until the end of your current billing period.",
+  cancelTrialDesc:
+    "Are you sure you want to cancel your trial? Your trial will be canceled immediately and you'll lose access to premium features.",
+
+  // Landing page FAQ
+  gotQuestions: "Got questions?",
+  whyNeedLinkInBio: "Why do I need a link in bio tool?",
+  whyNeedLinkInBioAnswer:
+    "A link in bio tool allows you to share multiple links through one URL, especially useful on platforms that only allow one link in your profile. It helps you connect all your content, websites, and social profiles in one centralized location.",
+  isLinktreeOriginal: "Is Linktree the original link in bio tool?",
+  isLinktreeOriginalAnswer:
+    "Linktree popularized the link-in-bio concept, but it's not the only option available. Our service offers more features, better customization options, and competitive pricing compared to Linktree.",
+  canGetPaidFromLinktree: "Can you get paid and sell things from a Linktree?",
+  canGetPaidFromLinktreeAnswer:
+    "Yes! Our platform supports monetization features that allow you to sell products, accept tips, and receive payments directly through your bio link page, making it easy to turn your social media following into revenue.",
+  isLinkTreeSafe: "Is Linktree safe to use on all of my social media profiles?",
+  isLinkTreeSafeAnswer:
+    "Our service follows strict security standards to protect your data and your audience. You can confidently use it across all your social media profiles without worrying about security issues or account restrictions.",
+  whatMakesLinkTreeBetter:
+    "What makes Linktree better than the other link in bio options?",
+  whatMakesLinkTreeBetterAnswer:
+    "Our platform stands out with advanced analytics, deeper customization options, a more intuitive interface, and better monetization tools - all at competitive pricing compared to other link-in-bio services.",
+
+  // FAQ Section
+  howDoesLinkPopWork: "How does LinkPop work?",
+  howDoesLinkPopWorkAnswer:
+    "Add your LinkPop unique link to your Instagram bio to automatically direct fans to your landing page or a specific site using our deeplink tech. This boosts conversion by opening links in their native browser like Safari, and helps protect your Instagram account.",
+  canIAddCustomDomain: "Can I add a custom domain?",
+  canIAddCustomDomainAnswer:
+    "No, it won't work. The deeplink works only through our specific link.",
+  canIManageSeveralLinks:
+    "Can I manage several links with the same LinkPop account?",
+  canIManageSeveralLinksAnswer:
+    "Yes, you can manage all your links from your dashboard!",
+  doLinksWorkOnOtherPlatforms:
+    "Does your links work on YouTube, Twitter, Snapchat, TikTok and Reddit?",
+  doLinksWorkOnOtherPlatformsAnswer:
+    "Yes, our links work across all platforms, but our deep link technology is specifically designed for Instagram bios. Shield Protection is available for all social networks, protecting all your accounts.",
+  whatIsDifferenceBetweenLandingAndDirectLink:
+    "What is the difference between a Landing Page and a Direct Link?",
+  whatIsDifferenceBetweenLandingAndDirectLinkAnswer:
+    "Creating a Landing Page lets you showcase your links and socials on an attractive webpage. A Direct Link instantly redirects users to any website, for example, by placing your https://linkpop/your-unique-link in your Instagram bio, users are immediately taken to your chosen website outside of Instagram.",
+  whatKindOfBoostInConversionRate:
+    "What kind of boost in conversion rate should I anticipate?",
+  whatKindOfBoostInConversionRateAnswer:
+    "Our latest survey shows that conversion rates can increase by as much as 70%.",
+
+  // CTA Section
+  transformYourSocialPresence: "Transform Your Social Media Presence",
+  unlockPowerfulTools:
+    "Unlock powerful tools to protect your accounts, boost conversions, and understand your audience better.",
+  startFourteenDayFreeTrial: "Start 14-Day Free Trial",
+  noCardRequired: "No credit card required. Cancel anytime.",
+
   faqs: "FAQs",
   affiliate: "Affiliate",
 
-  // Additional
+  // Direct Link Form
+  addDirectLink: "Add Direct Link",
+  updateDirectLink: "Update Direct Link",
+  createDirectLink: "Create Direct Link",
+  directLinkUpdatedSuccessfully: "Direct link updated successfully",
+  failedToSaveDirectlink: "Failed to save directlink",
+  destinationUrl: "Destination URL",
+  freeUrl: "Free URL",
+  description: "Description",
+  creating: "Creating...",
+  updating: "Updating...",
+  failedTo: "Failed to",
+  update: "update",
+  directLink: "direct link",
+  tryAgain: "Please try again",
+  directlinkInfo: "Link Info",
+
+  // Landing Page Form
+  addLandingPage: "Add Landing Page",
+  editLandingPage: "Update Landing Page",
+  loadingLandingPageData: "Loading landing page data...",
+  landingPageNotFound: "Landing page not found",
+  failedToLoadLandingPageData: "Failed to load landing page data",
+  landingPageUpdatedSuccessfully: "Landing page updated successfully!",
+  landingPageCreatedAddSocialLinks:
+    "Landing page created successfully! Now add your social links.",
+  saveAndContinue: "Save & Continue",
+  createAndContinue: "Create & Continue",
+  saving: "Saving...",
+  pleaseAddAtLeastOneLink: "Please add at least one link",
+  continueToCustomization: "To Customization",
+  landingPage: "Landing page",
+  createdAndConfigured: "created and configured",
+  successfully: "successfully",
+
+  // Customization Form
+  pageStyle: "Page Style",
+  backgroundColor: "Background Color",
+  font: "Font",
+  defaultFont: "Default Font",
+  textFontSize: "Text Font Size",
+  textSize: "Text Size",
+  textColor: "Text Color",
+  textShadow: "Text Shadow",
+  textShadowColor: "Text Shadow Color",
+  buttonAndLinkStyle: "Button & Link Style",
+  socialIconsStyle: "Social Icons Style",
+  socialIconsStyle1: "Social Icons Style 1",
+  socialIconsStyle2: "Social Icons Style 2",
+  socialIconsType1: "Social Icons Type 1 (with background)",
+  socialIconsType2: "Social Icons Type 2 (icons only)",
+  buttonTextColor: "Button Text Color",
+  buttonBackgroundColor: "Button Background Color",
+  buttonFontSize: "Button Font Size",
+  buttonSize: "Button Size",
+  buttonRoundness: "Button Roundness",
+  roundness: "Roundness",
+  buttonAnimation: "Button Animation",
+  animation: "Animation",
+  buttonShadow: "Button Shadow",
+  shadow: "Shadow",
+  buttonShadowColor: "Button Shadow Color",
+  promotionTextColor: "Promotion Text Color",
+  savingChanges: "Saving changes...",
+  noneRoundness: "None (0px)",
+  smallRoundness: "Small (5px)",
+  mediumRoundness: "Medium (10px)",
+  largeRoundness: "Large (20px)",
+  fullRoundness: "Full (9999px)",
+  noShadow: "No Shadow",
+  softShadow: "Soft Shadow",
+  hardShadow: "Hard Shadow",
+  noTextShadow: "No Text Shadow",
+  lightTextShadow: "Light Text Shadow",
+  mediumTextShadow: "Medium Text Shadow",
+  strongTextShadow: "Strong Text Shadow",
+  failedToUpdateColors: "Failed to update colors",
+
+  // Animation types
+  none: "None",
+  bouncing: "Bouncing",
+  buzzing: "Buzzing",
+  pulsing: "Pulsing",
+  shaking: "Shaking",
+  swinging: "Swinging",
+  glowing: "Glowing",
+  floating: "Floating",
+  wobbling: "Wobbling",
+  flipping: "Flipping",
+
+  // Size options
   default: "Default",
+  small: "Small",
+  medium: "Medium",
+  large: "Large",
+
+  // Additional
+  upgrade: "Upgrade",
+  default: "Default",
+
+  // Preview Component
+  yourUsername: "Your Username",
+  loadingSocialLinks: "Loading social links...",
+  noSocialLinksAddedYet: "No social links added yet",
+  socialLinksWillAppearAfterSaving:
+    "Social links will appear here after saving the landing page",
+  landingPageInactive: "Landing Page Inactive",
+  landingPageInactiveMessage:
+    "This landing page is currently inactive and won't be visible to visitors.",
 
   // Profile Not Found
   pageNotFound: "Page not found",
@@ -597,7 +1049,44 @@ const en = {
   pageIsNotActive: "page is not active",
   pageHasBeenRemoved: "page has been removed",
   pageSubscriptionExpired: "page subscription has expired",
+  youUseVPN: "you use VPN",
   goBackTo: "Go back to",
+
+  // New Landing Page Form Fields
+  online: "Online",
+  city: "City",
+  usingAnOnlineIndicator:
+    "Using an Online indicator can boost clicks on your exclusive content link.",
+  usingAGeoIPLocalizer:
+    "Using a GeoIP localizer makes fans feel closer to you.",
+  responseTime: "Response Time",
+  addIReplyInLessThanXMinutes: 'Add "I reply in less than X minutes"',
+  iReplyInLessThan: "I reply in less than",
+  minutes: "minutes",
+  promotion: "Promotion",
+  highlightASpecialOffer:
+    "Highlight a special offer with a countdown to attract more fans.",
+  promotionEndsIn: "Promotion Ends At",
+  setEndTimeForPromotion:
+    "Set when your promotion expires to create urgency with a countdown timer.",
+  selectDate: "Select date",
+  facebookPixelID: "Facebook Pixel ID",
+  addYourFacebookPixel: "Add your Facebook Pixel to build an audience.",
+  disableLinkLogos: "Disable Link Logos (Other Links Only)",
+  hideTheLogosInYourLinkButtons:
+    "Hide the logos in your 'Other' link buttons only (social media links will still show icons)",
+  nothingSelected: "Nothing selected",
+  distanceFromVisitor: "Distance From Visitor",
+  miles: "miles",
+  fromYou: "from you",
+  distanceHelperText:
+    "Set how far away you appear to be. If left empty, a random distance between 1-10 miles will be used.",
+  endsIn: "ends in",
+  youAreIn: "You are in",
+  youAreNear: "You are near",
+  weAreOnly: "we are only",
+  away: "away",
+  advancedSettings: "Advanced Settings",
 
   // Footer
   termsAndConditions: "Terms & Conditions",
@@ -615,6 +1104,32 @@ const en = {
   update: "Update",
   subscribe: "Subscribe",
 
+  // Subscription Management
+  cancelAtPeriodEnd: "Cancel at period end",
+  subscribeTo: "Subscribe to {{planName}}",
+  changeTo: "Change to {{planName}}",
+  canceledOn: "Canceled on",
+  activeUntil: "Active until",
+  trialEndsOn: "Trial ends on",
+  trialDaysLeft: "Trial ({{days}} days left)",
+  subscriptionActivated: "Your subscription has been activated successfully.",
+  subscriptionSuccess: "Subscription Successful",
+  upgradedFromToWithCredit:
+    "Upgraded from {{fromPlan}} to {{toPlan}} plan with {{days}} days credit from your remaining subscription value.",
+  subscriptionError: "Subscription Error",
+  unknownSubscriptionError:
+    "An unknown error occurred with your subscription. Please try again.",
+  leaveEmptyForRandom: "Leave empty for random",
+
+  // Subscription plan upgrade
+  subscribeToPlan: "Subscribe to Plan?",
+  upgradePlanQuestion: "Upgrade Plan?",
+  upgradePlanDescription:
+    "You're about to upgrade your subscription. Your new plan will be activated immediately, and you'll receive credit for the remaining value of your current subscription as free days on your new plan.",
+  downgradePlan: "Downgrade Plan",
+  downgradePlanDescription:
+    "You're about to downgrade your subscription. Your current plan will remain active until the end of your billing period, or you'll receive credit for your remaining subscription value as free days on your new plan.",
+
   // Analytics related
   clicksPerUser: "Clicks Per User",
   clickRate: "Click Rate",
@@ -623,6 +1138,94 @@ const en = {
   // URL validation
   invalidUrl: "Invalid URL",
   urlValidationError: "URL validation error",
+
+  // URL descriptions
+  destinationUrlDesc: "The primary URL where visitors will be redirected",
+  freeUrlDesc:
+    "Optional alternative URL for visitors who are trying to leave your page - * works only with moreThanFriend website",
+
+  // Extra links text
+  totalLinks: "Total Links",
+  howManyLinksDoYouNeed: "How many links do you need?",
+  selectNumberOfLinks: "Select number of links",
+  defaultLinksIncluded: "Default: 50 links included",
+  baseLinksExtraLinksTotal:
+    "{baseLinks} base links + {extraLinks} extra links = {totalLinks} total links ($1 per extra link)",
+  noTrialWithExtraLinks:
+    "Please note that subscriptions with extra links don't qualify for free trial periods.",
+
+  // Pricing related translations
+  choosePlan: "Choose Your Plan",
+  choosePlanDesc:
+    "Select a plan that best suits your needs and get started today.",
+  // ... more pricing translations
+
+  // Extra links related translations
+  updateExtraLinks: "Update Extra Links",
+  updateExtraLinksDescription:
+    "You are about to update your extra links amount.",
+  fromCurrentToNew: "From {{current}} to {{new}} extra links.",
+  currentExtraLinksCount: "Current Links Count",
+  noChange: "No Change",
+  extraLinksAlreadySet: "You already have this number of extra links.",
+  extraLinksUpdated: "Extra Links Updated",
+  extraLinksChangeSuccess:
+    "Extra links updated from {{previous}} to {{new}} with {{days}} days credit applied from your remaining subscription.",
+  subscriptionPeriodInfo:
+    "Your subscription period had {{usedDays}} days used and {{remainingDays}} days remaining. The unused value of ${{unusedValue}} from your ${{oldPlanPrice}} plan was converted to {{convertedDays}} days on your new ${{newPlanPrice}} plan.",
+  agencyPlanLinksIncluded:
+    "{{totalLinks}} links included (Base: {{baseLinks}} + Extra: {{extraLinks}})",
+  thisIncludesExtraLinks:
+    "This includes {{extraLinks}} extra links for a total of {{totalLinks}} links.",
+
+  // Social Links Analytics
+
+  socialLinksPerformanceDescription:
+    "Duplicate clicks before page reload are not taken into account. Middle mouse clicks are not taken into account (because we cannot track if the user visited the new browser tab).",
+  yourOwnClicksNotCounted: "Your own clicks are not taken into account.",
+  noteOwnerVisitsNotTracked:
+    "Note: Your own visits to this profile are not tracked in analytics",
+
+  noReferralCodeYet: "You don't have a referral code yet",
+
+  // ExtraLinks select options
+  linksOption50: "50 links - $39.99/mo",
+  linksOption100: "100 links - $89.99/mo",
+  linksOption150: "150 links - $139.99/mo",
+  linksOption200: "200 links - $189.99/mo",
+  linksOption250: "250 links - $239.99/mo",
+  linksOption300: "300 links - $289.99/mo",
+  linksOption350: "350 links - $339.99/mo",
+  linksOption400: "400 links - $389.99/mo",
+  linksOption450: "450 links - $439.99/mo",
+  linksOption500: "500 links - $489.99/mo",
+
+  // Analytics export
+  export: "CSV",
+
+  // Add these crop-related translations
+  cropImage: "Crop Image",
+  applyCrop: "Apply",
+  processingImage: "Processing image...",
+  imageCroppedAndSaved: "Image cropped",
+  errorProcessingImage: "Error processing image",
+  reCropImage: "Re-crop Image",
+  originalImageNotAvailable: "Original image not available for re-cropping",
+  usingCroppedImageInstead: "Using cropped image instead of original",
+
+  // Share modal translations
+  shareWith: "Share",
+  shareThisLink: "Share this link with your friends",
+  copy: "Copy",
+  copied: "Copied!",
+  shareReferralLink: "Share Referral Link",
+  shareSuccess: "Shared successfully",
+  shareError: "Error sharing content",
+  useDefaultShareTool: "Use default share tool",
+  popular: "Popular",
+  social: "Social",
+  messaging: "Messaging",
+  other: "Other",
 
   navAttachedToContent: "Nav Position",
   navExpandable: "Nav Animation",
