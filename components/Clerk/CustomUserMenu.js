@@ -41,7 +41,7 @@ export default function CustomUserMenu({
   const [isOpen, setIsOpen] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const menuRef = useRef(null);
-  const containerRef = useRef(null);
+  const buttonRef = useRef(null);
   const { t } = useTranslation();
   const {
     isAttachedToContent,
@@ -55,14 +55,14 @@ export default function CustomUserMenu({
     right: 0,
   });
   const [portalElement, setPortalElement] = useState(null);
-  const [isHoveringContainer, setIsHoveringContainer] = useState(false);
+  const [isHoveringButton, setIsHoveringButton] = useState(false);
   const [isHoveringMenu, setIsHoveringMenu] = useState(false);
   const hoverTimeoutRef = useRef(null);
   const router = useRouter();
 
   // Handle menu visibility based on hover states
   useEffect(() => {
-    if (isHoveringContainer || isHoveringMenu) {
+    if (isHoveringButton || isHoveringMenu) {
       setIsOpen(true);
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current);
@@ -71,8 +71,8 @@ export default function CustomUserMenu({
     } else {
       hoverTimeoutRef.current = setTimeout(() => {
         setIsOpen(false);
-        isBurgerClickedSet(false);
-      }, 150); // Small delay to allow moving between container and menu
+        isBurgerClickedSet && isBurgerClickedSet(false);
+      }, 150); // Small delay to allow moving between button and menu
     }
 
     return () => {
@@ -80,7 +80,7 @@ export default function CustomUserMenu({
         clearTimeout(hoverTimeoutRef.current);
       }
     };
-  }, [isHoveringContainer, isHoveringMenu, isBurgerClickedSet]);
+  }, [isHoveringButton, isHoveringMenu, isBurgerClickedSet]);
 
   useEffect(() => {
     // Set portal element
@@ -90,11 +90,11 @@ export default function CustomUserMenu({
       if (
         menuRef.current &&
         !menuRef.current.contains(event.target) &&
-        containerRef.current &&
-        !containerRef.current.contains(event.target)
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
       ) {
         setIsOpen(false);
-        isBurgerClickedSet(false);
+        isBurgerClickedSet && isBurgerClickedSet(false);
       }
     };
 
@@ -107,8 +107,8 @@ export default function CustomUserMenu({
 
   // Calculate position when menu opens
   useEffect(() => {
-    if (isOpen && containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
+    if (isOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
       if (isMobile) {
         setMenuPosition({
           bottom: window.innerHeight - rect.top + 10,
@@ -208,38 +208,41 @@ export default function CustomUserMenu({
   if (!user) return null;
 
   return (
-    <div
-      ref={containerRef}
-      style={{ position: "relative", width: "32px", height: "32px" }}
-      onTouchEnd={() => {
-        setIsOpen(!isOpen);
-      }}
-      onMouseEnter={() => {
-        setIsHoveringContainer(true);
-        setIsHovering(true);
-      }}
-      onMouseLeave={() => {
-        setIsHoveringContainer(false);
-        setIsHovering(false);
-      }}
-    >
-      {/* // mobile user image trace_1*/}
-      {isMobile && user.imageUrl && (
-        <img
-          src={user.imageUrl}
-          alt="Profile"
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "32px",
-            height: "32px",
-            borderRadius: "50%",
-            objectFit: "cover",
-            display: "block",
-          }}
-        />
-      )}
+    <div className="relative">
+      <div
+        ref={buttonRef}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          setIsOpen(!isOpen);
+        }}
+        onMouseEnter={() => {
+          setIsHoveringButton(true);
+          setIsHovering(true);
+        }}
+        onMouseLeave={() => {
+          setIsHoveringButton(false);
+          setIsHovering(false);
+        }}
+        style={{ position: "relative", width: "32px", height: "32px" }}
+      >
+        {/* // mobile user image trace_1*/}
+        {isMobile && user.imageUrl && (
+          <img
+            src={user.imageUrl}
+            alt="Profile"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "32px",
+              height: "32px",
+              borderRadius: "50%",
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
+        )}
+      </div>
 
       {isOpen &&
         portalElement &&
@@ -254,6 +257,7 @@ export default function CustomUserMenu({
               ...menuPosition,
             }}
             className={`w-56 rounded-lg shadow-lg border border-border py-1 bg-background ${openMenuClassName}`}
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="px-4 py-2 border-b border-border">
               <div className="font-medium text-foreground">{user.fullName}</div>
@@ -304,7 +308,8 @@ export default function CustomUserMenu({
                     key={index}
                     href={item.href}
                     className={`${MENU_CLASS}`}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setIsOpen(false);
                       isBurgerClickedSet && isBurgerClickedSet(false);
                     }}
@@ -318,6 +323,7 @@ export default function CustomUserMenu({
                     href={item.href}
                     className={`${MENU_CLASS}`}
                     onClick={(e) => {
+                      e.stopPropagation();
                       if (item.onClick) {
                         item.onClick(e);
                       }
@@ -336,6 +342,7 @@ export default function CustomUserMenu({
                     key={index}
                     className={`${MENU_CLASS} cursor-pointer`}
                     onClick={(e) => {
+                      e.stopPropagation();
                       // Call the item's onClick handler
                       if (item.onClick) {
                         item.onClick(e);
