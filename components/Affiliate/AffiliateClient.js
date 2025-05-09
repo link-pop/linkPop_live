@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -34,6 +34,7 @@ import { getUserReferralData } from "@/lib/actions/referral/getUserReferralData"
 import useShareHelper from "@/components/ui/shared/Share/ShareHelper";
 import TitleWithBackButton from "@/components/ui/shared/PageHeading/TitleWithBackButton";
 import ShareModal from "@/components/ui/shared/Share/ShareModal";
+import Toggle from "@/components/ui/shared/Toggle/Toggle";
 
 export default function AffiliateClient({ data }) {
   const [copyState, setCopyState] = useState({
@@ -250,19 +251,19 @@ export default function AffiliateClient({ data }) {
       <div className={`grid grid-cols-1 md:grid-cols-3 gap-6 mb-8`}>
         {/* Referrals Card */}
         <Card
-          className={`bg-background shadow-sm hover:shadow transition-shadow duration-200`}
+          className={`backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 rounded-xl shadow-md`}
         >
           <CardHeader className={`pb-2`}>
             <CardTitle className={`flex items-center gap-2 text-lg`}>
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center">
                 <Users size={18} className={`text-primary`} />
               </div>
               <span>{t("referrals")}</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className={`flex flex-col`}>
-              <div className={`flex justify-between items-center mb-3`}>
+            <div className={`px5 fc`}>
+              <div className={`flex justify-between items-center mb5`}>
                 <div className={`text-sm text-muted-foreground`}>
                   {t("totalReferrals")}
                 </div>
@@ -284,18 +285,18 @@ export default function AffiliateClient({ data }) {
 
         {/* Earnings Card */}
         <Card
-          className={`bg-background shadow-sm hover:shadow transition-shadow duration-200`}
+          className={`backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 rounded-xl shadow-md`}
         >
           <CardHeader className={`pb-2`}>
-            <CardTitle className={`flex items-center gap-2 text-lg`}>
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+            <CardTitle className={`!-ml8 flex items-center gap-1 text-lg`}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center">
                 <DollarSign size={18} className={`text-primary`} />
               </div>
               <span>{t("totalEarnings")}</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className={`text-3xl font-bold mb-3`}>
+            <div className={`fz24 fw500 mb-3`}>
               ${earningStats.totalEarnings.toFixed(2) || "0.00"}
             </div>
             <div className={`grid grid-cols-2 gap-2`}>
@@ -303,23 +304,23 @@ export default function AffiliateClient({ data }) {
                 <div className={`text-xs text-muted-foreground`}>
                   {t("pendingEarnings")}
                 </div>
-                <Badge
+                <div
                   variant="outline"
-                  className={`text-yellow-500 bg-yellow-50 dark:bg-yellow-950/50 justify-start mt-1 w-fit`}
+                  className={`text-yellow-500 justify-start mt-1 w-fit`}
                 >
                   ${earningStats.pendingEarnings.toFixed(2) || "0.00"}
-                </Badge>
+                </div>
               </div>
               <div className={`flex flex-col`}>
                 <div className={`text-xs text-muted-foreground`}>
                   {t("paidEarnings")}
                 </div>
-                <Badge
+                <div
                   variant="outline"
-                  className={`text-green-500 bg-green-50 dark:bg-green-950/50 justify-start mt-1 w-fit`}
+                  className={`text-green-500 justify-start mt-1 w-fit`}
                 >
                   ${earningStats.paidEarnings.toFixed(2) || "0.00"}
-                </Badge>
+                </div>
               </div>
             </div>
           </CardContent>
@@ -327,20 +328,20 @@ export default function AffiliateClient({ data }) {
 
         {/* Referral Code Card */}
         <Card
-          className={`bg-background shadow-sm hover:shadow transition-shadow duration-200`}
+          className={`backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 rounded-xl shadow-md`}
         >
           <CardHeader className={`pb-2`}>
             <CardTitle className={`flex items-center gap-2 text-lg`}>
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center">
                 <Share2 size={18} className={`text-primary`} />
               </div>
-              <span>{t("referralCode")}</span>
+              <span>{t("shareWith")}</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
             {referralData.referralCode ? (
               <>
-                <div className={`flex flex-col gap-2 mb-2`}>
+                <div className={`fc mb-2`}>
                   <div className={`text-sm text-muted-foreground mb-1`}>
                     {t("referralLink")}:
                   </div>
@@ -420,14 +421,16 @@ export default function AffiliateClient({ data }) {
         </Card>
       </div>
 
-      <Tabs defaultValue="referrals" className={`w-full`}>
-        <TabsList className={`grid w-full max-w-md grid-cols-2 mb-4`}>
-          <TabsTrigger value="referrals">{t("yourReferrals")}</TabsTrigger>
-          <TabsTrigger value="earnings">{t("commissionEarnings")}</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="referrals">
-          <Card className={`bg-background shadow-sm`}>
+      <Toggle
+        labels={[
+          { text: "yourReferrals", className: "" },
+          { text: "commissionEarnings", className: "" },
+        ]}
+        contents={[
+          <Card
+            className={`backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 rounded-xl shadow-md`}
+            key="referrals"
+          >
             <CardHeader>
               <CardTitle className="text-xl">
                 {t("peopleYouReferred")}
@@ -502,11 +505,11 @@ export default function AffiliateClient({ data }) {
                 </div>
               )}
             </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="earnings">
-          <Card className={`bg-background shadow-sm`}>
+          </Card>,
+          <Card
+            className={`backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 rounded-xl shadow-md`}
+            key="earnings"
+          >
             <CardHeader>
               <CardTitle className="text-xl">
                 {t("commissionHistory")}
@@ -588,13 +591,17 @@ export default function AffiliateClient({ data }) {
                 </div>
               )}
             </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+          </Card>,
+        ]}
+        className="mb-8"
+        labelsClassName="max-w-md"
+      />
 
-      <div className={`mt-8 bg-muted p-6 rounded-lg shadow-sm`}>
+      <div
+        className={`mt-8 backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 rounded-xl shadow-md p-6`}
+      >
         <div className="flex items-start gap-3">
-          <div className="rounded-full bg-primary/10 p-2 mt-1 flex-shrink-0">
+          <div className="rounded-full p-2 mt-1 flex-shrink-0">
             <Info size={20} className="text-primary" />
           </div>
           <div>
