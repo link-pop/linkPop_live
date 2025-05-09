@@ -69,8 +69,12 @@ export default function ExitIntentHandler() {
         () => {
           // Open the URL without clearing sessionStorage
           window.open(decodeURIComponent(storedFreeUrl), "_blank");
-          // Reset exitIntentTriggered to allow showing the dialog again
-          exitIntentTriggered = false;
+          // Allow dialog to be closed
+          dialogSet((d) => ({ ...d, isOpen: false }));
+          // Reset exitIntentTriggered after a short delay to allow showing the dialog again
+          setTimeout(() => {
+            exitIntentTriggered = false;
+          }, 500);
         }
       );
     };
@@ -90,8 +94,12 @@ export default function ExitIntentHandler() {
         () => {
           // Open the URL without clearing sessionStorage
           window.open(decodeURIComponent(storedFreeUrl), "_blank");
-          // Reset exitIntentTriggered to allow showing the dialog again
-          exitIntentTriggered = false;
+          // Allow dialog to be closed
+          dialogSet((d) => ({ ...d, isOpen: false }));
+          // Reset exitIntentTriggered after a short delay to allow showing the dialog again
+          setTimeout(() => {
+            exitIntentTriggered = false;
+          }, 500);
         }
       );
     };
