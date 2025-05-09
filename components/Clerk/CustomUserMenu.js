@@ -149,7 +149,7 @@ export default function CustomUserMenu({
         ]
       : []),
     // Admin menu item for admins only (always, regardless of SITE1/SITE2)
-    ...(mongoUser?.isAdmin
+    ...(!SITE1 && mongoUser?.isAdmin
       ? [
           {
             label: t("admin") || "Admin",

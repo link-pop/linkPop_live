@@ -7,6 +7,7 @@ import NotificationBadge from "@/components/ui/shared/NotificationBadge/Notifica
 import { useEffect } from "react";
 import { SITE2 } from "@/config/env";
 import { useTranslation } from "@/components/Context/TranslationContext";
+import LeftNavNewPostBtn1 from "./LeftNavNewPostBtn1";
 
 export default function MobileNavItems({
   items,
@@ -37,14 +38,6 @@ export default function MobileNavItems({
       if (directlinks) {
         mobileItems.push({ ...directlinks, name: t("links") });
       }
-
-      // Add New Post button for SITE2
-      // ! don't uncomment
-      // mobileItems.push({
-      //   id: "newpost",
-      //   name: "NewPost",
-      //   component: <LeftNavNewPostBtn isMobile={true} />,
-      // });
 
       const landingpages = items.find((item) => item.id === "landingpages");
       if (landingpages) {
@@ -83,7 +76,7 @@ export default function MobileNavItems({
       mobileItems.push({
         id: "newpost",
         name: "NewPost",
-        component: <LeftNavNewPostBtn isMobile={true} />,
+        component: <LeftNavNewPostBtn1 isMobile={true} />,
       });
       mobileItems.push(items.find((item) => item.id === "messages"));
 

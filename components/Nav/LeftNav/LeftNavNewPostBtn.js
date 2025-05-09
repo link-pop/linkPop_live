@@ -15,6 +15,8 @@ export default function LeftNavNewPostBtn({
   const { t } = useTranslation();
 
   const buttonText = SITE1 ? t("newPost") : t("newDirectlink");
+  // Only show text on mobile if it's SITE2
+  const showMobileText = SITE2 || !isMobile;
 
   return !isMobile ? (
     <div
@@ -46,7 +48,7 @@ export default function LeftNavNewPostBtn({
   ) : (
     <Link href={href} className="flex flex-col items-center">
       <SquarePlus />
-      <span className="text-xs mt-1">{buttonText}</span>
+      {showMobileText && <span className="text-xs mt-1">{buttonText}</span>}
     </Link>
   );
 }

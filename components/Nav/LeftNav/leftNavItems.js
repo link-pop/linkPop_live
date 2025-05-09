@@ -26,26 +26,31 @@ import {
   PieChart,
 } from "lucide-react";
 import { SITE2 } from "@/config/env";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 export const navItems = () => {
   const { t } = useTranslation();
+  const { isMobile } = useWindowWidth();
+
+  // Check if we should show titles (hide on mobile for SITE1)
+  const showTitles = SITE2 || !isMobile;
 
   const items = [
     {
       id: "home",
-      name: t("home"),
+      name: showTitles ? t("home") : "",
       icon: <Home className="w-6 h-6" />,
       href: MAIN_ROUTE,
     },
     {
       id: "notifications",
-      name: t("notifications"),
+      name: showTitles ? t("notifications") : "",
       icon: <Bell className="w-6 h-6" />,
       href: "/notifications",
     },
     {
       id: "messages",
-      name: t("messages"),
+      name: showTitles ? t("messages") : "",
       icon: <MessageSquare className="w-6 h-6" />,
       href: CHATS_ROUTE,
     },
@@ -59,7 +64,7 @@ export const navItems = () => {
     // { id: "addCard", name: t("addCard"), icon: <CreditCard className="w-6 h-6" />, href: "/add-card" },
     {
       id: "vault",
-      name: t("vault"),
+      name: showTitles ? t("vault") : "",
       icon: <Images className="w-6 h-6" />,
       href: "#",
     },
@@ -104,13 +109,13 @@ export const navItems = () => {
   items.push(
     {
       id: "myProfile",
-      name: t("myProfile"),
+      name: showTitles ? t("myProfile") : "",
       icon: <User className="w-6 h-6" />,
       href: "/profile",
     },
     {
       id: "more",
-      name: t("more"),
+      name: showTitles ? t("more") : "",
       icon: <MoreHorizontal className="w-6 h-6" />,
       href: "/more",
     }
@@ -118,5 +123,3 @@ export const navItems = () => {
 
   return items;
 };
-
-
