@@ -282,24 +282,27 @@ export default function CustomUserMenu({
                 : {})}
             />
 
-            <div className="border-t border-b border-border">
-              <Switch
-                label={t("navAttachedToContent")}
-                isChecked={isAttachedToContent}
-                onCheckedChange={toggleNavPosition}
-                className={`${MENU_CLASS} miwf fw400`}
-                inputClassName="ml-[-7px]"
-                labelClassName="ml-[-5px]"
-              />
-              <Switch
-                label={t("navExpandable")}
-                isChecked={isExpandable}
-                onCheckedChange={toggleNavExpandable}
-                className={`${MENU_CLASS} miwf fw400`}
-                inputClassName="ml-[-7px]"
-                labelClassName="ml-[-5px]"
-              />
-            </div>
+            {/* Only show navigation switches on desktop */}
+            {!isMobile && (
+              <div className="border-t border-b border-border">
+                <Switch
+                  label={t("navAttachedToContent")}
+                  isChecked={isAttachedToContent}
+                  onCheckedChange={toggleNavPosition}
+                  className={`${MENU_CLASS} miwf fw400`}
+                  inputClassName="ml-[-7px]"
+                  labelClassName="ml-[-5px]"
+                />
+                <Switch
+                  label={t("navExpandable")}
+                  isChecked={isExpandable}
+                  onCheckedChange={toggleNavExpandable}
+                  className={`${MENU_CLASS} miwf fw400`}
+                  inputClassName="ml-[-7px]"
+                  labelClassName="ml-[-5px]"
+                />
+              </div>
+            )}
 
             <div>
               {menuItems.map((item, index) =>

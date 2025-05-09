@@ -16,7 +16,7 @@ export default function NavPositionToggle({ className = "" }) {
   const { t } = useTranslation();
 
   return (
-    <div className="fc">
+    <div className="fc max-[1299px]:hidden">
       <Switch
         label={t("navAttachedToContent")}
         isChecked={isAttachedToContent}
