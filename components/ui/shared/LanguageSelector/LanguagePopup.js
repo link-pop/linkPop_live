@@ -2,6 +2,7 @@
 
 import { Circle } from "lucide-react";
 import { useTranslation } from "@/components/Context/TranslationContext";
+import { SITE1 } from "@/config/env";
 
 export default function LanguagePopup({ dialogSet }) {
   const { currentLang, setLanguage, languages } = useTranslation();
@@ -11,9 +12,16 @@ export default function LanguagePopup({ dialogSet }) {
     dialogSet({ isOpen: false });
   };
 
+  // Filter languages for SITE1 to show only English and Ukrainian
+  const filteredLanguages = SITE1
+    ? Object.entries(languages).filter(
+        ([code]) => code === "en" || code === "uk"
+      )
+    : Object.entries(languages);
+
   return (
     <div className={`fc g10`}>
-      {Object.entries(languages).map(([code, { name }]) => (
+      {filteredLanguages.map(([code, { name }]) => (
         <div
           key={code}
           className={`f g10 aic cp p10 br5 hover:bg-accent`}
