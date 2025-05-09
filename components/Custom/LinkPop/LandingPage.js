@@ -10,8 +10,7 @@ import GeoFilterDemoSection from "./LandingPageSections/GeoFilterDemoSection";
 
 export default function LandingPage({ mongoUser }) {
   return (
-    // to prevent LeftNav from overlapping with LandingPage
-    <div className="min-[1300px]:max-[1900px]:px70 min-[1300px]:!px0">
+    <>
       <HeroSection mongoUser={mongoUser} />
       <div className="border-t-[10px] border-dashed rounded-lg !px45 !mx45"></div>{" "}
       <LandingPageDemoSection mongoUser={mongoUser} />
@@ -23,6 +22,6 @@ export default function LandingPage({ mongoUser }) {
       <PricingSectionWrapper />
       <FaqSection />
       <CtaSection mongoUser={mongoUser} />
-    </div>
+    </>
   );
 }

@@ -61,7 +61,8 @@ export default async function RootLayout({ children }) {
       </head>
       <body className={`${sora.variable} antialiased`}>
         {/* // * Root className needed to select ONLY MY APP elements, not eg Clerk (if select by body)*/}
-        <div className="Root min-h-screen fc">
+        {/* // to prevent LeftNav from overlapping with the app */}
+        <div className="Root min-h-screen fc px-0 min-[1300px]:px-[70px] min-[1900px]:px-0">
           <ClerkProvider>
             <QueryProvider>
               <ContextProvider>
