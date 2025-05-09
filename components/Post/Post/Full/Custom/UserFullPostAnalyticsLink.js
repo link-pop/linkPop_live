@@ -9,9 +9,9 @@ export default function UserFullPostAnalyticsLink({ visitedMongoUser }) {
   return (
     <RoundIconButton
       href={analyticsUrl}
-      extraClasses="poa t15 r15 justify-end mb-4 !maw600 mxa bg-background/80 backdrop-blur-sm shadow-sm"
+      extraClasses="bw1 border-[var(--color-brand)] br50 h44 w44 cp fcc"
     >
-      <ChartSpline size={16} className="dark:text-white" />
+      <ChartSpline size={16} className="brand" />
     </RoundIconButton>
   );
 }

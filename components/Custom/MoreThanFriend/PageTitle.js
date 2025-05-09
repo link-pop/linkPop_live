@@ -53,11 +53,22 @@ const PageTitle = () => {
     }
   } else if (pathname.includes(NOTIFICATIONS_ROUTE)) {
     title = t("notifications");
+  } else if (pathname.includes("/analytics")) {
+    title = t("analytics");
   }
 
   // if (!title) return null;
   const router = useRouter();
-  const width = pathname.includes(CHATS_ROUTE) ? "maw1000" : "maw600";
+
+  // Sync width logic with useLayoutWidth.js
+  const isWiderPath =
+    pathname?.includes("/settings") ||
+    pathname?.includes("/chatrooms") ||
+    pathname?.includes(CHATS_ROUTE) ||
+    pathname?.includes("/analytics") ||
+    pathname?.includes("/affiliate");
+
+  const width = isWiderPath ? "maw1000" : "maw600";
 
   // TODO !!!!! FIX z indexes in whole app
   return (

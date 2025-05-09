@@ -6,7 +6,6 @@ import UserFullPostInfo from "./UserFullPostInfo";
 import UserFullPostUserNotAvailable from "./UserFullPostUserNotAvailable";
 import UserFullPostFansCount from "./UserFullPostFansCount";
 import UserFullPostSocials from "./UserFullPostSocials";
-import UserFullPostAnalyticsLink from "./UserFullPostAnalyticsLink";
 
 export default function UserFullPost({
   post,
@@ -39,7 +38,7 @@ export default function UserFullPost({
         showTags={true}
         className="!maw600 mxa"
         top={<ProfileImages {...{ mongoUser, visitedMongoUser }} />}
-        top2={<UserFullPostHeader {...{ post, mongoUser }} />}
+        top2={<UserFullPostHeader {...{ post, mongoUser, visitedMongoUser }} />}
         top3={<UserFullPostInfo {...{ mongoUser, visitedMongoUser }} />}
         top4={<UserFullPostFansCount {...{ post }} />}
         top5={
@@ -52,7 +51,6 @@ export default function UserFullPost({
             {...{ post, col, isAdmin, mongoUser, visitedMongoUser }}
           />
         }
-        top7={<UserFullPostAnalyticsLink {...{ visitedMongoUser }} />}
       />
     </>
   );
