@@ -1220,6 +1220,9 @@ const fr = {
   other: "Autre",
   shareWith: "Partager",
   shareThisLink: "Partagez ce lien avec vos amis",
+
+  navAttachedToContent: "Position Nav",
+  navExpandable: "Animation Nav",
 };
 
 export default fr;

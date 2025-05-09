@@ -1210,6 +1210,9 @@ const uk = {
   other: "Інше",
   shareWith: "Поділитися",
   shareThisLink: "Поділіться цим посиланням з друзями",
+
+  navAttachedToContent: "Позиція Навігації",
+  navExpandable: "Анімація Навігації",
 };
 
 export default uk;

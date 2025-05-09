@@ -1224,6 +1224,9 @@ const hi = {
   other: "अन्य",
   shareWith: "साझा करें",
   shareThisLink: "अपने दोस्तों के साथ यह लिंक साझा करें",
+
+  navAttachedToContent: "नेव स्थिति",
+  navExpandable: "नेव एनिमेशन",
 };
 
 export default hi;

@@ -1153,6 +1153,9 @@ const zh = {
   networkTab: "社交",
   chatTab: "消息",
   moreTab: "其他",
+
+  navAttachedToContent: "导航位置",
+  navExpandable: "导航动画",
 };
 
 export default zh;

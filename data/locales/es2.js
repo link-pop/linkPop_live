@@ -1220,6 +1220,9 @@ const es = {
   other: "Otro",
   shareWith: "Compartir",
   shareThisLink: "Comparte este enlace con tus amigos",
+
+  navAttachedToContent: "Posición Nav",
+  navExpandable: "Animación Nav",
 };
 
 export default es;
