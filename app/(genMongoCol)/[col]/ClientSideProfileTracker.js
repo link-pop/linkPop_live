@@ -3,6 +3,15 @@
 import { useEffect, useState } from "react";
 import { fetchGeoData } from "@/lib/utils/fetchGeoData";
 import { add } from "@/lib/actions/crud";
+import { usePathname } from "next/navigation";
+import {
+  AFFILIATE_ROUTE,
+  DIRECTLINKS_ROUTE,
+  LANDINGPAGES_ROUTE,
+  PRICING_ROUTE,
+  DASHBOARD_ROUTE,
+  MAIN_ROUTE,
+} from "@/lib/utils/constants";
 
 export default function ClientSideProfileTracker({
   visitorId,
@@ -21,6 +30,17 @@ export default function ClientSideProfileTracker({
 }) {
   const [tracked, setTracked] = useState(false);
   const [error, setError] = useState(null);
+  const pathname = usePathname();
+
+  // Check if current path is in excluded routes
+  const isExcludedRoute = [
+    AFFILIATE_ROUTE,
+    DIRECTLINKS_ROUTE,
+    LANDINGPAGES_ROUTE,
+    PRICING_ROUTE,
+    DASHBOARD_ROUTE,
+    MAIN_ROUTE,
+  ].includes(pathname);
 
   // Hide the footer when this component mounts
   useEffect(() => {
@@ -48,6 +68,35 @@ export default function ClientSideProfileTracker({
       /instagram/i,
       /moderator/i,
       /monitor/i,
+      /scraper/i,
+      /headless/i,
+      /archive/i,
+      /semrush/i,
+      /ahrefs/i,
+      /yandex/i,
+      /lighthouse/i,
+      /slurp/i,
+      /phantom/i,
+      /selenium/i,
+      /puppeteer/i,
+      /httrack/i,
+      /wget/i,
+      /curl/i,
+      /python-requests/i,
+      /twitterbot/i,
+      /whatsapp/i,
+      /telegram/i,
+      /screaming frog/i,
+      /sitechecker/i,
+      /proximic/i,
+      /mediapartners/i,
+      /applebot/i,
+      /duckduckbot/i,
+      /bingpreview/i,
+      /facebookexternalhit/i,
+      /scanner/i,
+      /inspect/i,
+      /audit/i,
     ];
 
     const isUserAgentSuspicious = botPatterns.some((pattern) =>
@@ -65,6 +114,21 @@ export default function ClientSideProfileTracker({
     async function trackVisit() {
       try {
         console.log("Starting profile tracking");
+
+        // Skip tracking if on excluded routes
+        if (isExcludedRoute) {
+          console.log(
+            "Skipping analytics tracking - excluded route:",
+            pathname
+          );
+          setTracked(true);
+
+          // Handle redirects even if we skip tracking
+          if (redirectUrl) {
+            window.location.href = redirectUrl;
+          }
+          return;
+        }
 
         // Get geo data using the client-side function
         const geoData = await fetchGeoData();
@@ -202,10 +266,12 @@ export default function ClientSideProfileTracker({
     shieldProtection,
     safePageUrl,
     createdBy,
+    pathname,
+    isExcludedRoute,
   ]);
 
   // Add debugging message for development
-  if (process.env.NODE_ENV === "development" && error) {
+  if (process.env.DEV_MODE === "true" && error) {
     return <div className="hidden">Tracking error: {error}</div>;
   }
 
