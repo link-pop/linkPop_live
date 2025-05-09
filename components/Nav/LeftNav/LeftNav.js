@@ -195,9 +195,9 @@ export default function LeftNav({ mongoUser }) {
           </SignedOut>
           <SignedIn>
             {/* // desktop user image trace_1 */}
-            {!isMobile && mongoUser.imageUrl && (
+            {!isMobile && mongoUser?.imageUrl && (
               <img
-                src={mongoUser.imageUrl}
+                src={mongoUser?.imageUrl}
                 alt="Profile"
                 style={{
                   position: "absolute",
