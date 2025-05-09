@@ -22,7 +22,7 @@ import { useNavPosition } from "@/components/Context/NavPositionContext";
 
 export default function LeftNav({ mongoUser }) {
   const pathname = usePathname();
-  const { isMobile } = useWindowWidth();
+  const { isMobile, windowWidth } = useWindowWidth();
   const searchParams = useSearchParams();
   const { t } = useTranslation();
   const { isAttachedToContent, isExpandable } = useNavPosition();
@@ -33,10 +33,20 @@ export default function LeftNav({ mongoUser }) {
   const collapseTimeoutRef = useRef(null);
   const collapseDelayRef = useRef(null);
 
+  // Check if animation should be disabled (window width < 1900px)
+  const isAnimationDisabled = windowWidth < 1900;
+
   // Handle hover effects with delay for text labels and animations
   useEffect(() => {
+    // Always show labels when nav is not expandable
     if (!isExpandable) {
       setShowLabels(true);
+      return;
+    }
+
+    // When width < 1900px, don't show labels by default
+    if (isAnimationDisabled) {
+      setShowLabels(false);
       return;
     }
 
@@ -83,7 +93,7 @@ export default function LeftNav({ mongoUser }) {
         collapseDelayRef.current = null;
       }
     };
-  }, [isNavExpanded, isExpandable]);
+  }, [isNavExpanded, isExpandable, isAnimationDisabled]);
 
   // Get base nav items
   const baseNavItems = navItems();
@@ -118,12 +128,12 @@ export default function LeftNav({ mongoUser }) {
     return null;
 
   const handleMouseEnter = () => {
-    if (isMobile || !isExpandable) return;
+    if (isMobile || !isExpandable || isAnimationDisabled) return;
     setIsNavExpanded(true);
   };
 
   const handleMouseLeave = () => {
-    if (isMobile || !isExpandable) return;
+    if (isMobile || !isExpandable || isAnimationDisabled) return;
 
     // Delay the collapse animation
     collapseDelayRef.current = setTimeout(() => {
@@ -132,16 +142,21 @@ export default function LeftNav({ mongoUser }) {
   };
 
   // Determine if we should show the expanded nav
-  const shouldShowExpanded = isExpandable ? isNavExpanded : true;
+  // When animation is disabled, always show collapsed nav
+  const shouldShowExpanded = isAnimationDisabled
+    ? false
+    : isExpandable
+    ? isNavExpanded
+    : true;
 
   return (
     <nav
       className={`LeftNav ${!isMobile ? "t10" : ""} fixed z-50 ${
         isMobile
           ? "bottom-0 left-0 w-full flex flex-row justify-around items-center py-3 px-2 border-t"
-          : `fc g8 ${
-              shouldShowExpanded ? "w-64" : "w-16"
-            } p-2 transition-all duration-500 ease-in-out ${
+          : `fc g8 ${shouldShowExpanded ? "w-64" : "w-16"} p-2 transition-all ${
+              isAnimationDisabled ? "" : "duration-500 ease-in-out"
+            } ${
               isAttachedToContent ? "sticky" : "left-0"
             } top-0 h-screen border-r border-border/30`
       } bg-background`}
@@ -154,7 +169,9 @@ export default function LeftNav({ mongoUser }) {
           <SignedOut>
             <Link
               href={LOGIN_ROUTE}
-              className={`f fwn g8 p10 wf rounded-md transition-all duration-300 ease-in-out hover:bg-muted ${
+              className={`f fwn g8 p10 wf rounded-md transition-all ${
+                isAnimationDisabled ? "" : "duration-300 ease-in-out"
+              } hover:bg-muted ${
                 shouldShowExpanded ? "" : "fcc"
               } overflow-hidden`}
             >
@@ -162,7 +179,9 @@ export default function LeftNav({ mongoUser }) {
                 <LogIn className="w-6 h-6" />
               </div>
               <span
-                className={`transition-all duration-300 ease-in-out whitespace-nowrap ${
+                className={`transition-all ${
+                  isAnimationDisabled ? "" : "duration-300 ease-in-out"
+                } whitespace-nowrap ${
                   shouldShowExpanded
                     ? showLabels
                       ? "opacity-100 translate-x-0 max-w-[200px]"
