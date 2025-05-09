@@ -210,7 +210,9 @@ export default async function AnalyticsPage({ params }) {
           : "Profile";
 
       return (
-        <div className="container mx-auto p-4">
+        <div
+          className={`container p-4 ${SITE1 ? "max-w-[1000px]" : "mx-auto"}`}
+        >
           <AnalyticsPageHeader
             profileTypeName={profileTypeName}
             profileName={profile.name}
@@ -296,7 +298,7 @@ export default async function AnalyticsPage({ params }) {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className={`container p-4 ${SITE1 ? "max-w-[1000px]" : "mx-auto"}`}>
       <header className="mb-8">
         <h1 className="text-3xl font-bold">Analytics Dashboard</h1>
         <p className="text-muted-foreground mt-2">
