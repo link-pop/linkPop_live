@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslation } from "@/components/Context/TranslationContext";
+import { useEffect, useState } from "react";
 
 /**
  * Component to display when a profile, landing page, or directlink is not found
@@ -13,10 +14,18 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 export default function ProfileNotFound({ customTitle, customMessage }) {
   const { t } = useTranslation();
   const defaultTitle = t("pageNotFound") || "Page not found";
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    setTheme(localStorage.getItem("theme") || "light");
+  }, []);
+
+  const themeImg =
+    theme === "light" ? "/img/noPosts.svg" : "/img/noPostsDark.svg";
 
   const defaultMessage = (
     <>
-      <p className="mb10 fw500">{t("reasons") || "Reasons:"}</p>
+      <p className="fz18 tac mb10 fw500">{t("reasons") || "Reasons:"}</p>
       <ul className="list-disc pl-5">
         <li>{t("pageDoesntExist") || "page doesn't exist"}</li>
         <li>{t("pageIsNotActive") || "page is not active"}</li>
@@ -30,8 +39,11 @@ export default function ProfileNotFound({ customTitle, customMessage }) {
   );
 
   return (
-    <div className="fc jcc aic p40">
-      <h1 className="tac fz24 mb20">{customTitle || defaultTitle}</h1>
+    <div className="fc jcc aic p15">
+      <h1 className="tac fz24 my20">{customTitle || defaultTitle}</h1>
+      <div className="w-full flex justify-center mb20">
+        <img className="maw500 wf ha" src={themeImg} alt="No content found" />
+      </div>
       <div className="mb20">{customMessage || defaultMessage}</div>
       <p className="tac">
         {t("goBackTo") || "Go back to"}{" "}
