@@ -15,7 +15,7 @@ export default function NoPosts({ col }) {
 
   // Feeds: all other is null
   return ["/feeds", "/users"].includes(`/${col.name.toLowerCase()}`) ? (
-    <div className="👋 por fcc wf cp" onClick={dropSearchParams}>
+    <div className="👋 por maw600 fcc wf cp" onClick={dropSearchParams}>
       <img className="wf ha" src={themeImg} />
     </div>
   ) : ["/chatrooms"].includes(pathname) ? (
@@ -36,8 +36,8 @@ export default function NoPosts({ col }) {
       <img className="w200 ha hover:saturate-[.3]" src="/img/404.svg" />
     </div>
   ) : (
-    <div className="👋 fcc wf h300">
-      <div className="fz14 tracking-[1px] gray">{t("noPosts")}</div>
+    <div className="👋 por maw600 fcc wf cp" onClick={dropSearchParams}>
+      <img className="wf ha" src={themeImg} />
     </div>
   );
 }
