@@ -60,7 +60,7 @@ const ImageCropper = ({
             step={0.1}
             aria-labelledby="Zoom"
             onChange={(e) => setZoom(Number(e.target.value))}
-            className="w-48 h-2"
+            className="w-48 h-2 accent-pink-500"
           />
           <ZoomIn size={20} className="text-muted-foreground" />
         </div>
