@@ -27,6 +27,7 @@ import RightNav from "@/components/Nav/RightNav/RightNav";
 import PageTitle from "@/components/Custom/MoreThanFriend/PageTitle";
 import { ThemeProvider } from "@/components/ui/shared/ThemeProvider/ThemeProvider";
 import ThemeSettings from "@/components/ui/shared/ThemeSettings/ThemeSettings";
+import ThemeColorInitializer from "@/components/ui/shared/ThemeSettings/ThemeColorInitializer";
 import { TranslationProvider } from "@/components/Context/TranslationContext";
 import ExitIntentHandler from "../components/Custom/MoreThanFriend/ExitIntentHandler";
 import { SITE1, SITE2 } from "@/config/env";
@@ -70,6 +71,7 @@ export default async function RootLayout({ children }) {
                   <TranslationProvider>
                     <ChatProvider {...{ mongoUser }}>
                       <NotificationProvider {...{ mongoUser }}>
+                        <ThemeColorInitializer />
                         <AppLoader />
                         {/* // * HACK needs to be here to color the app  */}
                         <ThemeSettings className="poa -t1000" />

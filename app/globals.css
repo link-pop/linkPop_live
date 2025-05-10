@@ -42,6 +42,11 @@ body {
   @apply hover:bg-accent/30 mih30 px-2 py-1 bg-accent text-foreground rounded;
 }
 
+/* Custom text color handling */
+.custom-text-color {
+  color: var(--color-text) !important;
+}
+
 /* ! scrollbar */
 ::-webkit-scrollbar {
   width: 2px;

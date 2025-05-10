@@ -1241,6 +1241,11 @@ const en = {
     "The subscription plan limit has been exceeded",
   ifYouAreCreatorPlease: "If you are the creator, please",
   updateYourSubscription: "update your subscription",
+
+  // Theme settings
+  customColor: "Brand Color",
+  textColor: "Text Color",
+  reset: "Reset",
 };
 
 export default en;
