@@ -6,6 +6,8 @@ import {
   Pencil,
   Trash2,
   Globe,
+  Copy,
+  Check,
 } from "lucide-react";
 import { useContext } from "@/components/Context/Context";
 import PostAdminIcons from "../Icons/PostAdminIcons";
@@ -23,6 +25,7 @@ export default function DirectlinkLandingpagePost(props) {
   } = props;
   const { name, username } = post;
   const [isActive, setIsActive] = useState(post.active);
+  const [copied, setCopied] = useState(false);
   const { toastSet } = useContext();
   const { t } = useTranslation();
 
@@ -71,6 +74,17 @@ export default function DirectlinkLandingpagePost(props) {
         variant: "destructive",
       });
     }
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(pageUrl);
+    setCopied(true);
+    toastSet({
+      title: t("linkCopied"),
+      showIcon: true,
+    });
+    // Reset copied state after 2 seconds
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -148,18 +162,17 @@ export default function DirectlinkLandingpagePost(props) {
                   ? `${pageUrl.substring(0, 50)}...`
                   : pageUrl}
               </Link>
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(pageUrl);
-                  toastSet({
-                    title: t("linkCopied"),
-                    showIcon: true,
-                  });
-                }}
-                className="text-xs bw1 island !bg-transparent hover:!bg-accent/30 transition-colors"
+              <div
+                onClick={handleCopyLink}
+                className="text-xs bw1 island !bg-transparent hover:!bg-accent/30 transition-colors f aic g5 cp"
               >
-                {t("copy")}
-              </button>
+                {copied ? (
+                  <Check size={14} className="text-green-500" />
+                ) : (
+                  <Copy size={14} />
+                )}
+                {copied ? t("copied") : t("copy")}
+              </div>
 
               {/* Analytics*/}
               <div className="f">
