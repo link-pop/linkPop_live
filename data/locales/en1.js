@@ -572,7 +572,7 @@ const en = {
   // User Profile
   editProfile: "Edit profile",
   subscribe: "Subscribe",
-  subscribed: "Subscribed",
+  subscribed: "subscribed",
   cannotSubscribeToYourself: "Cannot subscribe to yourself",
   signInToSubscribe: "Sign in to subscribe",
   subscribedToUser: "Subscribed to",
