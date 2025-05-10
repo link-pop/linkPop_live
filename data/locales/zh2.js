@@ -1156,6 +1156,17 @@ const zh = {
 
   navAttachedToContent: "导航位置",
   navExpandable: "导航动画",
+
+  // Subscription Expired Message
+  subscriptionExpired: "订阅已过期",
+  thisProfile: "此个人资料",
+  thisLink: "此链接",
+  thisLandingPage: "此着陆页",
+  isNotAvailableBecause: "不可用，因为：",
+  creatorsSubscriptionExpired: "创作者的订阅已过期",
+  subscriptionPlanLimitExceeded: "已超出订阅计划限制",
+  ifYouAreCreatorPlease: "如果您是创作者，请",
+  updateYourSubscription: "更新您的订阅",
 };
 
 export default zh;

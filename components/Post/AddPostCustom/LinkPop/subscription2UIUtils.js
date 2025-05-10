@@ -42,7 +42,7 @@ export function getSubscription2DisplayInfo(limitCheck) {
     messageType: remaining === 0 || isTrialExpired ? "error" : "info",
     className:
       remaining === 0 || isTrialExpired
-        ? "bg-accent text-red-300"
+        ? "bg-accent text-red-600"
         : "bg-accent text-foreground",
     statusMessage:
       extraLinks > 0

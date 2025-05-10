@@ -1223,6 +1223,18 @@ const es = {
 
   navAttachedToContent: "Posición Nav",
   navExpandable: "Animación Nav",
+
+  // Subscription Expired Message
+  subscriptionExpired: "Suscripción Expirada",
+  thisProfile: "Este perfil",
+  thisLink: "Este enlace",
+  thisLandingPage: "Esta página de destino",
+  isNotAvailableBecause: "no está disponible porque:",
+  creatorsSubscriptionExpired: "La suscripción del creador ha expirado",
+  subscriptionPlanLimitExceeded:
+    "Se ha excedido el límite del plan de suscripción",
+  ifYouAreCreatorPlease: "Si eres el creador, por favor",
+  updateYourSubscription: "actualiza tu suscripción",
 };
 
 export default es;

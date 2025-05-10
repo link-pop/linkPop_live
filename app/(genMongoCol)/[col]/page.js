@@ -12,6 +12,7 @@ import { getVisitInfo } from "@/lib/utils/visitor/getVisitInfo";
 import ProfileNotFound from "@/components/ui/shared/ProfileNotFound/ProfileNotFound";
 import { checkDirectlinkLandingpageAccess } from "@/lib/actions/checkDirectlinkLandingpageAccess";
 import DirectlinkFullPost from "@/components/Post/Post/Full/Custom/DirectlinkFullPost";
+import SubscriptionExpiredMessage from "@/components/ui/shared/ProfileNotFound/SubscriptionExpiredMessage";
 
 // posts for provided collection
 export default async function postsPage({ searchParams, params }) {
@@ -52,6 +53,15 @@ export default async function postsPage({ searchParams, params }) {
         });
 
         if (!accessCheck.allowed) {
+          // Check if subscription is expired and user is not geo-blocked
+          if (
+            (accessCheck.reason === "subscription_required" ||
+              accessCheck.reason === "subscription_limit_exceeded" ||
+              accessCheck.reason === "subscription_error") &&
+            accessCheck.reason !== "geo_blocked"
+          ) {
+            return <SubscriptionExpiredMessage entityType="link" />;
+          }
           return <ProfileNotFound />;
         }
 
@@ -116,6 +126,15 @@ export default async function postsPage({ searchParams, params }) {
         });
 
         if (!accessCheck.allowed) {
+          // Check if subscription is expired and user is not geo-blocked
+          if (
+            (accessCheck.reason === "subscription_required" ||
+              accessCheck.reason === "subscription_limit_exceeded" ||
+              accessCheck.reason === "subscription_error") &&
+            accessCheck.reason !== "geo_blocked"
+          ) {
+            return <SubscriptionExpiredMessage entityType="landingpage" />;
+          }
           return <ProfileNotFound />;
         }
 
@@ -172,6 +191,15 @@ export default async function postsPage({ searchParams, params }) {
       });
 
       if (!accessCheck.allowed) {
+        // Check if subscription is expired and user is not geo-blocked
+        if (
+          (accessCheck.reason === "subscription_required" ||
+            accessCheck.reason === "subscription_limit_exceeded" ||
+            accessCheck.reason === "subscription_error") &&
+          accessCheck.reason !== "geo_blocked"
+        ) {
+          return <SubscriptionExpiredMessage entityType="profile" />;
+        }
         return <ProfileNotFound />;
       }
 

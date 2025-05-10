@@ -1227,6 +1227,17 @@ const hi = {
 
   navAttachedToContent: "नेव स्थिति",
   navExpandable: "नेव एनिमेशन",
+
+  // Subscription Expired Message
+  subscriptionExpired: "सदस्यता समाप्त हो गई है",
+  thisProfile: "यह प्रोफाइल",
+  thisLink: "यह लिंक",
+  thisLandingPage: "यह लैंडिंग पेज",
+  isNotAvailableBecause: "उपलब्ध नहीं है क्योंकि:",
+  creatorsSubscriptionExpired: "निर्माता की सदस्यता समाप्त हो गई है",
+  subscriptionPlanLimitExceeded: "सदस्यता योजना की सीमा पार हो गई है",
+  ifYouAreCreatorPlease: "यदि आप निर्माता हैं, तो कृपया",
+  updateYourSubscription: "अपनी सदस्यता अपडेट करें",
 };
 
 export default hi;

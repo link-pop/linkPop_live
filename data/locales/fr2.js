@@ -1223,6 +1223,18 @@ const fr = {
 
   navAttachedToContent: "Position Nav",
   navExpandable: "Animation Nav",
+
+  // Subscription Expired Message
+  subscriptionExpired: "Abonnement Expiré",
+  thisProfile: "Ce profil",
+  thisLink: "Ce lien",
+  thisLandingPage: "Cette page d'atterrissage",
+  isNotAvailableBecause: "n'est pas disponible car :",
+  creatorsSubscriptionExpired: "L'abonnement du créateur a expiré",
+  subscriptionPlanLimitExceeded:
+    "La limite du forfait d'abonnement a été dépassée",
+  ifYouAreCreatorPlease: "Si vous êtes le créateur, veuillez",
+  updateYourSubscription: "mettre à jour votre abonnement",
 };
 
 export default fr;

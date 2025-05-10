@@ -1213,6 +1213,17 @@ const uk = {
 
   navAttachedToContent: "Позиція Навігації",
   navExpandable: "Анімація Навігації",
+
+  // Subscription Expired Message
+  subscriptionExpired: "Термін дії передплати закінчився",
+  thisProfile: "Цей профіль",
+  thisLink: "Це посилання",
+  thisLandingPage: "Ця цільова сторінка",
+  isNotAvailableBecause: "недоступно, тому що:",
+  creatorsSubscriptionExpired: "Термін дії передплати автора закінчився",
+  subscriptionPlanLimitExceeded: "Перевищено ліміт тарифного плану",
+  ifYouAreCreatorPlease: "Якщо ви автор, будь ласка,",
+  updateYourSubscription: "оновіть вашу передплату",
 };
 
 export default uk;
