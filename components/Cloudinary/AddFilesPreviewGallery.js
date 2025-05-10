@@ -26,6 +26,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import HorizontalScroll from "@/components/ui/shared/HorizontalScroll";
+import CropImageButton from "./CropImageButton";
 
 const MediaPreview = ({ file }) => {
   if (file.fileType === "video" || file.fileType === "video/webm") {
@@ -45,7 +46,7 @@ const MediaPreview = ({ file }) => {
   );
 };
 
-const SortableItem = ({ file, deleteStateFile }) => {
+const SortableItem = ({ file, deleteStateFile, onCropImage, isProcessing }) => {
   console.log("SortableItem file:", file);
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: file.identifier });
@@ -56,15 +57,31 @@ const SortableItem = ({ file, deleteStateFile }) => {
   };
 
   return (
-    <div ref={setNodeRef} style={style} className={`relative group`}>
-      <div
-        onClick={() => {
-          console.log("Deleting file:", file);
-          deleteStateFile(file.identifier);
-        }}
-        className={`absolute t0 r0 z-10 bg-white rf cp p-1 shadow-md hover:bg-gray-100 transition-colors`}
-      >
-        <X size={16} className={`text-gray-600`} />
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`relative group ${
+        isProcessing ? "pointer-events-none opacity-50" : ""
+      }`}
+    >
+      <div className={`absolute t0 r0 z-10 f g2`}>
+        {/* Crop button first (on the left) */}
+        <CropImageButton
+          file={file}
+          onCropImage={onCropImage}
+          isProcessing={isProcessing}
+        />
+
+        {/* Delete button second (on the right) */}
+        <div
+          onClick={() => {
+            console.log("Deleting file:", file);
+            deleteStateFile(file.identifier);
+          }}
+          className={`bg-white rf cp p-1 shadow-md hover:bg-gray-100 transition-colors`}
+        >
+          <X size={16} className={`text-gray-600`} />
+        </div>
       </div>
       <div className={`w-24 h-24 relative`}>
         <MediaPreview file={file} />
@@ -88,6 +105,8 @@ export default function AddFilesPreviewGallery({
   previews,
   deleteStateFile,
   onReorder,
+  onCropImage,
+  isProcessing = false,
 }) {
   console.log("Gallery previews:", previews);
   const scrollContainerRef = useRef(null);
@@ -160,7 +179,9 @@ export default function AddFilesPreviewGallery({
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <div className={`w550 relative group`}>
+      <div
+        className={`w550 relative group ${isProcessing ? "opacity-60" : ""}`}
+      >
         {/* Left Arrow */}
         {showLeftArrow && (
           <div
@@ -196,6 +217,8 @@ export default function AddFilesPreviewGallery({
                 key={file.identifier}
                 file={file}
                 deleteStateFile={deleteStateFile}
+                onCropImage={onCropImage}
+                isProcessing={isProcessing}
               />
             ))}
           </SortableContext>
@@ -203,7 +226,9 @@ export default function AddFilesPreviewGallery({
           {/* // ! PLUS BUTTON must be NOT html button elem !!! */}
           <div
             onClick={() => document.querySelector(".AddFilesIcon").click()}
-            className={`w-24 h-24 flex-shrink-0 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-colors`}
+            className={`w-24 h-24 flex-shrink-0 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-colors ${
+              isProcessing ? "pointer-events-none opacity-50" : ""
+            }`}
           >
             <Plus size={24} className={`text-gray-500`} />
           </div>

@@ -60,15 +60,81 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
         return;
       }
 
-      // Separate files into new and existing
-      const newFiles = files?.filter((file) => !file._id);
+      // Separate files into different categories
+      const croppedFiles = files?.filter(
+        (file) => file.needsUpload && file.isCropped
+      );
+      const standardNewFiles = files?.filter(
+        (file) => !file._id && !file.needsUpload
+      );
       const existingFiles = files?.filter((file) => file._id) || [];
       const existingFileIds = existingFiles.map((file) => file._id);
 
-      let serverUploadedFiles = [];
-      if (newFiles?.length > 0) {
-        serverUploadedFiles = await uploadFilesToCloudinary(newFiles, col.name);
+      // Upload standard new files
+      let standardUploadedFiles = [];
+      if (standardNewFiles?.length > 0) {
+        standardUploadedFiles = await uploadFilesToCloudinary(
+          standardNewFiles,
+          col.name
+        );
       }
+
+      // Upload cropped files with their original file data
+      let croppedUploadedFiles = [];
+      if (croppedFiles?.length > 0) {
+        for (const croppedFile of croppedFiles) {
+          // Prepare upload options for the cropped file
+          let uploadOptions = { isCroppedImage: true };
+
+          // Handle original file reference
+          if (croppedFile.originalFileData) {
+            const { fileId, originalFile, imageUrl, possibleFileId } =
+              croppedFile.originalFileData;
+
+            // If we have a fileId (original already on Cloudinary)
+            if (fileId) {
+              uploadOptions.originalFileId = fileId;
+            }
+            // If we have an original File object that needs uploading first
+            else if (originalFile) {
+              const originalUploaded = await uploadFilesToCloudinary(
+                [originalFile],
+                col.name
+              );
+
+              if (!originalUploaded || originalUploaded.length === 0) {
+                throw new Error("Failed to upload original image");
+              }
+
+              uploadOptions.originalFileId = originalUploaded[0].fileId;
+            }
+            // If we have a URL with possible file ID
+            else if (possibleFileId) {
+              uploadOptions.originalFileId = possibleFileId;
+            }
+          }
+
+          // Upload the cropped file with the original reference
+          const uploadedCroppedFile = await uploadFilesToCloudinary(
+            [croppedFile.croppedFile],
+            col.name,
+            null,
+            uploadOptions
+          );
+
+          if (!uploadedCroppedFile || uploadedCroppedFile.length === 0) {
+            throw new Error("Failed to upload cropped image");
+          }
+
+          croppedUploadedFiles.push(uploadedCroppedFile[0]);
+        }
+      }
+
+      // Combine all newly uploaded files
+      const serverUploadedFiles = [
+        ...standardUploadedFiles,
+        ...croppedUploadedFiles,
+      ];
 
       // Prepare data for submission (only include necessary fields)
       const postData = {
@@ -141,11 +207,18 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
             mongoUser?._id
           );
 
-          // TODO !!!!!! make new sep file uploading, coz cur user can delete filter str and get original image
           // Set isPaid, relatedPostId and blurredUrl
           attachmentData.isPaid = price > 0;
           attachmentData.relatedPostId = postId;
           attachmentData.blurredUrl = file.blurredUrl;
+
+          // Add isCropped flag and originalFileId if available
+          if (file.isCropped) {
+            attachmentData.isCropped = true;
+          }
+          if (file.originalFileId) {
+            attachmentData.originalFileId = file.originalFileId;
+          }
 
           const attachment = await add({
             col: { name: "attachments" },

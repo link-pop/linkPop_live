@@ -4,14 +4,30 @@ import React, { useEffect, useState } from "react";
 import AddFilesPreviewCarousel from "./AddFilesPreviewCarousel";
 import AddFilesPreviewList from "./AddFilesPreviewList";
 import AddFilesPreviewGallery from "./AddFilesPreviewGallery";
+import useImageCropper from "./hooks/useImageCropper";
+import { useContext } from "@/components/Context/Context";
+import { useTranslation } from "@/components/Context/TranslationContext";
 
 export default function AddFilesPreview({
   files,
   filesSet,
   addFilesPreviewType = "gallery",
   addFilesPreviewClassName = "",
+  uploadFolder = "feeds", // Default upload folder
+  enableCrop = true, // Toggle for crop functionality
 }) {
   const [previews, previewsSet] = useState([]);
+  const { dialogSet, toastSet } = useContext();
+  const { t } = useTranslation();
+
+  // Use the image cropper hook
+  const { isProcessing, handleCropImage, ImageCropperDialog } = useImageCropper(
+    {
+      files,
+      filesSet,
+      uploadFolder,
+    }
+  );
 
   // make previews
   useEffect(() => {
@@ -32,7 +48,8 @@ export default function AddFilesPreview({
             fileType: file.fileType,
             _id: file._id,
             // Use _id as identifier for server files
-            identifier: file._id || `file-${Math.random().toString(36).substring(2, 11)}`,
+            identifier:
+              file._id || `file-${Math.random().toString(36).substring(2, 11)}`,
           };
         }
         console.log("Local file:", file);
@@ -48,7 +65,9 @@ export default function AddFilesPreview({
         }
 
         // Ensure file has a unique identifier
-        const identifier = file.name || `new-file-${Math.random().toString(36).substring(2, 11)}`;
+        const identifier =
+          file.name ||
+          `new-file-${Math.random().toString(36).substring(2, 11)}`;
 
         return {
           fileUrl: file.preview || URL.createObjectURL(file),
@@ -56,6 +75,7 @@ export default function AddFilesPreview({
           fileType,
           // Use name as identifier for local files
           identifier,
+          originalFile: file, // Keep reference to original file
         };
       })
     );
@@ -81,19 +101,27 @@ export default function AddFilesPreview({
     previewsSet(reorderedPreviews);
 
     // Update the files state to match the new order
-    const reorderedFiles = reorderedPreviews.map((preview) => {
-      // Find the corresponding file in the original files array
-      const matchingFile = files.find(
-        (file) =>
-          (file.name && file.name === preview.identifier) ||
-          (file._id && file._id === preview.identifier)
-      );
-      
-      // If we can't find a matching file, return the original file
-      return matchingFile || files.find(file => 
-        (file.fileUrl && preview.fileUrl && file.fileUrl === preview.fileUrl)
-      );
-    }).filter(Boolean); // Remove any undefined entries
+    const reorderedFiles = reorderedPreviews
+      .map((preview) => {
+        // Find the corresponding file in the original files array
+        const matchingFile = files.find(
+          (file) =>
+            (file.name && file.name === preview.identifier) ||
+            (file._id && file._id === preview.identifier)
+        );
+
+        // If we can't find a matching file, return the original file
+        return (
+          matchingFile ||
+          files.find(
+            (file) =>
+              file.fileUrl &&
+              preview.fileUrl &&
+              file.fileUrl === preview.fileUrl
+          )
+        );
+      })
+      .filter(Boolean); // Remove any undefined entries
 
     filesSet(reorderedFiles);
   }
@@ -102,28 +130,35 @@ export default function AddFilesPreview({
   if (!previews.length) return null;
 
   return (
-    <div className={`px15 my15 ${addFilesPreviewClassName}`}>
-      {addFilesPreviewType === "carousel" && (
-        <AddFilesPreviewCarousel
-          previews={previews}
-          deleteStateFile={deleteStateFile}
-        />
-      )}
+    <>
+      {/* Image Cropper Dialog - rendered by the hook */}
+      <ImageCropperDialog />
 
-      {addFilesPreviewType === "list" && (
-        <AddFilesPreviewList
-          previews={previews}
-          deleteStateFile={deleteStateFile}
-        />
-      )}
+      <div className={`px15 my15 ${addFilesPreviewClassName}`}>
+        {addFilesPreviewType === "carousel" && (
+          <AddFilesPreviewCarousel
+            previews={previews}
+            deleteStateFile={deleteStateFile}
+          />
+        )}
 
-      {addFilesPreviewType === "gallery" && (
-        <AddFilesPreviewGallery
-          previews={previews}
-          deleteStateFile={deleteStateFile}
-          onReorder={handleReorder}
-        />
-      )}
-    </div>
+        {addFilesPreviewType === "list" && (
+          <AddFilesPreviewList
+            previews={previews}
+            deleteStateFile={deleteStateFile}
+          />
+        )}
+
+        {addFilesPreviewType === "gallery" && (
+          <AddFilesPreviewGallery
+            previews={previews}
+            deleteStateFile={deleteStateFile}
+            onReorder={handleReorder}
+            onCropImage={enableCrop ? handleCropImage : undefined}
+            isProcessing={isProcessing}
+          />
+        )}
+      </div>
+    </>
   );
 }
