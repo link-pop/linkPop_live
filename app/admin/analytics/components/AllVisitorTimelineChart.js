@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Chart } from "chart.js/auto";
 import { Calendar, ChevronDown, TrendingUp, Check } from "lucide-react";
 import { useTranslation } from "@/components/Context/TranslationContext";
@@ -42,9 +42,11 @@ export default function VisitorTimelineChart({
   const { t, currentLang } = useTranslation();
   // States for custom legend visibility
   const [datasetVisibility, setDatasetVisibility] = useState({});
+  // Track which item label is currently selected
+  const [selectedItemLabel, setSelectedItemLabel] = useState(null);
 
   // Toggle dataset visibility
-  const toggleDataset = (datasetIndex) => {
+  const toggleDataset = useCallback((datasetIndex) => {
     if (!chartInstance.current || typeof window === "undefined") return;
 
     const meta = chartInstance.current.getDatasetMeta(datasetIndex);
@@ -58,7 +60,49 @@ export default function VisitorTimelineChart({
     }));
 
     chartInstance.current.update();
-  };
+  }, []);
+
+  // Toggle specific item by its label
+  const toggleItemByLabel = useCallback(
+    (label) => {
+      if (!chartInstance.current || typeof window === "undefined" || !label)
+        return;
+
+      // Find the dataset index that matches the label
+      const datasetIndex = chartInstance.current.data.datasets.findIndex(
+        (dataset) => dataset.label.includes(label)
+      );
+
+      if (datasetIndex !== -1) {
+        // Toggle this dataset
+        toggleDataset(datasetIndex);
+
+        // Update selected item label using function form to avoid dependency on current state
+        setSelectedItemLabel((prevSelected) =>
+          prevSelected === label ? null : label
+        );
+      }
+    },
+    [toggleDataset]
+  );
+
+  // Use effect to toggle visibility when itemLabel changes
+  useEffect(() => {
+    if (itemLabel && chartInstance.current) {
+      toggleItemByLabel(itemLabel);
+    }
+  }, [itemLabel, toggleItemByLabel]);
+
+  // Additional effect to handle delayed chart initialization
+  useEffect(() => {
+    // Check if we have a selected itemLabel but it hasn't been toggled yet
+    if (itemLabel && chartInstance.current && chartInstance.current.data) {
+      if (selectedItemLabel !== itemLabel) {
+        console.log(`Attempting to toggle item visibility for: ${itemLabel}`);
+        toggleItemByLabel(itemLabel);
+      }
+    }
+  }, [itemLabel, selectedItemLabel, toggleItemByLabel]);
 
   // Use the current language for date formatting
   const userLocale = currentLang || "en";
@@ -1363,12 +1407,17 @@ export default function VisitorTimelineChart({
                 0
               );
 
+              // Check if this dataset matches the selected itemLabel
+              const isSelected = itemLabel && dataset.label.includes(itemLabel);
+
               return (
                 <div
                   key={index}
                   className={`flex items-center mb-2 cursor-pointer px-3 py-1.5 rounded-md transition-all duration-200 ${
                     !datasetVisibility[index]
                       ? "opacity-60 bg-background/50"
+                      : isSelected
+                      ? "bg-primary/10 hover:bg-primary/20 border border-primary/30 shadow-sm"
                       : "bg-background hover:bg-muted/40 border border-border shadow-sm"
                   }`}
                   onClick={() => toggleDataset(index)}
@@ -1377,9 +1426,20 @@ export default function VisitorTimelineChart({
                 >
                   <div className="w-5 h-5 flex items-center justify-center mr-1.5">
                     {datasetVisibility[index] ? (
-                      <Check size={14} className="text-primary" />
+                      <Check
+                        size={14}
+                        className={`${
+                          isSelected ? "text-primary" : "text-primary"
+                        }`}
+                      />
                     ) : (
-                      <span className="w-3.5 h-3.5 rounded-sm border border-muted-foreground"></span>
+                      <span
+                        className={`w-3.5 h-3.5 rounded-sm border ${
+                          isSelected
+                            ? "border-primary"
+                            : "border-muted-foreground"
+                        }`}
+                      ></span>
                     )}
                   </div>
                   <span
@@ -1389,7 +1449,11 @@ export default function VisitorTimelineChart({
                         dataset.borderColor || dataset.backgroundColor,
                     }}
                   ></span>
-                  <span className="text-xs md:text-sm font-medium truncate max-w-[120px]">
+                  <span
+                    className={`text-xs md:text-sm font-medium truncate max-w-[120px] ${
+                      isSelected ? "text-primary" : ""
+                    }`}
+                  >
                     {dataset.label}
                   </span>
                   <span className="text-xs ml-1.5 text-muted-foreground">
