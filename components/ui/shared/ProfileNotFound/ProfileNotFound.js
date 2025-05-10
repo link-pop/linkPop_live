@@ -41,9 +41,9 @@ export default function ProfileNotFound({ customTitle, customMessage }) {
   return (
     <div className="fc jcc aic p15">
       <h1 className="tac fz24 my20">{customTitle || defaultTitle}</h1>
-      <div className="w-full flex justify-center mb20">
+      {/* <div className="w-full flex justify-center mb20">
         <img className="maw500 wf ha" src={themeImg} alt="No content found" />
-      </div>
+      </div> */}
       <div className="mb20">{customMessage || defaultMessage}</div>
       <p className="tac">
         {t("goBackTo") || "Go back to"}{" "}
