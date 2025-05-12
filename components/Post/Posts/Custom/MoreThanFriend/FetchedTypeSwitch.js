@@ -79,7 +79,7 @@ export default function FetchedTypeSwitch({
   const currentValue = typeParam || defaultType;
 
   return (
-    <div className={`maw600 wf oxa mt10 f g5`}>
+    <div className={`maw600 wf oxa f g5`}>
       <HorizontalScroll className={`px10 pb8 g15`}>
         {types.map((type) => (
           <div
