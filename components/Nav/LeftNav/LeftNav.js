@@ -159,7 +159,9 @@ export default function LeftNav({ mongoUser }) {
             } ${
               isAttachedToContent ? "sticky" : "left-0"
             } top-0 h-screen border-r border-border/30`
-      } bg-background`}
+      } bg-background ${
+        pathname.startsWith(CHATS_ROUTE) ? "max-[768px]:!hidden" : ""
+      }`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       style={{ left: !isMobile && !isAttachedToContent ? "0" : undefined }}

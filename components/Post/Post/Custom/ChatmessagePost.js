@@ -51,7 +51,7 @@ export default function ChatmessagePost(props) {
       useCard={false}
       showAutoGenMongoFields={false}
       showCreatedBy={false}
-      className={`maw600 wf fui ${
+      className={`min-[769px]:maw600 wf fui ${
         isChatRoom
           ? "!m0 !p0"
           : isOwnMessage

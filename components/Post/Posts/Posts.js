@@ -19,6 +19,12 @@ export default async function Posts({
       ? "g20"
       : col?.name === "directlinks" || col?.name === "landingpages"
       ? "pt50 px15"
+      : col?.name === "chatrooms"
+      ? `mla !w-[400px] !maw-[400px] !mx0 ${
+          searchParams?.chatId
+            ? "max-[768px]:!hidden max-[768px]:!w-[0px]"
+            : "max-[767px]:miwf"
+        } LeftChatroomPart`
       : ""
   }`,
 }) {
@@ -47,7 +53,9 @@ export default async function Posts({
       {/* <PostsSearch {...{ searchParams, col, isDefaultSearch }} /> */}
       <div
         className={`fcc wf oys ${
-          col.name === "chatrooms" ? "aifs fwn scrollbar-hide" : ""
+          col.name === "chatrooms"
+            ? "border-l maw1000 mxa aifs fwn scrollbar-hide"
+            : ""
         }`}
       >
         {postsPaginationType === "infinite" && (

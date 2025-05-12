@@ -36,7 +36,7 @@ export default function ChatroomsPostsBottomCustomContent({
   // ! DON'T MOVE THIS CODE UP - will get error: renders fewer hooks
   if (!chatId && postsFoundNum > 0)
     return (
-      <div className="dn md:fc flex-[1_0_600px] wf fz12 fsi pt100 opacity-30">
+      <div className="dn md:fc flex-[1_0_600px] maw600 wf fz12 fsi pt100 opacity-30">
         <div className="title tac">
           {t("selectAnyConversationOrSendANewMessage")}
         </div>

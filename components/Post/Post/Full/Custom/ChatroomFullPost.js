@@ -145,7 +145,7 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
 
   return (
     <div
-      className={`ChatroomFullPostAllMsg !oh !oyh !fc !fwn h-[calc(100dvh-75px)] miwf md:!miw600 !wf`}
+      className={`ChatroomFullPostAllMsg border-l border-r !oh !oyh !fc !fwn h-[calc(100dvh-75px)] !w-[600px] !maw-[600px] max-[768px]:!w-[100vw] max-[768px]:!mw-[100vw] RightChatroomPart`}
     >
       {/* Handle notifications for this chat */}
       <ChatNotificationHandler chatId={chatId} mongoUser={mongoUser} />

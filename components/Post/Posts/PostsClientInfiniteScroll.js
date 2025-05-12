@@ -79,11 +79,12 @@ export default function PostsClientInfiniteScroll({
   const posts = postsFetchedData?.pages.flatMap((page) => page.posts) ?? [];
   const postsFoundNum = postsFetchedData?.pages[0]?.totalPosts ?? 0;
   const hasMore = Boolean(hasNextPage);
+  const isChatrooms = col?.name === "chatrooms";
 
   return (
     <>
       {top && !isLoading && top}
-      <PostsLoader {...{ isLoading }} />
+      {!isChatrooms && <PostsLoader {...{ isLoading }} />}
       <PostsDepOnMongoCollection
         {...{
           posts,
@@ -113,7 +114,9 @@ export default function PostsClientInfiniteScroll({
         {hasMore && !loadPostsOnce && (
           <div className="wf">
             {/* // ! don't delete above className="wf" => posts won't load */}
-            <PostsLoader {...{ isLoading: isFetching, className: "!mt0" }} />
+            {!isChatrooms && (
+              <PostsLoader {...{ isLoading: isFetching, className: "!mt0" }} />
+            )}
           </div>
         )}
       </InfiniteScroll>

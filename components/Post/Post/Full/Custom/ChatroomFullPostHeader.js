@@ -1,6 +1,7 @@
 import useWindowWidth from "@/hooks/useWindowWidth";
 import CreatedBy from "../../CreatedBy";
 import { MOBILE_SM } from "@/lib/utils/constants";
+import BackButton from "@/components/ui/shared/BackButton/BackButton";
 
 export default function ChatroomFullPostHeader({ chat, mongoUser }) {
   const { windowWidth } = useWindowWidth();
@@ -10,10 +11,11 @@ export default function ChatroomFullPostHeader({ chat, mongoUser }) {
 
   return (
     <div
-      className={`z51 pof t0 h60 p10 border-l bg-background wf ${
-        windowWidth <= MOBILE_SM ? "l49" : ""
+      className={`!w-[598px] !maw-[598px] wf fixed z51 t0 border-b border-l border-r h60 p10 bg-background flex items-center ${
+        windowWidth <= MOBILE_SM ? "!miwf" : ""
       }`}
     >
+      {windowWidth <= MOBILE_SM && <BackButton className="mr-2" />}
       <CreatedBy createdBy={personaUserChattingWith} />
     </div>
   );
