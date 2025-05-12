@@ -211,7 +211,9 @@ export default async function AnalyticsPage({ params }) {
 
       return (
         <div
-          className={`container p-4 ${SITE1 ? "max-w-[1000px]" : "mx-auto"}`}
+          className={`mxa container p-4 ${
+            SITE1 ? "max-w-[1000px]" : "mx-auto"
+          }`}
         >
           <AnalyticsPageHeader
             profileTypeName={profileTypeName}

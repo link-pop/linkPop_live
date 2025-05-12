@@ -112,9 +112,9 @@ export default function MobileNavItems({
             isActiveLink(item) ? "brand" : ""
           }`}
         >
-          <div className="flex">
+          <div className="flex relative">
             {item.icon}
-            <NotificationBadge id={item.id} />
+            <NotificationBadge id={item.id} className="relative -t5" />
           </div>
           <span className="wsn !fz9 mt-1">{item.name.split(" ")[0]}</span>
         </Link>

@@ -23,7 +23,10 @@ export default function DesktopNavItems({
             isActiveLink(item) ? "bg-muted" : "hover:bg-muted"
           } ${isExpanded ? "" : "fсс"} overflow-hidden`}
         >
-          <div className="text-xl flex-shrink-0">{item.icon}</div>
+          <div className="text-xl flex-shrink-0 relative">
+            {item.icon}
+            <NotificationBadge id={item.id} className="absolute !-t6 !r8" />
+          </div>
           <span
             className={`transition-all duration-300 ease-in-out whitespace-nowrap ${
               isExpanded
