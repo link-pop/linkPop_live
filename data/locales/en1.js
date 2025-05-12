@@ -655,7 +655,7 @@ const en = {
   deleteConfirm: "Delete?",
   itemDeleted: "deleted",
   // Reply
-  reply: "Replies in",
+  reply: "Reply",
 
   // Chatroom
   errorSendingMessage: "Error sending message",
@@ -1248,7 +1248,9 @@ const en = {
   reset: "Reset",
 
   //
-  noMessages: "Please subscribe to a creator to access this feature.",
+  noMessages: "No messages",
+  pleaseSubscribeToACreatorToAccessThisFeature:
+    "Please subscribe to a creator to access this feature.",
 };
 
 export default en;

@@ -37,7 +37,7 @@ export default function FeedPost(props) {
       showCreatedAt={false}
       showCreatedAtTimeAgo={true}
       showAutoGenMongoFields={false}
-      className="maw600 wf"
+      className="mxa maw600 wf"
       top2={<RichTextContent content={post.text} className="px15 pb15 mt-4" />}
       top3={
         <>

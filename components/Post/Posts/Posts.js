@@ -55,7 +55,7 @@ export default async function Posts({
         className={`fcc wf oys ${
           col.name === "chatrooms"
             ? "border-l maw1000 mxa aifs fwn scrollbar-hide"
-            : ""
+            : "maw600 mxa"
         }`}
       >
         {postsPaginationType === "infinite" && (
