@@ -1,9 +1,10 @@
 import { useTranslation } from "@/components/Context/TranslationContext";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function NoPosts({ col }) {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const theme = localStorage.getItem("theme") || "light";
   const themeImg =
     theme === "light" ? "/img/noPosts.svg" : "/img/noPostsDark.svg";
@@ -19,7 +20,11 @@ export default function NoPosts({ col }) {
       <img className="wf ha" src={themeImg} />
     </div>
   ) : ["/chatrooms"].includes(pathname) ? (
-    <div className="mxa mt30 px15 tac miwf">{t("noMessages")}</div>
+    <div className="mxa mt30 px15 tac miwf">
+      {searchParams.has("chatId")
+        ? t("noMessages")
+        : t("pleaseSubscribeToACreatorToAccessThisFeature")}
+    </div>
   ) : ["/notifications"].includes(pathname) ? (
     <div className="mxa mt30 px15 tac miwf">{t("noNotifications")}</div>
   ) : ["/products", "/articles"].includes(pathname) ? (

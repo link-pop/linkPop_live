@@ -193,8 +193,6 @@ const uk = {
   profile: "Профіль",
   settings: "Налаштування",
   messages: "Повідомлення",
-  noMessages:
-    "Будь ласка, підпишіться на креатора, щоб отримувати повідомлення.",
   vault: "Сховище",
   userProfile: "Профіль користувача",
 
@@ -1225,6 +1223,11 @@ const uk = {
   subscriptionPlanLimitExceeded: "Перевищено ліміт тарифного плану",
   ifYouAreCreatorPlease: "Якщо ви автор, будь ласка,",
   updateYourSubscription: "оновіть вашу передплату",
+
+  // No messages
+  noMessages: "Немає повідомлень",
+  pleaseSubscribeToACreatorToAccessThisFeature:
+    "Будь ласка, підпишіться на креатора, щоб отримувати повідомлення.",
 };
 
 export default uk;
