@@ -1246,6 +1246,9 @@ const en = {
   customColor: "Brand Color",
   textColor: "Text Color",
   reset: "Reset",
+
+  //
+  noMessages: "Please subscribe to a creator to access this feature.",
 };
 
 export default en;

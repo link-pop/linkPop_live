@@ -11,7 +11,7 @@ export default function ChatroomFullPostHeader({ chat, mongoUser }) {
   return (
     <div
       className={`z51 pof t0 h60 p10 border-l bg-background wf ${
-        windowWidth <= MOBILE_SM && "l49"
+        windowWidth <= MOBILE_SM ? "l49" : ""
       }`}
     >
       <CreatedBy createdBy={personaUserChattingWith} />

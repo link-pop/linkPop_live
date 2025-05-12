@@ -73,7 +73,7 @@ const PageTitle = () => {
   // TODO !!!!! FIX z indexes in whole app
   return (
     <div
-      className={`z50 sticky t0 h60 ${width} wf bg-background wf f aic p15 border-[1px]`}
+      className={`mxa z50 sticky t0 h60 ${width} wf bg-background wf f aic p15 border-[1px]`}
     >
       <ArrowLeft
         className="cursor-pointer mr-2 hs"
