@@ -68,7 +68,11 @@ export default function FullPost({
 
   // * Use Default FullPost comp if custom comp not found
   return (
-    <div className={`👋 por mt30 max-w-[1200px] wf mxa ${className}`}>
+    <div
+      className={`👋 por mt30 ${
+        col.name === "users" ? "!mt0" : ""
+      } max-w-[1200px] wf mxa ${className}`}
+    >
       {top}
       {/* // * Tags */}
       {showTags && tags?.length > 0 && (
