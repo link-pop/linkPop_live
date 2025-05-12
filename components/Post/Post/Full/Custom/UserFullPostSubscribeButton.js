@@ -333,7 +333,7 @@ export default function UserFullPostSubscribeButton({
     }
   };
 
-  const isActivePaidSubscription = isSubscribed && subscription.active;
+  const isActivePaidSubscription = isSubscribed && subscription?.active;
 
   return (
     <div className={`por fc g5`}>
