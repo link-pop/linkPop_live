@@ -25,7 +25,7 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 import { useContext } from "@/components/Context/Context";
 import useShareHelper from "./ShareHelper";
 import Image from "next/image";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Toggle from "@/components/ui/shared/Toggle/Toggle";
 import { platformData } from "@/lib/data/platformData";
 
 // Import platform icons from platformData
@@ -350,7 +350,7 @@ export default function ShareModal({
   const { t } = useTranslation();
   const { shareContent } = useShareHelper();
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState("popular");
+  const [activeTab, setActiveTab] = useState(0);
   const [nativeShareAvailable, setNativeShareAvailable] = useState(false);
 
   // Check if native share is available
@@ -447,13 +447,13 @@ export default function ShareModal({
   const renderPlatformButtons = (platformsList) => {
     return (
       <div
-        className={`grid grid-cols-4 gap-2 p-3`}
+        className={`grid grid-cols-4 gap-x-3 gap-y-2 py-3 px-4`}
         style={{ minHeight: `${gridMinHeight}px` }}
       >
         {platformsList.map((platform) => (
           <button
             key={platform.name}
-            className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-accent/20 transition-colors"
+            className="flex flex-col items-center justify-center gap-1 p-1 rounded-lg hover:bg-accent/20 transition-colors"
             onClick={() => handlePlatformShare(platform)}
             aria-label={`Share on ${platform.name}`}
           >
@@ -471,9 +471,24 @@ export default function ShareModal({
     );
   };
 
+  // Setup toggle categories and content
+  const toggleLabels = [
+    { text: "mainTab", className: "text-xs" },
+    { text: "networkTab", className: "text-xs" },
+    { text: "chatTab", className: "text-xs" },
+    { text: "moreTab", className: "text-xs" },
+  ];
+
+  const toggleContents = [
+    renderPlatformButtons(popularPlatforms),
+    renderPlatformButtons(socialPlatforms),
+    renderPlatformButtons(messagingPlatforms),
+    renderPlatformButtons(otherPlatforms),
+  ];
+
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
-      <AlertDialogContent className="sm:max-w-md p-0 border-0 shadow-lg bg-background/95 backdrop-blur-sm">
+      <AlertDialogContent className="sm:max-w-[500px] md:max-w-[550px] p-0 border-0 shadow-lg bg-background/95 backdrop-blur-sm">
         <div className="relative">
           <button
             className="absolute right-4 top-4 p-1 rounded-full bg-accent/20 hover:bg-accent/40 transition-colors"
@@ -507,46 +522,15 @@ export default function ShareModal({
             </div>
           )}
 
-          {/* Platform tabs */}
-          <Tabs
-            defaultValue="popular"
-            className="w-full"
-            value={activeTab}
-            onValueChange={setActiveTab}
-          >
-            <div className="px-6 pt-2">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="popular" className="text-xs">
-                  {t("mainTab") || "Popular"}
-                </TabsTrigger>
-                <TabsTrigger value="social" className="text-xs">
-                  {t("networkTab") || "Social"}
-                </TabsTrigger>
-                <TabsTrigger value="messaging" className="text-xs">
-                  {t("chatTab") || "Messaging"}
-                </TabsTrigger>
-                <TabsTrigger value="other" className="text-xs">
-                  {t("moreTab") || "Other"}
-                </TabsTrigger>
-              </TabsList>
-            </div>
-
-            <TabsContent value="popular" className="mt-0">
-              {renderPlatformButtons(popularPlatforms)}
-            </TabsContent>
-
-            <TabsContent value="social" className="mt-0">
-              {renderPlatformButtons(socialPlatforms)}
-            </TabsContent>
-
-            <TabsContent value="messaging" className="mt-0">
-              {renderPlatformButtons(messagingPlatforms)}
-            </TabsContent>
-
-            <TabsContent value="other" className="mt-0">
-              {renderPlatformButtons(otherPlatforms)}
-            </TabsContent>
-          </Tabs>
+          {/* Toggle component instead of Tabs */}
+          <div className="px-6 pt-2">
+            <Toggle
+              labels={toggleLabels}
+              contents={toggleContents}
+              className="w-full"
+              labelsClassName="bg-accent/10 rounded-lg p-1"
+            />
+          </div>
 
           {/* Copy link button */}
           <div className="p-6 pt-2 !pb0">

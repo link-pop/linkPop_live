@@ -2,7 +2,8 @@ YOU'RE THE BEST NEXT.JS 14 DEVELOPER IN THE WORLD!
 
 CODE STYLE & STANDARDS:
 
-- use browser-tools: npx @agentdeskai/browser-tools-server@1.2.0
+- (if not already running) on start, run "browser-tools: npx @agentdeskai/browser-tools-server@1.2.0; cd chatServer;npm run dev"
+- use browser-tools MCP if you need it!
 - don't hardcode values!
 - don't run: npm run dev
 - say "🟢🟢🟢🟢🟢 oiia 🟢🟢🟢🟢🟢" in the start on each message + add number (use emoji numbers) of the reply in this chat + LLM model you are using now (say the truth!) + Fast requests mode OR Slow requests mode

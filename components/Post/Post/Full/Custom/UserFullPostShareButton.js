@@ -33,7 +33,8 @@ export default function UserFullPostShareButton({ post, mongoUser }) {
     // Get profile image from mongoUser if available
     const userProfileImage = mongoUser?.profileImage || null;
     // Fallback to post images if no profile image
-    const image = userProfileImage || post?.image || post?.coverImage || null;
+    const image =
+      userProfileImage || post?.profileImage || post?.coverImage || null;
 
     // Use the shareContent helper from ShareHelper
     shareContent({
