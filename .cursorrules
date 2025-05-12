@@ -1,65 +1,60 @@
-CODE STYLE & STANDARDS ~~~~~
-~ don't hardcode values!
-~ don't run: npm run dev
-~ say "🟢🟢🟢🟢🟢 oiia 🟢🟢🟢🟢🟢" in the start on each message + add number (use emoji numbers) of the reply in this chat + LLM model you are using now (say the truth!) + Fast requests mode OR Slow requests mode
-~ DON'T use '' single quotes in the code! use "" double quotes
-~ adhere DRY code principles
-~ don't delete upper case comments. eg: {/ SETTINGS /}
-~ don't delete comments, and commented code. my comments are starting with: //!, // ?, // ???, //\*, // TODO
-~ ignore TODO comments they start with: // TODO
-~ when passing props to comp pass it like this {...{replyTo, onCancelReply}} NOT LIKE THIS replyTo={replyTo} onCancelReply={onCancelReply}
-~ don't add interval to comps that display time related things (eg: CreatedAtTimeAgo comp)
-~ don't use index.js file to export other files (only use it when when no other options are available)
-~ don't create any test pages/routes/scripts/files for testing!
-~ don't create route.js files (ONLY if it's 100% necessary!)
-~ If you need to get/add/update/delete some data from DB use \lib\actions\crud.js file!
-~ use theme compatible classNames like bg-background, bg-accent, text-foreground, etc, if needed
-~ in the end say how many files you created/edited in the last run. Like this [RUN:number-FILES:number]
-~ don't ever delete className that start with capital letter, eg: "LeftNav"
-~ mark the beggining and the ending of the comp/code, like this: // ! code start example ... // ? code end example
+YOU'RE THE BEST NEXT.JS 14 DEVELOPER IN THE WORLD!
 
-COMPONENTS & ARCHITECTURE ~~~~~
-~ page.js MUST be a Server Component
-~ This project is inspired by Onlyfans website, and it has a lot of similarities to onlyfans website. So if you know how something is done in onlyfans website, you will have an idea how to do it in this project.
-~ I use next.js 14.2.7. NO TYPESCRIPT!
-~ For icons I use Lucide-react
-~ /help is a trash folder - ignore it!
-~ when making code, if component's jsx takes more then 1 line, make new comp for that. Also make new files for hooks!
-~ If possible, use server components/approach over client components/approach, ESPECIALLY TO GET THE DATA in components.
-~ when you want to use existing ui component, use comp from /components/ui/shared folder. Then check /components/ui folder for the comp. If there is no suitable comp for UI, create new comp in /components/ui/shared folder
-~ if you need to create DB field for userId, use "createdBy" instead of "userId"
-~ name action files same as inside function. Eg: function called "checkDirectlinkNameUniqueness" then file should be called "checkDirectlinkNameUniqueness.js"
-~ add translations to \data\translations.js
+CODE STYLE & STANDARDS:
 
-```DATABASE & SERVER ~~~~~
-~ if userId needed, use mongoDB userId (can be found in getMongoUser - lib\utils\mongo\getMongoUser), don't use clerkId for userId!
-~ for any crud ops use my crud.js file - \lib\actions\crud.js (if that has no fn needed - make up your fn)
-~ DB search functionality happens mainly here - lib\utils\mongo\handleMongoCollectionSearch.js
-~ if smth needed to be found in getAllPostsOwner OR getAllPostsNonOwner: pass it to data {}, but NOT AS SEPARATE arg
+- don't hardcode values!
+- don't run: npm run dev
+- say "🟢🟢🟢🟢🟢 oiia 🟢🟢🟢🟢🟢" in the start on each message + add number (use emoji numbers) of the reply in this chat + LLM model you are using now (say the truth!) + Fast requests mode OR Slow requests mode
+- don't create any test pages/routes/scripts/files for testing!
+- don't create route.js files (ONLY if it's 100% necessary!)
+- If you need to get/add/update/delete some data from DB use \lib\actions\crud.js file!
+- use theme compatible classNames like bg-background, bg-accent, text-foreground, etc, if needed
+- in the end say how many files you created/edited in the last run. Like this [RUN:number-FILES:number]
+- don't ever delete className that start with capital letter, eg: "LeftNav"
 
-~~~~~ CHAT SERVER SPECIFIC ~~~~~
-~ /chatServer/chatServer.js - can be only used for chat server handling logic and for socket.io handling!
-~ KEEP IN MIND - /chatServer in production mode is a SEPARATE server that has no access to outside files!
-~ don't use .populate() for mongoose queries - in /chatServer, the population happens on the client side!
+COMPONENTS & ARCHITECTURE:
 
-~~~~~ STYLING ~~~~~
-~ Don't use css modules!
-~ if you use className use it LIKE THIS: className={`...`} and NOT like this: className=""
-~ for width and height use dvh and dvw NOT vh and vw
-~ I prefer npm_mini_tailwind plugin over tailwind, so don't remove npm_mini_tailwind classNames (you can find npm_mini_tailwind customConfig in here node_modules\npm_mini_tailwind\tailwind.config.js). If you see and can use npm_mini_tailwind use it over tailwind, IF NOT use tailwind!
+- page.js MUST be a Server Component
+- I use next.js 14.2.7. NO TYPESCRIPT!
+- For icons I use Lucide-react
+- If possible, use server components/approach over client components/approach, ESPECIALLY TO GET THE DATA in components.
+- when you want to use existing ui component, use comp from /components/ui/shared folder. Then check /components/ui folder for the comp. If there is no suitable comp for UI, create new comp in /components/ui/shared folder
+- if you need to create DB field for userId, use "createdBy" instead of "userId"
+- name action files same as inside function. Eg: function called "checkDirectlinkNameUniqueness" then file should be called "checkDirectlinkNameUniqueness.js"
 
-~~~~~ FORMS & UI COMPONENTS ~~~~~
-~ when you are dealing with any form REMEMBER: there can be only 1 button element in the form, coz button element triggers form submit! All other elements that looks like button should be divs!
-~ to show modal or dialog I use AlertDialog - /components/ui/shared/AlertDialog/AlertDialog
+DATABASE & SERVER:
 
-~~~~~ DATA FETCHING ~~~~~
-~ if needed useEffect to fetch data: Use react query where it's possible instead of useEffect
-~ Usually I get all posts by reusing this comp: /components/Post/Posts/PostsClientInfiniteScroll to have the infinite scroll
+- if userId needed, use mongoDB user id (can be found in getMongoUser - lib\utils\mongo\getMongoUser), don't use clerkId for userId!
+- for any crud ops use my crud.js file - \lib\actions\crud.js (if that has no fn needed - make up your fn)
+- DB search functionality happens mainly here - lib\utils\mongo\handleMongoCollectionSearch.js
+- if smth needed to be found in getAllPostsOwner OR getAllPostsNonOwner: pass it to data {}, but NOT AS SEPARATE arg
 
-~~~~~ TASK COMMUNICATION ~~~~~
-~ in the end of each task that you ended write [GOOD] if you think it was a good idea, [BETTERIDEA] if you think it was a bad idea and describe why, and [IDONTKNOW] if you dont know or not sure
-~ write [SUGGESTION] if you think its a good idea to make a change, and describe why
-~ write [CAUTION] if you think its a dangerous/bad idea and describe why
-~ if my instructions confuse you or taking too much space in your "working memory" write: "[TOOMANYINSTRUCTIONS]"
-~ in every message show your input data capacity in %. Like this EXAMPLE: (got data/max capacity) [INPUTDATA]: 22%/100k tokens. Also write how many credits you spent for this reply of all credits I have. Example: [CREDITSSPENT]: 2/1500 credits.
-```
+CHAT SERVER SPECIFIC:
+
+- /chatServer/chatServer.js - can be only used for chat server handling logic and for socket.io handling!
+- KEEP IN MIND - /chatServer in production mode is a SEPARATE server that has no access to outside files!
+- don't use .populate() for mongoose queries - in /chatServer, the population happens on the client side!
+
+STYLING:
+
+- Don't use css modules!
+- for width and height use dvh and dvw NOT vh and vw
+- I prefer npm_mini_tailwind plugin over tailwind, so don't remove npm_mini_tailwind classNames (you can find npm_mini_tailwind customConfig in here node_modules\npm_mini_tailwind\tailwind.config.js). If you see and can use npm_mini_tailwind use it over tailwind, IF NOT, use tailwind!
+
+FORMS & UI COMPONENTS:
+
+- when you are dealing with any form REMEMBER: there can be only 1 button element in the form, coz button element triggers form submit! All other elements that looks like button should be divs!
+- to show modal or dialog I use AlertDialog - /components/ui/shared/AlertDialog/AlertDialog
+
+DATA FETCHING:
+
+- if needed useEffect to fetch data: Use react query where it's possible instead of useEffect
+- Usually I get all posts by reusing this comp: /components/Post/Posts/PostsClientInfiniteScroll to have the infinite scroll
+
+TASK COMMUNICATION:
+
+- in the end of each task that you ended write [GOOD] if you think it was a good idea, [BETTERIDEA] if you think it was a bad idea and describe why, and [IDONTKNOW] if you dont know or not sure
+- write [SUGGESTION] if you think its a good idea to make a change, and describe why
+- write [CAUTION] if you think its a dangerous/bad idea and describe why
+- if my instructions confuse you or taking too much space in your "working memory" write: "[TOOMANYINSTRUCTIONS]"
+- in every message show your input data capacity in %. Like this EXAMPLE: (got data/max capacity) [INPUTDATA]: 22%/100k tokens.
