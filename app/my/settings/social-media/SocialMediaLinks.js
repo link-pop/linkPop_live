@@ -6,7 +6,14 @@ import { useContext } from "@/components/Context/Context";
 import Button2 from "@/components/ui/shared/Button/Button2";
 import { removeSocialMediaLink } from "@/lib/actions/removeSocialMediaLink";
 import { updateSocialMediaLinksOrder } from "@/lib/actions/updateSocialMediaLinksOrder";
-import { PlusCircle, Trash2, GripVertical, Globe, Pencil, Loader2 } from "lucide-react";
+import {
+  PlusCircle,
+  Trash2,
+  GripVertical,
+  Globe,
+  Pencil,
+  Loader2,
+} from "lucide-react";
 import SocialMediaLinkDialog from "./SocialMediaLinkDialog";
 import SocialMediaLinksDisplay from "@/components/ui/shared/SocialMediaLinks/SocialMediaLinksDisplay";
 import { platformIcons, platformUrls } from "@/lib/data/platformData";
@@ -46,6 +53,7 @@ const SocialMediaLinks = memo(function SocialMediaLinks({
   showSocialMediaLinksDisplay = true,
   setCreatedLinksCount = null,
   refreshPreviewCallback = null,
+  className = "",
 }) {
   const { t } = useTranslation();
   const { dialogSet } = useContext();
@@ -350,7 +358,12 @@ const SocialMediaLinks = memo(function SocialMediaLinks({
   };
   // ? Drag and drop
 
-  if (isLoading) return <div className="fcc p20"><Loader2 className="animate-spin w-6 h-6 text-gray-500" /></div>;
+  if (isLoading)
+    return (
+      <div className="fcc p20">
+        <Loader2 className="animate-spin w-6 h-6 text-gray-500" />
+      </div>
+    );
 
   if (error) {
     console.error("Error loading social links:", error);
@@ -358,7 +371,7 @@ const SocialMediaLinks = memo(function SocialMediaLinks({
   }
 
   return (
-    <div className={`fc ${isDeleting || isSaving ? "pen" : ""}`}>
+    <div className={`fc ${isDeleting || isSaving ? "pen" : ""} ${className}`}>
       <p className="tac ml3 mb5 px15">
         {mode === "other"
           ? t("otherMediaLinksDescription")

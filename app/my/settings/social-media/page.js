@@ -6,7 +6,7 @@ export default async function SocialMediaPage() {
 
   return (
     <div className={`fc g20`}>
-      <SocialMediaLinks {...{ mongoUser }} />
+      <SocialMediaLinks {...{ mongoUser, className: "mt15" }} />
     </div>
   );
 }
