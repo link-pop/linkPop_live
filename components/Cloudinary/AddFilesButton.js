@@ -20,7 +20,13 @@ export default function AddFilesButton({
     filesSet([...files, ...Array.from(e.target.files)]);
   };
 
-  const handleClick = () => inputFileRef.current.click();
+  const handleClick = () => {
+    // Reset the input value to allow selecting the same file again
+    if (inputFileRef.current) {
+      inputFileRef.current.value = "";
+    }
+    inputFileRef.current.click();
+  };
 
   return (
     <div>
