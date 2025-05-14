@@ -1238,6 +1238,16 @@ const hi = {
   subscriptionPlanLimitExceeded: "सदस्यता योजना की सीमा पार हो गई है",
   ifYouAreCreatorPlease: "यदि आप निर्माता हैं, तो कृपया",
   updateYourSubscription: "अपनी सदस्यता अपडेट करें",
+
+  // NSFW Content Alert
+  contentIsAppropriate: "सामग्री उपयुक्त है",
+  contentNotAppropriate: "सामग्री उपयुक्त नहीं है",
+  erotica: "अश्लील सामग्री",
+  weapons: "हथियार",
+  alcohol: "शराब",
+  drugs: "नशीली दवाएँ",
+  offensive: "आपत्तिजनक",
+  ok: "ठीक है",
 };
 
 export default hi;

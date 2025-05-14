@@ -1235,6 +1235,16 @@ const fr = {
     "La limite du forfait d'abonnement a été dépassée",
   ifYouAreCreatorPlease: "Si vous êtes le créateur, veuillez",
   updateYourSubscription: "mettre à jour votre abonnement",
+
+  // NSFW Content Alert
+  contentIsAppropriate: "Contenu approprié",
+  contentNotAppropriate: "Contenu non approprié",
+  erotica: "Érotisme",
+  weapons: "Armes",
+  alcohol: "Alcool",
+  drugs: "Drogues",
+  offensive: "Offensant",
+  ok: "OK",
 };
 
 export default fr;

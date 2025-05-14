@@ -1167,6 +1167,16 @@ const zh = {
   subscriptionPlanLimitExceeded: "已超出订阅计划限制",
   ifYouAreCreatorPlease: "如果您是创作者，请",
   updateYourSubscription: "更新您的订阅",
+
+  // NSFW Content Alert
+  contentIsAppropriate: "内容适当",
+  contentNotAppropriate: "内容不适当",
+  erotica: "色情内容",
+  weapons: "武器",
+  alcohol: "酒精",
+  drugs: "毒品",
+  offensive: "冒犯性内容",
+  ok: "确定",
 };
 
 export default zh;

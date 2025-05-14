@@ -1224,6 +1224,16 @@ const uk = {
   subscriptionPlanLimitExceeded: "Перевищено ліміт тарифного плану",
   ifYouAreCreatorPlease: "Якщо ви автор, будь ласка,",
   updateYourSubscription: "оновіть вашу передплату",
+
+  // NSFW Content Alert
+  contentIsAppropriate: "Вміст є відповідним",
+  contentNotAppropriate: "Вміст заборонено",
+  erotica: "Еротика",
+  weapons: "Зброя",
+  alcohol: "Алкоголь",
+  drugs: "Наркотики",
+  offensive: "Образливий вміст",
+  ok: "OK",
 };
 
 export default uk;

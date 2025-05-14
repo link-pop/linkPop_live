@@ -1235,6 +1235,16 @@ const es = {
     "Se ha excedido el límite del plan de suscripción",
   ifYouAreCreatorPlease: "Si eres el creador, por favor",
   updateYourSubscription: "actualiza tu suscripción",
+
+  // NSFW Content Alert
+  contentIsAppropriate: "Contenido apropiado",
+  contentNotAppropriate: "Contenido no apropiado",
+  erotica: "Erótica",
+  weapons: "Armas",
+  alcohol: "Alcohol",
+  drugs: "Drogas",
+  offensive: "Ofensivo",
+  ok: "OK",
 };
 
 export default es;

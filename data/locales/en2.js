@@ -1227,6 +1227,16 @@ const en = {
     "The subscription plan limit has been exceeded",
   ifYouAreCreatorPlease: "If you are the creator, please",
   updateYourSubscription: "update your subscription",
+
+  // NSFW Content Alert
+  contentIsAppropriate: "Content is appropriate",
+  contentNotAppropriate: "Content not appropriate",
+  erotica: "Erotica",
+  weapons: "Weapons",
+  alcohol: "Alcohol",
+  drugs: "Drugs",
+  offensive: "Offensive",
+  ok: "OK",
 };
 
 export default en;
