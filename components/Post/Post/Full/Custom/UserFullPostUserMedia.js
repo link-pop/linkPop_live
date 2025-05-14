@@ -16,22 +16,40 @@ export default function UserFullPostUserMedia({
 
   // Base search params with media type from URL
   const searchParamsObject = useMemo(() => {
-    // If not owner, only show feeds media regardless of URL params
-    if (!isOwner) {
+    const mediaType = searchParams.get("mediaType");
+
+    // Handle special case for video type (for both owner and visitor)
+    if (mediaType === "video") {
       return {
         createdBy: visitedMongoUser?._id || "noUserId",
-        uploadedFrom: "feeds"
+        fileType: "video",
+        ...(isOwner ? {} : { uploadedFrom: "feeds" }), // For visitors, only show videos from feeds
       };
     }
-    
-    // For owner, respect the mediaType from URL
+
+    // Handle special case for photo type (for both owner and visitor)
+    if (mediaType === "photo") {
+      return {
+        createdBy: visitedMongoUser?._id || "noUserId",
+        fileType: "image",
+        ...(isOwner ? {} : { uploadedFrom: "feeds" }), // For visitors, only show photos from feeds
+      };
+    }
+
+    // For owner, handle other media types
+    if (isOwner) {
+      return {
+        createdBy: visitedMongoUser?._id || "noUserId",
+        ...(mediaType && mediaType !== "all"
+          ? { uploadedFrom: mediaType }
+          : {}),
+      };
+    }
+
+    // For non-owner (visitor), default to showing feeds content only
     return {
-      mediaType: searchParams.get("mediaType"),
       createdBy: visitedMongoUser?._id || "noUserId",
-      ...(searchParams.get("mediaType") &&
-      searchParams.get("mediaType") !== "all"
-        ? { uploadedFrom: searchParams.get("mediaType") }
-        : {}),
+      uploadedFrom: "feeds",
     };
   }, [searchParams, visitedMongoUser, isOwner, mongoUser, post]);
 
@@ -43,14 +61,13 @@ export default function UserFullPostUserMedia({
 
   return (
     <div>
-      {isOwner && (
-        <MediaTypeFetchedSwitch
-          {...{
-            mongoUser,
-            visitedUserId: visitedMongoUser?._id,
-          }}
-        />
-      )}
+      <MediaTypeFetchedSwitch
+        {...{
+          mongoUser,
+          visitedUserId: visitedMongoUser?._id,
+          isOwner, // Pass isOwner flag to allow filtering visible types
+        }}
+      />
       <PostsClientInfiniteScroll
         {...{
           searchParams: searchParamsObject,

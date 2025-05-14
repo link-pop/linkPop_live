@@ -14,8 +14,11 @@ export default function UserFullPostContent({
   mongoUser,
   visitedMongoUser,
 }) {
+  // Determine if current user is the owner of the profile
+  const isOwner = mongoUser?._id && mongoUser?._id === visitedMongoUser?._id;
+
   const { data: counts = { posts: 0, media: 0 }, isLoading } =
-    useUserContentCounts(visitedMongoUser?._id);
+    useUserContentCounts(visitedMongoUser?._id, isOwner);
   const { t } = useTranslation();
 
   if (!visitedMongoUser) return null;

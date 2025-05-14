@@ -3,9 +3,13 @@
 import { getAll } from "@/lib/actions/crud";
 import FetchedTypeSwitch from "./FetchedTypeSwitch";
 
-export default function MediaTypeFetchedSwitch({ mongoUser, visitedUserId }) {
+export default function MediaTypeFetchedSwitch({
+  mongoUser,
+  visitedUserId,
+  isOwner = false,
+}) {
   // Define media types for the switch based on the AttachmentModel enum values
-  const mediaTypes = [
+  const allMediaTypes = [
     {
       value: "all",
       label: "all",
@@ -37,7 +41,56 @@ export default function MediaTypeFetchedSwitch({ mongoUser, visitedUserId }) {
         uploadedFrom: "welcomeMessage",
       },
     },
+    {
+      value: "video",
+      label: "video",
+      query: {
+        createdBy: visitedUserId || mongoUser?._id,
+        fileType: "video",
+      },
+    },
+    {
+      value: "photo",
+      label: "photo",
+      query: {
+        createdBy: visitedUserId || mongoUser?._id,
+        fileType: "image",
+      },
+    },
   ];
+
+  // Filter media types based on ownership
+  // Visitors (non-owners) only see photo and video options
+  const mediaTypes = isOwner
+    ? allMediaTypes
+    : [
+        {
+          value: "all",
+          label: "all",
+          query: {
+            createdBy: visitedUserId || mongoUser?._id,
+            uploadedFrom: "feeds", // Restrict to feeds for visitors
+          },
+        },
+        {
+          value: "photo",
+          label: "photo",
+          query: {
+            createdBy: visitedUserId || mongoUser?._id,
+            fileType: "image",
+            uploadedFrom: "feeds", // Restrict to feeds for visitors
+          },
+        },
+        {
+          value: "video",
+          label: "video",
+          query: {
+            createdBy: visitedUserId || mongoUser?._id,
+            fileType: "video",
+            uploadedFrom: "feeds", // Restrict to feeds for visitors
+          },
+        },
+      ];
 
   // Custom query function for media types
   const mediaQueryFn = async () => {
@@ -51,7 +104,7 @@ export default function MediaTypeFetchedSwitch({ mongoUser, visitedUserId }) {
     try {
       // Get counts for each media type
       const typeCounts = await Promise.all(
-        mediaTypes.map(type => 
+        mediaTypes.map((type) =>
           getAll({
             col: "attachments",
             data: type.query,

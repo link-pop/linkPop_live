@@ -4,26 +4,31 @@ import { useQuery } from "@tanstack/react-query";
 import { getAll } from "@/lib/actions/crud";
 
 // TODO !!! move to User/MoreThanFriend/
-export default function useUserContentCounts(userId) {
+export default function useUserContentCounts(userId, isOwner = false) {
   return useQuery({
-    queryKey: ["content", "counts", userId],
+    queryKey: ["content", "counts", userId, isOwner],
     queryFn: async () => {
       if (!userId) return { posts: 0, media: 0 };
 
       try {
+        const postsQuery = {
+          col: "feeds",
+          data: {
+            createdBy: userId,
+          },
+        };
+
+        const mediaQuery = {
+          col: "attachments",
+          data: {
+            createdBy: userId,
+            ...(isOwner ? {} : { uploadedFrom: "feeds" }),
+          },
+        };
+
         const [posts, media] = await Promise.all([
-          getAll({
-            col: "feeds",
-            data: {
-              createdBy: userId,
-            },
-          }),
-          getAll({
-            col: "attachments",
-            data: {
-              createdBy: userId,
-            },
-          }),
+          getAll(postsQuery),
+          getAll(mediaQuery),
         ]);
 
         return {
