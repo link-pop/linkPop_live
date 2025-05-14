@@ -28,11 +28,23 @@ export default function UserFullPostUserMedia({
     }
 
     // Handle special case for photo type (for both owner and visitor)
+    // Exclude GIFs from photo results
     if (mediaType === "photo") {
       return {
         createdBy: visitedMongoUser?._id || "noUserId",
         fileType: "image",
+        fileUrl_not_contains: ".gif", // Add a negative filter to exclude GIFs
         ...(isOwner ? {} : { uploadedFrom: "feeds" }), // For visitors, only show photos from feeds
+      };
+    }
+
+    // Handle special case for gif type (for both owner and visitor)
+    if (mediaType === "gif") {
+      return {
+        createdBy: visitedMongoUser?._id || "noUserId",
+        fileType: "image", // GIFs are stored as image type
+        fileUrl_contains: ".gif", // We'll use this to filter in the server function
+        ...(isOwner ? {} : { uploadedFrom: "feeds" }), // For visitors, only show gifs from feeds
       };
     }
 
