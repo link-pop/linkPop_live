@@ -249,7 +249,7 @@ export default function ProfileForm({ mongoUser }) {
           customLinks: [
             {
               href: `${SOCIAL_MEDIA_ROUTE}`,
-              label: "socialMedia",
+              label: `${t("socialMedia")} + ${t("otherLinks")}`,
             },
           ],
         }}

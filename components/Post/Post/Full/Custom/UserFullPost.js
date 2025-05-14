@@ -6,6 +6,7 @@ import UserFullPostInfo from "./UserFullPostInfo";
 import UserFullPostUserNotAvailable from "./UserFullPostUserNotAvailable";
 import UserFullPostFansCount from "./UserFullPostFansCount";
 import UserFullPostSocials from "./UserFullPostSocials";
+import UserFullPostOtherLinks from "./UserFullPostOtherLinks";
 
 export default function UserFullPost({
   post,
@@ -42,9 +43,12 @@ export default function UserFullPost({
         top3={<UserFullPostInfo {...{ mongoUser, visitedMongoUser }} />}
         top4={<UserFullPostFansCount {...{ post }} />}
         top5={
-          <UserFullPostSocials
-            {...{ post, col, mongoUser, visitedMongoUser }}
-          />
+          <>
+            <UserFullPostSocials
+              {...{ post, col, mongoUser, visitedMongoUser }}
+            />
+            <UserFullPostOtherLinks visitedMongoUser={visitedMongoUser} />
+          </>
         }
         top6={
           <UserFullPostContent
