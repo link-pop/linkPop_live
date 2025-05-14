@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 import FormData from "form-data";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
+import { sendErrorToAdmin } from "@/lib/actions/sendErrorToAdmin";
 import {
   EROTICA_THRESHOLD,
   WEAPONS_THRESHOLD,
@@ -172,6 +173,20 @@ export async function POST(request) {
     // If we couldn't get a response with any API key
     if (!responseData) {
       console.error("All API keys failed or reached rate limits");
+
+      // Send error notification to admin
+      await sendErrorToAdmin({
+        error: lastError || new Error("All SightEngine API keys exhausted"),
+        subject: "SightEngine API Keys Exhausted",
+        context: {
+          apiAttempts: apiAttempt,
+          lastErrorStatus: lastError?.response?.status,
+          lastErrorMessage:
+            lastError?.response?.data?.error?.message || lastError?.message,
+          timestamp: new Date().toISOString(),
+        },
+      });
+
       return NextResponse.json(
         {
           error:
