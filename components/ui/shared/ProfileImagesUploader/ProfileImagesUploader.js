@@ -8,6 +8,7 @@ import ImageCropper from "@/components/ui/shared/ImageCropper/ImageCropper";
 import getCroppedImg from "@/lib/utils/files/getCroppedImg";
 import uploadFilesToCloudinary from "@/components/Cloudinary/uploadFilesToCloudinary";
 import { useTranslation } from "@/components/Context/TranslationContext";
+import NSFWContentAlert from "@/components/ui/shared/NSFWContentAlert/NSFWContentAlert";
 
 export default function ProfileImagesUploader({
   profileImage,
@@ -25,6 +26,7 @@ export default function ProfileImagesUploader({
   const { toastSet, dialogSet } = useContext();
   const { t } = useTranslation();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [nsfwScores, setNsfwScores] = useState(null);
 
   // State for original images (used for re-cropping)
   const [originalProfileImage, setOriginalProfileImage] = useState(
@@ -138,6 +140,28 @@ export default function ProfileImagesUploader({
     }
   };
 
+  // Show NSFW content alert dialog
+  const showNSFWContentAlert = (error) => {
+    setNsfwScores(error.scores);
+
+    dialogSet({
+      isOpen: true,
+      contentClassName: "max-w-md p-0",
+      hasCloseIcon: false,
+      showBtns: false,
+      comp: (
+        <NSFWContentAlert
+          scores={error.scores}
+          image={error.imageBase64}
+          onClose={() => {
+            dialogSet({ isOpen: false });
+            setNsfwScores(null);
+          }}
+        />
+      ),
+    });
+  };
+
   // Handle crop completion
   const handleCropComplete = async (
     type,
@@ -177,63 +201,85 @@ export default function ProfileImagesUploader({
 
       // If we have an original file that needs to be uploaded first, do that
       if (files && files.length > 0) {
-        // First upload the original file
-        const originalFiles = await uploadFilesToCloudinary(
-          files,
-          uploadFolder // Use the specified folder
-        );
+        try {
+          // First upload the original file
+          const originalFiles = await uploadFilesToCloudinary(
+            files,
+            uploadFolder, // Use the specified folder
+            null,
+            { skipNSFWCheck: true } // Skip NSFW check for original file, we'll check the cropped version
+          );
 
-        if (!originalFiles || originalFiles.length === 0) {
-          throw new Error("Failed to upload original image");
+          if (!originalFiles || originalFiles.length === 0) {
+            throw new Error("Failed to upload original image");
+          }
+
+          // Set the original image URL
+          const originalImageUrl = originalFiles[0].fileUrl;
+          const originalFileId = originalFiles[0].fileId;
+
+          // Store the original image based on type
+          if (type === "profileImage") {
+            setOriginalProfileImage(originalImageUrl);
+            updateParentOriginalImage("profileImage", originalImageUrl);
+          } else if (type === "coverImage") {
+            setOriginalCoverImage(originalImageUrl);
+            updateParentOriginalImage("coverImage", originalImageUrl);
+          }
+
+          // Add the original file ID to the options
+          uploadOptions.originalFileId = originalFileId;
+        } catch (error) {
+          // Check if this was an NSFW detection error
+          if (error.message === "NSFW_DETECTED") {
+            showNSFWContentAlert(error);
+            setIsProcessing(false);
+            return;
+          }
+          throw error;
         }
-
-        // Set the original image URL
-        const originalImageUrl = originalFiles[0].fileUrl;
-        const originalFileId = originalFiles[0].fileId;
-
-        // Store the original image based on type
-        if (type === "profileImage") {
-          setOriginalProfileImage(originalImageUrl);
-          updateParentOriginalImage("profileImage", originalImageUrl);
-        } else if (type === "coverImage") {
-          setOriginalCoverImage(originalImageUrl);
-          updateParentOriginalImage("coverImage", originalImageUrl);
-        }
-
-        // Add the original file ID to the options
-        uploadOptions.originalFileId = originalFileId;
       } else {
         // Extract the public_id from the existing image URL if no new original file
         const originalFileId = imageUrl.split("/").pop().split(".")[0];
         uploadOptions.originalFileId = originalFileId;
       }
 
-      // Upload the cropped image
-      const uploadedFiles = await uploadFilesToCloudinary(
-        [file],
-        uploadFolder, // Use the specified folder
-        null,
-        uploadOptions
-      );
+      try {
+        // Upload the cropped image
+        const uploadedFiles = await uploadFilesToCloudinary(
+          [file],
+          uploadFolder, // Use the specified folder
+          null,
+          uploadOptions
+        );
 
-      if (!uploadedFiles || uploadedFiles.length === 0) {
-        throw new Error("Failed to upload cropped image");
+        if (!uploadedFiles || uploadedFiles.length === 0) {
+          throw new Error("Failed to upload cropped image");
+        }
+
+        const croppedImageUrl = uploadedFiles[0].fileUrl;
+
+        // Set the cropped image
+        if (type === "profileImage") {
+          setProfileImage(croppedImageUrl);
+        } else if (type === "coverImage") {
+          setCoverImage(croppedImageUrl);
+        }
+
+        // Success toast
+        toastSet({
+          isOpen: true,
+          title: t("imageCroppedAndSaved"),
+        });
+      } catch (error) {
+        // Check if this was an NSFW detection error
+        if (error.message === "NSFW_DETECTED") {
+          showNSFWContentAlert(error);
+          setIsProcessing(false);
+          return;
+        }
+        throw error;
       }
-
-      const croppedImageUrl = uploadedFiles[0].fileUrl;
-
-      // Set the cropped image
-      if (type === "profileImage") {
-        setProfileImage(croppedImageUrl);
-      } else if (type === "coverImage") {
-        setCoverImage(croppedImageUrl);
-      }
-
-      // Success toast
-      toastSet({
-        isOpen: true,
-        title: t("imageCroppedAndSaved"),
-      });
     } catch (error) {
       console.error("Error processing cropped image:", error);
       toastSet({

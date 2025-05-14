@@ -1228,6 +1228,16 @@ const uk = {
   noMessages: "Немає повідомлень",
   pleaseSubscribeToACreatorToAccessThisFeature:
     "Будь ласка, підпишіться на креатора, щоб отримувати повідомлення.",
+
+  // NSFW Content Alert
+  contentIsAppropriate: "Відповідний контент",
+  contentNotAppropriate: "Невідповідний контент",
+  erotica: "Еротика",
+  weapons: "Зброя",
+  alcohol: "Алкоголь",
+  drugs: "Наркотики",
+  offensive: "Образливий вміст",
+  ok: "ОК",
 };
 
 export default uk;

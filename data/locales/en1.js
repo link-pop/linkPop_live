@@ -1251,6 +1251,16 @@ const en = {
   noMessages: "No messages",
   pleaseSubscribeToACreatorToAccessThisFeature:
     "Please subscribe to a creator to access this feature.",
+
+  // NSFW Content Alert
+  contentIsAppropriate: "Content is appropriate",
+  contentNotAppropriate: "Content not appropriate",
+  erotica: "Erotica",
+  weapons: "Weapons",
+  alcohol: "Alcohol",
+  drugs: "Drugs",
+  offensive: "Offensive",
+  ok: "OK",
 };
 
 export default en;
