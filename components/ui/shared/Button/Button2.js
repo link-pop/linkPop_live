@@ -1,3 +1,5 @@
+"use client";
+
 import { BRAND_INVERT_CLASS } from "@/lib/utils/constants";
 import Link from "next/link";
 import { SITE1, SITE2 } from "@/config/env";
