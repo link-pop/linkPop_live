@@ -23,17 +23,6 @@ import {
  */
 export async function POST(request) {
   try {
-    // Check if user is admin
-    const { isAdmin } = await getMongoUser();
-
-    // If not admin, redirect to home page
-    if (!isAdmin) {
-      return NextResponse.json(
-        { error: "Unauthorized access" },
-        { status: 403 }
-      );
-    }
-
     // Get request body
     const body = await request.json();
     const { imageUrl, imageBase64, customThresholds, isCroppedImage } = body;
