@@ -7,6 +7,7 @@ import {
   DIRECTLINKS_ROUTE,
   MAIN_ROUTE,
   DASHBOARD_ROUTE,
+  MY_ROUTE,
 } from "@/lib/utils/constants";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import {
@@ -66,7 +67,7 @@ export const navItems = () => {
       id: "vault",
       name: showTitles ? t("vault") : "",
       icon: <Images className="w-6 h-6" />,
-      href: "#",
+      href: `${MY_ROUTE}/vault`,
     },
   ];
 

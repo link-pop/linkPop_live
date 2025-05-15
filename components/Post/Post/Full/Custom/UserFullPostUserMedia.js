@@ -10,9 +10,14 @@ export default function UserFullPostUserMedia({
   isAdmin,
   mongoUser,
   visitedMongoUser,
+  isOwner: isOwnerProp,
 }) {
   const searchParams = useSearchParams();
-  const isOwner = mongoUser?._id && post?._id === mongoUser?._id;
+  // Use provided isOwner prop if available, otherwise calculate it
+  const isOwner =
+    isOwnerProp !== undefined
+      ? isOwnerProp
+      : mongoUser?._id && post?._id === mongoUser?._id;
 
   // Base search params with media type from URL
   const searchParamsObject = useMemo(() => {
@@ -63,7 +68,7 @@ export default function UserFullPostUserMedia({
       createdBy: visitedMongoUser?._id || "noUserId",
       uploadedFrom: "feeds",
     };
-  }, [searchParams, visitedMongoUser, isOwner, mongoUser, post]);
+  }, [searchParams, visitedMongoUser, isOwner, mongoUser, post, isOwnerProp]);
 
   const col = {
     name: "attachments",
