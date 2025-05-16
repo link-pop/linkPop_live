@@ -17,7 +17,7 @@ export default function RightNav() {
   if (windowWidth <= 900) return null;
 
   return (
-    <div className="maw400 wf flex flex-col h-screen p-4 space-y-4 bg-white sticky top-0">
+    <div className="maw400 wf flex flex-col h-screen p-4 space-y-4 bg-background sticky top-0">
       <SuggestionsSection />
     </div>
   );
