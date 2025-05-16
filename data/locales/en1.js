@@ -1265,6 +1265,43 @@ const en = {
   ok: "OK",
 
   queue: "Queue",
+
+  // Account settings
+  age: "Age",
+  raceEthnicity: "Race / Ethnicity",
+  hairColor: "Hair Color",
+  bodyType: "Body Type / Build",
+  accountUpdated: "Account updated successfully",
+  invalidAge: "Age must be between 18 and 120",
+
+  // Race/Ethnicity options
+  asian: "Asian",
+  black: "Black",
+  hispanic: "Hispanic",
+  middleEastern: "Middle Eastern",
+  nativeAmerican: "Native American",
+  pacificIslander: "Pacific Islander",
+  white: "White",
+  multiracial: "Multiracial",
+
+  // Body Type options
+  slim: "Slim",
+  athletic: "Athletic",
+  average: "Average",
+  curvy: "Curvy",
+  muscular: "Muscular",
+  plusSize: "Plus Size",
+
+  // Colors
+  brown: "Brown",
+  blonde: "Blonde",
+  red: "Red",
+  gray: "Gray",
+  white: "White",
+  black: "Black",
+
+  // Select dropdown
+  selectOption: "Select option",
 };
 
 export default en;

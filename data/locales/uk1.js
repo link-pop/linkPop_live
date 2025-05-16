@@ -1242,6 +1242,44 @@ const uk = {
   ok: "ОК",
 
   queue: "Черга",
+
+  // Account settings
+  age: "Вік",
+  raceEthnicity: "Раса / Етнічність",
+  hairColor: "Колір волосся",
+  bodyType: "Тип статури",
+  accountUpdated: "Обліковий запис успішно оновлено",
+  invalidAge: "Вік повинен бути від 18 до 120 років",
+
+  // Race/Ethnicity options
+  asian: "Азіатська",
+  black: "Темношкіра",
+  hispanic: "Латиноамериканська",
+  middleEastern: "Близькосхідна",
+  nativeAmerican: "Корінна американська",
+  pacificIslander: "Тихоокеанських островів",
+  white: "Європеоїдна",
+  multiracial: "Змішана",
+
+  // Body Type options
+  slim: "Струнка",
+  athletic: "Атлетична",
+  average: "Середня",
+  curvy: "Пишна",
+  muscular: "М'язиста",
+  plusSize: "Повна",
+
+  // Colors
+  brown: "Коричневий",
+  blonde: "Білявий",
+  red: "Рудий",
+  gray: "Сірий",
+  white: "Білий",
+  black: "Чорний",
+  other: "Інше",
+
+  // Select dropdown
+  selectOption: "Оберіть опцію",
 };
 
 export default uk;

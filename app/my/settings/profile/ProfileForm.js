@@ -205,7 +205,7 @@ export default function ProfileForm({ mongoUser }) {
         </div>
 
         {/* WEBSITE */}
-        <div className={`fc g5`}>
+        {/* <div className={`fc g5`}>
           <Input
             type="text"
             name="website"
@@ -217,10 +217,10 @@ export default function ProfileForm({ mongoUser }) {
             error={formErrors.website}
             label={t("websiteUrl")}
           />
-        </div>
+        </div> */}
 
         {/* AMAZON WISHLIST */}
-        <div className={`fc g5`}>
+        {/* <div className={`fc g5`}>
           <Input
             type="text"
             name="amazonWishlist"
@@ -232,7 +232,7 @@ export default function ProfileForm({ mongoUser }) {
             error={formErrors.amazonWishlist}
             label={t("amazonWishlist")}
           />
-        </div>
+        </div> */}
 
         {/* SUBMIT BUTTON */}
         <Button type="submit" className={`bg-[--color-brand] white br5 p10 cp`}>
