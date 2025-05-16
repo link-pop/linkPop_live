@@ -33,6 +33,7 @@ const en = {
   redirectsTo: "Redirects to",
   freeOffer: "Free offer",
   safePage: "Safe Page",
+  suggestions: "SUGGESTIONS",
 
   // Share modal categories (single-word translations)
   mainTab: "Popular",

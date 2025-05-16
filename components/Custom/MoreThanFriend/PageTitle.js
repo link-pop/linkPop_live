@@ -71,7 +71,7 @@ const PageTitle = () => {
     pathname?.includes("/affiliate") ||
     pathname?.includes("/my/queue");
 
-  const width = isWiderPath ? "maw1000" : "maw600";
+  const width = isWiderPath ? "maw1000" : "maw597";
 
   // TODO !!!!! FIX z indexes in whole app
   return (

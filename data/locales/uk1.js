@@ -32,6 +32,7 @@ const uk = {
   redirectsTo: "Перенаправляє на",
   freeOffer: "Безкоштовна пропозиція",
   safePage: "Безпечна сторінка",
+  suggestions: "ПРОПОЗИЦІЇ",
 
   // Share modal categories (single-word translations)
   mainTab: "Популярні",
