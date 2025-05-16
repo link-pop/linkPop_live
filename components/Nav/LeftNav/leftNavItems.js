@@ -25,6 +25,7 @@ import {
   BarChart2,
   Receipt,
   PieChart,
+  CalendarCheck,
 } from "lucide-react";
 import { SITE2 } from "@/config/env";
 import useWindowWidth from "@/hooks/useWindowWidth";
@@ -68,6 +69,12 @@ export const navItems = () => {
       name: showTitles ? t("vault") : "",
       icon: <Images className="w-6 h-6" />,
       href: `${MY_ROUTE}/vault`,
+    },
+    {
+      id: "queue",
+      name: showTitles ? t("queue") : "",
+      icon: <CalendarCheck className="w-6 h-6" />,
+      href: `${MY_ROUTE}/queue`,
     },
   ];
 

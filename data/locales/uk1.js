@@ -19,6 +19,7 @@ const uk = {
   welcomeToSite2: "Ласкаво просимо до Link Pop",
   other: "Інше",
   preview: "Попередній перегляд",
+  clickOnPostToPreview: "Натисніть на допис для перегляду",
   directLinksDesc:
     "Безпечна платформа для керування та обміну важливими посиланнями",
   getStarted: "Почати",
@@ -1238,6 +1239,8 @@ const uk = {
   drugs: "Наркотики",
   offensive: "Образливий вміст",
   ok: "ОК",
+
+  queue: "Черга",
 };
 
 export default uk;

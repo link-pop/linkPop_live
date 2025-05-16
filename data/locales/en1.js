@@ -20,6 +20,7 @@ const en = {
   welcomeToSite2: "Welcome to Link Pop",
   other: "Other",
   preview: "Preview",
+  clickOnPostToPreview: "Click on post to preview",
   directLinksDesc:
     "A secure platform for managing and sharing your important links",
   getStarted: "Get Started",
@@ -1261,6 +1262,8 @@ const en = {
   drugs: "Drugs",
   offensive: "Offensive",
   ok: "OK",
+
+  queue: "Queue",
 };
 
 export default en;

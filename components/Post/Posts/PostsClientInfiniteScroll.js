@@ -31,6 +31,7 @@ export default function PostsClientInfiniteScroll({
   loadPostsOnce = false,
   top,
   setCommentTextState,
+  customPostsComponent,
 }) {
   const getAllPostsFn = isOwner ? getAllPostsOwner : getAllPostsNonOwner;
 
@@ -85,23 +86,37 @@ export default function PostsClientInfiniteScroll({
     <>
       {top && !isLoading && top}
       {!isChatrooms && <PostsLoader {...{ isLoading }} />}
-      <PostsDepOnMongoCollection
-        {...{
+
+      {customPostsComponent ? (
+        // Use custom component to render posts if provided
+        customPostsComponent({
           posts,
           postsFoundNum,
-          col,
-          isAdmin,
-          postsPaginationType,
           hasMore,
-          mongoUser,
-          className: `${className} ${scrollLTR ? "!flex-row fwn" : ""}`,
-          searchParams,
-          showFoundNum,
-          showCategories,
           isLoading,
-          setCommentTextState,
-        }}
-      />
+          isFetching,
+        })
+      ) : (
+        // Otherwise use default PostsDepOnMongoCollection
+        <PostsDepOnMongoCollection
+          {...{
+            posts,
+            postsFoundNum,
+            col,
+            isAdmin,
+            postsPaginationType,
+            hasMore,
+            mongoUser,
+            className: `${className} ${scrollLTR ? "!flex-row fwn" : ""}`,
+            searchParams,
+            showFoundNum,
+            showCategories,
+            isLoading,
+            setCommentTextState,
+          }}
+        />
+      )}
+
       <InfiniteScroll
         {...{
           hasMore,
