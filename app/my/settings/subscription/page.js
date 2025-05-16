@@ -1,5 +1,5 @@
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
-import SubscriptionPriceInput from "./SubscriptionPriceInput";
+import SubscriptionForm from "./SubscriptionForm";
 
 export default async function subscriptionpage() {
   const { mongoUser } = await getMongoUser();
@@ -7,7 +7,7 @@ export default async function subscriptionpage() {
   // TODO !!!!!! check if sub expired (time passed)
   return (
     <>
-      <SubscriptionPriceInput {...{ mongoUser }} />
+      <SubscriptionForm mongoUser={mongoUser} />
     </>
   );
 }

@@ -204,6 +204,7 @@ export default function ProfileForm({ mongoUser }) {
           />
         </div>
 
+        {/* // ! don't use this, don't uncomment! */}
         {/* WEBSITE */}
         {/* <div className={`fc g5`}>
           <Input
@@ -219,6 +220,7 @@ export default function ProfileForm({ mongoUser }) {
           />
         </div> */}
 
+        {/* // ! don't use this, don't uncomment! */}
         {/* AMAZON WISHLIST */}
         {/* <div className={`fc g5`}>
           <Input
