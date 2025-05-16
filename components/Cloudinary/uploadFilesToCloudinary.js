@@ -7,6 +7,8 @@ import {
   DRUGS_THRESHOLD,
   OFFENSIVE_THRESHOLD,
 } from "@/lib/utils/constants";
+import isNSFWAPIResponseLimitReached from "@/lib/utils/nsfw/isNSFWAPIResponseLimitReached";
+import isNSFWAPILimitReached from "@/lib/utils/nsfw/isNSFWAPILimitReached";
 
 export default async function uploadFilesToCloudinary(
   files,
@@ -77,8 +79,18 @@ export default async function uploadFilesToCloudinary(
             const errorData = await response.json();
             console.error("NSFW check failed:", errorData.error);
 
-            // For profile/cover images, throw an error to prevent upload
-            if (isProfileOrCoverImage) {
+            // Check if this is an API limit error - proceed with upload if limits are reached
+            const isApiLimitReached = isNSFWAPIResponseLimitReached(errorData);
+
+            // If API limits reached, log warning and continue with upload
+            if (isApiLimitReached) {
+              console.warn(
+                "NSFW check API limits reached, proceeding with upload anyway"
+              );
+              // Continue with upload - don't throw error to stop the process
+            }
+            // For profile/cover images with other errors, throw an error to prevent upload
+            else if (isProfileOrCoverImage) {
               throw {
                 message: "NSFW_DETECTED",
                 scores: {
@@ -141,8 +153,16 @@ export default async function uploadFilesToCloudinary(
           if (error.message === "NSFW_DETECTED") {
             throw error;
           }
-          // For other errors in non-profile images, just log and continue
-          console.error("NSFW check error:", error);
+          // Check if this is an API limit error - proceed with upload if limits are reached
+          if (isNSFWAPILimitReached(error.message)) {
+            console.warn(
+              "NSFW check API limits reached, proceeding with upload anyway"
+            );
+            // Continue with upload - don't throw error to stop the process
+          } else {
+            // For other errors in non-profile images, just log and continue
+            console.error("NSFW check error:", error);
+          }
         }
       }
 

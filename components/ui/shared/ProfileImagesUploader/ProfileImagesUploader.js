@@ -8,7 +8,8 @@ import ImageCropper from "@/components/ui/shared/ImageCropper/ImageCropper";
 import getCroppedImg from "@/lib/utils/files/getCroppedImg";
 import uploadFilesToCloudinary from "@/components/Cloudinary/uploadFilesToCloudinary";
 import { useTranslation } from "@/components/Context/TranslationContext";
-import NSFWContentAlert from "@/components/ui/shared/NSFWContentAlert/NSFWContentAlert";
+import handleNSFWAPILimitError from "@/lib/utils/nsfw/handleNSFWAPILimitError";
+import showNSFWContentAlert from "@/lib/utils/nsfw/showNSFWContentAlert";
 
 export default function ProfileImagesUploader({
   profileImage,
@@ -140,28 +141,6 @@ export default function ProfileImagesUploader({
     }
   };
 
-  // Show NSFW content alert dialog
-  const showNSFWContentAlert = (error) => {
-    setNsfwScores(error.scores);
-
-    dialogSet({
-      isOpen: true,
-      contentClassName: "max-w-md p-0",
-      hasCloseIcon: false,
-      showBtns: false,
-      comp: (
-        <NSFWContentAlert
-          scores={error.scores}
-          image={error.imageBase64}
-          onClose={() => {
-            dialogSet({ isOpen: false });
-            setNsfwScores(null);
-          }}
-        />
-      ),
-    });
-  };
-
   // Handle crop completion
   const handleCropComplete = async (
     type,
@@ -232,11 +211,56 @@ export default function ProfileImagesUploader({
         } catch (error) {
           // Check if this was an NSFW detection error
           if (error.message === "NSFW_DETECTED") {
-            showNSFWContentAlert(error);
-            setIsProcessing(false);
+            showNSFWContentAlert(
+              error,
+              dialogSet,
+              setNsfwScores,
+              setIsProcessing
+            );
             return;
           }
-          throw error;
+
+          // Handle API limit errors with our utility function
+          const updatedOptions = handleNSFWAPILimitError(error, toastSet, t);
+
+          // If this is an API limit error, retry the upload with NSFW check bypassed
+          if (updatedOptions.skipNSFWCheck) {
+            try {
+              // Retry upload with NSFW check bypassed
+              const originalFiles = await uploadFilesToCloudinary(
+                files,
+                uploadFolder,
+                null,
+                { skipNSFWCheck: true }
+              );
+
+              if (!originalFiles || originalFiles.length === 0) {
+                throw new Error("Failed to upload original image");
+              }
+
+              // Set the original image URL
+              const originalImageUrl = originalFiles[0].fileUrl;
+              const originalFileId = originalFiles[0].fileId;
+
+              // Store the original image based on type
+              if (type === "profileImage") {
+                setOriginalProfileImage(originalImageUrl);
+                updateParentOriginalImage("profileImage", originalImageUrl);
+              } else if (type === "coverImage") {
+                setOriginalCoverImage(originalImageUrl);
+                updateParentOriginalImage("coverImage", originalImageUrl);
+              }
+
+              // Add the original file ID to the options
+              uploadOptions.originalFileId = originalFileId;
+            } catch (retryError) {
+              // If retry also fails, throw the error to be caught by the outer catch
+              throw retryError;
+            }
+          } else {
+            // If not an API limit error, rethrow
+            throw error;
+          }
         }
       } else {
         // Extract the public_id from the existing image URL if no new original file
@@ -274,11 +298,60 @@ export default function ProfileImagesUploader({
       } catch (error) {
         // Check if this was an NSFW detection error
         if (error.message === "NSFW_DETECTED") {
-          showNSFWContentAlert(error);
-          setIsProcessing(false);
+          showNSFWContentAlert(
+            error,
+            dialogSet,
+            setNsfwScores,
+            setIsProcessing
+          );
           return;
         }
-        throw error;
+
+        // Handle API limit errors with our utility function
+        const bypassOptions = handleNSFWAPILimitError(
+          error,
+          toastSet,
+          t,
+          uploadOptions
+        );
+
+        // If this is an API limit error, retry the upload with NSFW check bypassed
+        if (bypassOptions.skipNSFWCheck) {
+          try {
+            // Retry upload with NSFW check bypassed
+            const uploadedFiles = await uploadFilesToCloudinary(
+              [file],
+              uploadFolder,
+              null,
+              bypassOptions
+            );
+
+            if (!uploadedFiles || uploadedFiles.length === 0) {
+              throw new Error("Failed to upload cropped image");
+            }
+
+            const croppedImageUrl = uploadedFiles[0].fileUrl;
+
+            // Set the cropped image
+            if (type === "profileImage") {
+              setProfileImage(croppedImageUrl);
+            } else if (type === "coverImage") {
+              setCoverImage(croppedImageUrl);
+            }
+
+            // Success toast
+            toastSet({
+              isOpen: true,
+              title: t("imageCroppedAndSaved"),
+            });
+          } catch (retryError) {
+            // If retry also fails, throw the error to be caught by the outer catch
+            throw retryError;
+          }
+        } else {
+          // If not an API limit error, rethrow
+          throw error;
+        }
       }
     } catch (error) {
       console.error("Error processing cropped image:", error);
