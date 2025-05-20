@@ -68,7 +68,7 @@ export const navItems = () => {
       id: "vault",
       name: showTitles ? t("vault") : "",
       icon: <Images className="w-6 h-6" />,
-      href: `${MY_ROUTE}/vault`,
+      href: `${MY_ROUTE}/content-depot`,
     },
     {
       id: "queue",

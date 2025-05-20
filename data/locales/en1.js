@@ -69,7 +69,7 @@ const en = {
   collections: "Collections",
   subscriptions: "Subscriptions",
   addCard: "Add Card",
-  vault: "Vault",
+  vault: "Content Depot",
   myProfile: "My Profile",
   more: "More",
 
