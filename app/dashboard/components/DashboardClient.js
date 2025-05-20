@@ -150,7 +150,7 @@ export default function DashboardClient({
         labels={tabs}
         contents={contents}
         className="mb-4 md:mb-8"
-        labelsClassName="text-base md:text-lg font-medium"
+        labelsClassName="wfc mxa text-base md:text-lg font-medium"
         onTabChange={(index) => setActiveTab(index)}
       />
     </div>
