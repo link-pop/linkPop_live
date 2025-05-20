@@ -21,6 +21,7 @@ export default function Toggle({
   const { t } = useTranslation();
   const tabsContainerRef = useRef(null);
   const labelsRef = useRef([]);
+  const labelsTextRef = useRef([]);
   const indicatorRef = useRef(null);
 
   // Handle tab switching with animation
@@ -40,15 +41,20 @@ export default function Toggle({
   // Position the indicator
   useEffect(() => {
     if (
-      labelsRef.current[switched] &&
+      labelsTextRef.current[switched] &&
       indicatorRef.current &&
       tabsContainerRef.current
     ) {
-      const activeTab = labelsRef.current[switched];
+      const activeText = labelsTextRef.current[switched];
       const tabsContainer = tabsContainerRef.current;
-
-      indicatorRef.current.style.width = `${activeTab.offsetWidth}px`;
-      indicatorRef.current.style.left = `${activeTab.offsetLeft}px`;
+      // Get the span's width and its offsetLeft relative to the container
+      const width = activeText.offsetWidth;
+      // The left offset of the span relative to the container
+      const left =
+        activeText.getBoundingClientRect().left -
+        tabsContainer.getBoundingClientRect().left;
+      indicatorRef.current.style.width = `${width}px`;
+      indicatorRef.current.style.left = `${left}px`;
     }
   }, [switched]);
 
@@ -65,10 +71,6 @@ export default function Toggle({
             <div
               ref={indicatorRef}
               className="absolute bottom-0 h-[2px] bg-[var(--color-brand)] transition-all duration-300 ease-in-out"
-              style={{
-                width: labelsRef.current[0]?.offsetWidth || 0,
-                left: labelsRef.current[0]?.offsetLeft || 0,
-              }}
             />
 
             {labels.map((label, index) => (
@@ -86,7 +88,12 @@ export default function Toggle({
                 )}
                 title={t(label.text)}
               >
-                {t(label.text)}
+                <span
+                  ref={(el) => (labelsTextRef.current[index] = el)}
+                  className="inline-block"
+                >
+                  {t(label.text)}
+                </span>
               </div>
             ))}
           </div>
