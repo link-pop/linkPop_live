@@ -155,7 +155,8 @@ export default function AccountForm({ mongoUser, onSuccess }) {
         </div>
 
         {/* RACE / ETHNICITY */}
-        <div className={`fc g5`}>
+        {/* // ! don't uncomment this ! */}
+        {/* <div className={`fc g5`}>
           <Select
             name="raceEthnicity"
             value={account.raceEthnicity}
@@ -167,7 +168,7 @@ export default function AccountForm({ mongoUser, onSuccess }) {
             placeholder={t("selectOption")}
             version="new"
           />
-        </div>
+        </div> */}
 
         {/* HAIR COLOR */}
         <div className={`fc g5`}>
