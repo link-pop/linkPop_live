@@ -14,7 +14,7 @@ import SettingsNav from "../SettingsNav";
 import { SOCIAL_MEDIA_ROUTE } from "@/lib/utils/constants";
 import useFormErrors from "@/hooks/useFormErrors";
 
-export default function ProfileForm({ mongoUser }) {
+export default function ProfileForm({ mongoUser, onSuccess }) {
   if (!mongoUser?._id) return null;
 
   const { t } = useTranslation();
@@ -125,6 +125,7 @@ export default function ProfileForm({ mongoUser }) {
       isOpen: true,
       title: t("profileUpdated"),
     });
+    if (onSuccess) onSuccess();
   };
 
   return (

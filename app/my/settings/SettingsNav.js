@@ -4,13 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import useLayoutWidth from "@/hooks/useLayoutWidth";
-import { MENU_CLASS, SETTINGS_ROUTE } from "@/lib/utils/constants";
+import {
+  MENU_CLASS,
+  SETTINGS_ROUTE,
+  ONBOARDING_ROUTE,
+} from "@/lib/utils/constants";
 import capitalize from "@/lib/utils/capitalize";
 import useSettingsNavVisibility from "@/hooks/useSettingsNavVisibility";
 import { useTranslation } from "@/components/Context/TranslationContext";
 
 // ! Keep labels, maybe I will use them later
 const defaultSettingsLinks = [
+  { href: `${ONBOARDING_ROUTE}/1`, label: "quickOnboarding" },
   { href: `${SETTINGS_ROUTE}/profile`, label: "profile" },
   { href: `${SETTINGS_ROUTE}/account`, label: "account" },
   { href: `${SETTINGS_ROUTE}/security`, label: "security" },

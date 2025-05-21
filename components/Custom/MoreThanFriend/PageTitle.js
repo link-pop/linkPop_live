@@ -9,6 +9,7 @@ import {
   MAIN_ROUTE,
   NOTIFICATIONS_ROUTE,
   UPDATE_FEED_ROUTE,
+  ONBOARDING_ROUTE,
 } from "@/lib/utils/constants";
 import { ArrowLeft } from "lucide-react";
 import { CHATS_ROUTE } from "../../../lib/utils/constants";
@@ -18,6 +19,7 @@ const PageTitle = () => {
   if (SITE2) return;
 
   const pathname = usePathname();
+  if (pathname?.startsWith(ONBOARDING_ROUTE)) return null;
   const searchParams = useSearchParams();
   const { t } = useTranslation();
   console.log("Pathname:", pathname);

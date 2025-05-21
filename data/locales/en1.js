@@ -1302,6 +1302,25 @@ const en = {
 
   // Select dropdown
   selectOption: "Select option",
+
+  chooseProfileType: "Choose your profile type",
+  fan: "Fan",
+  onboardingDontShowAgainTitle: "Are you sure?",
+  onboardingDontShowAgainText: "You won't see onboarding again.",
+  onboardingDontShowAgainConfirm: "Yes, don't show again",
+  onboardingFillAllFields: "Fill out all fields and continue",
+  or: "OR",
+  onboardingDontShowAgainLink: "don't show this page again",
+  profileType: "Profile Type",
+  profile: "Profile",
+  account: "Account",
+  subscription: "Subscription",
+  completeYourProfile: "Complete your profile",
+  accountDetails: "Account details",
+  setYourSubscriptionPrice: "Set your subscription price",
+  preferences: "Preferences",
+  yourPreferences: "Your preferences",
+  quickOnboarding: "Quick Onboarding",
 };
 
 export default en;

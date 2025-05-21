@@ -7,7 +7,11 @@ import uploadFilesToCloudinary from "@/components/Cloudinary/uploadFilesToCloudi
 import { formatFileData } from "@/lib/utils/files/formatFileData";
 import { useContext } from "../../../../components/Context/Context";
 import { useTranslation } from "@/components/Context/TranslationContext";
-import { BRAND_INVERT_CLASS, ICONBUTTON_CLASS } from "@/lib/utils/constants";
+import {
+  BRAND_INVERT_CLASS,
+  ICONBUTTON_CLASS,
+  ONBOARDING_ROUTE,
+} from "@/lib/utils/constants";
 import { Trash2, Crop } from "lucide-react";
 
 export default function ProfileImages({
@@ -272,7 +276,8 @@ export default function ProfileImages({
       mongoUser?.isOwner &&
       (pathname === "/my/settings/profile" ||
         pathname.startsWith("/update/landingpages"))) ||
-    pathname.startsWith("/add/landingpages");
+    pathname.startsWith("/add/landingpages") ||
+    pathname.startsWith(ONBOARDING_ROUTE);
 
   const profileImg =
     profileFiles[0]?.fileUrl ||

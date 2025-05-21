@@ -1280,6 +1280,26 @@ const uk = {
 
   // Select dropdown
   selectOption: "Оберіть опцію",
+
+  chooseProfileType: "Оберіть тип профілю",
+  creator: "Креатор",
+  fan: "Фанат",
+  onboardingDontShowAgainTitle: "Ви впевнені?",
+  onboardingDontShowAgainText: "Ви більше не побачите онбординг.",
+  onboardingDontShowAgainConfirm: "Так, більше не показувати",
+  onboardingFillAllFields: "Заповніть всі поля та продовжіть",
+  or: "АБО",
+  onboardingDontShowAgainLink: "більше не показувати цю сторінку",
+  profileType: "Тип профілю",
+  profile: "Профіль",
+  account: "Обліковий запис",
+  subscription: "Підписка",
+  completeYourProfile: "Заповніть свій профіль",
+  accountDetails: "Деталі облікового запису",
+  setYourSubscriptionPrice: "Встановіть ціну підписки",
+  preferences: "Вподобання",
+  yourPreferences: "Ваші вподобання",
+  quickOnboarding: "Швидкий онбординг",
 };
 
 export default uk;

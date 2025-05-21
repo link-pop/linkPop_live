@@ -7,7 +7,7 @@ import Button2 from "@/components/ui/shared/Button/Button2";
 import { updateSubscriptionPrice } from "@/lib/actions/updateSubscriptionPrice";
 import Input from "@/components/ui/shared/Input/Input";
 
-export default function SubscriptionPriceInput({ mongoUser }) {
+export default function SubscriptionPriceInput({ mongoUser, onSuccess }) {
   const [price, setPrice] = useState("");
   const [currentPrice, setCurrentPrice] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -47,6 +47,7 @@ export default function SubscriptionPriceInput({ mongoUser }) {
           title: t("success"),
           text: t("subscriptionPriceUpdated"),
         });
+        if (onSuccess) onSuccess();
       } else {
         throw new Error(result.error || t("unknownError"));
       }
@@ -65,7 +66,7 @@ export default function SubscriptionPriceInput({ mongoUser }) {
 
   if (initialLoading) {
     return (
-      <div className="f fdc g16 p16">
+      <div className="fc g16 p16">
         <div className="skeleton h20 w100"></div>
         <div className="skeleton h40 w200"></div>
         <div className="skeleton h40 w120"></div>
@@ -74,9 +75,9 @@ export default function SubscriptionPriceInput({ mongoUser }) {
   }
 
   return (
-    <div className="f fdc g16 p15">
-      <form onSubmit={handleSubmit} className="f fdc g15 w100">
-        <div className="f fdc g8">
+    <div className="fc g16 p15">
+      <form onSubmit={handleSubmit} className="fc g15">
+        <div className="fc g8">
           <div className="f aic g8 por">
             <Input
               prefix="$"
@@ -88,7 +89,7 @@ export default function SubscriptionPriceInput({ mongoUser }) {
               step="1"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="miw200"
+              className="!w165"
               placeholder="0-100"
               required
             />
@@ -102,7 +103,7 @@ export default function SubscriptionPriceInput({ mongoUser }) {
           variant="primary"
         >
           <div className="abounce f fwn aic g2 fz14">
-            {loading ? t("updating") : t("save")}
+            {loading ? t("updating") : t("saveChanges")}
           </div>
         </Button2>
       </form>

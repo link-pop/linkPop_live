@@ -34,6 +34,7 @@ import { SITE1, SITE2 } from "@/config/env";
 import ReferralCodeDetector from "@/components/Referral/ReferralCodeDetector";
 import Footer2 from "@/components/Nav/Footer/Footer2";
 import Header2 from "@/components/Nav/Header/Header2";
+import OnboardingRedirector from "@/components/Custom/OnboardingRedirector";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -77,6 +78,7 @@ export default async function RootLayout({ children }) {
                         <ThemeSettings className="poa -t1000" />
                         {/* <Header /> */}
                         {SITE2 && <Header2 />}
+                        <OnboardingRedirector />
                         {/* <PageTransitionProvider> */}
                         {/* // ??? REMOVED overflow-y-auto */}
                         <main className="scrollbar-hide max-w-[1300px] f jcc fwn mxa wf">

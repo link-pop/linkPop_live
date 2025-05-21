@@ -9,7 +9,7 @@ import Button from "@/components/ui/shared/Button/Button2";
 import { useContext } from "@/components/Context/Context";
 import useFormErrors from "@/hooks/useFormErrors";
 
-export default function AccountForm({ mongoUser }) {
+export default function AccountForm({ mongoUser, onSuccess }) {
   if (!mongoUser?._id) return null;
 
   const { t } = useTranslation();
@@ -132,6 +132,7 @@ export default function AccountForm({ mongoUser }) {
       isOpen: true,
       title: t("accountUpdated") || "Account updated successfully",
     });
+    if (onSuccess) onSuccess();
   };
 
   return (
