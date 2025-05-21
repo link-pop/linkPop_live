@@ -141,7 +141,7 @@ function SuggestionCard({ user, index }) {
   const isFree = user.subscriptionPrice === 0;
 
   return (
-    <Link href={`/${user.username}`} className="block">
+    <Link href={`/${user.name}`} className="block">
       <div className="relative rounded-lg overflow-hidden h-32 group">
         {/* Free tag */}
         <div className="absolute top-2 left-2 z-10">
