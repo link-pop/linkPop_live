@@ -78,16 +78,45 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
             standardNewFiles,
             col.name,
             null,
-            { skipNSFWCheck: false }
+            {
+              skipNSFWCheck: false,
+              t,
+            }
           );
         } catch (error) {
-          // Only handle MINOR_DETECTED errors - NSFW content is allowed now
+          // Handle MINOR_DETECTED and LOW_QUALITY_IMAGE errors
           if (error?.message === "MINOR_DETECTED") {
             const fileName =
               (standardNewFiles[0] && standardNewFiles[0].name) || "";
-            let msg = `Image${
-              fileName ? ` (${fileName})` : ""
-            } contains a minor and cannot be uploaded.`;
+            let msg = fileName
+              ? t(
+                  "imageFilenameContainsMinor",
+                  { filename: fileName },
+                  `Image (${fileName}) contains a minor and cannot be uploaded.`
+                )
+              : t(
+                  "imageContainsMinor",
+                  "Image contains a minor and cannot be uploaded."
+                );
+            onError?.({
+              message: msg,
+              ...error,
+            });
+            setIsFormLoading(false);
+            return;
+          } else if (error?.message === "LOW_QUALITY_IMAGE") {
+            const fileName =
+              (standardNewFiles[0] && standardNewFiles[0].name) || "";
+            let msg = fileName
+              ? t(
+                  "imageFilenameTooLowQuality",
+                  { filename: fileName },
+                  `Image (${fileName}) quality is too low. Only high-quality images are accepted.`
+                )
+              : t(
+                  "imageTooLowQuality",
+                  "Image quality is too low. Only high-quality images are accepted."
+                );
             onError?.({
               message: msg,
               ...error,
@@ -122,7 +151,9 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
             else if (originalFile) {
               const originalUploaded = await uploadFilesToCloudinary(
                 [originalFile],
-                col.name
+                col.name,
+                null,
+                { t }
               );
 
               if (!originalUploaded || originalUploaded.length === 0) {
@@ -143,7 +174,10 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
               [croppedFile.croppedFile],
               col.name,
               null,
-              uploadOptions
+              {
+                ...uploadOptions,
+                t,
+              }
             );
 
             if (!uploadedCroppedFile || uploadedCroppedFile.length === 0) {
@@ -154,9 +188,34 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
           } catch (error) {
             if (error?.message === "MINOR_DETECTED") {
               const fileName = croppedFile.croppedFile?.name || "";
-              let msg = `Image${
-                fileName ? ` (${fileName})` : ""
-              } contains a minor and cannot be uploaded.`;
+              let msg = fileName
+                ? t(
+                    "imageFilenameContainsMinor",
+                    { filename: fileName },
+                    `Image (${fileName}) contains a minor and cannot be uploaded.`
+                  )
+                : t(
+                    "imageContainsMinor",
+                    "Image contains a minor and cannot be uploaded."
+                  );
+              onError?.({
+                message: msg,
+                ...error,
+              });
+              setIsFormLoading(false);
+              return;
+            } else if (error?.message === "LOW_QUALITY_IMAGE") {
+              const fileName = croppedFile.croppedFile?.name || "";
+              let msg = fileName
+                ? t(
+                    "imageFilenameTooLowQuality",
+                    { filename: fileName },
+                    `Image (${fileName}) quality is too low. Only high-quality images are accepted.`
+                  )
+                : t(
+                    "imageTooLowQuality",
+                    "Image quality is too low. Only high-quality images are accepted."
+                  );
               onError?.({
                 message: msg,
                 ...error,
@@ -264,12 +323,19 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
           attachmentData.hasMinor = file.hasMinor || false;
           attachmentData.hasSunglasses = file.hasSunglasses || false;
 
+          // Set image quality fields
+          attachmentData.imageQualityScore = file.imageQualityScore || 1.0;
+          attachmentData.isLowQuality = file.isLowQuality || false;
+
           // Log to verify correct values for each file
           console.log(
             `Creating attachment for file: ${file.fileName || "unknown"}`
           );
           console.log(
             `faceCount: ${attachmentData.faceCount}, hasMinor: ${attachmentData.hasMinor}, hasSunglasses: ${attachmentData.hasSunglasses}`
+          );
+          console.log(
+            `imageQualityScore: ${attachmentData.imageQualityScore}, isLowQuality: ${attachmentData.isLowQuality}`
           );
 
           const attachment = await add({

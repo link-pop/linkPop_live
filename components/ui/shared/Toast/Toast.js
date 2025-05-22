@@ -4,9 +4,11 @@ import { useContext } from "@/components/Context/Context";
 import { Toaster } from "@/components/ui/toast";
 import { CircleCheckBig } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "@/components/Context/TranslationContext";
 
 export default function Toast() {
   const { toast, toastSet } = useContext();
+  const { t } = useTranslation();
   const [toastKey, setToastKey] = useState(0);
 
   useEffect(() => {
@@ -21,6 +23,18 @@ export default function Toast() {
   ) : (
     toast.icon
   );
+
+  // Helper function to translate content if it looks like a translation key
+  const translateIfKey = (content) => {
+    if (
+      typeof content === "string" &&
+      /^[A-Z0-9_]+$/.test(content) &&
+      t(content) !== content
+    ) {
+      return t(content);
+    }
+    return content;
+  };
 
   return (
     <Toaster.Provider duration={5000} swipeDirection="right">
@@ -38,8 +52,10 @@ export default function Toast() {
           {toast.showIcon && toastIcon}
 
           <div className="fc">
-            <Toaster.Title className="ToastTitle">{toast.title}</Toaster.Title>
-            <div className="fz14">{toast.text}</div>
+            <Toaster.Title className="ToastTitle">
+              {translateIfKey(toast.title)}
+            </Toaster.Title>
+            <div className="fz14">{translateIfKey(toast.text)}</div>
           </div>
         </div>
 

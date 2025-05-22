@@ -1237,6 +1237,57 @@ const en = {
   drugs: "Drugs",
   offensive: "Offensive",
   ok: "OK",
+
+  // NSFW and Content Moderation
+  noFaceDetected: "No Face Detected",
+  couldntDetectFace:
+    "We couldn't detect a face in this image. For profile photos, please upload an image where your face is clearly visible.",
+  minorDetected: "Minor Detected",
+  imageContainsMinor:
+    "This image appears to contain a minor (someone under 18 years old). For safety reasons, we don't allow images with minors.",
+  sunglassesDetected: "Sunglasses Detected",
+  imageContainsSunglasses:
+    "We detected sunglasses in this image. For profile photos, please upload an image where your eyes are clearly visible without sunglasses.",
+  lowQualityImage: "Low Quality Image Rejected",
+  imageTooLowQuality:
+    "This image was rejected because the quality is too low. We only accept high-quality images that are clear, well-lit, and properly focused. Please upload a better quality image that isn't blurry, too dark, or overexposed.",
+  imageIssueDetected: "Image Issue Detected",
+  generalImageIssue:
+    "There was an issue with your image. Please try uploading a different one.",
+  inappropriateContent: "Inappropriate Content",
+  contentViolatesGuidelines:
+    "This image contains content that violates our community guidelines. Please upload an appropriate image.",
+  contentModerationAlert: "Content Moderation Alert",
+  doesntMeetGuidelines:
+    "This image doesn't meet our content guidelines. Please try uploading a different image.",
+  apiLimitsReached: "API Limits Reached",
+  continuingWithoutChecks:
+    "Content moderation checks are temporarily unavailable. Proceeding with upload without verification.",
+  qualityScoreMessage:
+    "Your image scored {{percent}}%, but we require at least 70% quality.",
+  imageFilenameContainsMinor:
+    "Image ({{filename}}) contains a minor and cannot be uploaded.",
+  imageFilenameTooLowQuality:
+    "Image ({{filename}}) quality is too low. Only high-quality images are accepted.",
+
+  // File type validations
+  invalidFileType: "Invalid File Type",
+  onlyImageFilesAllowed:
+    "Only image files are allowed for profile and cover photos",
+  onlySpecificImageFormatsAllowed:
+    "Only JPG, PNG, WebP images are allowed for profile and cover photos",
+  unsupportedFormat: "Unsupported Format",
+  formatNotSupported:
+    "This image format is not supported. Please try a different file format.",
+  allowedForCoverImages: "However, we'll allow it for cover images.",
+
+  MINOR_DETECTED: "Minor Detected",
+  NSFW_DETECTED: "Inappropriate Content",
+  NO_FACE_DETECTED: "No Face Detected",
+  SUNGLASSES_DETECTED: "Sunglasses Detected",
+  LOW_QUALITY_IMAGE: "Low Quality Image",
+  ADD_ANOTHER_IMAGE:
+    "Please upload another image or contact support if you think this is an error.",
 };
 
 export default en;

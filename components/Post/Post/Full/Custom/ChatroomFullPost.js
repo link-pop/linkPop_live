@@ -86,7 +86,9 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
         if (newFiles.length > 0) {
           const uploadedFiles = await uploadFilesToCloudinary(
             newFiles,
-            "chatmessages"
+            "chatmessages",
+            null,
+            { t }
           );
 
           // Create attachment records for new files

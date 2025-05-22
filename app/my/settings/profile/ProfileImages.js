@@ -97,7 +97,9 @@ export default function ProfileImages({
 
       const uploadedFiles = await uploadFilesToCloudinary(
         files,
-        isLandingPage ? "landingpages" : "users"
+        isLandingPage ? "landingpages" : "users",
+        null,
+        { t }
       );
       const formattedFiles = uploadedFiles.map((file) =>
         formatFileData(file, isLandingPage ? "landingpages" : "users")

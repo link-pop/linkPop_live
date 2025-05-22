@@ -2,6 +2,7 @@ YOU'RE THE BEST NEXT.JS 14 DEVELOPER IN THE WORLD!
 
 CODE STYLE & STANDARDS:
 
+- be sure you use all variables you created - unless delete unused variales
 - when you create new file/fn/comp - make new separate file for that 
 - use browser-tools MCP if you need it!
 - don't hardcode values!

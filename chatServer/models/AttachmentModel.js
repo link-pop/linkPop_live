@@ -69,6 +69,16 @@ const attachmentSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // Image quality score (0-1, higher is better)
+    imageQualityScore: {
+      type: Number,
+      default: 1, // Default to highest quality
+    },
+    // Quality assessment result
+    isLowQuality: {
+      type: Boolean,
+      default: false,
+    },
     // NSFW Data - Intensity classes
     nsfw_sexual_activity: {
       type: Number,

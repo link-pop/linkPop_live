@@ -1,6 +1,7 @@
 import { add, update } from "@/lib/actions/crud";
 import uploadFilesToCloudinary from "../../Cloudinary/uploadFilesToCloudinary";
 import { formatFileData } from "@/lib/utils/files/formatFileData";
+import { useTranslation } from "@/components/Context/TranslationContext";
 
 export default function useOnSubmitAddPostForm({
   mongoUser,
@@ -10,6 +11,8 @@ export default function useOnSubmitAddPostForm({
   onSuccess,
   onError,
 }) {
+  const { t } = useTranslation();
+
   const onSubmitAddPostForm = async (e) => {
     e.preventDefault();
 
@@ -19,7 +22,12 @@ export default function useOnSubmitAddPostForm({
       // Upload files to Cloudinary if files exist
       let serverUploadedFiles = [];
       if (files && files.length > 0) {
-        serverUploadedFiles = await uploadFilesToCloudinary(files, col.name);
+        serverUploadedFiles = await uploadFilesToCloudinary(
+          files,
+          col.name,
+          null,
+          { t }
+        );
         // Add files data to form
         form.files = serverUploadedFiles.map((file) =>
           formatFileData(file, col.name)
