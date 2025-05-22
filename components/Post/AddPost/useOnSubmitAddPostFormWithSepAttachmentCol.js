@@ -73,10 +73,30 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
       // Upload standard new files
       let standardUploadedFiles = [];
       if (standardNewFiles?.length > 0) {
-        standardUploadedFiles = await uploadFilesToCloudinary(
-          standardNewFiles,
-          col.name
-        );
+        try {
+          standardUploadedFiles = await uploadFilesToCloudinary(
+            standardNewFiles,
+            col.name,
+            null,
+            { skipNSFWCheck: false }
+          );
+        } catch (error) {
+          // Only handle MINOR_DETECTED errors - NSFW content is allowed now
+          if (error?.message === "MINOR_DETECTED") {
+            const fileName =
+              (standardNewFiles[0] && standardNewFiles[0].name) || "";
+            let msg = `Image${
+              fileName ? ` (${fileName})` : ""
+            } contains a minor and cannot be uploaded.`;
+            onError?.({
+              message: msg,
+              ...error,
+            });
+            setIsFormLoading(false);
+            return;
+          }
+          throw error;
+        }
       }
 
       // Upload cropped files with their original file data
@@ -84,7 +104,10 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
       if (croppedFiles?.length > 0) {
         for (const croppedFile of croppedFiles) {
           // Prepare upload options for the cropped file
-          let uploadOptions = { isCroppedImage: true };
+          let uploadOptions = {
+            isCroppedImage: true,
+            skipNSFWCheck: false,
+          };
 
           // Handle original file reference
           if (croppedFile.originalFileData) {
@@ -114,19 +137,35 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
             }
           }
 
-          // Upload the cropped file with the original reference
-          const uploadedCroppedFile = await uploadFilesToCloudinary(
-            [croppedFile.croppedFile],
-            col.name,
-            null,
-            uploadOptions
-          );
+          try {
+            // Upload the cropped file with the original reference
+            const uploadedCroppedFile = await uploadFilesToCloudinary(
+              [croppedFile.croppedFile],
+              col.name,
+              null,
+              uploadOptions
+            );
 
-          if (!uploadedCroppedFile || uploadedCroppedFile.length === 0) {
-            throw new Error("Failed to upload cropped image");
+            if (!uploadedCroppedFile || uploadedCroppedFile.length === 0) {
+              throw new Error("Failed to upload cropped image");
+            }
+
+            croppedUploadedFiles.push(uploadedCroppedFile[0]);
+          } catch (error) {
+            if (error?.message === "MINOR_DETECTED") {
+              const fileName = croppedFile.croppedFile?.name || "";
+              let msg = `Image${
+                fileName ? ` (${fileName})` : ""
+              } contains a minor and cannot be uploaded.`;
+              onError?.({
+                message: msg,
+                ...error,
+              });
+              setIsFormLoading(false);
+              return;
+            }
+            throw error;
           }
-
-          croppedUploadedFiles.push(uploadedCroppedFile[0]);
         }
       }
 
@@ -219,6 +258,19 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
           if (file.originalFileId) {
             attachmentData.originalFileId = file.originalFileId;
           }
+
+          // Explicitly set face detection related fields
+          attachmentData.faceCount = file.faceCount || 0;
+          attachmentData.hasMinor = file.hasMinor || false;
+          attachmentData.hasSunglasses = file.hasSunglasses || false;
+
+          // Log to verify correct values for each file
+          console.log(
+            `Creating attachment for file: ${file.fileName || "unknown"}`
+          );
+          console.log(
+            `faceCount: ${attachmentData.faceCount}, hasMinor: ${attachmentData.hasMinor}, hasSunglasses: ${attachmentData.hasSunglasses}`
+          );
 
           const attachment = await add({
             col: { name: "attachments" },

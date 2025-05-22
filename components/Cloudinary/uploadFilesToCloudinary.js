@@ -6,6 +6,9 @@ import {
   WEAPONS_THRESHOLD,
   DRUGS_THRESHOLD,
   OFFENSIVE_THRESHOLD,
+  MINOR_THRESHOLD,
+  SUNGLASSES_THRESHOLD,
+  FACE_DETECTION_ENABLED,
 } from "@/lib/utils/constants";
 import isNSFWAPIResponseLimitReached from "@/lib/utils/nsfw/isNSFWAPIResponseLimitReached";
 import isNSFWAPILimitReached from "@/lib/utils/nsfw/isNSFWAPILimitReached";
@@ -26,6 +29,12 @@ export default async function uploadFilesToCloudinary(
   // Check if we're uploading profile or cover images (stricter moderation)
   const isProfileOrCoverImage =
     uploadedFrom === "users" || uploadedFrom === "landingpages";
+  // Check if face detection should be enforced for this upload (e.g. profile photos)
+  const enforceFaceDetection = options.enforceFaceDetection || false;
+  // Check if minor detection should be enforced (blocks images with minors)
+  const blockMinors = options.blockMinors || false;
+  // Check if sunglasses detection should be enforced (blocks images with sunglasses)
+  const blockSunglasses = options.blockSunglasses || false;
 
   // Process files sequentially to allow NSFW checking
   const serverUploadedFiles = [];
@@ -48,6 +57,21 @@ export default async function uploadFilesToCloudinary(
           blurredUrl: file.blurredUrl || null,
           isCropped: isCroppedImage,
           originalFileId: isCroppedImage ? originalFileId : null,
+          faces: file.faces || [],
+          faceCount: file.faceCount || 0,
+          hasMinor: file.hasMinor || false,
+          hasSunglasses: file.hasSunglasses || false,
+          // Include NSFW data (with default safe values if not present)
+          nudity: file.nudity || {},
+          rawResponse: file.rawResponse || {},
+          isSafe: file.isSafe !== undefined ? file.isSafe : true,
+          eroticaScore: file.eroticaScore || 0,
+          weaponsScore: file.weaponsScore || 0,
+          alcoholScore: file.alcoholScore || 0,
+          drugsScore: file.drugsScore || 0,
+          offensiveScore: file.offensiveScore || 0,
+          suggestiveClasses: file.suggestiveClasses || {},
+          contextClasses: file.contextClasses || {},
         });
         continue;
       }
@@ -70,6 +94,9 @@ export default async function uploadFilesToCloudinary(
               imageBase64: base64Image,
               customThresholds: {
                 eroticaThreshold: EROTICA_THRESHOLD,
+                minorThreshold: MINOR_THRESHOLD,
+                sunglassesThreshold: SUNGLASSES_THRESHOLD,
+                faceDetectionEnabled: FACE_DETECTION_ENABLED,
               },
               isCroppedImage: isCroppedImage, // Pass whether this is a cropped image
             }),
@@ -82,12 +109,29 @@ export default async function uploadFilesToCloudinary(
             // Check if this is an API limit error - proceed with upload if limits are reached
             const isApiLimitReached = isNSFWAPIResponseLimitReached(errorData);
 
+            // Check if this is an unsupported format error
+            const isUnsupportedFormat =
+              errorData.error &&
+              typeof errorData.error === "string" &&
+              (errorData.error.includes("format might not be supported") ||
+                errorData.error.includes("Image could not be read"));
+
             // If API limits reached, log warning and continue with upload
             if (isApiLimitReached) {
               console.warn(
                 "NSFW check API limits reached, proceeding with upload anyway"
               );
               // Continue with upload - don't throw error to stop the process
+            }
+            // If format is not supported, block the upload
+            else if (isUnsupportedFormat) {
+              console.error(
+                "Unsupported image format detected, blocking upload"
+              );
+              throw {
+                message: "UNSUPPORTED_FORMAT",
+                error: errorData.error,
+              };
             }
             // For profile/cover images with other errors, throw an error to prevent upload
             else if (isProfileOrCoverImage) {
@@ -113,6 +157,42 @@ export default async function uploadFilesToCloudinary(
 
           const nsfwResult = await response.json();
 
+          // Block upload for any image if isSafe is false
+          if (nsfwResult.isSafe === false) {
+            // Instead of blocking all NSFW content, just log a warning
+            console.warn("NSFW content detected but will be allowed:", {
+              eroticaScore: nsfwResult.eroticaScore || 0,
+              weaponsScore: nsfwResult.weaponsScore || 0,
+              alcoholScore: nsfwResult.alcoholScore || 0,
+              drugsScore: nsfwResult.drugsScore || 0,
+              offensiveScore: nsfwResult.offensiveScore || 0,
+            });
+
+            // Do NOT throw an error here - allow the upload to continue
+          }
+
+          // Block upload for any image if a minor is detected
+          if (nsfwResult.hasMinor === true) {
+            throw {
+              message: "MINOR_DETECTED",
+              scores: {
+                nudityScore: nsfwResult.nudityScore || 0,
+                eroticaScore: nsfwResult.eroticaScore || 0,
+                weaponsScore: nsfwResult.weaponsScore || 0,
+                alcoholScore: nsfwResult.alcoholScore || 0,
+                drugsScore: nsfwResult.drugsScore || 0,
+                offensiveScore: nsfwResult.offensiveScore || 0,
+                suggestiveClasses: nsfwResult.suggestiveClasses || {},
+                contextClasses: nsfwResult.contextClasses || {},
+              },
+              faces: nsfwResult.faces || [],
+              faceCount: nsfwResult.faceCount || 0,
+              hasMinor: true,
+              hasSunglasses: nsfwResult.hasSunglasses || false,
+              imageBase64: base64Image,
+            };
+          }
+
           // Enhanced decision logic using reduced set of thresholds
           // Only check for specific content types requested
           const hasErotica = nsfwResult.eroticaScore >= EROTICA_THRESHOLD;
@@ -127,10 +207,32 @@ export default async function uploadFilesToCloudinary(
           const hasInappropriateContent =
             hasErotica || hasOtherProblematicContent;
 
-          // For profile/cover images, if inappropriate content, block upload
-          if (hasInappropriateContent && isProfileOrCoverImage) {
+          // Check face detection requirements
+          const hasFaceDetectionError =
+            (enforceFaceDetection && nsfwResult.faceCount === 0) ||
+            (blockMinors && nsfwResult.hasMinor) ||
+            (blockSunglasses && nsfwResult.hasSunglasses);
+
+          // Only block uploads in two cases:
+          // 1. For profile/cover images with inappropriate content or face detection errors
+          // 2. For ANY image with minors detected
+          if (
+            isProfileOrCoverImage &&
+            (hasInappropriateContent || hasFaceDetectionError)
+          ) {
+            let errorMessage = "NSFW_DETECTED";
+
+            // Customize error message based on what was detected
+            if (nsfwResult.faceCount === 0 && enforceFaceDetection) {
+              errorMessage = "NO_FACE_DETECTED";
+            } else if (nsfwResult.hasMinor && blockMinors) {
+              errorMessage = "MINOR_DETECTED";
+            } else if (nsfwResult.hasSunglasses && blockSunglasses) {
+              errorMessage = "SUNGLASSES_DETECTED";
+            }
+
             throw {
-              message: "NSFW_DETECTED",
+              message: errorMessage,
               scores: {
                 // Legacy score for backward compatibility
                 nudityScore: nsfwResult.nudityScore || 0,
@@ -145,13 +247,67 @@ export default async function uploadFilesToCloudinary(
                 suggestiveClasses: nsfwResult.suggestiveClasses || {},
                 contextClasses: nsfwResult.contextClasses || {},
               },
+              // Face detection results
+              faces: nsfwResult.faces || [],
+              faceCount: nsfwResult.faceCount || 0,
+              hasMinor: nsfwResult.hasMinor || false,
+              hasSunglasses: nsfwResult.hasSunglasses || false,
               imageBase64: base64Image, // Pass the image for display in alert
             };
           }
+
+          // Store face detection data for later use
+          file.faces = nsfwResult.faces || [];
+          file.faceCount = nsfwResult.faceCount || 0;
+          file.hasMinor = nsfwResult.hasMinor || false;
+          file.hasSunglasses = nsfwResult.hasSunglasses || false;
+
+          // Store NSFW data for database storage
+          file.nudity = nsfwResult.nudity || {};
+          file.rawResponse = nsfwResult.rawResponse || {};
+          file.isSafe = nsfwResult.isSafe;
+
+          // Store individual NSFW scores
+          file.eroticaScore = nsfwResult.eroticaScore || 0;
+          file.weaponsScore = nsfwResult.weaponsScore || 0;
+          file.alcoholScore = nsfwResult.alcoholScore || 0;
+          file.drugsScore = nsfwResult.drugsScore || 0;
+          file.offensiveScore = nsfwResult.offensiveScore || 0;
+          file.suggestiveClasses = nsfwResult.suggestiveClasses || {};
+          file.contextClasses = nsfwResult.contextClasses || {};
+
+          // Log face detection data for debugging
+          console.log(`NSFW check for file: ${file.name || "unknown"}`);
+          console.log(
+            `faceCount: ${file.faceCount}, hasMinor: ${file.hasMinor}, hasSunglasses: ${file.hasSunglasses}`
+          );
         } catch (error) {
-          // If we detect NSFW content in profile/cover images, block the upload
-          if (error.message === "NSFW_DETECTED") {
+          // If we detect NSFW content, face-related issues, or unsupported format, block the upload
+          if (
+            [
+              "NSFW_DETECTED",
+              "NO_FACE_DETECTED",
+              "MINOR_DETECTED",
+              "SUNGLASSES_DETECTED",
+              "UNSUPPORTED_FORMAT",
+            ].includes(error.message)
+          ) {
             throw error;
+          }
+          // Check if error message contains information about unsupported format
+          if (
+            error.message &&
+            typeof error.message === "string" &&
+            (error.message.includes("format might not be supported") ||
+              error.message.includes("Image could not be read"))
+          ) {
+            console.error(
+              "Unsupported image format detected in error message, blocking upload"
+            );
+            throw {
+              message: "UNSUPPORTED_FORMAT",
+              error: error.message,
+            };
           }
           // Check if this is an API limit error - proceed with upload if limits are reached
           if (isNSFWAPILimitReached(error.message)) {
@@ -244,6 +400,16 @@ export default async function uploadFilesToCloudinary(
         original_file_id,
       } = response.data;
 
+      // Check and log the face detection data from the file object
+      console.log(
+        `Face detection data for ${original_filename || "unknown file"}:`
+      );
+      console.log(
+        `faceCount: ${file.faceCount || 0}, hasMinor: ${
+          file.hasMinor || false
+        }, hasSunglasses: ${file.hasSunglasses || false}`
+      );
+
       serverUploadedFiles.push({
         fileUrl: secure_url,
         fileName: original_filename,
@@ -255,11 +421,33 @@ export default async function uploadFilesToCloudinary(
         blurredUrl: blurred_url || null,
         isCropped: is_cropped || false,
         originalFileId: original_file_id || null,
+        faceCount: file.faceCount || 0,
+        hasMinor: file.hasMinor || false,
+        hasSunglasses: file.hasSunglasses || false,
+        // Include NSFW data
+        nudity: file.nudity || {},
+        rawResponse: file.rawResponse || {},
+        isSafe: file.isSafe !== undefined ? file.isSafe : true,
+        eroticaScore: file.eroticaScore || 0,
+        weaponsScore: file.weaponsScore || 0,
+        alcoholScore: file.alcoholScore || 0,
+        drugsScore: file.drugsScore || 0,
+        offensiveScore: file.offensiveScore || 0,
+        suggestiveClasses: file.suggestiveClasses || {},
+        contextClasses: file.contextClasses || {},
       });
     } catch (error) {
-      // Special handling for NSFW content in profile/cover images
-      if (error.message === "NSFW_DETECTED") {
-        throw error; // Pass the entire error object with scores
+      // Special handling for detected issues in profile/cover images or unsupported formats
+      if (
+        [
+          "NSFW_DETECTED",
+          "NO_FACE_DETECTED",
+          "MINOR_DETECTED",
+          "SUNGLASSES_DETECTED",
+          "UNSUPPORTED_FORMAT",
+        ].includes(error.message)
+      ) {
+        throw error; // Pass the entire error object with additional data
       }
       console.error("Error processing file:", error);
       // You might want to handle this differently depending on your requirements

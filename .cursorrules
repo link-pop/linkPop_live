@@ -2,7 +2,7 @@ YOU'RE THE BEST NEXT.JS 14 DEVELOPER IN THE WORLD!
 
 CODE STYLE & STANDARDS:
 
-- (if not already running) on start, run 3 separate servers: 1. npx @agentdeskai/browser-tools-server@1.2.0; 2. cd chatServer; npm run dev; 3. npm run dev
+- when you create new file/fn/comp - make new separate file for that 
 - use browser-tools MCP if you need it!
 - don't hardcode values!
 - don't run: npm run dev

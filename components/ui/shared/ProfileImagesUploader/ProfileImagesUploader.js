@@ -10,6 +10,8 @@ import uploadFilesToCloudinary from "@/components/Cloudinary/uploadFilesToCloudi
 import { useTranslation } from "@/components/Context/TranslationContext";
 import handleNSFWAPILimitError from "@/lib/utils/nsfw/handleNSFWAPILimitError";
 import showNSFWContentAlert from "@/lib/utils/nsfw/showNSFWContentAlert";
+import getFaceDetectionOptions from "@/lib/utils/nsfw/getFaceDetectionOptions";
+import getFaceDetectionErrorMessage from "@/lib/utils/nsfw/getFaceDetectionErrorMessage";
 
 export default function ProfileImagesUploader({
   profileImage,
@@ -181,12 +183,19 @@ export default function ProfileImagesUploader({
       // If we have an original file that needs to be uploaded first, do that
       if (files && files.length > 0) {
         try {
+          // Get face detection options for the original upload
+          const uploadType = type === "profileImage" ? "profile" : "cover";
+          const faceDetectionOptions = getFaceDetectionOptions(uploadType);
+
           // First upload the original file
           const originalFiles = await uploadFilesToCloudinary(
             files,
             uploadFolder, // Use the specified folder
             null,
-            { skipNSFWCheck: true } // Skip NSFW check for original file, we'll check the cropped version
+            {
+              skipNSFWCheck: true, // Skip NSFW check for original file, we'll check the cropped version
+              ...faceDetectionOptions, // Include face detection options
+            }
           );
 
           if (!originalFiles || originalFiles.length === 0) {
@@ -226,12 +235,19 @@ export default function ProfileImagesUploader({
           // If this is an API limit error, retry the upload with NSFW check bypassed
           if (updatedOptions.skipNSFWCheck) {
             try {
-              // Retry upload with NSFW check bypassed
+              // Get face detection options
+              const uploadType = type === "profileImage" ? "profile" : "cover";
+              const faceDetectionOptions = getFaceDetectionOptions(uploadType);
+
+              // Retry upload with NSFW check bypassed but keep face detection options
               const originalFiles = await uploadFilesToCloudinary(
                 files,
                 uploadFolder,
                 null,
-                { skipNSFWCheck: true }
+                {
+                  skipNSFWCheck: true,
+                  ...faceDetectionOptions,
+                }
               );
 
               if (!originalFiles || originalFiles.length === 0) {
@@ -268,13 +284,21 @@ export default function ProfileImagesUploader({
         uploadOptions.originalFileId = originalFileId;
       }
 
+      // Upload the cropped image
       try {
-        // Upload the cropped image
+        // Get face detection options based on upload type
+        const uploadType = type === "profileImage" ? "profile" : "cover";
+        const faceDetectionOptions = getFaceDetectionOptions(uploadType);
+
+        // Upload the cropped image with face detection options
         const uploadedFiles = await uploadFilesToCloudinary(
           [file],
           uploadFolder, // Use the specified folder
           null,
-          uploadOptions
+          {
+            ...uploadOptions,
+            ...faceDetectionOptions,
+          }
         );
 
         if (!uploadedFiles || uploadedFiles.length === 0) {
@@ -296,14 +320,40 @@ export default function ProfileImagesUploader({
           title: t("imageCroppedAndSaved"),
         });
       } catch (error) {
-        // Check if this was an NSFW detection error
-        if (error.message === "NSFW_DETECTED") {
-          showNSFWContentAlert(
-            error,
-            dialogSet,
-            setNsfwScores,
-            setIsProcessing
-          );
+        // Check if this is a face detection or NSFW error
+        if (
+          [
+            "NO_FACE_DETECTED",
+            "MINOR_DETECTED",
+            "SUNGLASSES_DETECTED",
+            "NSFW_DETECTED",
+          ].includes(error.message)
+        ) {
+          // Get user-friendly error message
+          const errorInfo = getFaceDetectionErrorMessage(error.message);
+
+          // For NSFW content, use the existing alert function
+          if (error.message === "NSFW_DETECTED") {
+            showNSFWContentAlert(
+              error,
+              dialogSet,
+              setNsfwScores,
+              setIsProcessing
+            );
+          } else {
+            // For face detection errors, show a custom dialog
+            dialogSet({
+              isOpen: true,
+              title: errorInfo.title,
+              description: errorInfo.message,
+              showBtns: true,
+              primaryBtn: {
+                text: "OK",
+                onClick: () => dialogSet({ isOpen: false }),
+              },
+            });
+            setIsProcessing(false);
+          }
           return;
         }
 
@@ -318,12 +368,19 @@ export default function ProfileImagesUploader({
         // If this is an API limit error, retry the upload with NSFW check bypassed
         if (bypassOptions.skipNSFWCheck) {
           try {
-            // Retry upload with NSFW check bypassed
+            // Get face detection options
+            const uploadType = type === "profileImage" ? "profile" : "cover";
+            const faceDetectionOptions = getFaceDetectionOptions(uploadType);
+
+            // Retry upload with NSFW check bypassed but keep face detection options
             const uploadedFiles = await uploadFilesToCloudinary(
               [file],
               uploadFolder,
               null,
-              bypassOptions
+              {
+                ...bypassOptions,
+                ...faceDetectionOptions,
+              }
             );
 
             if (!uploadedFiles || uploadedFiles.length === 0) {

@@ -12,6 +12,9 @@ import {
   ALCOHOL_THRESHOLD,
   DRUGS_THRESHOLD,
   OFFENSIVE_THRESHOLD,
+  MINOR_THRESHOLD,
+  SUNGLASSES_THRESHOLD,
+  FACE_DETECTION_ENABLED,
 } from "@/lib/utils/constants";
 
 /**
@@ -20,6 +23,7 @@ import {
  * Now supports custom thresholds for moderation
  * Automatically rotates through multiple API keys when rate limits are reached
  * Handles cropped images with adjusted thresholds
+ * Detects faces and face attributes (minors, sunglasses)
  */
 export async function POST(request) {
   try {
@@ -41,6 +45,9 @@ export async function POST(request) {
       alcoholThreshold: ALCOHOL_THRESHOLD,
       drugsThreshold: DRUGS_THRESHOLD,
       offensiveThreshold: OFFENSIVE_THRESHOLD,
+      minorThreshold: MINOR_THRESHOLD,
+      sunglassesThreshold: SUNGLASSES_THRESHOLD,
+      faceDetectionEnabled: FACE_DETECTION_ENABLED,
     };
 
     // Apply custom thresholds if provided, otherwise use defaults
@@ -70,6 +77,22 @@ export async function POST(request) {
     let apiAttempt = 0;
     let lastError;
 
+    // Create models string based on enabled features
+    const modelsArray = [
+      "nudity-2.1",
+      "weapon",
+      "alcohol",
+      "recreational_drug",
+      "offensive-2.0",
+    ];
+
+    // Add face-attributes model if enabled
+    if (thresholds.faceDetectionEnabled) {
+      modelsArray.push("face-attributes");
+    }
+
+    const modelsString = modelsArray.join(",");
+
     while (apiAttempt < MAX_API_ATTEMPTS && !responseData) {
       apiAttempt++;
 
@@ -93,8 +116,7 @@ export async function POST(request) {
             {
               params: {
                 url: imageUrl,
-                models:
-                  "nudity-2.1,weapon,alcohol,recreational_drug,offensive-2.0",
+                models: modelsString,
                 api_user: apiUser,
                 api_secret: apiSecret,
               },
@@ -115,10 +137,7 @@ export async function POST(request) {
             contentType: "image/jpeg",
           });
 
-          data.append(
-            "models",
-            "nudity-2.1,weapon,alcohol,recreational_drug,offensive-2.0"
-          );
+          data.append("models", modelsString);
           data.append("api_user", apiUser);
           data.append("api_secret", apiSecret);
 
@@ -222,6 +241,45 @@ export async function POST(request) {
       responseData.offensive?.middle_finger || 0
     );
 
+    // Extract face detection data if available
+    const faces = thresholds.faceDetectionEnabled
+      ? responseData.faces || []
+      : [];
+
+    // Check for minors or people wearing sunglasses in detected faces
+    let hasMinor = false;
+    let hasSunglasses = false;
+
+    if (faces.length > 0) {
+      for (const face of faces) {
+        // Check for minor - log the score for debugging
+        if (face.attributes?.minor !== undefined) {
+          const minorScore = face.attributes.minor;
+          console.log(
+            `Minor detection score: ${minorScore}, threshold: ${thresholds.minorThreshold}`
+          );
+
+          if (minorScore >= thresholds.minorThreshold) {
+            console.log(`Minor detected with score ${minorScore}`);
+            hasMinor = true;
+          }
+        }
+
+        // Check for sunglasses
+        if (face.attributes?.sunglasses !== undefined) {
+          const sunglassesScore = face.attributes.sunglasses;
+          console.log(
+            `Sunglasses detection score: ${sunglassesScore}, threshold: ${thresholds.sunglassesThreshold}`
+          );
+
+          if (sunglassesScore >= thresholds.sunglassesThreshold) {
+            console.log(`Sunglasses detected with score ${sunglassesScore}`);
+            hasSunglasses = true;
+          }
+        }
+      }
+    }
+
     // Use the provided or default thresholds to determine if the image is safe
     // No longer checking nudityScore, just the specific categories requested
     const isSafe =
@@ -251,7 +309,16 @@ export async function POST(request) {
       drugsScore,
       offensiveScore,
 
+      // Face detection results
+      faces,
+      hasMinor,
+      hasSunglasses,
+      faceCount: faces.length,
+
       thresholdsUsed: thresholds,
+      // Include the entire nudity object from the original response
+      nudity: responseData.nudity,
+      // Include the entire raw response for access to all attributes
       rawResponse: responseData,
     });
   } catch (error) {
