@@ -48,7 +48,8 @@ export default function DropdownIcon({
     if (isOpen && triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
       setCoords({
-        top: rect.bottom + window.scrollY,
+        // Adjust top position to account for the transparent padding
+        top: rect.bottom + window.scrollY - 20,
         right: window.innerWidth - rect.right,
       });
     }
@@ -132,7 +133,7 @@ export default function DropdownIcon({
         <Portal>
           <CollapsibleContent
             ref={contentRef}
-            className={`👋 bg-background rounded-md shadow-lg py-1 ${collapsibleContentClassName}`}
+            className={`${collapsibleContentClassName}`}
             onMouseEnter={() => handleMouseEvents(true)}
             onMouseLeave={() => handleMouseEvents(false)}
             style={{
@@ -140,25 +141,32 @@ export default function DropdownIcon({
               top: coords.top,
               right: coords.right,
               zIndex: 9999,
+              // Expanded area with transparent top padding
+              paddingTop: "20px",
             }}
           >
-            <div className="tac !text-sm text-muted-foreground fw500 cursor-default py5 border-b border-border">
-              {menuTitle}
+            {/* Actual menu content with background */}
+            <div className="bg-background rounded-md shadow-lg py-1">
+              <div className="tac !text-sm text-muted-foreground fw500 cursor-default py5 border-b border-border">
+                {menuTitle}
+              </div>
+
+              {top &&
+                React.cloneElement(top, {
+                  className:
+                    "block px-4 py-2 text-sm text-foreground hover:bg-accent",
+                  onClick: handleLinkClick,
+                })}
+
+              {children}
+
+              {top2 &&
+                React.cloneElement(top2, {
+                  className:
+                    "block px-4 py-2 text-sm text-foreground hover:bg-accent",
+                  onClick: handleLinkClick,
+                })}
             </div>
-
-            {top &&
-              React.cloneElement(top, {
-                className: "block px-4 py-2 text-sm text-foreground hover:bg-accent",
-                onClick: handleLinkClick,
-              })}
-
-            {children}
-
-            {top2 &&
-              React.cloneElement(top2, {
-                className: "block px-4 py-2 text-sm text-foreground hover:bg-accent",
-                onClick: handleLinkClick,
-              })}
           </CollapsibleContent>
         </Portal>
       )}

@@ -264,6 +264,9 @@ export default function CustomUserMenu({
               <div className="text-sm text-muted-foreground">
                 {user.emailAddresses[0].emailAddress}
               </div>
+              <div className="mt5 text-sm text-muted-foreground">
+                {mongoUser?.profileType?.toUpperCase() || ""}
+              </div>
             </div>
 
             <ThemeToggle />

@@ -2,17 +2,17 @@ YOU'RE THE BEST NEXT.JS 14 DEVELOPER IN THE WORLD!
 
 CODE STYLE & STANDARDS:
 
+- append new translations in the bottom of translations files
 - be sure you use all variables you created - unless delete unused variales
 - when you create new file/fn/comp - make new separate file for that 
-- use browser-tools MCP if you need it!
+- use all MCPs if you need it!
 - don't hardcode values!
 - don't run: npm run dev
-- say "🟢🟢🟢🟢🟢 oiia 🟢🟢🟢🟢🟢" in the start on each message + add number (use emoji numbers) of the reply in this chat + LLM model you are using now (say the truth!) + Fast requests mode OR Slow requests mode
+- say "🟢🟢🟢🟢🟢 HI! 🟢🟢🟢🟢🟢" in the start on each message + add number (use emoji numbers) of the reply in this chat + LLM model you are using now (say the truth!) + Fast requests mode OR Slow requests mode
 - don't create any test pages/routes/scripts/files for testing!
 - don't create route.js files (ONLY if it's 100% necessary!)
 - If you need to get/add/update/delete some data from DB use \lib\actions\crud.js file!
 - use theme compatible classNames like bg-background, bg-accent, text-foreground, etc, if needed
-- in the end say how many files you created/edited in the last run. Like this [RUN:number-FILES:number]
 - don't ever delete className that start with capital letter, eg: "LeftNav"
 
 COMPONENTS & ARCHITECTURE:

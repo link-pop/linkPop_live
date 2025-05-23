@@ -1350,6 +1350,26 @@ const uk = {
   LOW_QUALITY_IMAGE: "Низька якість зображення",
   ADD_ANOTHER_IMAGE:
     "Будь ласка, завантажте інше зображення або зверніться до служби підтримки, якщо вважаєте, що це помилка.",
+
+  // Suggestions and preferences system
+  preferencesNote:
+    "Ці налаштування будуть використовуватися для персоналізації ваших пропозицій контенту.",
+  creatorAttributesNote:
+    "Ці атрибути допомагають фанатам знаходити ваш профіль на основі їхніх уподобань.",
+  dontSuggest: "Не пропонувати",
+  noSuggestions: "Пропозиції відсутні",
+
+  // Suggestions section translations
+  follow: "Підписатися",
+  hiddenSuggestions: "Скасувати приховані пропозиції",
+  creatorsHidden: "креаторів приховано з пропозицій",
+  clearHiddenSuggestions: "Очистити всі приховані пропозиції",
+  hiddenSuggestionsCleared: "Приховані пропозиції очищено",
+  hiddenSuggestionsClearedDesc:
+    "Тепер ви бачитимете раніше приховані пропозиції креаторів",
+  errorClearingHiddenSuggestions: "Не вдалося очистити приховані пропозиції",
+  refreshingSuggestions: "Оновлення ваших пропозицій...",
+  any: "Будь-який",
 };
 
 export default uk;

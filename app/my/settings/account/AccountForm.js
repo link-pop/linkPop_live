@@ -58,7 +58,10 @@ export default function AccountForm({ mongoUser, onSuccess }) {
     { value: "red", label: t("red") },
     { value: "gray", label: t("gray") },
     { value: "white", label: t("white") },
-    { value: "other", label: t("other") },
+    {
+      value: "other",
+      label: mongoUser?.profileType === "creator" ? t("other") : t("any"),
+    },
   ];
 
   // Body type/build options
@@ -69,7 +72,10 @@ export default function AccountForm({ mongoUser, onSuccess }) {
     { value: "curvy", label: t("curvy") },
     { value: "muscular", label: t("muscular") },
     { value: "plus-size", label: t("plusSize") },
-    { value: "other", label: t("other") },
+    {
+      value: "other",
+      label: mongoUser?.profileType === "creator" ? t("other") : t("any"),
+    },
   ];
 
   // Race/Ethnicity options
@@ -139,6 +145,26 @@ export default function AccountForm({ mongoUser, onSuccess }) {
     <div className={`fc g30 p15 wf maw600`}>
       {/* FORM */}
       <form onSubmit={handleSubmit} className={`fc g20 wf maw600`}>
+        {/* Preferences note for fans */}
+        {mongoUser?.profileType === "fan" && (
+          <div className="p-3 bg-accent/10 rounded-md text-sm text-foreground/70">
+            <p>
+              {t("preferencesNote") ||
+                "These preferences will be used to personalize your content suggestions."}
+            </p>
+          </div>
+        )}
+
+        {/* Creator attributes note */}
+        {mongoUser?.profileType === "creator" && (
+          <div className="p-3 bg-accent/10 rounded-md text-sm text-foreground/70">
+            <p>
+              {t("creatorAttributesNote") ||
+                "These attributes help fans discover your profile based on their preferences."}
+            </p>
+          </div>
+        )}
+
         {/* AGE */}
         <div className={`fc g5`}>
           <Input

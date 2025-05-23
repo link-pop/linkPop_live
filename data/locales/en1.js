@@ -1372,6 +1372,26 @@ const en = {
   LOW_QUALITY_IMAGE: "Low Quality Image",
   ADD_ANOTHER_IMAGE:
     "Please upload another image or contact support if you think this is an error.",
+
+  // Suggestions and preferences system
+  preferencesNote:
+    "These preferences will be used to personalize your content suggestions.",
+  creatorAttributesNote:
+    "These attributes help fans discover your profile based on their preferences.",
+  dontSuggest: "Don't suggest",
+  noSuggestions: "No suggestions available",
+
+  // Suggestions section translations
+  follow: "Follow",
+  hiddenSuggestions: "Undo Hidden Suggestions",
+  creatorsHidden: "creators hidden from suggestions",
+  clearHiddenSuggestions: "Clear all hidden suggestions",
+  hiddenSuggestionsCleared: "Hidden suggestions cleared",
+  hiddenSuggestionsClearedDesc:
+    "You'll now see previously hidden creator suggestions",
+  errorClearingHiddenSuggestions: "Failed to clear hidden suggestions",
+  refreshingSuggestions: "Refreshing your suggestions...",
+  any: "Any",
 };
 
 export default en;
