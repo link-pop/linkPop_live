@@ -14,7 +14,7 @@ export default function AccountForm({ mongoUser, onSuccess }) {
 
   const { t } = useTranslation();
   const [account, setAccount] = useState({
-    age: mongoUser.age || "",
+    preferAge: mongoUser.preferAge || "",
     raceEthnicity: mongoUser.raceEthnicity || "",
     hairColor: mongoUser.hairColor || "",
     bodyType: mongoUser.bodyType || "",
@@ -97,10 +97,12 @@ export default function AccountForm({ mongoUser, onSuccess }) {
 
     // Age validation - must be a number between 18 and 120
     if (
-      account.age &&
-      (isNaN(account.age) || account.age < 18 || account.age > 120)
+      account.preferAge &&
+      (isNaN(account.preferAge) ||
+        account.preferAge < 18 ||
+        account.preferAge > 120)
     ) {
-      errors.age = t("invalidAge") || "Age must be between 18 and 120";
+      errors.preferAge = t("invalidAge") || "Age must be between 18 and 120";
       isValid = false;
     }
 
@@ -126,7 +128,7 @@ export default function AccountForm({ mongoUser, onSuccess }) {
       col: "users",
       data: { _id: mongoUser._id },
       update: {
-        age: account.age,
+        preferAge: account.preferAge,
         raceEthnicity: account.raceEthnicity,
         hairColor: account.hairColor,
         bodyType: account.bodyType,
@@ -167,18 +169,18 @@ export default function AccountForm({ mongoUser, onSuccess }) {
 
         {mongoUser?.profileType === "fan" && (
           <>
-            {/* AGE */}
+            {/* PREFERRED AGE */}
             <div className={`fc g5`}>
               <Input
                 type="number"
-                name="age"
-                value={account.age}
+                name="preferAge"
+                value={account.preferAge}
                 onChange={handleInputChange}
                 className={`gray br5`}
-                label={t("age") || "Age"}
+                label={t("preferredAge") || "Preferred Age"}
                 min={18}
                 max={120}
-                error={formErrors.age}
+                error={formErrors.preferAge}
               />
             </div>
           </>

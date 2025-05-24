@@ -31,7 +31,7 @@ export default function SuggestionsSection() {
     fillerSlots,
     currentUser,
     refreshSuggestions,
-  } = useSuggestions(10, 3);
+  } = useSuggestions(20, 3);
 
   // Handle clearing all hidden suggestions
   const handleClearHiddenSuggestions = async () => {

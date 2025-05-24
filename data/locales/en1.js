@@ -1406,6 +1406,7 @@ const en = {
   failedToExtractDOB: "Failed to extract date of birth",
   dobExtracted: "Date of birth extracted",
   age: "Age",
+  preferredAge: "Preferred Age",
 
   // Face comparison translations
   idDocument: "ID Document",

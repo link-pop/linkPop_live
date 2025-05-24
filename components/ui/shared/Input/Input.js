@@ -45,15 +45,8 @@ export default function Input(props) {
     const value = e.target.value;
     const type = props.type || "text";
 
-    // ! for type NUMBER: Handle min/max validation
-    if (type === "number") {
-      if (props.min !== undefined && Number(value) < props.min) {
-        e.target.value = props.min;
-      }
-      if (props.max !== undefined && Number(value) > props.max) {
-        e.target.value = props.max;
-      }
-    } else if (type === "text") {
+    // For text inputs with maxLength
+    if (type === "text") {
       // For maxLength validation
       if (props.maxLength !== undefined && value.length > props.maxLength) {
         e.target.value = value.slice(0, props.maxLength);
@@ -62,6 +55,9 @@ export default function Input(props) {
       // We don't block typing for minLength - we just show an error message
       // This allows users to type freely but still see validation errors
     }
+
+    // Allow any input for number fields - validation will happen on form submit
+    // This prevents the frustrating experience of not being able to type values
 
     props.onChange?.(e);
   };

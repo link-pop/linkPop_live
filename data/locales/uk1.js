@@ -1384,6 +1384,7 @@ const uk = {
   failedToExtractDOB: "Не вдалося витягти дату народження",
   dobExtracted: "Дату народження витягнуто",
   age: "Вік",
+  preferredAge: "Бажаний вік",
 
   idDocument: "Документ посвідчення особи",
   selfiePhoto: "Селфі",

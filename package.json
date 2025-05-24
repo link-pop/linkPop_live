@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "download-face-models": "node scripts/download-face-models.js"
+    "download-face-models": "node scripts/download-face-models.js",
+    "generate-landingpages": "node scripts/generate-test-landingpages.js",
+    "generate-landingpages:help": "echo 'Usage: npm run generate-landingpages -- --mongodb-uri your-mongodb-connection-string'",
+    "generate-users": "node scripts/generate-test-users.js",
+    "generate-users:help": "node scripts/generate-test-users.js --help"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.0.1",
@@ -72,6 +76,7 @@
     "cmdk": "^1.0.0",
     "cookies-next": "^4.1.1",
     "date-fns": "^3.6.0",
+    "dotenv": "^16.5.0",
     "embla-carousel": "^8.3.1",
     "embla-carousel-react": "^8.3.1",
     "face-api.js": "^0.22.2",
@@ -110,6 +115,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.7.0",
     "@tailwindcss/typography": "^0.5.15",
     "postcss": "^8",
     "tailwindcss": "^3.4.1"
