@@ -1392,6 +1392,77 @@ const en = {
   errorClearingHiddenSuggestions: "Failed to clear hidden suggestions",
   refreshingSuggestions: "Refreshing your suggestions...",
   any: "Any",
+
+  // Verification
+  verification: "Verification",
+  verifyDateOfBirth: "Verify Your Date of Birth",
+  idPreview: "ID Document Preview",
+  dragAndDropOrClickToUpload: "Drag and drop or click to upload",
+  pleaseUploadImageFile: "Please upload an image file",
+  pleaseSelectImage: "Please select an image",
+  processing: "Processing...",
+  extract: "Extract DOB",
+  errorProcessingID: "Error processing ID document",
+  failedToExtractDOB: "Failed to extract date of birth",
+  dobExtracted: "Date of birth extracted",
+  age: "Age",
+
+  // Face comparison translations
+  idDocument: "ID Document",
+  selfiePhoto: "Selfie Photo",
+  selfiePreview: "Selfie Preview",
+  uploadCurrentPhoto: "Upload a current photo of yourself",
+  pleaseSelectIdImage: "Please select an ID document image",
+  pleaseSelectSelfieImage: "Please select a selfie image",
+  pleaseBothImages: "Please upload both ID document and selfie",
+  noFaceDetectedInID: "No face detected in ID document",
+  noFaceDetectedInSelfie: "No face detected in selfie",
+  facesMatch: "Faces match! Similarity: {{score}}%",
+  facesDontMatch: "Faces don't match. Similarity: {{score}}%",
+  errorComparingFaces: "Error comparing faces",
+  errorLoadingFaceModels: "Error loading face detection models",
+  faceModelsNotLoaded: "Face detection models not loaded yet",
+  processingFaces: "Processing face comparison...",
+  verify: "Verify",
+  tooLowSimilarity: "Face verification failed - similarity score too low",
+  faceAngleTooExtreme:
+    "Face may be at an extreme angle - try a more direct photo",
+  poorLightingConditions:
+    "Poor lighting detected - try better lighting conditions",
+  idTipsForSuccess:
+    "ID Verification Requirements: Only a government-issued passport can be uploaded. Make sure the photo is well-lit, clear, and that all details are easily readable.",
+  selfieTipsForSuccess:
+    "Selfie Guidelines: Look directly at the camera and use good lighting to ensure your face is clearly visible. It should be a different image of you.",
+  faceStructureMismatch:
+    "Face structures don't match - these appear to be different people",
+
+  // Face model loading failure translations
+  faceVerification: "Face Verification",
+  faceVerificationUnavailable: "Face verification unavailable",
+  proceedWithoutFaceVerification:
+    "You can still proceed with ID document verification only",
+  extractOnly: "Extract DOB Only",
+
+  // ID verification errors
+  invalidIDDocument:
+    "The uploaded image does not appear to be a legitimate ID document",
+  expiredIDDocument:
+    "The ID document appears to be expired. Please provide a valid, non-expired ID",
+  manipulatedIDDocument:
+    "The ID document appears to be digitally manipulated or tampered with",
+  unclearIDDocument:
+    "Couldn't verify if this is a legitimate ID document. Please upload a clearer image",
+  noValidDOB: "Could not extract a valid date of birth from the image",
+  tryAnotherImage: "Try another image",
+
+  // AI image validation errors
+  duplicateImages: "Error: The ID document and selfie cannot be the same image",
+  selfieIsIdDocument:
+    "Error: You uploaded an ID document for both images. Please upload a current selfie photo",
+  invalidIdDocument: "Error: The first image is not a valid ID document",
+  aiValidationError:
+    "Error validating images. Please try again with different photos",
+  aiProcessingError: "Error processing images. Please try again",
 };
 
 export default en;

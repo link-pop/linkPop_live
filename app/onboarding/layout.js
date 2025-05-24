@@ -15,6 +15,7 @@ export default function OnboardingLayout({ children }) {
     if (pathname.endsWith("/2")) return 2;
     if (pathname.endsWith("/3")) return 3;
     if (pathname.endsWith("/4")) return 4;
+    if (pathname.endsWith("/5")) return 5;
     return 1;
   }, [pathname]);
 

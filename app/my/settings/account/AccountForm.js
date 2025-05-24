@@ -165,20 +165,24 @@ export default function AccountForm({ mongoUser, onSuccess }) {
           </div>
         )}
 
-        {/* AGE */}
-        <div className={`fc g5`}>
-          <Input
-            type="number"
-            name="age"
-            value={account.age}
-            onChange={handleInputChange}
-            className={`gray br5`}
-            label={t("age") || "Age"}
-            min={18}
-            max={120}
-            error={formErrors.age}
-          />
-        </div>
+        {mongoUser?.profileType === "fan" && (
+          <>
+            {/* AGE */}
+            <div className={`fc g5`}>
+              <Input
+                type="number"
+                name="age"
+                value={account.age}
+                onChange={handleInputChange}
+                className={`gray br5`}
+                label={t("age") || "Age"}
+                min={18}
+                max={120}
+                error={formErrors.age}
+              />
+            </div>
+          </>
+        )}
 
         {/* RACE / ETHNICITY */}
         {/* // ! don't uncomment this ! */}

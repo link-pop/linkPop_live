@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { MAIN_ROUTE } from "@/lib/utils/constants";
+import { ONBOARDING_ROUTE } from "@/lib/utils/constants";
 import { useTranslation } from "@/components/Context/TranslationContext";
 
 const SubscriptionForm = dynamic(
@@ -14,10 +14,8 @@ export default function OnboardingStep4Client({ mongoUser }) {
   const { t } = useTranslation();
 
   const handleSuccess = async () => {
-    const finishOnboarding = (await import("@/lib/actions/finishOnboarding"))
-      .default;
-    await finishOnboarding(mongoUser._id);
-    router.push(MAIN_ROUTE);
+    // Don't finish onboarding here, continue to step 5
+    router.push(`${ONBOARDING_ROUTE}/5`);
   };
 
   return (

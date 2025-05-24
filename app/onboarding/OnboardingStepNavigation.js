@@ -7,8 +7,13 @@ const stepsCreator = [
   { title: "profile" },
   { title: "account" },
   { title: "subscription" },
+  { title: "verification" },
 ];
-const stepsFan = [{ title: "profileType" }, { title: "account" }];
+const stepsFan = [
+  { title: "profileType" },
+  { title: "account" },
+  { title: "verification" },
+];
 
 export default function OnboardingStepNavigation({
   currentStep,
@@ -38,7 +43,7 @@ export default function OnboardingStepNavigation({
   };
 
   return (
-    <div className="h55 f jcc oyh mx-auto br20 wfc fcc shadow-lg z49 bg-background mt20 mb30">
+    <div className="fixed -t7 cx h55 f jcc oyh mx-auto br20 wfc fcc shadow-lg z49 bg-background mt20 mb30">
       <div className="f fwn oxa aistr g15 mb25 hf text-neutral-900 dark:text-white">
         {steps.map((step, index) => {
           const stepNumber = index + 1;
