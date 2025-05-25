@@ -60,6 +60,11 @@ export default async function RootLayout({ children }) {
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
+        {SITE1 && (
+          <>
+            <meta name="apple-mobile-web-app-title" content="LinkPop" />
+          </>
+        )}
       </head>
       <body className={`${sora.variable} antialiased`}>
         {/* // * Root className needed to select ONLY MY APP elements, not eg Clerk (if select by body)*/}
