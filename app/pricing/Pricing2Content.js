@@ -920,7 +920,7 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
                 {/* CURRENT PLAN BUTTON - Only show for paid plans, not for Starter/Free plan */}
                 {isCurrent(plan.planId) && plan.planId && (
                   <div
-                    className={`w-full py-2.5 px-4 rounded-md text-center bg-green-100 text-green-600 font-medium`}
+                    className={`w-full py-2.5 px-4 rounded-[20px] text-center bg-green-100 text-green-600 font-medium`}
                   >
                     {t("currentPlan")}
                   </div>
@@ -957,7 +957,7 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
                       <button
                         onClick={() => handlePlanChange(plan)}
                         disabled={isLoading}
-                        className={`w-full py-2.5 px-4 rounded-md text-center font-medium text-white ${gradientClass} animate-gradient-x ${
+                        className={`w-full py-2.5 px-4 rounded-[20px] text-center font-medium text-white ${gradientClass} animate-gradient-x ${
                           isLoading ? "opacity-50" : ""
                         }`}
                         data-plan-id={plan.planId}
