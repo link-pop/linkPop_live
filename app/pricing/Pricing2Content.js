@@ -581,7 +581,8 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
       icon: "/icons/paper-plane.svg",
       color: "bg-purple-50",
       buttonText: t("freePlan"),
-      buttonClass: "bg-gray-200 text-gray-700 hover:bg-gray-300",
+      buttonClass:
+        "!rounded-[20px] bg-gray-200 text-gray-700 hover:bg-gray-300",
       trialDays: null,
     },
     {
