@@ -490,8 +490,17 @@ export default function HeroSection({ mongoUser }) {
           backface-visibility: hidden;
           transform-style: preserve-3d;
           perspective: 1000px;
-          transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-            opacity 0.6s ease;
+          transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+            box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+            filter 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+        }
+
+        .animate-tag:hover {
+          transform: scale(1.07) translateY(-2px);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35),
+            0 2px 8px rgba(0, 0, 0, 0.1);
+          filter: brightness(1.08) saturate(1.1);
+          z-index: 50 !important;
         }
 
         /* Style for small screen tags */
