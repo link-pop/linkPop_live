@@ -1,16 +1,17 @@
 import Logo from "@/components/Nav/Header/Logo";
-import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { SITE1, SITE2 } from "@/config/env";
 import ThemeDetector from "./ThemeDetector";
 import ClerkThemeStyles from "./ClerkThemeStyles";
 import AuthContentWrapper from "./AuthContentWrapper";
+import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 
 const Layout = async ({ children }) => {
-  const user = await currentUser();
+  // Check if user is already logged in
+  const { clerkUser } = await getMongoUser();
 
   // If user is logged in, redirect to home page
-  if (user?.id) {
+  if (clerkUser?.id) {
     // Redirect to home page regardless of site type
     redirect("/");
   }
