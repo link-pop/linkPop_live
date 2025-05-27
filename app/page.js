@@ -17,6 +17,7 @@ export default async function Home({ searchParams }) {
 
   const { mongoUser, isAdmin } = await getMongoUser();
 
+  // test 1
   // ! Base search params for NON-ADMIN users
   if (!isAdmin) {
     searchParams = {
