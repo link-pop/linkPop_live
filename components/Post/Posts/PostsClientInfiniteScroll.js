@@ -42,7 +42,12 @@ export default function PostsClientInfiniteScroll({
     isFetching,
     isLoading,
   } = useInfiniteQuery({
-    queryKey: ["posts", col.name, { searchParams }],
+    queryKey: [
+      "posts",
+      col.name,
+      JSON.stringify(data),
+      searchParams?.toString(),
+    ],
     queryFn: async ({ pageParam = 0 }) => {
       const [posts, totalPosts] = await Promise.all([
         getAllPostsFn({
@@ -75,6 +80,7 @@ export default function PostsClientInfiniteScroll({
     refetchOnWindowFocus: true,
     enabled: Boolean(col),
     staleTime: 0, // Always refetch when parameters change
+    refetchOnMount: true, // Always refetch when component mounts
   });
 
   const posts = postsFetchedData?.pages.flatMap((page) => page.posts) ?? [];

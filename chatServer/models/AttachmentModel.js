@@ -235,6 +235,11 @@ const attachmentSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    // AI-generated tags for content categorization
+    tags: {
+      type: [String],
+      default: [],
+    },
   },
   { timestamps: true }
 );

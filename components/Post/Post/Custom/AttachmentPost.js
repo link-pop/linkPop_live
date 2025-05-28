@@ -41,6 +41,14 @@ export default function AttachmentPost(props) {
       iconsClassName="poa r20 -t2"
       top={
         <>
+          {/* // ! DEV ONLY = SEE FILE TAGS: don't remove this */}
+          {mongoUser?.isDev && post.tags && post.tags.length > 0 && (
+            <div className="bad poa r5 t5 z1">
+              {post.tags.map((tag) => (
+                <span key={tag}>{tag + " "}</span>
+              ))}
+            </div>
+          )}
           {showPaidOverlay && (
             <>
               <div

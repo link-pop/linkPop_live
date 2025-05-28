@@ -41,17 +41,17 @@ export default function Toggle({
   // Position the indicator
   useEffect(() => {
     if (
-      labelsTextRef.current[switched] &&
+      labelsRef.current[switched] &&
       indicatorRef.current &&
       tabsContainerRef.current
     ) {
-      const activeText = labelsTextRef.current[switched];
+      const activeTab = labelsRef.current[switched];
       const tabsContainer = tabsContainerRef.current;
-      // Get the span's width and its offsetLeft relative to the container
-      const width = activeText.offsetWidth;
-      // The left offset of the span relative to the container
+      // Get the full tab's width and its offsetLeft relative to the container
+      const width = activeTab.offsetWidth;
+      // The left offset of the tab relative to the container
       const left =
-        activeText.getBoundingClientRect().left -
+        activeTab.getBoundingClientRect().left -
         tabsContainer.getBoundingClientRect().left;
       indicatorRef.current.style.width = `${width}px`;
       indicatorRef.current.style.left = `${left}px`;

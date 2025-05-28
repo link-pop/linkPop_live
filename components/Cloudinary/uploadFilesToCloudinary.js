@@ -14,6 +14,7 @@ import {
 import isNSFWAPIResponseLimitReached from "@/lib/utils/nsfw/isNSFWAPIResponseLimitReached";
 import isNSFWAPILimitReached from "@/lib/utils/nsfw/isNSFWAPILimitReached";
 import { SITE2 } from "@/config/env";
+import generateAITagsForImage from "./generateAITagsForImage";
 
 export default async function uploadFilesToCloudinary(
   files,
@@ -129,6 +130,8 @@ export default async function uploadFilesToCloudinary(
           // Include image quality data
           imageQualityScore: file.imageQualityScore || 1.0,
           isLowQuality: file.isLowQuality || false,
+          // Include AI-generated tags
+          aiTags: file.aiTags || [],
         });
         continue;
       }
@@ -158,9 +161,29 @@ export default async function uploadFilesToCloudinary(
       const isGif = file.type === "image/gif";
       const skipNSFWCheckForGif = SITE2 && isGif;
 
+      // * 2.1: Generate AI tags for all images (independent of NSFW check)
+      let base64Image = null;
+      if (resourceType === "image") {
+        try {
+          // Convert the image to base64 for both NSFW check and AI tagging
+          base64Image = await fileToBase64(file);
+
+          const tagResult = await generateAITagsForImage(file, base64Image);
+          file.aiTags = tagResult.tags;
+        } catch (tagError) {
+          console.error("Error generating AI tags:", tagError);
+          file.aiTags = []; // Set empty array on error
+        }
+      } else {
+        // For videos, set empty tags array
+        file.aiTags = [];
+      }
+
       if (resourceType === "image" && !skipNSFWCheck && !skipNSFWCheckForGif) {
-        // Convert the image to base64 for NSFW check
-        const base64Image = await fileToBase64(file);
+        // Use the base64Image that was already created for AI tagging
+        if (!base64Image) {
+          base64Image = await fileToBase64(file);
+        }
 
         try {
           // Call our NSFW check API
@@ -572,6 +595,7 @@ export default async function uploadFilesToCloudinary(
         file.offensiveScore = 0;
         file.suggestiveClasses = {};
         file.contextClasses = {};
+        file.aiTags = []; // No AI tags for GIFs on SITE2 (skipped NSFW check)
       }
 
       // * 3: Upload to Cloudinary if NSFW check passed or was skipped
@@ -666,6 +690,12 @@ export default async function uploadFilesToCloudinary(
           file.isLowQuality || false
         }`
       );
+      console.log(
+        `AI tags for ${original_filename || "unknown file"} (${
+          file.aiTags?.length || 0
+        } tags):`,
+        file.aiTags || []
+      );
 
       serverUploadedFiles.push({
         fileUrl: secure_url,
@@ -695,6 +725,8 @@ export default async function uploadFilesToCloudinary(
         // Include image quality data
         imageQualityScore: file.imageQualityScore || 1.0,
         isLowQuality: file.isLowQuality || false,
+        // Include AI-generated tags
+        aiTags: file.aiTags || [],
       });
     } catch (error) {
       // Special handling for detected issues in profile/cover images or unsupported formats

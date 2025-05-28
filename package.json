@@ -87,7 +87,7 @@
     "input-otp": "^1.2.4",
     "lottie-react": "^2.4.0",
     "lowlight": "^2.4.0",
-    "lucide-react": "^0.453.0",
+    "lucide-react": "^0.511.0",
     "mongoose": "^8.7.2",
     "nanoid": "^5.0.9",
     "next": "^14.2.7",

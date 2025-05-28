@@ -102,6 +102,9 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
               }
             );
 
+            // Ensure AI tags are included
+            attachmentData.tags = file.aiTags || [];
+
             const attachment = await add({
               col: { name: "attachments" },
               data: attachmentData,

@@ -327,6 +327,9 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
           attachmentData.imageQualityScore = file.imageQualityScore || 1.0;
           attachmentData.isLowQuality = file.isLowQuality || false;
 
+          // Set AI-generated tags
+          attachmentData.tags = file.aiTags || [];
+
           // Log to verify correct values for each file
           console.log(
             `Creating attachment for file: ${file.fileName || "unknown"}`
@@ -337,11 +340,18 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
           console.log(
             `imageQualityScore: ${attachmentData.imageQualityScore}, isLowQuality: ${attachmentData.isLowQuality}`
           );
+          console.log(
+            `AI tags (${attachmentData.tags.length}):`,
+            attachmentData.tags
+          );
+          console.log("Full attachment data being saved:", attachmentData);
 
           const attachment = await add({
             col: { name: "attachments" },
             data: attachmentData,
           });
+
+          console.log("Attachment created with ID:", attachment._id);
 
           if (!attachment?._id) {
             throw new Error("Failed to create attachment record");
