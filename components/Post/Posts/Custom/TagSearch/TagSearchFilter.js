@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Search, X, Tag, FunnelPlus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useUserPopularTags } from "@/hooks/useUserPopularTags";
 
 export default function TagSearchFilter({
   visitedUserId,
@@ -16,61 +17,12 @@ export default function TagSearchFilter({
   const [suggestedTags, setSuggestedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // TODO: add tags from the user's profile
-  // Popular adult content tags for suggestions
-  const popularTags = useMemo(
-    () => [
-      "blonde",
-      "brunette",
-      "redhead",
-      "big tits",
-      "small boobs",
-      "ass",
-      "pussy",
-      "blowjob",
-      "deepthroat",
-      "handjob",
-      "anal",
-      "doggy",
-      "missionary",
-      "cowgirl",
-      "nude",
-      "topless",
-      "lingerie",
-      "panties",
-      "stockings",
-      "hairy",
-      "shaved",
-      "solo female",
-      "solo male",
-      "lesbian",
-      "couple",
-      "threesome",
-      "milf",
-      "teen",
-      "amateur",
-      "pov",
-      "bedroom",
-      "shower",
-      "outdoor",
-      "masturbating",
-      "fingering",
-      "sucking cock",
-      "eating pussy",
-      "fucking",
-      "riding",
-      "wet pussy",
-      "hard cock",
-      "big ass",
-      "tight pussy",
-      "natural tits",
-      "fake tits",
-      "bbw",
-      "skinny",
-      "curvy",
-    ],
-    []
-  );
+  // Get popular tags from user's attachments
+  const {
+    tags: userPopularTags,
+    isLoading: isLoadingUserTags,
+    error: userTagsError,
+  } = useUserPopularTags(visitedUserId, 50);
 
   // Initialize selected tags from URL params
   useEffect(() => {
@@ -86,13 +38,13 @@ export default function TagSearchFilter({
 
   // Filter suggested tags based on search input
   const filteredSuggestions = useMemo(() => {
-    if (!searchInput.trim()) return [];
+    if (!searchInput.trim() || !userPopularTags) return [];
 
     const input = searchInput.toLowerCase();
-    return popularTags
+    return userPopularTags
       .filter((tag) => tag.includes(input) && !selectedTags.includes(tag))
       .slice(0, 10);
-  }, [searchInput, selectedTags, popularTags]);
+  }, [searchInput, selectedTags, userPopularTags]);
 
   // Handle adding a tag
   const addTag = (tag) => {
@@ -165,6 +117,11 @@ export default function TagSearchFilter({
       }
     }
   };
+
+  // Don't render anything if user has no tags (moved after all hooks)
+  if (!userPopularTags || userPopularTags.length === 0) {
+    return null;
+  }
 
   return (
     <div className="w-full mb-4 p-4 bg-background border border-border rounded-lg">
@@ -240,11 +197,13 @@ export default function TagSearchFilter({
 
       {/* Popular Tags */}
       <div>
-        <span className="text-sm font-medium text-foreground mb-2 block">
-          Popular Tags
-        </span>
+        <div className="flex items-center justify-between mb-2">
+          {isLoadingUserTags && (
+            <span className="text-xs text-muted-foreground">Loading...</span>
+          )}
+        </div>
         <div className="flex flex-wrap gap-2">
-          {popularTags.slice(0, 15).map((tag) => (
+          {userPopularTags.slice(0, 15).map((tag) => (
             <button
               key={tag}
               onClick={() => addTag(tag)}
