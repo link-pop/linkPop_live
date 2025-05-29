@@ -1,4 +1,5 @@
 import { add, update } from "@/lib/actions/crud";
+import { updateCreatorTags } from "@/lib/actions/updateCreatorTags";
 import uploadFilesToCloudinary from "../../Cloudinary/uploadFilesToCloudinary";
 import { useState } from "react";
 import { useContext } from "@/components/Context/Context";
@@ -297,6 +298,8 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
 
       // Now create attachment records for new files with the post ID
       const newAttachmentIds = [];
+      const allCreatorTags = []; // Collect all creator tags from uploaded files
+
       if (serverUploadedFiles.length > 0) {
         for (const file of serverUploadedFiles) {
           const attachmentData = formatAttachmentData(
@@ -330,6 +333,11 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
           // Set AI-generated tags
           attachmentData.tags = file.aiTags || [];
 
+          // Collect creator tags for user profile update (only for feeds)
+          if (col.name === "feeds" && file.creatorTags) {
+            allCreatorTags.push(file.creatorTags);
+          }
+
           // Log to verify correct values for each file
           console.log(
             `Creating attachment for file: ${file.fileName || "unknown"}`
@@ -358,6 +366,58 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
           }
 
           newAttachmentIds.push(attachment._id);
+        }
+      }
+
+      // Update user creator tags if we have creator tags from feeds uploads
+      if (col.name === "feeds" && allCreatorTags.length > 0) {
+        try {
+          // Merge all creator tags from all uploaded files
+          const mergedCreatorTags = {
+            raceEthnicity: [],
+            hairColor: [],
+            bodyType: [],
+          };
+
+          allCreatorTags.forEach((creatorTags) => {
+            if (creatorTags.raceEthnicity) {
+              mergedCreatorTags.raceEthnicity.push(
+                ...creatorTags.raceEthnicity
+              );
+            }
+            if (creatorTags.hairColor) {
+              mergedCreatorTags.hairColor.push(...creatorTags.hairColor);
+            }
+            if (creatorTags.bodyType) {
+              mergedCreatorTags.bodyType.push(...creatorTags.bodyType);
+            }
+          });
+
+          // Only update if we have at least one tag
+          const hasAnyTags =
+            mergedCreatorTags.raceEthnicity.length > 0 ||
+            mergedCreatorTags.hairColor.length > 0 ||
+            mergedCreatorTags.bodyType.length > 0;
+
+          if (hasAnyTags) {
+            console.log("Updating user creator tags:", mergedCreatorTags);
+            const updateResult = await updateCreatorTags({
+              userId: mongoUser._id,
+              creatorTags: mergedCreatorTags,
+            });
+
+            if (updateResult.error) {
+              console.error(
+                "Failed to update creator tags:",
+                updateResult.error
+              );
+            } else {
+              console.log("Successfully updated user creator tags");
+            }
+          }
+        } catch (error) {
+          console.error("Error updating creator tags:", error);
+          // Don't throw error here as it shouldn't stop the post creation
         }
       }
 

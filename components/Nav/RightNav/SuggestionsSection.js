@@ -9,6 +9,9 @@ import EmptyState from "@/components/ui/shared/EmptyState/EmptyState";
 import FixedHeightContainer from "@/components/ui/shared/FixedHeightContainer/FixedHeightContainer";
 import SuggestionHeaderSection from "@/components/Suggestions/SuggestionHeaderSection";
 import DotPagination from "@/components/ui/shared/Pagination/DotPagination";
+import TagProgressBar from "@/components/ui/shared/TagProgressBar/TagProgressBar";
+import { MIN_VISITED_CREATOR_TAGS_FOR_SMART_MATCHING } from "@/lib/utils/constants";
+import { hasUserPreferences } from "@/lib/utils/hasUserPreferences";
 
 /**
  * SuggestionsSection displays personalized creator recommendations
@@ -20,6 +23,7 @@ export default function SuggestionsSection() {
   const {
     visibleSuggestions,
     suggestions,
+    suggestionsApproach,
     isLoading,
     isUserFan,
     currentPage,
@@ -84,13 +88,44 @@ export default function SuggestionsSection() {
   // Check if there are no suggestions at all
   const hasSuggestions = suggestions.length > 0;
 
+  // Check if user has any preferences set using the reusable function
+  const userHasPreferences = hasUserPreferences(currentUser);
+
   return (
     <FixedHeightContainer>
       {/* Header with navigation */}
       <SuggestionHeaderSection
         currentUser={currentUser}
         handleClearHiddenSuggestions={handleClearHiddenSuggestions}
+        onClearAllSuggestions={refreshSuggestions}
       />
+      {/* Progress bar for preferences */}
+      {!userHasPreferences && currentUser?.lastVisitedCreatorsTags && (
+        <div className="mb-4">
+          <TagProgressBar
+            value={Math.max(
+              currentUser.lastVisitedCreatorsTags.raceEthnicity?.length || 0,
+              currentUser.lastVisitedCreatorsTags.hairColor?.length || 0,
+              currentUser.lastVisitedCreatorsTags.bodyType?.length || 0
+            )}
+            max={MIN_VISITED_CREATOR_TAGS_FOR_SMART_MATCHING}
+          />
+        </div>
+      )}
+      {/* Show fallback message when using STEP 3 approach */}
+      {suggestionsApproach === "fallback" && hasSuggestions && (
+        <div className="mb-3 p-2 bg-accent/10 rounded-md text-xs text-foreground/70 text-center">
+          {t("noExactMatchFound") ||
+            "No 100% match was found - showing all creators"}
+        </div>
+      )}
+
+      {/* // ! don't delete: For devs only: show the approach used to generate suggestions */}
+      {currentUser.isDev && (
+        <div className="mb-3 p-2 bg-accent/10 rounded-md text-xs text-foreground/70 text-center">
+          DEV: suggestionsApproach: {suggestionsApproach}
+        </div>
+      )}
 
       {/* User suggestions list - fixed height container */}
       <div className="space-y-3" style={{ minHeight: "328px" }}>
@@ -102,6 +137,7 @@ export default function SuggestionsSection() {
                 user={user}
                 index={index}
                 onRemove={handleRemoveSuggestion}
+                currentUser={currentUser}
               />
             ))}
 
@@ -116,7 +152,6 @@ export default function SuggestionsSection() {
           />
         )}
       </div>
-
       {/* Pagination controls */}
       <DotPagination
         currentPage={currentPage}

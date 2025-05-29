@@ -7,6 +7,7 @@ import UserFullPostUserNotAvailable from "./UserFullPostUserNotAvailable";
 import UserFullPostFansCount from "./UserFullPostFansCount";
 import UserFullPostSocials from "./UserFullPostSocials";
 import UserFullPostOtherLinks from "./UserFullPostOtherLinks";
+import UserProfileVisitTracker from "./UserProfileVisitTracker";
 
 export default function UserFullPost({
   post,
@@ -24,6 +25,12 @@ export default function UserFullPost({
 
   return (
     <>
+      {/* Track profile visits for suggestion system */}
+      <UserProfileVisitTracker
+        mongoUser={mongoUser}
+        visitedMongoUser={visitedMongoUser}
+      />
+
       <FullPost
         {...{
           post,

@@ -10,13 +10,10 @@ import ProfileImageWithStatus from "@/components/Suggestions/ProfileImageWithSta
 import SuggestionUserDetails from "@/components/Suggestions/SuggestionUserDetails";
 import PriceTag from "@/components/Suggestions/PriceTag";
 import FollowButton from "@/components/Suggestions/FollowButton";
-
-// Sample banner images as fallbacks
-const BANNER_IMAGES = [
-  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=1974&auto=format&fit=crop",
-];
+import {
+  generateUnsplashURL,
+  getBannerImages,
+} from "@/lib/utils/generateUnsplashURL";
 
 /**
  * SuggestionCard component displays a single creator suggestion with their info and attributes
@@ -24,16 +21,25 @@ const BANNER_IMAGES = [
  * @param {Object} user - The user object to display
  * @param {number} index - Index for selecting fallback images
  * @param {Function} onRemove - Function to call when user chooses "Don't suggest"
+ * @param {Object} currentUser - The current logged in user
  */
-export default function SuggestionCard({ user, index, onRemove }) {
+export default function SuggestionCard({ user, index, onRemove, currentUser }) {
   const { t } = useTranslation();
 
   // Handle don't suggest option click
   const handleDontSuggest = (e) => {
-    e.preventDefault(); // Prevent navigating to the user profile
-    e.stopPropagation(); // Stop event propagation
+    e.preventDefault();
+    e.stopPropagation();
     onRemove(user._id);
   };
+
+  // Get banner images
+  const BANNER_IMAGES = getBannerImages();
+
+  //? Generate fallback banner
+  const generatedBanner = generateUnsplashURL(user.lastUploadedCreatorTags);
+  const fallbackBanner = BANNER_IMAGES[index % BANNER_IMAGES.length];
+  const bannerImage = user.coverImage || generatedBanner || fallbackBanner;
 
   return (
     <Link href={`/${user.name}`} className="block">
@@ -67,7 +73,7 @@ export default function SuggestionCard({ user, index, onRemove }) {
         {/* Background banner */}
         <div className="absolute inset-0 w-full h-full">
           <Image
-            src={user.coverImage || BANNER_IMAGES[index % BANNER_IMAGES.length]}
+            src={bannerImage}
             alt="Banner"
             fill
             className="object-cover"
@@ -86,7 +92,7 @@ export default function SuggestionCard({ user, index, onRemove }) {
           />
 
           {/* User details */}
-          <SuggestionUserDetails user={user} />
+          <SuggestionUserDetails user={user} currentUser={currentUser} />
         </div>
       </div>
     </Link>

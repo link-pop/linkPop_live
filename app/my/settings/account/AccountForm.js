@@ -4,10 +4,17 @@ import { useState } from "react";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import Input from "@/components/ui/shared/Input/Input";
 import Select from "@/components/ui/shared/Select/Select";
+import Switch from "@/components/ui/shared/Switch/Switch";
 import { update } from "@/lib/actions/crud";
 import Button from "@/components/ui/shared/Button/Button2";
 import { useContext } from "@/components/Context/Context";
 import useFormErrors from "@/hooks/useFormErrors";
+import {
+  HAIR_COLOR_TAGS,
+  BODY_TYPE_TAGS,
+  RACE_ETHNICITY_TAGS,
+  createSelectOptions,
+} from "@/lib/constants/creatorTags";
 
 export default function AccountForm({ mongoUser, onSuccess }) {
   if (!mongoUser?._id) return null;
@@ -18,6 +25,8 @@ export default function AccountForm({ mongoUser, onSuccess }) {
     raceEthnicity: mongoUser.raceEthnicity || "",
     hairColor: mongoUser.hairColor || "",
     bodyType: mongoUser.bodyType || "",
+    displayAllUsersIfNoMatchFoundForSuggestions:
+      mongoUser.displayAllUsersIfNoMatchFoundForSuggestions || false,
   });
 
   const { toastSet } = useContext();
@@ -50,46 +59,38 @@ export default function AccountForm({ mongoUser, onSuccess }) {
     }));
   };
 
-  // Hair color options
-  const hairColorOptions = [
-    { value: "black", label: t("black") },
-    { value: "brown", label: t("brown") },
-    { value: "blonde", label: t("blonde") },
-    { value: "red", label: t("red") },
-    { value: "gray", label: t("gray") },
-    { value: "white", label: t("white") },
-    {
-      value: "other",
-      label: mongoUser?.profileType === "creator" ? t("other") : t("any"),
-    },
-  ];
+  // Hair color options using constants
+  const hairColorOptions = createSelectOptions(
+    HAIR_COLOR_TAGS,
+    true,
+    mongoUser?.profileType === "fan",
+    mongoUser?.profileType === "creator"
+  ).map((option) => ({
+    ...option,
+    label: t(option.value.replace(/\s+/g, "")) || option.value,
+  }));
 
-  // Body type/build options
-  const bodyTypeOptions = [
-    { value: "slim", label: t("slim") },
-    { value: "athletic", label: t("athletic") },
-    { value: "average", label: t("average") },
-    { value: "curvy", label: t("curvy") },
-    { value: "muscular", label: t("muscular") },
-    { value: "plus-size", label: t("plusSize") },
-    {
-      value: "other",
-      label: mongoUser?.profileType === "creator" ? t("other") : t("any"),
-    },
-  ];
+  // Body type options using constants
+  const bodyTypeOptions = createSelectOptions(
+    BODY_TYPE_TAGS,
+    true,
+    mongoUser?.profileType === "fan",
+    mongoUser?.profileType === "creator"
+  ).map((option) => ({
+    ...option,
+    label: t(option.value.replace(/\s+/g, "")) || option.value,
+  }));
 
-  // Race/Ethnicity options
-  const raceEthnicityOptions = [
-    { value: "asian", label: t("asian") },
-    { value: "black", label: t("black") },
-    { value: "hispanic", label: t("hispanic") },
-    { value: "middleEastern", label: t("middleEastern") },
-    { value: "nativeAmerican", label: t("nativeAmerican") },
-    { value: "pacificIslander", label: t("pacificIslander") },
-    { value: "white", label: t("white") },
-    { value: "multiracial", label: t("multiracial") },
-    { value: "other", label: t("other") },
-  ];
+  // Race/Ethnicity options using constants
+  const raceEthnicityOptions = createSelectOptions(
+    RACE_ETHNICITY_TAGS,
+    true,
+    false,
+    mongoUser?.profileType === "creator"
+  ).map((option) => ({
+    ...option,
+    label: t(option.value.replace(/\s+/g, "")) || option.value,
+  }));
 
   const validateForm = () => {
     const errors = {};
@@ -132,6 +133,8 @@ export default function AccountForm({ mongoUser, onSuccess }) {
         raceEthnicity: account.raceEthnicity,
         hairColor: account.hairColor,
         bodyType: account.bodyType,
+        displayAllUsersIfNoMatchFoundForSuggestions:
+          account.displayAllUsersIfNoMatchFoundForSuggestions,
       },
       revalidate: "/my/settings/account",
     });
@@ -147,26 +150,6 @@ export default function AccountForm({ mongoUser, onSuccess }) {
     <div className={`fc g30 p15 wf maw600`}>
       {/* FORM */}
       <form onSubmit={handleSubmit} className={`fc g20 wf maw600`}>
-        {/* Preferences note for fans */}
-        {mongoUser?.profileType === "fan" && (
-          <div className="p-3 bg-accent/10 rounded-md text-sm text-foreground/70">
-            <p>
-              {t("preferencesNote") ||
-                "These preferences will be used to personalize your content suggestions."}
-            </p>
-          </div>
-        )}
-
-        {/* Creator attributes note */}
-        {mongoUser?.profileType === "creator" && (
-          <div className="p-3 bg-accent/10 rounded-md text-sm text-foreground/70">
-            <p>
-              {t("creatorAttributesNote") ||
-                "These attributes help fans discover your profile based on their preferences."}
-            </p>
-          </div>
-        )}
-
         {mongoUser?.profileType === "fan" && (
           <>
             {/* PREFERRED AGE */}
@@ -229,6 +212,25 @@ export default function AccountForm({ mongoUser, onSuccess }) {
             error={formErrors.bodyType}
             placeholder={t("selectOption")}
             version="new"
+          />
+        </div>
+
+        {/* DISPLAY ALL USERS IF NO MATCH FOUND */}
+        <div className={`fc g5`}>
+          <Switch
+            name="displayAllUsersIfNoMatchFoundForSuggestions"
+            label={
+              t("displayAllUsersIfNoMatchFoundForSuggestions") ||
+              "Show all creators if no matches found for your preferences"
+            }
+            isChecked={account.displayAllUsersIfNoMatchFoundForSuggestions}
+            onCheckedChange={(value) => {
+              setAccount((prev) => ({
+                ...prev,
+                displayAllUsersIfNoMatchFoundForSuggestions: value,
+              }));
+            }}
+            className="p-3 bg-accent/5 rounded-md"
           />
         </div>
 

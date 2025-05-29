@@ -1,14 +1,16 @@
 "use client";
 
-import { Settings, Undo2 } from "lucide-react";
+import { Settings, Undo2, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { ONBOARDING_ROUTE } from "@/lib/utils/constants";
 import DropdownIcon from "@/components/ui/shared/DropdownIcon/DropdownIcon";
+import ClearAllSuggestionsButton from "@/components/ui/shared/ClearAllSuggestionsButton/ClearAllSuggestionsButton";
 
 export default function SuggestionHeaderSection({
   currentUser,
   handleClearHiddenSuggestions,
+  onClearAllSuggestions,
 }) {
   const { t } = useTranslation();
   const hiddenSuggestionsCount = currentUser?.hiddenSuggestions?.length || 0;
@@ -22,6 +24,21 @@ export default function SuggestionHeaderSection({
         </span>
       </div>
       <div className="flex items-center gap-2">
+        {/* Clear all suggestions data */}
+        <ClearAllSuggestionsButton
+          currentUser={currentUser}
+          onSuccess={onClearAllSuggestions}
+          variant="ghost"
+          size="sm"
+          className="p-0 h-auto w-auto text-foreground/40 hover:text-foreground"
+        >
+          <RotateCcw
+            size={18}
+            className="cp"
+            title={t("resetSuggestions") || "Reset all suggestions"}
+          />
+        </ClearAllSuggestionsButton>
+
         {/* Hidden suggestions manager */}
         <DropdownIcon
           Icon={(props) => (

@@ -267,7 +267,8 @@ export default function CustomUserMenu({
               {SITE1 && (
                 <div className="mt5 text-sm text-muted-foreground">
                   {mongoUser?.profileType?.toUpperCase() || ""} |{" "}
-                  {mongoUser?.age || ""}
+                  {mongoUser?.age || ""} |{" "}
+                  {mongoUser?.lastUploadedCreatorTags?.gender || ""}
                 </div>
               )}
             </div>

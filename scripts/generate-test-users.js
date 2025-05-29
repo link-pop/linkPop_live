@@ -5,6 +5,20 @@ const { faker } = require("@faker-js/faker");
 // Load environment variables
 dotenv.config({ path: ".env.local" });
 
+// Import creator tags constants
+const {
+  RACE_ETHNICITY_TAGS,
+  HAIR_COLOR_TAGS,
+  BODY_TYPE_TAGS,
+} = require("../lib/constants/creatorTags");
+
+// Import the reusable image generation functions
+const {
+  generateUnsplashURL,
+  generateFallbackImage,
+  generateUniqueId,
+} = require("../lib/utils/generateUnsplashURL");
+
 // Get the command line arguments
 const args = process.argv.slice(2);
 let mongodbUriArg = "";
@@ -83,23 +97,23 @@ function generateCreator(index) {
   });
   const clerkId = `user_${faker.string.alphanumeric(24)}`;
 
-  // Women-oriented hair colors with more realistic distribution
+  // Use constants for hair colors with realistic distribution weights
   const femaleHairColors = [
     { value: "blonde", weight: 0.25 },
-    { value: "brown", weight: 0.35 },
-    { value: "black", weight: 0.2 },
-    { value: "red", weight: 0.1 },
-    { value: "gray", weight: 0.05 },
-    { value: "other", weight: 0.05 },
+    { value: "brunette", weight: 0.35 },
+    { value: "black hair", weight: 0.2 },
+    { value: "redhead", weight: 0.1 },
+    { value: "gray hair", weight: 0.05 },
+    { value: "brown hair", weight: 0.05 },
   ];
 
-  // Women-oriented body types with more realistic distribution
+  // Use constants for body types with realistic distribution weights
   const femaleBodyTypes = [
     { value: "slim", weight: 0.25 },
     { value: "average", weight: 0.3 },
     { value: "curvy", weight: 0.25 },
     { value: "athletic", weight: 0.1 },
-    { value: "plus-size", weight: 0.1 },
+    { value: "thick", weight: 0.1 },
   ];
 
   // Helper function for weighted random selection
@@ -114,28 +128,56 @@ function generateCreator(index) {
     return items[0].value; // Fallback
   };
 
-  // Generate a truly unique ID for each image
-  const generateUniqueId = () => {
-    return `${firstName}-${index}-${Date.now()}-${Math.random()
-      .toString(36)
-      .substring(2, 10)}`;
+  // Generate creator attributes
+  const raceEthnicity = faker.helpers.arrayElement(RACE_ETHNICITY_TAGS);
+  const hairColor = weightedRandom(femaleHairColors);
+  const bodyType = weightedRandom(femaleBodyTypes);
+
+  // Generate realistic profile images using Unsplash based on creator tags
+  const getRealisticProfileImage = () => {
+    try {
+      return generateUnsplashURL({ raceEthnicity, hairColor, bodyType });
+    } catch (error) {
+      console.warn(
+        `Failed to generate Unsplash URL for ${name}, using fallback`
+      );
+      return generateFallbackImage(generateUniqueId(firstName, index));
+    }
   };
 
-  // Get unique profile images using Robohash which generates consistent but unique images based on text
+  // Get unique avatar image (smaller version)
   const getUniqueAvatarImage = () => {
-    // Using Robohash which creates unique avatars based on input text
-    // Add timestamp and random number to ensure uniqueness between runs
-    return `https://robohash.org/${generateUniqueId()}?set=set4&size=400x400&bgset=bg1`;
+    try {
+      return generateUnsplashURL(
+        { raceEthnicity, hairColor, bodyType },
+        { size: "400x400" }
+      );
+    } catch (error) {
+      return generateFallbackImage(generateUniqueId(firstName, index), {
+        size: "400x400",
+      });
+    }
   };
 
-  // Get unique profile image
-  const getUniqueProfileImage = () => {
-    return `https://robohash.org/${generateUniqueId()}?set=set4&size=400x400&bgset=bg2`;
-  };
-
-  // Get a unique cover image - using a different robohash set
+  // Get a unique cover image - using different search terms
   const getUniqueCoverImage = () => {
-    return `https://robohash.org/${generateUniqueId()}?set=set2&size=800x300&bgset=bg1`;
+    try {
+      return generateUnsplashURL(
+        { raceEthnicity, hairColor, bodyType },
+        { size: "800x300" }
+      );
+    } catch (error) {
+      return generateFallbackImage(generateUniqueId(firstName, index), {
+        size: "800x300",
+      });
+    }
+  };
+
+  // Create lastUploadedCreatorTags based on the user's attributes
+  const lastUploadedCreatorTags = {
+    raceEthnicity: [raceEthnicity],
+    hairColor: [hairColor],
+    bodyType: [bodyType],
   };
 
   return {
@@ -149,28 +191,26 @@ function generateCreator(index) {
     profileType: "creator",
     onboardingFinished: true,
 
-    // Account profile fields
+    // Account profile fields using constants
     age: faker.number.int({ min: 18, max: 45 }),
-    raceEthnicity: faker.helpers.arrayElement([
-      "asian",
-      "black",
-      "hispanic",
-      "middleEastern",
-      "nativeAmerican",
-      "pacificIslander",
-      "white",
-      "multiracial",
-      "other",
-    ]),
-    hairColor: weightedRandom(femaleHairColors),
-    bodyType: weightedRandom(femaleBodyTypes),
+    raceEthnicity: raceEthnicity,
+    hairColor: hairColor,
+    bodyType: bodyType,
+
+    // Creator tags tracking - simulates that this creator has uploaded content with these tags
+    lastUploadedCreatorTags: lastUploadedCreatorTags,
+    lastVisitedCreatorsTags: {
+      raceEthnicity: [],
+      hairColor: [],
+      bodyType: [],
+    },
 
     // Status
-    isAvailable: faker.datatype.boolean(0.8),
+    isAvailable: faker.datatype.boolean(1),
 
-    // Images - using Robohash which guarantees unique images
-    profileImage: getUniqueProfileImage(),
-    originalProfileImage: getUniqueProfileImage(),
+    // Images - using Unsplash for realistic images based on creator attributes
+    profileImage: getRealisticProfileImage(),
+    originalProfileImage: getRealisticProfileImage(),
     coverImage: getUniqueCoverImage(),
     originalCoverImage: getUniqueCoverImage(),
 
@@ -224,41 +264,14 @@ function generateFan(index) {
   });
   const clerkId = `user_${faker.string.alphanumeric(24)}`;
 
-  // Much more diverse categories for different images
-  const womanCategories = [
-    "woman,portrait,face",
-    "woman,model,fashion",
-    "woman,beauty,portrait",
-    "woman,style,fashion",
-    "woman,casual,portrait",
-    "woman,professional,headshot",
-    "woman,outdoor,portrait",
-    "woman,elegant,portrait",
-    "woman,natural,portrait",
-    "woman,lifestyle,portrait",
-  ];
-
-  // Get a different category for each image
-  const randomCategory = (i) =>
-    womanCategories[Math.floor(Math.random() * womanCategories.length)];
-
-  // Generate a truly unique ID for each image
-  const generateUniqueId = () => {
-    return `${firstName}-${index}-${Date.now()}-${Math.random()
-      .toString(36)
-      .substring(2, 10)}`;
-  };
-
-  // Get unique profile images using Robohash which generates consistent but unique images based on text
+  // Get unique profile images using Robohash for fans (they don't typically upload content)
   const getUniqueAvatarImage = () => {
-    // Using Robohash which creates unique avatars based on input text
-    // Add timestamp and random number to ensure uniqueness between runs
-    return `https://robohash.org/${generateUniqueId()}?set=set4&size=400x400&bgset=bg1`;
+    return generateFallbackImage(generateUniqueId(firstName, index));
   };
 
   // Get unique profile image
   const getUniqueProfileImage = () => {
-    return `https://robohash.org/${generateUniqueId()}?set=set4&size=400x400&bgset=bg2`;
+    return generateFallbackImage(generateUniqueId(firstName, index));
   };
 
   return {
@@ -272,31 +285,27 @@ function generateFan(index) {
     profileType: "fan",
     onboardingFinished: true,
 
-    // Fan preferences - these are what the fan likes, not their own attributes
+    // Fan preferences using constants - these are what the fan likes, not their own attributes
     preferAge: faker.number.int({ min: 18, max: 50 }),
-    hairColor: faker.helpers.arrayElement([
-      "black",
-      "brown",
-      "blonde",
-      "red",
-      "gray",
-      "white",
-      "any",
-    ]),
-    bodyType: faker.helpers.arrayElement([
-      "slim",
-      "athletic",
-      "average",
-      "curvy",
-      "muscular",
-      "plus-size",
-      "any",
-    ]),
+    hairColor: faker.helpers.arrayElement([...HAIR_COLOR_TAGS, "any"]),
+    bodyType: faker.helpers.arrayElement([...BODY_TYPE_TAGS, "any"]),
+
+    // Creator tags tracking - fans typically don't upload content, so these should be empty
+    lastUploadedCreatorTags: {
+      raceEthnicity: [],
+      hairColor: [],
+      bodyType: [],
+    },
+    lastVisitedCreatorsTags: {
+      raceEthnicity: [],
+      hairColor: [],
+      bodyType: [],
+    },
 
     // Status
-    isAvailable: faker.datatype.boolean(0.8),
+    isAvailable: faker.datatype.boolean(1),
 
-    // Images - using Robohash which guarantees unique images
+    // Images - using Robohash for fans
     profileImage: faker.datatype.boolean(0.7) ? getUniqueProfileImage() : "",
     originalProfileImage: faker.datatype.boolean(0.7)
       ? getUniqueProfileImage()

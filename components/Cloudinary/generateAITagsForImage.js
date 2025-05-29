@@ -6,7 +6,7 @@ import { generateImageTags } from "@/lib/actions/generateImageTags";
  * Generate AI tags for an image file
  * @param {File} file - The image file to generate tags for
  * @param {string} base64Image - Optional pre-converted base64 image data
- * @returns {Promise<{success: boolean, tags: string[], error?: string}>}
+ * @returns {Promise<{success: boolean, tags: string[], creatorTags?: object, error?: string}>}
  */
 export default async function generateAITagsForImage(file, base64Image = null) {
   try {
@@ -15,6 +15,7 @@ export default async function generateAITagsForImage(file, base64Image = null) {
       return {
         success: false,
         tags: [],
+        creatorTags: null,
         error: "File is not an image",
       };
     }
@@ -33,9 +34,18 @@ export default async function generateAITagsForImage(file, base64Image = null) {
         `✅ Successfully generated ${tagResult.tags.length} AI tags for ${file.name}:`,
         tagResult.tags
       );
+
+      if (tagResult.creatorTags) {
+        console.log(
+          `✅ Successfully extracted creator tags for ${file.name}:`,
+          tagResult.creatorTags
+        );
+      }
+
       return {
         success: true,
         tags: tagResult.tags,
+        creatorTags: tagResult.creatorTags,
       };
     } else {
       console.log(
@@ -46,6 +56,7 @@ export default async function generateAITagsForImage(file, base64Image = null) {
       return {
         success: false,
         tags: [],
+        creatorTags: null,
         error: tagResult.error || "Unknown error",
       };
     }
@@ -54,6 +65,7 @@ export default async function generateAITagsForImage(file, base64Image = null) {
     return {
       success: false,
       tags: [],
+      creatorTags: null,
       error: error.message || "Unknown error",
     };
   }

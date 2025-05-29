@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getSuggestedUsers } from "@/lib/actions/getSuggestedUsers";
-import getMongoUser from "@/lib/utils/mongo/getMongoUser";
+import { getSerializedMongoUser } from "@/lib/utils/mongo/getMongoUser";
 import { hideSuggestion } from "@/lib/utils/suggestions/hideSuggestion";
 
 /**
@@ -14,6 +14,7 @@ import { hideSuggestion } from "@/lib/utils/suggestions/hideSuggestion";
  */
 export function useSuggestions(limit = 10, itemsPerPage = 3) {
   const [suggestions, setSuggestions] = useState([]);
+  const [suggestionsApproach, setSuggestionsApproach] = useState("none");
   const [currentPage, setCurrentPage] = useState(0);
   const [isUserFan, setIsUserFan] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -28,18 +29,24 @@ export function useSuggestions(limit = 10, itemsPerPage = 3) {
       setIsLoading(true);
       try {
         // Get current user to check if they're a fan
-        const { mongoUser } = await getMongoUser();
+        const { mongoUser } = await getSerializedMongoUser();
+
         setCurrentUser(mongoUser);
         const isFan = mongoUser?.profileType === "fan";
         setIsUserFan(isFan);
 
         // Only fetch suggestions if user is a fan
         if (isFan) {
-          const users = await getSuggestedUsers(limit);
-          setSuggestions(users);
+          const result = await getSuggestedUsers(limit);
+          setSuggestions(result.users || []);
+          setSuggestionsApproach(result.approach || "none");
+        } else {
+          setSuggestions([]);
+          setSuggestionsApproach("none");
         }
       } catch (error) {
-        console.error("Error fetching user or suggestions:", error);
+        setSuggestions([]);
+        setSuggestionsApproach("error");
       } finally {
         setIsLoading(false);
       }
@@ -128,6 +135,7 @@ export function useSuggestions(limit = 10, itemsPerPage = 3) {
 
   return {
     suggestions,
+    suggestionsApproach,
     visibleSuggestions,
     isLoading,
     isUserFan,

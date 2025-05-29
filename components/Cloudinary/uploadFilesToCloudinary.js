@@ -132,6 +132,8 @@ export default async function uploadFilesToCloudinary(
           isLowQuality: file.isLowQuality || false,
           // Include AI-generated tags
           aiTags: file.aiTags || [],
+          // Include creator tags for suggestions matching
+          creatorTags: file.creatorTags || null,
         });
         continue;
       }
@@ -170,13 +172,16 @@ export default async function uploadFilesToCloudinary(
 
           const tagResult = await generateAITagsForImage(file, base64Image);
           file.aiTags = tagResult.tags;
+          file.creatorTags = tagResult.creatorTags; // Store creator tags for later use
         } catch (tagError) {
           console.error("Error generating AI tags:", tagError);
           file.aiTags = []; // Set empty array on error
+          file.creatorTags = null; // Set null on error
         }
       } else {
-        // For videos, set empty tags array
+        // For videos, set empty tags array and null creator tags
         file.aiTags = [];
+        file.creatorTags = null;
       }
 
       if (resourceType === "image" && !skipNSFWCheck && !skipNSFWCheckForGif) {
@@ -727,6 +732,8 @@ export default async function uploadFilesToCloudinary(
         isLowQuality: file.isLowQuality || false,
         // Include AI-generated tags
         aiTags: file.aiTags || [],
+        // Include creator tags for suggestions matching
+        creatorTags: file.creatorTags || null,
       });
     } catch (error) {
       // Special handling for detected issues in profile/cover images or unsupported formats
