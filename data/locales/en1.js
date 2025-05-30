@@ -1511,6 +1511,14 @@ const en = {
   auto: "Auto Mode",
   manual: "Manual Mode",
   noExactMatchFound: "No match was found - showing all creators",
+
+  // Price filter toggle translations
+  showPaidCreators: "Show paid creators",
+  showFreeCreators: "Show free creators",
+  free: "Free",
+
+  // Refresh suggestions functionality
+  refreshSuggestions: "Show different suggestions",
 };
 
 export default en;

@@ -1,16 +1,20 @@
 "use client";
 
-import { Settings, Undo2, RotateCcw } from "lucide-react";
+import { Settings, Undo2, SquareX, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { ONBOARDING_ROUTE } from "@/lib/utils/constants";
 import DropdownIcon from "@/components/ui/shared/DropdownIcon/DropdownIcon";
 import ClearAllSuggestionsButton from "@/components/ui/shared/ClearAllSuggestionsButton/ClearAllSuggestionsButton";
+import PriceFilterToggle from "@/components/ui/shared/PriceFilterToggle/PriceFilterToggle";
 
 export default function SuggestionHeaderSection({
   currentUser,
   handleClearHiddenSuggestions,
   onClearAllSuggestions,
+  onRefreshSuggestions,
+  showPaidOnly,
+  onTogglePriceFilter,
 }) {
   const { t } = useTranslation();
   const hiddenSuggestionsCount = currentUser?.hiddenSuggestions?.length || 0;
@@ -24,6 +28,21 @@ export default function SuggestionHeaderSection({
         </span>
       </div>
       <div className="flex items-center gap-2">
+        {/* Price Filter Toggle */}
+        <PriceFilterToggle
+          showPaidOnly={showPaidOnly}
+          onToggle={onTogglePriceFilter}
+        />
+
+        {/* Refresh suggestions with new batch */}
+        <div title={t("refreshSuggestions") || "Show different suggestions"}>
+          <RefreshCw
+            size={18}
+            className="text-foreground/40 hover:text-foreground cp transition-colors duration-200"
+            onClick={onRefreshSuggestions}
+          />
+        </div>
+
         {/* Clear all suggestions data */}
         <ClearAllSuggestionsButton
           currentUser={currentUser}
@@ -32,7 +51,7 @@ export default function SuggestionHeaderSection({
           size="sm"
           className="p-0 h-auto w-auto text-foreground/40 hover:text-foreground"
         >
-          <RotateCcw
+          <SquareX
             size={18}
             className="cp"
             title={t("resetSuggestions") || "Reset all suggestions"}
@@ -78,6 +97,7 @@ export default function SuggestionHeaderSection({
         <Link
           href={`${ONBOARDING_ROUTE}/2`}
           className="text-foreground/40 hover:text-foreground"
+          title={t("preferences")}
         >
           <Settings size={18} className="cp" title={t("preferences")} />
         </Link>

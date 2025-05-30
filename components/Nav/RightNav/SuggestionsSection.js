@@ -3,6 +3,7 @@
 import { useTranslation } from "@/components/Context/TranslationContext";
 import SuggestionCard from "@/components/Suggestions/SuggestionCard";
 import { useSuggestions } from "@/hooks/useSuggestions";
+import { usePriceFilter } from "@/hooks/usePriceFilter";
 import { update } from "@/lib/actions/crud";
 import { useContext } from "@/components/Context/Context";
 import EmptyState from "@/components/ui/shared/EmptyState/EmptyState";
@@ -12,6 +13,7 @@ import DotPagination from "@/components/ui/shared/Pagination/DotPagination";
 import TagProgressBar from "@/components/ui/shared/TagProgressBar/TagProgressBar";
 import { MIN_VISITED_CREATOR_TAGS_FOR_SMART_MATCHING } from "@/lib/utils/constants";
 import { hasUserPreferences } from "@/lib/utils/hasUserPreferences";
+import { shouldShowFallbackMessage } from "@/lib/utils/suggestions/shouldShowFallbackMessage";
 
 /**
  * SuggestionsSection displays personalized creator recommendations
@@ -20,6 +22,10 @@ import { hasUserPreferences } from "@/lib/utils/hasUserPreferences";
 export default function SuggestionsSection() {
   const { t } = useTranslation();
   const { toastSet } = useContext();
+
+  // Price filter state
+  const { showPaidOnly, toggleFilter } = usePriceFilter(); // Default to paid only
+
   const {
     visibleSuggestions,
     suggestions,
@@ -35,7 +41,8 @@ export default function SuggestionsSection() {
     fillerSlots,
     currentUser,
     refreshSuggestions,
-  } = useSuggestions(20, 3);
+    refreshWithNewBatch,
+  } = useSuggestions(20, 3, showPaidOnly);
 
   // Handle clearing all hidden suggestions
   const handleClearHiddenSuggestions = async () => {
@@ -91,14 +98,23 @@ export default function SuggestionsSection() {
   // Check if user has any preferences set using the reusable function
   const userHasPreferences = hasUserPreferences(currentUser);
 
+  // Determine whether to show the fallback message using the new utility
+  const showFallbackMessage = shouldShowFallbackMessage(
+    currentUser,
+    suggestionsApproach
+  );
+
   return (
     <FixedHeightContainer>
-      {/* Header with navigation */}
       <SuggestionHeaderSection
         currentUser={currentUser}
         handleClearHiddenSuggestions={handleClearHiddenSuggestions}
         onClearAllSuggestions={refreshSuggestions}
+        onRefreshSuggestions={refreshWithNewBatch}
+        showPaidOnly={showPaidOnly}
+        onTogglePriceFilter={toggleFilter}
       />
+
       {/* Progress bar for preferences */}
       {!userHasPreferences && currentUser?.lastVisitedCreatorsTags && (
         <div className="mb-4">
@@ -112,8 +128,9 @@ export default function SuggestionsSection() {
           />
         </div>
       )}
-      {/* Show fallback message when using STEP 3 approach */}
-      {suggestionsApproach === "fallback" && hasSuggestions && (
+
+      {/* Show fallback message only when appropriate */}
+      {showFallbackMessage && hasSuggestions && (
         <div className="border-[var(--color-brand)] border-2 mb-3 p-2 bg-accent/10 rounded-md text-xs text-foreground/70 text-center">
           {t("noExactMatchFound") ||
             "No 100% match was found - showing all creators"}
@@ -123,7 +140,8 @@ export default function SuggestionsSection() {
       {/* // ! don't delete: For devs only: show the approach used to generate suggestions */}
       {currentUser.isDev && (
         <div className="mb-3 p-2 bg-accent/10 rounded-md text-xs text-foreground/70 text-center">
-          DEV: suggestionsApproach: {suggestionsApproach}
+          DEV: suggestionsApproach: {suggestionsApproach} | showPaidOnly:{" "}
+          {showPaidOnly.toString()}
         </div>
       )}
 

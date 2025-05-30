@@ -10,9 +10,14 @@ import { hideSuggestion } from "@/lib/utils/suggestions/hideSuggestion";
  *
  * @param {number} limit - Maximum number of suggestions to fetch
  * @param {number} itemsPerPage - Number of suggestions to show per page
+ * @param {boolean} showPaidOnly - Filter for paid creators only (default: true)
  * @returns {Object} Suggestions state and management functions
  */
-export function useSuggestions(limit = 10, itemsPerPage = 3) {
+export function useSuggestions(
+  limit = 10,
+  itemsPerPage = 3,
+  showPaidOnly = true
+) {
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsApproach, setSuggestionsApproach] = useState("none");
   const [currentPage, setCurrentPage] = useState(0);
@@ -20,6 +25,7 @@ export function useSuggestions(limit = 10, itemsPerPage = 3) {
   const [isLoading, setIsLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [skip, setSkip] = useState(0);
 
   const totalPages = Math.ceil((suggestions.length || 0) / itemsPerPage);
 
@@ -37,9 +43,19 @@ export function useSuggestions(limit = 10, itemsPerPage = 3) {
 
         // Only fetch suggestions if user is a fan
         if (isFan) {
-          const result = await getSuggestedUsers(limit);
-          setSuggestions(result.users || []);
-          setSuggestionsApproach(result.approach || "none");
+          const result = await getSuggestedUsers(limit, showPaidOnly, skip);
+
+          // If no suggestions found and skip > 0, reset skip and try again
+          if ((!result.users || result.users.length === 0) && skip > 0) {
+            console.log("No suggestions found with skip, resetting to 0");
+            setSkip(0);
+            const resetResult = await getSuggestedUsers(limit, showPaidOnly, 0);
+            setSuggestions(resetResult.users || []);
+            setSuggestionsApproach(resetResult.approach || "none");
+          } else {
+            setSuggestions(result.users || []);
+            setSuggestionsApproach(result.approach || "none");
+          }
         } else {
           setSuggestions([]);
           setSuggestionsApproach("none");
@@ -53,7 +69,14 @@ export function useSuggestions(limit = 10, itemsPerPage = 3) {
     };
 
     loadData();
-  }, [limit, refreshTrigger]);
+  }, [limit, refreshTrigger, showPaidOnly, skip]);
+
+  // Reset skip when showPaidOnly changes to ensure fresh results
+  useEffect(() => {
+    if (skip > 0) {
+      setSkip(0);
+    }
+  }, [showPaidOnly]);
 
   // Handle "don't suggest" action
   const handleRemoveSuggestion = async (userId) => {
@@ -110,6 +133,12 @@ export function useSuggestions(limit = 10, itemsPerPage = 3) {
     setRefreshTrigger((prev) => prev + 1);
   };
 
+  // Function to refresh with new batch of suggestions (increment skip)
+  const refreshWithNewBatch = () => {
+    setSkip((prev) => prev + limit);
+    setCurrentPage(0); // Reset to first page when getting new batch
+  };
+
   // Navigation functions
   const goNextPage = () => {
     if (currentPage < totalPages - 1) {
@@ -147,6 +176,7 @@ export function useSuggestions(limit = 10, itemsPerPage = 3) {
     setCurrentPage,
     currentUser,
     refreshSuggestions,
+    refreshWithNewBatch,
     // Calculate empty slots needed to maintain consistent height
     fillerSlots: Array(
       Math.max(0, itemsPerPage - visibleSuggestions.length)

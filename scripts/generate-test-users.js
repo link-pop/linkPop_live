@@ -228,9 +228,17 @@ function generateCreator(index) {
     country: faker.location.country(),
     countryCode: faker.location.countryCode(),
 
-    // Subscription settings
+    // Subscription settings - include both free and paid creators
     subscriptionPrice: faker.helpers.arrayElement([
-      4.99, 9.99, 14.99, 19.99, 24.99, 29.99,
+      0,
+      0,
+      0, // Add multiple 0s to increase chance of free creators
+      4.99,
+      9.99,
+      14.99,
+      19.99,
+      24.99,
+      29.99,
     ]),
 
     // Social and account settings
