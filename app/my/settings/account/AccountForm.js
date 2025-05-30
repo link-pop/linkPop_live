@@ -199,20 +199,21 @@ export default function AccountForm({ mongoUser, onSuccess }) {
         )}
 
         {/* RACE / ETHNICITY */}
-        {/* // ! don't uncomment this ! */}
-        {/* <div className={`fc g5`}>
-          <Select
-            name="raceEthnicity"
-            value={account.raceEthnicity}
-            onValueChange={handleSelectChange("raceEthnicity")}
-            className={`gray br5`}
-            label={t("raceEthnicity") || "Race / Ethnicity"}
-            options={raceEthnicityOptions}
-            error={formErrors.raceEthnicity}
-            placeholder={t("selectOption")}
-            version="new"
-          />
-        </div> */}
+        {mongoUser?.isDev && (
+          <div className={`fc g5`}>
+            <Select
+              name="raceEthnicity"
+              value={account.raceEthnicity}
+              onValueChange={handleSelectChange("raceEthnicity")}
+              className={`gray br5`}
+              label={t("raceEthnicity") || "Race / Ethnicity"}
+              options={raceEthnicityOptions}
+              error={formErrors.raceEthnicity}
+              placeholder={t("selectOption")}
+              version="new"
+            />
+          </div>
+        )}
 
         {/* HAIR COLOR */}
         <div className={`fc g5`}>
