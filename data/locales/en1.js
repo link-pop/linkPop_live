@@ -1519,6 +1519,7 @@ const en = {
 
   // Refresh suggestions functionality
   refreshSuggestions: "Show different suggestions",
+  plusMinus5yearsResults: "+/- 5 years results will be shown",
 };
 
 export default en;

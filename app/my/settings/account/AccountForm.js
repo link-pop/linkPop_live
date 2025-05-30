@@ -178,6 +178,7 @@ export default function AccountForm({ mongoUser, onSuccess }) {
                 min={18}
                 max={120}
                 error={formErrors.preferAge}
+                helperText={t("plusMinus5yearsResults") || "+/- 5 years results will be shown"}
               />
             </div>
 
