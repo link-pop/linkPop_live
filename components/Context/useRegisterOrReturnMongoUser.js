@@ -115,7 +115,6 @@ export default function useRegisterOrReturnMongoUser() {
           primaryWeb3Wallet: clerkUser?.primaryWeb3Wallet?.toString() || "",
           imageUrl: clerkUser?.imageUrl || "",
           hasImage: Boolean(clerkUser?.hasImage),
-          gender: clerkUser?.gender || "",
           birthday: clerkUser?.birthday || "",
           createdAt: clerkUser?.createdAt?.toISOString(),
           updatedAt: clerkUser?.updatedAt?.toISOString(),

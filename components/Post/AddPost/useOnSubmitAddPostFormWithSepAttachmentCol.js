@@ -377,6 +377,8 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
             raceEthnicity: [],
             hairColor: [],
             bodyType: [],
+            gender: [],
+            age: [],
           };
 
           allCreatorTags.forEach((creatorTags) => {
@@ -391,13 +393,23 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
             if (creatorTags.bodyType) {
               mergedCreatorTags.bodyType.push(...creatorTags.bodyType);
             }
+            if (creatorTags.gender) {
+              mergedCreatorTags.gender.push(...creatorTags.gender);
+            }
           });
+
+          // Add user's age from profile (not from AI analysis)
+          if (mongoUser?.age) {
+            mergedCreatorTags.age.push(mongoUser.age);
+          }
 
           // Only update if we have at least one tag
           const hasAnyTags =
             mergedCreatorTags.raceEthnicity.length > 0 ||
             mergedCreatorTags.hairColor.length > 0 ||
-            mergedCreatorTags.bodyType.length > 0;
+            mergedCreatorTags.bodyType.length > 0 ||
+            mergedCreatorTags.gender.length > 0 ||
+            mergedCreatorTags.age.length > 0;
 
           if (hasAnyTags) {
             console.log("Updating user creator tags:", mergedCreatorTags);

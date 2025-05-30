@@ -10,6 +10,7 @@ const {
   RACE_ETHNICITY_TAGS,
   HAIR_COLOR_TAGS,
   BODY_TYPE_TAGS,
+  GENDER_TAGS,
 } = require("../lib/constants/creatorTags");
 
 // Import the reusable image generation functions
@@ -174,10 +175,15 @@ function generateCreator(index) {
   };
 
   // Create lastUploadedCreatorTags based on the user's attributes
+  const age = faker.number.int({ min: 18, max: 45 });
+  const gender = faker.helpers.arrayElement(GENDER_TAGS);
+
   const lastUploadedCreatorTags = {
     raceEthnicity: [raceEthnicity],
     hairColor: [hairColor],
     bodyType: [bodyType],
+    gender: [gender],
+    age: [age],
   };
 
   return {
@@ -192,7 +198,7 @@ function generateCreator(index) {
     onboardingFinished: true,
 
     // Account profile fields using constants
-    age: faker.number.int({ min: 18, max: 45 }),
+    age: age,
     raceEthnicity: raceEthnicity,
     hairColor: hairColor,
     bodyType: bodyType,
@@ -203,6 +209,8 @@ function generateCreator(index) {
       raceEthnicity: [],
       hairColor: [],
       bodyType: [],
+      gender: [],
+      age: [],
     },
 
     // Status
@@ -289,17 +297,22 @@ function generateFan(index) {
     preferAge: faker.number.int({ min: 18, max: 50 }),
     hairColor: faker.helpers.arrayElement([...HAIR_COLOR_TAGS, "any"]),
     bodyType: faker.helpers.arrayElement([...BODY_TYPE_TAGS, "any"]),
+    preferGender: faker.helpers.arrayElement([...GENDER_TAGS, "any"]),
 
     // Creator tags tracking - fans typically don't upload content, so these should be empty
     lastUploadedCreatorTags: {
       raceEthnicity: [],
       hairColor: [],
       bodyType: [],
+      gender: [],
+      age: [],
     },
     lastVisitedCreatorsTags: {
       raceEthnicity: [],
       hairColor: [],
       bodyType: [],
+      gender: [],
+      age: [],
     },
 
     // Status

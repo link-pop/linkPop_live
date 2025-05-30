@@ -61,6 +61,7 @@ export default function ClearAllSuggestionsButton({
       variant={variant}
       size={size}
       className={className}
+      title={t("resetSuggestions") || "Reset all suggestions"}
     >
       {children || t("resetSuggestions") || "Reset all suggestions"}
     </div>

@@ -13,6 +13,7 @@ import {
   HAIR_COLOR_TAGS,
   BODY_TYPE_TAGS,
   RACE_ETHNICITY_TAGS,
+  GENDER_TAGS,
   createSelectOptions,
 } from "@/lib/constants/creatorTags";
 
@@ -25,6 +26,7 @@ export default function AccountForm({ mongoUser, onSuccess }) {
     raceEthnicity: mongoUser.raceEthnicity || "",
     hairColor: mongoUser.hairColor || "",
     bodyType: mongoUser.bodyType || "",
+    preferGender: mongoUser.preferGender || "",
     displayAllUsersIfNoMatchFoundForSuggestions:
       mongoUser.displayAllUsersIfNoMatchFoundForSuggestions || false,
   });
@@ -92,6 +94,17 @@ export default function AccountForm({ mongoUser, onSuccess }) {
     label: t(option.value.replace(/\s+/g, "")) || option.value,
   }));
 
+  // Gender options using constants (for fan preferences)
+  const genderOptions = createSelectOptions(
+    GENDER_TAGS,
+    true,
+    mongoUser?.profileType === "fan",
+    mongoUser?.profileType === "creator"
+  ).map((option) => ({
+    ...option,
+    label: t(option.value.replace(/\s+/g, "")) || option.value,
+  }));
+
   const validateForm = () => {
     const errors = {};
     let isValid = true;
@@ -133,6 +146,7 @@ export default function AccountForm({ mongoUser, onSuccess }) {
         raceEthnicity: account.raceEthnicity,
         hairColor: account.hairColor,
         bodyType: account.bodyType,
+        preferGender: account.preferGender,
         displayAllUsersIfNoMatchFoundForSuggestions:
           account.displayAllUsersIfNoMatchFoundForSuggestions,
       },
@@ -164,6 +178,21 @@ export default function AccountForm({ mongoUser, onSuccess }) {
                 min={18}
                 max={120}
                 error={formErrors.preferAge}
+              />
+            </div>
+
+            {/* PREFERRED GENDER */}
+            <div className={`fc g5`}>
+              <Select
+                name="preferGender"
+                value={account.preferGender}
+                onValueChange={handleSelectChange("preferGender")}
+                className={`gray br5`}
+                label={t("preferredGender") || "Preferred Gender"}
+                options={genderOptions}
+                error={formErrors.preferGender}
+                placeholder={t("selectOption")}
+                version="new"
               />
             </div>
           </>

@@ -114,7 +114,7 @@ export default function SuggestionsSection() {
       )}
       {/* Show fallback message when using STEP 3 approach */}
       {suggestionsApproach === "fallback" && hasSuggestions && (
-        <div className="mb-3 p-2 bg-accent/10 rounded-md text-xs text-foreground/70 text-center">
+        <div className="border-[var(--color-brand)] border-2 mb-3 p-2 bg-accent/10 rounded-md text-xs text-foreground/70 text-center">
           {t("noExactMatchFound") ||
             "No 100% match was found - showing all creators"}
         </div>
