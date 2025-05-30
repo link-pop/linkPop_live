@@ -23,9 +23,9 @@ export default function AccountForm({ mongoUser, onSuccess }) {
   const { t } = useTranslation();
   const [account, setAccount] = useState({
     preferAge: mongoUser.preferAge || "",
-    raceEthnicity: mongoUser.raceEthnicity || "",
-    hairColor: mongoUser.hairColor || "",
-    bodyType: mongoUser.bodyType || "",
+    preferRaceEthnicity: mongoUser.preferRaceEthnicity || "",
+    preferHairColor: mongoUser.preferHairColor || "",
+    preferBodyType: mongoUser.preferBodyType || "",
     preferGender: mongoUser.preferGender || "",
     displayAllUsersIfNoMatchFoundForSuggestions:
       mongoUser.displayAllUsersIfNoMatchFoundForSuggestions || false,
@@ -143,9 +143,9 @@ export default function AccountForm({ mongoUser, onSuccess }) {
       data: { _id: mongoUser._id },
       update: {
         preferAge: account.preferAge,
-        raceEthnicity: account.raceEthnicity,
-        hairColor: account.hairColor,
-        bodyType: account.bodyType,
+        preferRaceEthnicity: account.preferRaceEthnicity,
+        preferHairColor: account.preferHairColor,
+        preferBodyType: account.preferBodyType,
         preferGender: account.preferGender,
         displayAllUsersIfNoMatchFoundForSuggestions:
           account.displayAllUsersIfNoMatchFoundForSuggestions,
@@ -202,13 +202,13 @@ export default function AccountForm({ mongoUser, onSuccess }) {
         {mongoUser?.isDev && (
           <div className={`fc g5`}>
             <Select
-              name="raceEthnicity"
-              value={account.raceEthnicity}
-              onValueChange={handleSelectChange("raceEthnicity")}
+              name="preferRaceEthnicity"
+              value={account.preferRaceEthnicity}
+              onValueChange={handleSelectChange("preferRaceEthnicity")}
               className={`gray br5`}
               label={t("raceEthnicity") || "Race / Ethnicity"}
               options={raceEthnicityOptions}
-              error={formErrors.raceEthnicity}
+              error={formErrors.preferRaceEthnicity}
               placeholder={t("selectOption")}
               version="new"
             />
@@ -218,13 +218,13 @@ export default function AccountForm({ mongoUser, onSuccess }) {
         {/* HAIR COLOR */}
         <div className={`fc g5`}>
           <Select
-            name="hairColor"
-            value={account.hairColor}
-            onValueChange={handleSelectChange("hairColor")}
+            name="preferHairColor"
+            value={account.preferHairColor}
+            onValueChange={handleSelectChange("preferHairColor")}
             className={`gray br5`}
             label={t("hairColor") || "Hair Color"}
             options={hairColorOptions}
-            error={formErrors.hairColor}
+            error={formErrors.preferHairColor}
             placeholder={t("selectOption")}
             version="new"
           />
@@ -233,13 +233,13 @@ export default function AccountForm({ mongoUser, onSuccess }) {
         {/* BODY TYPE / BUILD */}
         <div className={`fc g5`}>
           <Select
-            name="bodyType"
-            value={account.bodyType}
-            onValueChange={handleSelectChange("bodyType")}
+            name="preferBodyType"
+            value={account.preferBodyType}
+            onValueChange={handleSelectChange("preferBodyType")}
             className={`gray br5`}
             label={t("bodyType") || "Body Type / Build"}
             options={bodyTypeOptions}
-            error={formErrors.bodyType}
+            error={formErrors.preferBodyType}
             placeholder={t("selectOption")}
             version="new"
           />

@@ -303,8 +303,8 @@ function generateFan(index) {
 
     // Fan preferences using constants - these are what the fan likes, not their own attributes
     preferAge: faker.number.int({ min: 18, max: 50 }),
-    hairColor: faker.helpers.arrayElement([...HAIR_COLOR_TAGS, "any"]),
-    bodyType: faker.helpers.arrayElement([...BODY_TYPE_TAGS, "any"]),
+    preferHairColor: faker.helpers.arrayElement([...HAIR_COLOR_TAGS, "any"]),
+    preferBodyType: faker.helpers.arrayElement([...BODY_TYPE_TAGS, "any"]),
     preferGender: faker.helpers.arrayElement([...GENDER_TAGS, "any"]),
 
     // Creator tags tracking - fans typically don't upload content, so these should be empty

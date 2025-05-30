@@ -1510,7 +1510,7 @@ const en = {
   toEnableSmartMatching: "to enable smart matching",
   auto: "Auto Mode",
   manual: "Manual Mode",
-  noExactMatchFound: "No match was found - showing all creators",
+  noExactMatchFound: "No 100% match was found - showing all creators",
 
   // Price filter toggle translations
   showPaidCreators: "Show paid creators",

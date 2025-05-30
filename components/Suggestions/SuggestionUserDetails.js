@@ -34,15 +34,19 @@ export default function SuggestionUserDetails({ user, currentUser }) {
       switch (tagType) {
         case "hairColor":
           return (
-            currentUser?.hairColor &&
-            !["any", "other"].includes(currentUser.hairColor.toLowerCase()) &&
-            currentUser.hairColor === tagValue
+            currentUser?.preferHairColor &&
+            !["any", "other"].includes(
+              currentUser.preferHairColor.toLowerCase()
+            ) &&
+            currentUser.preferHairColor === tagValue
           );
         case "bodyType":
           return (
-            currentUser?.bodyType &&
-            !["any", "other"].includes(currentUser.bodyType.toLowerCase()) &&
-            currentUser.bodyType === tagValue
+            currentUser?.preferBodyType &&
+            !["any", "other"].includes(
+              currentUser.preferBodyType.toLowerCase()
+            ) &&
+            currentUser.preferBodyType === tagValue
           );
         case "gender":
           return (
@@ -60,11 +64,11 @@ export default function SuggestionUserDetails({ user, currentUser }) {
         case "raceEthnicity":
           // Race/ethnicity is not typically used in user preferences, but include for completeness
           return (
-            currentUser?.raceEthnicity &&
+            currentUser?.preferRaceEthnicity &&
             !["any", "other"].includes(
-              currentUser.raceEthnicity.toLowerCase()
+              currentUser.preferRaceEthnicity.toLowerCase()
             ) &&
-            currentUser.raceEthnicity === tagValue
+            currentUser.preferRaceEthnicity === tagValue
           );
         default:
           return false;
