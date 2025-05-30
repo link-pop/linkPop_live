@@ -2,6 +2,7 @@
 
 import { CheckCircle } from "lucide-react";
 import SuggestionAttribute from "@/components/Suggestions/SuggestionAttribute";
+import HighlightedText from "@/components/ui/shared/HighlightedText/HighlightedText";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { getMostFrequentCreatorTags } from "@/lib/utils/getMostFrequentCreatorTags";
 import { hasUserPreferences } from "@/lib/utils/hasUserPreferences";
@@ -24,6 +25,9 @@ export default function SuggestionUserDetails({ user, currentUser }) {
   const userMostFrequentTags = currentUser?.lastVisitedCreatorsTags
     ? getMostFrequentCreatorTags(currentUser.lastVisitedCreatorsTags)
     : null;
+
+  // Get the name filter for highlighting
+  const nameFilter = currentUser?.preferCreatorName || "";
 
   // Helper function to check if a tag matches user's preferences and should be highlighted
   const shouldHighlightTag = (tagType, tagValue) => {
@@ -100,10 +104,22 @@ export default function SuggestionUserDetails({ user, currentUser }) {
   return (
     <div className="text-white">
       <div className="flex items-center gap-1">
-        <span className="text-base font-medium">{user.name}</span>
+        <HighlightedText
+          text={user.name}
+          highlight={nameFilter}
+          className="text-base font-medium"
+          highlightClassName="brand"
+        />
         {user.isVerified && <CheckCircle size={16} className="text-white" />}
       </div>
-      <span className="text-xs text-white/80">@{user.username}</span>
+      <span className="text-xs text-white/80">
+        @
+        <HighlightedText
+          text={user.username}
+          highlight={nameFilter}
+          highlightClassName="brand"
+        />
+      </span>
       <div className="flex flex-wrap gap-1 mt-1">
         {user.age && (
           <SuggestionAttribute

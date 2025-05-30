@@ -20,6 +20,7 @@ export function useSuggestions(
 ) {
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsApproach, setSuggestionsApproach] = useState("none");
+  const [nameFilterFallback, setNameFilterFallback] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [isUserFan, setIsUserFan] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -52,17 +53,21 @@ export function useSuggestions(
             const resetResult = await getSuggestedUsers(limit, showPaidOnly, 0);
             setSuggestions(resetResult.users || []);
             setSuggestionsApproach(resetResult.approach || "none");
+            setNameFilterFallback(resetResult.nameFilterFallback || false);
           } else {
             setSuggestions(result.users || []);
             setSuggestionsApproach(result.approach || "none");
+            setNameFilterFallback(result.nameFilterFallback || false);
           }
         } else {
           setSuggestions([]);
           setSuggestionsApproach("none");
+          setNameFilterFallback(false);
         }
       } catch (error) {
         setSuggestions([]);
         setSuggestionsApproach("error");
+        setNameFilterFallback(false);
       } finally {
         setIsLoading(false);
       }
@@ -165,6 +170,7 @@ export function useSuggestions(
   return {
     suggestions,
     suggestionsApproach,
+    nameFilterFallback,
     visibleSuggestions,
     isLoading,
     isUserFan,

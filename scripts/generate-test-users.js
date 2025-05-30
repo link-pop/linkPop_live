@@ -306,6 +306,9 @@ function generateFan(index) {
     preferHairColor: faker.helpers.arrayElement([...HAIR_COLOR_TAGS, "any"]),
     preferBodyType: faker.helpers.arrayElement([...BODY_TYPE_TAGS, "any"]),
     preferGender: faker.helpers.arrayElement([...GENDER_TAGS, "any"]),
+    preferCreatorName: faker.datatype.boolean(0.3)
+      ? faker.person.firstName().replace(/[^a-zA-Z0-9]/g, "")
+      : "", // 30% chance of having a creator name preference
 
     // Creator tags tracking - fans typically don't upload content, so these should be empty
     lastUploadedCreatorTags: {

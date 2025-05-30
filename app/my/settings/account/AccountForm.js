@@ -27,6 +27,7 @@ export default function AccountForm({ mongoUser, onSuccess }) {
     preferHairColor: mongoUser.preferHairColor || "",
     preferBodyType: mongoUser.preferBodyType || "",
     preferGender: mongoUser.preferGender || "",
+    preferCreatorName: mongoUser.preferCreatorName || "",
     displayAllUsersIfNoMatchFoundForSuggestions:
       mongoUser.displayAllUsersIfNoMatchFoundForSuggestions || false,
   });
@@ -120,6 +121,14 @@ export default function AccountForm({ mongoUser, onSuccess }) {
       isValid = false;
     }
 
+    // Creator name validation - optional but if provided, should be reasonable length
+    if (account.preferCreatorName && account.preferCreatorName.length > 50) {
+      errors.preferCreatorName =
+        t("creatorNameTooLong") ||
+        "Creator name filter is too long (max 50 characters)";
+      isValid = false;
+    }
+
     return { isValid, errors };
   };
 
@@ -147,6 +156,7 @@ export default function AccountForm({ mongoUser, onSuccess }) {
         preferHairColor: account.preferHairColor,
         preferBodyType: account.preferBodyType,
         preferGender: account.preferGender,
+        preferCreatorName: account.preferCreatorName,
         displayAllUsersIfNoMatchFoundForSuggestions:
           account.displayAllUsersIfNoMatchFoundForSuggestions,
       },
@@ -166,6 +176,24 @@ export default function AccountForm({ mongoUser, onSuccess }) {
       <form onSubmit={handleSubmit} className={`fc g20 wf maw600`}>
         {mongoUser?.profileType === "fan" && (
           <>
+            {/* PREFERRED CREATOR NAME */}
+            <div className={`fc g5`}>
+              <Input
+                type="text"
+                name="preferCreatorName"
+                value={account.preferCreatorName}
+                onChange={handleInputChange}
+                className={`gray br5`}
+                label={t("preferredCreatorName") || "Preferred Creator Name"}
+                error={formErrors.preferCreatorName}
+                helperText={
+                  t("creatorNameFilterHelp") ||
+                  "Filter creators by name or username (partial matches supported)"
+                }
+                placeholder={t("enterCreatorName") || "Enter creator name..."}
+              />
+            </div>
+
             {/* PREFERRED AGE */}
             <div className={`fc g5`}>
               <Input
@@ -178,7 +206,10 @@ export default function AccountForm({ mongoUser, onSuccess }) {
                 min={18}
                 max={120}
                 error={formErrors.preferAge}
-                helperText={t("plusMinus5yearsResults") || "+/- 5 years results will be shown"}
+                helperText={
+                  t("plusMinus5yearsResults") ||
+                  "+/- 5 years results will be shown"
+                }
               />
             </div>
 

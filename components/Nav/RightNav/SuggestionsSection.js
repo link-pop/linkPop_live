@@ -30,6 +30,7 @@ export default function SuggestionsSection() {
     visibleSuggestions,
     suggestions,
     suggestionsApproach,
+    nameFilterFallback,
     isLoading,
     isUserFan,
     currentPage,
@@ -101,7 +102,8 @@ export default function SuggestionsSection() {
   // Determine whether to show the fallback message using the new utility
   const showFallbackMessage = shouldShowFallbackMessage(
     currentUser,
-    suggestionsApproach
+    suggestionsApproach,
+    nameFilterFallback
   );
 
   return (

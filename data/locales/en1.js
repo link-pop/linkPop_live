@@ -1520,6 +1520,11 @@ const en = {
   // Refresh suggestions functionality
   refreshSuggestions: "Show different suggestions",
   plusMinus5yearsResults: "+/- 5 years results will be shown",
+  creatorNameFilterHelp:
+    "Filter creators by name or username (partial matches supported)",
+  enterCreatorName: "Enter creator name...",
+  creatorNameTooLong: "Creator name filter is too long (max 50 characters)",
+  preferredCreatorName: "Preferred Creator Name",
 };
 
 export default en;
