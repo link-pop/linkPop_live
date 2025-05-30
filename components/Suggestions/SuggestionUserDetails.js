@@ -74,6 +74,12 @@ export default function SuggestionUserDetails({ user, currentUser }) {
             ) &&
             currentUser.preferRaceEthnicity === tagValue
           );
+        case "countryCode":
+          return (
+            currentUser?.preferCountryCode &&
+            currentUser.preferCountryCode.toUpperCase() ===
+              tagValue.toUpperCase()
+          );
         default:
           return false;
       }
@@ -96,6 +102,9 @@ export default function SuggestionUserDetails({ user, currentUser }) {
           userMostFrequentTags.age &&
           doesAgeMatch(tagValue, userMostFrequentTags.age)
         );
+      case "countryCode":
+        // CountryCode is not tracked in smart matching, only in traditional matching
+        return false;
       default:
         return false;
     }
@@ -223,6 +232,17 @@ export default function SuggestionUserDetails({ user, currentUser }) {
               />
             )}
           </>
+        )}
+        {/* Country Code - always show from profile attributes since it's not in uploaded tags */}
+        {user.countryCode && (
+          <SuggestionAttribute
+            value={user.countryCode.toUpperCase()}
+            className={
+              shouldHighlightTag("countryCode", user.countryCode)
+                ? "border-[var(--color-brand)] border-2"
+                : ""
+            }
+          />
         )}
       </div>
     </div>

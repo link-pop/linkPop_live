@@ -1525,6 +1525,9 @@ const en = {
   enterCreatorName: "Enter creator name...",
   creatorNameTooLong: "Creator name filter is too long (max 50 characters)",
   preferredCreatorName: "Preferred Creator Name",
+
+  // Location preferences
+  preferredLocation: "Preferred Location",
 };
 
 export default en;

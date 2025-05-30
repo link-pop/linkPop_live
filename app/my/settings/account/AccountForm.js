@@ -5,6 +5,7 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 import Input from "@/components/ui/shared/Input/Input";
 import Select from "@/components/ui/shared/Select/Select";
 import Switch from "@/components/ui/shared/Switch/Switch";
+import LocationSelector from "@/components/ui/shared/LocationSelector/LocationSelector";
 import { update } from "@/lib/actions/crud";
 import Button from "@/components/ui/shared/Button/Button2";
 import { useContext } from "@/components/Context/Context";
@@ -28,6 +29,8 @@ export default function AccountForm({ mongoUser, onSuccess }) {
     preferBodyType: mongoUser.preferBodyType || "",
     preferGender: mongoUser.preferGender || "",
     preferCreatorName: mongoUser.preferCreatorName || "",
+    preferCountry: mongoUser.preferCountry || "",
+    preferCountryCode: mongoUser.preferCountryCode || "",
     displayAllUsersIfNoMatchFoundForSuggestions:
       mongoUser.displayAllUsersIfNoMatchFoundForSuggestions || false,
   });
@@ -60,6 +63,32 @@ export default function AccountForm({ mongoUser, onSuccess }) {
       ...prev,
       [name]: value,
     }));
+  };
+
+  // Handle location changes
+  const handleCountryChange = (countryName) => {
+    setAccount((prev) => ({
+      ...prev,
+      preferCountry: countryName,
+    }));
+  };
+
+  const handleCountryCodeChange = (countryCode) => {
+    setAccount((prev) => ({
+      ...prev,
+      preferCountryCode: countryCode,
+    }));
+  };
+
+  // Handle state changes (not used but required by LocationSelector)
+  const handleStateChange = (stateName) => {
+    // We don't use state for preferences, but this prevents the error
+    console.log("State change (not used):", stateName);
+  };
+
+  const handleStateCodeChange = (stateCode) => {
+    // We don't use state code for preferences, but this prevents the error
+    console.log("State code change (not used):", stateCode);
   };
 
   // Hair color options using constants
@@ -157,6 +186,8 @@ export default function AccountForm({ mongoUser, onSuccess }) {
         preferBodyType: account.preferBodyType,
         preferGender: account.preferGender,
         preferCreatorName: account.preferCreatorName,
+        preferCountry: account.preferCountry,
+        preferCountryCode: account.preferCountryCode,
         displayAllUsersIfNoMatchFoundForSuggestions:
           account.displayAllUsersIfNoMatchFoundForSuggestions,
       },
@@ -274,6 +305,25 @@ export default function AccountForm({ mongoUser, onSuccess }) {
             error={formErrors.preferBodyType}
             placeholder={t("selectOption")}
             version="new"
+          />
+        </div>
+
+        {/* PREFERRED LOCATION */}
+        <div className={`fc g5`}>
+          <LocationSelector
+            name="preferCountry"
+            onCountryChange={handleCountryChange}
+            onCountryCodeChange={handleCountryCodeChange}
+            onStateChange={handleStateChange}
+            onStateCodeChange={handleStateCodeChange}
+            className="fc g15"
+            defaultValue={{
+              country: account.preferCountry,
+              country_code: account.preferCountryCode,
+            }}
+            hideState={true}
+            label={t("preferredLocation") || "Preferred Location"}
+            required={false}
           />
         </div>
 
