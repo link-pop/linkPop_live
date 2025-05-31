@@ -59,6 +59,8 @@ const PageTitle = () => {
     title = t("analytics");
   } else if (pathname.includes("/my/queue")) {
     title = t("queue");
+  } else if (pathname.includes("/discover/search")) {
+    title = t("searchCreators");
   }
 
   // if (!title) return null;
@@ -71,7 +73,8 @@ const PageTitle = () => {
     pathname?.includes(CHATS_ROUTE) ||
     pathname?.includes("/analytics") ||
     pathname?.includes("/affiliate") ||
-    pathname?.includes("/my/queue");
+    pathname?.includes("/my/queue") ||
+    pathname?.includes("/discover/search");
 
   const width = isWiderPath ? "maw1000" : "maw597";
 

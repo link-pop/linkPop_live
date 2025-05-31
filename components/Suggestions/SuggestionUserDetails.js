@@ -8,7 +8,11 @@ import { getMostFrequentCreatorTags } from "@/lib/utils/getMostFrequentCreatorTa
 import { hasUserPreferences } from "@/lib/utils/hasUserPreferences";
 import { doesAgeMatch } from "@/lib/utils/ageRangeMatching";
 
-export default function SuggestionUserDetails({ user, currentUser }) {
+export default function SuggestionUserDetails({
+  user,
+  currentUser,
+  searchParams = {},
+}) {
   const { t } = useTranslation();
 
   if (!user) return null;
@@ -26,14 +30,66 @@ export default function SuggestionUserDetails({ user, currentUser }) {
     ? getMostFrequentCreatorTags(currentUser.lastVisitedCreatorsTags)
     : null;
 
-  // Get the name filter for highlighting
-  const nameFilter = currentUser?.preferCreatorName || "";
+  // Get the name filter for highlighting from search params or user preferences
+  const nameFilter =
+    searchParams.preferCreatorName || currentUser?.preferCreatorName || "";
 
-  // Helper function to check if a tag matches user's preferences and should be highlighted
+  // Helper function to check if a tag matches search parameters and should be highlighted
   const shouldHighlightTag = (tagType, tagValue) => {
     if (!tagValue) return false;
 
-    // If user has preferences set, use traditional matching (user preferences)
+    // First check if we have search parameters to match against
+    if (searchParams && Object.keys(searchParams).length > 0) {
+      switch (tagType) {
+        case "hairColor":
+          return (
+            searchParams.preferHairColor &&
+            !["any", "other"].includes(
+              searchParams.preferHairColor.toLowerCase()
+            ) &&
+            searchParams.preferHairColor === tagValue
+          );
+        case "bodyType":
+          return (
+            searchParams.preferBodyType &&
+            !["any", "other"].includes(
+              searchParams.preferBodyType.toLowerCase()
+            ) &&
+            searchParams.preferBodyType === tagValue
+          );
+        case "gender":
+          return (
+            searchParams.preferGender &&
+            !["any", "other"].includes(
+              searchParams.preferGender.toLowerCase()
+            ) &&
+            searchParams.preferGender === tagValue
+          );
+        case "age":
+          return (
+            searchParams.preferAge &&
+            doesAgeMatch(tagValue, searchParams.preferAge)
+          );
+        case "raceEthnicity":
+          return (
+            searchParams.preferRaceEthnicity &&
+            !["any", "other"].includes(
+              searchParams.preferRaceEthnicity.toLowerCase()
+            ) &&
+            searchParams.preferRaceEthnicity === tagValue
+          );
+        case "countryCode":
+          return (
+            searchParams.preferCountryCode &&
+            searchParams.preferCountryCode.toUpperCase() ===
+              tagValue.toUpperCase()
+          );
+        default:
+          return false;
+      }
+    }
+
+    // Fallback to user preferences if no search params
     if (userHasPreferences) {
       switch (tagType) {
         case "hairColor":
@@ -66,7 +122,6 @@ export default function SuggestionUserDetails({ user, currentUser }) {
             doesAgeMatch(tagValue, currentUser.preferAge)
           );
         case "raceEthnicity":
-          // Race/ethnicity is not typically used in user preferences, but include for completeness
           return (
             currentUser?.preferRaceEthnicity &&
             !["any", "other"].includes(

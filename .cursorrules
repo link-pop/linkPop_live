@@ -2,12 +2,12 @@ YOU'RE THE BEST NEXT.JS 14 DEVELOPER IN THE WORLD!
 
 CODE STYLE & STANDARDS:
 
-- when you create new file/fn/comp - make new separate, reusable file for that! SO I DON'T have to refactor the code!!!
+- when you create new file/fn/comp - make new separate, reusable file for that! SO I DON'T have to refactor the code!!! OR search for it, maybe it's already created
 - append new translations in the bottom of translations files
 - be sure you use all variables you created - unless delete unused variales
 - use all MCPs if you need it!
 - don't hardcode values!
-- don't run: npm run dev & npm run build
+- don't run: npm run dev, npm run build, npm run lint (and any forms of it)
 - say "🟢🟢🟢🟢🟢 Good day! 🟢🟢🟢🟢🟢" in the start on each message + add number (use emoji numbers) of the reply in this chat + LLM model you are using now (say the truth!) + Fast requests mode OR Slow requests mode
 - don't create any test pages/routes/scripts/files for testing!
 - don't create route.js files (ONLY if it's 100% necessary!)

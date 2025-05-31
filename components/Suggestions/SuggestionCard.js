@@ -22,8 +22,15 @@ import {
  * @param {number} index - Index for selecting fallback images
  * @param {Function} onRemove - Function to call when user chooses "Don't suggest"
  * @param {Object} currentUser - The current logged in user
+ * @param {Object} searchParams - Current search parameters for highlighting matches
  */
-export default function SuggestionCard({ user, index, onRemove, currentUser }) {
+export default function SuggestionCard({
+  user,
+  index,
+  onRemove,
+  currentUser,
+  searchParams,
+}) {
   const { t } = useTranslation();
 
   // Handle don't suggest option click
@@ -92,7 +99,11 @@ export default function SuggestionCard({ user, index, onRemove, currentUser }) {
           />
 
           {/* User details */}
-          <SuggestionUserDetails user={user} currentUser={currentUser} />
+          <SuggestionUserDetails
+            user={user}
+            currentUser={currentUser}
+            searchParams={searchParams}
+          />
         </div>
       </div>
     </Link>

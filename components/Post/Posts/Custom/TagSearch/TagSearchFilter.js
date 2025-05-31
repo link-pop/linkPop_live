@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Search, X, Tag, FunnelPlus } from "lucide-react";
+import { Search, FunnelPlus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserPopularTags } from "@/hooks/useUserPopularTags";
+import SearchTag from "@/components/ui/shared/SearchTag/SearchTag";
 
 export default function TagSearchFilter({
   visitedUserId,
@@ -178,18 +179,13 @@ export default function TagSearchFilter({
           </div>
           <div className="flex flex-wrap gap-2">
             {selectedTags.map((tag) => (
-              <span
+              <SearchTag
                 key={tag}
-                className="inline-flex items-center gap-1 px-3 py-1 bg-primary text-primary-foreground rounded-full text-sm"
-              >
-                {tag}
-                <button
-                  onClick={() => removeTag(tag)}
-                  className="ml-1 hover:bg-primary-foreground hover:text-primary rounded-full p-0.5 transition-colors"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </span>
+                text={tag}
+                onRemove={removeTag}
+                variant="primary"
+                size="sm"
+              />
             ))}
           </div>
         </div>

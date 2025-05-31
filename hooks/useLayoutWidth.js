@@ -15,7 +15,8 @@ export default function useLayoutWidth(width = "1000") {
       pathname?.includes("/chatrooms") ||
       pathname?.includes("/analytics") ||
       pathname?.includes("/affiliate") ||
-      pathname?.includes("/my/queue");
+      pathname?.includes("/my/queue") ||
+      pathname?.includes("/discover/search");
     const layoutElement = document.querySelector(".LayoutMidContent");
 
     if (layoutElement) {

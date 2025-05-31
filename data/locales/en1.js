@@ -1443,7 +1443,6 @@ const en = {
   errorProcessingID: "Error processing ID document",
   failedToExtractDOB: "Failed to extract date of birth",
   dobExtracted: "Date of birth extracted",
-  age: "Age",
   preferredAge: "Preferred Age",
 
   // Face comparison translations
@@ -1528,6 +1527,27 @@ const en = {
 
   // Location preferences
   preferredLocation: "Preferred Location",
+
+  // Search Creator functionality
+  searchCreators: "Search Creators",
+  pleaseLoginToSearch: "Please login to search creators",
+  searchFilters: "Search Filters",
+  clearAll: "Clear All",
+  creatorName: "Creator Name",
+  gender: "Gender",
+  showPaidCreatorsOnly: "Show paid creators only",
+  oneCreatorFound: "1 creator found",
+  creatorsFound: "creators found",
+  startSearching: "Start Searching",
+  useFiltersToSearchCreators:
+    "Use the filters on the left to search for creators",
+  searchError: "Search Error",
+  noCreatorsFound: "No creators found",
+  tryAdjustingFilters: "Try adjusting your search filters",
+  creatorHidden: "Creator hidden",
+  creatorWillNotAppearInFutureSearches:
+    "This creator will not appear in future searches",
+  failedToHideCreator: "Failed to hide creator",
 };
 
 export default en;
