@@ -82,7 +82,7 @@ export default function AllCreatorsMedia({ isAdmin, mongoUser }) {
   };
 
   return (
-    <div className="bb">
+    <div className="">
       <AllCreatorsMediaTypeFetchedSwitch
         {...{
           mongoUser,
