@@ -5,7 +5,6 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 const stepsCreator = [
   { title: "profileType" },
   { title: "profile" },
-  { title: "account" },
   { title: "subscription" },
   { title: "verification" },
 ];
@@ -104,7 +103,7 @@ export default function OnboardingStepNavigation({
                       : "text-muted"
                   }`}
                 >
-                  {isFan && stepNumber === 2 ? t("preferences") : t(step.title)}
+                  {t(step.title)}
                 </span>
               </div>
             </div>

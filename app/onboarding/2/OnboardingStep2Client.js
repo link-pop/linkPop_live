@@ -33,12 +33,11 @@ export default function OnboardingStep2Client({ mongoUser }) {
 
   const handleSuccess = async () => {
     if (isFan) {
-      const finishOnboarding = (await import("@/lib/actions/finishOnboarding"))
-        .default;
-      await finishOnboarding(mongoUser._id);
-      router.push(MAIN_ROUTE);
+      // Fan goes to verification (step 5)
+      router.replace(`${ONBOARDING_ROUTE}/5`);
     } else {
-      router.replace(`${ONBOARDING_ROUTE}/3`);
+      // Creator goes to subscription (step 4)
+      router.replace(`${ONBOARDING_ROUTE}/4`);
     }
   };
 
