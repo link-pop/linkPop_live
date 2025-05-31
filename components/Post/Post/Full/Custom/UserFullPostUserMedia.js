@@ -118,7 +118,7 @@ export default function UserFullPostUserMedia({
   };
 
   return (
-    <div>
+    <div className="">
       <MediaTypeFetchedSwitch
         {...{
           mongoUser,

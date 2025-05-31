@@ -12,6 +12,7 @@ import {
   ONBOARDING_ROUTE,
   DISCOVER_VIDEO_ROUTE,
   DISCOVER_SEARCH_ROUTE,
+  DISCOVER_MEDIA_ROUTE,
 } from "@/lib/utils/constants";
 import { ArrowLeft } from "lucide-react";
 import { CHATS_ROUTE } from "../../../lib/utils/constants";
@@ -31,7 +32,8 @@ const PageTitle = () => {
   // Check if we're on discover routes to show dual title
   const isDiscoverRoute =
     pathname.includes(DISCOVER_VIDEO_ROUTE) ||
-    pathname.includes(DISCOVER_SEARCH_ROUTE);
+    pathname.includes(DISCOVER_SEARCH_ROUTE) ||
+    pathname.includes(DISCOVER_MEDIA_ROUTE);
 
   if (pathname === MAIN_ROUTE) {
     title = t("home");
@@ -72,6 +74,9 @@ const PageTitle = () => {
     title = null;
   } else if (pathname.includes(DISCOVER_VIDEO_ROUTE)) {
     // This will be handled by dual title
+    title = null;
+  } else if (pathname.includes(DISCOVER_MEDIA_ROUTE)) {
+    // This will be handled by triple title
     title = null;
   }
 

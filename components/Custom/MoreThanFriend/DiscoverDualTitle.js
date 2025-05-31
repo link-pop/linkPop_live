@@ -6,6 +6,7 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 import {
   DISCOVER_VIDEO_ROUTE,
   DISCOVER_SEARCH_ROUTE,
+  DISCOVER_MEDIA_ROUTE,
 } from "@/lib/utils/constants";
 
 const DiscoverDualTitle = () => {
@@ -15,6 +16,7 @@ const DiscoverDualTitle = () => {
 
   const isDiscoverActive = pathname.includes(DISCOVER_VIDEO_ROUTE);
   const isSearchActive = pathname.includes(DISCOVER_SEARCH_ROUTE);
+  const isMediaActive = pathname.includes(DISCOVER_MEDIA_ROUTE);
 
   const handleDiscoverClick = () => {
     router.push(DISCOVER_VIDEO_ROUTE);
@@ -22,6 +24,10 @@ const DiscoverDualTitle = () => {
 
   const handleSearchClick = () => {
     router.push(DISCOVER_SEARCH_ROUTE);
+  };
+
+  const handleMediaClick = () => {
+    router.push(DISCOVER_MEDIA_ROUTE);
   };
 
   return (
@@ -46,6 +52,17 @@ const DiscoverDualTitle = () => {
         onClick={handleSearchClick}
       >
         {t("search").toUpperCase()}
+      </div>
+      <div className="text-muted-foreground">|</div>
+      <div
+        className={`cursor-pointer transition-all ${
+          isMediaActive
+            ? "text-foreground font-semibold"
+            : "text-muted-foreground hover:text-foreground"
+        }`}
+        onClick={handleMediaClick}
+      >
+        {t("media").toUpperCase()}
       </div>
     </div>
   );

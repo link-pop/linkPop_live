@@ -1551,6 +1551,9 @@ const en = {
 
   // Discover
   discover: "Discover",
+
+  // Media page
+  media: "Media",
 };
 
 export default en;

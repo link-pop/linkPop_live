@@ -635,7 +635,7 @@ export default async function uploadFilesToCloudinary(
         // Create a blurred, minified transformation URL
         // w_100,h_100 - resize to 100x100
         // e_blur:800 - apply blur effect with strength 800
-        const blurredUrl = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/w_300,h_300,c_fill,e_blur:700/${publicId}`;
+        const blurredUrl = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/w_300,h_300,c_fill,e_blur:900/${publicId}`;
 
         // Add the blurred URL to the response
         response.data.blurred_url = blurredUrl;

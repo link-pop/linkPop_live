@@ -4,12 +4,16 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 import Link from "next/link";
 import PaidContentOverlay from "../PaidContentOverlay";
 import { BadgeDollarSign, LockKeyhole } from "lucide-react";
+import CreatedBy from "../CreatedBy";
+import { usePathname } from "next/navigation";
+import { DISCOVER_MEDIA_ROUTE } from "@/lib/utils/constants";
 
 export default function AttachmentPost(props) {
   const { post, col, isAdmin, mongoUser } = props;
   if (!post) return null;
   const { fileUrl, fileType, isPaid, hasPurchased, blurredUrl } = post;
   const { t } = useTranslation();
+  const pathname = usePathname();
 
   // Check if current user is the owner of the post
   const isOwner =
@@ -105,6 +109,18 @@ export default function AttachmentPost(props) {
             </div>
           )}
         </>
+      }
+      top2={
+        pathname === DISCOVER_MEDIA_ROUTE && (
+          <Link href={`/${post.createdBy.username}`}>
+            <CreatedBy
+              mongoUser={mongoUser}
+              createdBy={post.createdBy}
+              className={`poa l5 t5 z1 white`}
+              imageClassName={`!miw30 !mih30 !w30 !h30`}
+            />
+          </Link>
+        )
       }
     />
   );

@@ -62,6 +62,37 @@ export default function UserFullPost({
             {...{ post, col, isAdmin, mongoUser, visitedMongoUser }}
           />
         }
+        top7={
+          // ! Don't delete this, it's for dev
+          mongoUser?.isDev && (
+            <div className="bb poa t0">
+              raceEthnicity:{" "}
+              {mongoUser?.lastUploadedCreatorTags?.raceEthnicity?.map((tag) => (
+                <span key={tag}>{tag + " "}</span>
+              ))}
+              <br />
+              hairColor:{" "}
+              {mongoUser?.lastUploadedCreatorTags?.hairColor?.map((tag) => (
+                <span key={tag}>{tag + " "}</span>
+              ))}
+              <br />
+              bodyType:{" "}
+              {mongoUser?.lastUploadedCreatorTags?.bodyType?.map((tag) => (
+                <span key={tag}>{tag + " "}</span>
+              ))}
+              <br />
+              gender:{" "}
+              {mongoUser?.lastUploadedCreatorTags?.gender?.map((tag) => (
+                <span key={tag}>{tag + " "}</span>
+              ))}
+              <br />
+              age:{" "}
+              {mongoUser?.lastUploadedCreatorTags?.age?.map((tag) => (
+                <span key={tag}>{tag + " "}</span>
+              ))}
+            </div>
+          )
+        }
       />
     </>
   );

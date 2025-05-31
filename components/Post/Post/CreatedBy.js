@@ -16,6 +16,7 @@ export default function CreatedBy({
   bottom,
   bottomClassName = "",
   icon,
+  imageClassName = "",
 }) {
   // Default values
   const defaultName = "Anonymous User";
@@ -65,7 +66,7 @@ export default function CreatedBy({
               alt={name}
               width={200}
               height={200}
-              className="br50 !miw40 !mih40 !w40 !h40 grow-0 cover"
+              className={`br50 miw40 mih40 w40 h40 grow-0 cover ${imageClassName}`}
               onError={handleImageError}
             />
           ) : (
