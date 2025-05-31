@@ -10,10 +10,13 @@ import {
   NOTIFICATIONS_ROUTE,
   UPDATE_FEED_ROUTE,
   ONBOARDING_ROUTE,
+  DISCOVER_VIDEO_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
 } from "@/lib/utils/constants";
 import { ArrowLeft } from "lucide-react";
 import { CHATS_ROUTE } from "../../../lib/utils/constants";
 import { SITE1, SITE2 } from "@/config/env";
+import DiscoverDualTitle from "./DiscoverDualTitle";
 
 const PageTitle = () => {
   if (SITE2) return;
@@ -24,6 +27,11 @@ const PageTitle = () => {
   const { t } = useTranslation();
   console.log("Pathname:", pathname);
   let title;
+
+  // Check if we're on discover routes to show dual title
+  const isDiscoverRoute =
+    pathname.includes(DISCOVER_VIDEO_ROUTE) ||
+    pathname.includes(DISCOVER_SEARCH_ROUTE);
 
   if (pathname === MAIN_ROUTE) {
     title = t("home");
@@ -59,8 +67,12 @@ const PageTitle = () => {
     title = t("analytics");
   } else if (pathname.includes("/my/queue")) {
     title = t("queue");
-  } else if (pathname.includes("/discover/search")) {
-    title = t("searchCreators");
+  } else if (pathname.includes(DISCOVER_SEARCH_ROUTE)) {
+    // This will be handled by dual title
+    title = null;
+  } else if (pathname.includes(DISCOVER_VIDEO_ROUTE)) {
+    // This will be handled by dual title
+    title = null;
   }
 
   // if (!title) return null;
@@ -87,7 +99,9 @@ const PageTitle = () => {
         className="cursor-pointer mr-2 hs"
         onClick={() => router.back()}
       />
-      <div className="title">{title?.toUpperCase()}</div>
+      <div className="title">
+        {isDiscoverRoute ? <DiscoverDualTitle /> : title?.toUpperCase()}
+      </div>
     </div>
   );
 };

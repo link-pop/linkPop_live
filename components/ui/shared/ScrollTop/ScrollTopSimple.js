@@ -4,13 +4,17 @@ import { useState, useEffect } from "react";
 import { ArrowDown } from "lucide-react";
 import { useUrlParams } from "@/hooks/useUrlParams";
 import { usePathname } from "next/navigation";
-import { BRAND_INVERT_CLASS, CHATS_ROUTE } from "@/lib/utils/constants";
+import {
+  BRAND_INVERT_CLASS,
+  CHATS_ROUTE,
+  DISCOVER_VIDEO_ROUTE,
+} from "@/lib/utils/constants";
 import { SITE1, SITE2 } from "@/config/env";
 
 export default function ScrollTopSimple() {
   // Move pathname check before hooks
   const pathname = usePathname();
-  if ([CHATS_ROUTE].includes(pathname)) return null;
+  if ([CHATS_ROUTE, DISCOVER_VIDEO_ROUTE].includes(pathname)) return null;
 
   const urlParams = useUrlParams();
   const [isAtTop, setIsAtTop] = useState(true);

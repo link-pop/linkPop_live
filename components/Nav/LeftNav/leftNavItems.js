@@ -8,6 +8,7 @@ import {
   MAIN_ROUTE,
   DASHBOARD_ROUTE,
   MY_ROUTE,
+  DISCOVER_VIDEO_ROUTE,
 } from "@/lib/utils/constants";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import {
@@ -26,6 +27,7 @@ import {
   Receipt,
   PieChart,
   CalendarCheck,
+  Search,
 } from "lucide-react";
 import { SITE2 } from "@/config/env";
 import useWindowWidth from "@/hooks/useWindowWidth";
@@ -43,6 +45,12 @@ export const navItems = () => {
       name: showTitles ? t("home") : "",
       icon: <Home className="w-6 h-6" />,
       href: MAIN_ROUTE,
+    },
+    {
+      id: "discover",
+      name: showTitles ? t("discover") : "",
+      icon: <Search className="w-6 h-6" />,
+      href: DISCOVER_VIDEO_ROUTE,
     },
     {
       id: "notifications",

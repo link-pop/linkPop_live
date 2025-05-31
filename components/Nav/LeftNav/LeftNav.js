@@ -5,7 +5,11 @@ import { navItems } from "./leftNavItems";
 import LeftNavNewPostBtn from "./LeftNavNewPostBtn";
 import LeftNavNewLandingPageBtn from "./LeftNavNewLandingPageBtn";
 import { usePathname, useSearchParams } from "next/navigation";
-import { LOGIN_ROUTE, CHATS_ROUTE } from "@/lib/utils/constants";
+import {
+  LOGIN_ROUTE,
+  CHATS_ROUTE,
+  DISCOVER_VIDEO_ROUTE,
+} from "@/lib/utils/constants";
 import useWindowWidth from "../../../hooks/useWindowWidth";
 import { getLinkHref, isActiveLink } from "./navUtils";
 import MobileNavItems from "./MobileNavItems";
@@ -114,11 +118,15 @@ export default function LeftNav({ mongoUser }) {
       })
     : isMobile
     ? allNavItems.filter((item) =>
-        ["home", "notifications", "messages"].includes(item.id)
+        ["home", "discover", "notifications", "messages"].includes(item.id)
       )
     : allNavItems;
 
-  if (pathname === LOGIN_ROUTE) return null;
+  if (
+    pathname === LOGIN_ROUTE ||
+    (pathname === DISCOVER_VIDEO_ROUTE && isMobile)
+  )
+    return null;
   // don;t show in: /chatrooms?chatId=67b0c97c939cc37546aa2da5
   if (
     isMobile &&

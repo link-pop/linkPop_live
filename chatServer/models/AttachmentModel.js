@@ -18,6 +18,7 @@ const attachmentSchema = new mongoose.Schema(
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "users", // This is the key fix - adding the reference
       required: false, // for UPDATE MODE to work
     },
     fileBytes: {

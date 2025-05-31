@@ -1548,6 +1548,9 @@ const en = {
   creatorWillNotAppearInFutureSearches:
     "This creator will not appear in future searches",
   failedToHideCreator: "Failed to hide creator",
+
+  // Discover
+  discover: "Discover",
 };
 
 export default en;
