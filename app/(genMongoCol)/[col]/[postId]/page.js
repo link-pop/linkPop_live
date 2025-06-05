@@ -1,11 +1,9 @@
 import FullPost from "@/components/Post/Post/Full/FullPost";
-import FullPostViewCounter from "@/components/Post/Post/Full/FullPostViewCounter";
 import { getAllPostsNonOwner } from "@/lib/actions/getAllPostsNonOwner";
 import { getAllMongoCollectionsData } from "@/lib/utils/mongo/getAllMongoCollectionsData";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import { redirect } from "next/navigation";
 import { slugify } from "@/lib/utils/slugify";
-import FullPostNextPosts from "@/components/Post/Post/Full/FullPostNextPosts";
 import { LOGIN_ROUTE } from "@/lib/utils/constants";
 import getPostBySlugOrId from "@/lib/actions/getPostBySlugOrId";
 
@@ -27,8 +25,6 @@ export default async function fullPostPage({ params }) {
 
   return (
     <>
-      {/* <FullPostNextPosts post={post} col={col} /> */}
-      {/* <FullPostViewCounter {...{ col: params.col, postId: post._id }} /> */}
       <FullPost
         {...{
           post,

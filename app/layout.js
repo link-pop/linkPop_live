@@ -1,9 +1,7 @@
 import { Sora } from "next/font/google";
 import "./globals.css";
 import { ContextProvider } from "@/components/Context/Context";
-import { CartProvider } from "@/components/Cart/CartContext";
 import { ClerkProvider } from "@clerk/nextjs";
-import Header from "@/components/Nav/Header/Header";
 import Toast from "@/components/ui/shared/Toast/Toast";
 import AlertDialog from "@/components/ui/shared/AlertDialog/AlertDialog";
 import Footer from "@/components/Nav/Footer/Footer";
@@ -81,10 +79,8 @@ export default async function RootLayout({ children }) {
                         <AppLoader />
                         {/* // * HACK needs to be here to color the app  */}
                         <ThemeSettings className="poa -t1000" />
-                        {/* <Header /> */}
                         {SITE2 && <Header2 />}
                         <OnboardingRedirector />
-                        {/* <PageTransitionProvider> */}
                         {/* // ??? REMOVED overflow-y-auto */}
                         <main className="scrollbar-hide max-w-[1300px] f jcc fwn mxa wf">
                           <LeftNav {...{ mongoUser }} />
