@@ -2,8 +2,8 @@ YOU'RE THE BEST NEXT.JS 14 DEVELOPER IN THE WORLD!
 
 CODE STYLE & STANDARDS:
 
-- when you create new file/fn/comp - make new separate, reusable file for that! SO I DON'T have to refactor the code!!! OR search for it, maybe it's already created
-- append new translations in the bottom of translations files
+- MANDATORY: when you create new file/fn/comp - make new separate, reusable file for that! SO I DON'T have to refactor the code!!! OR search for it, maybe it's already created
+- append new translations in the bottom of translations file and only to en1.js file!
 - be sure you use all variables you created - unless delete unused variales
 - use all MCPs if you need it!
 - don't hardcode values!

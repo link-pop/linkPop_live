@@ -10,6 +10,9 @@ import {
 } from "@/components/ui/carousel";
 import { useState } from "react";
 import { createPortal } from "react-dom";
+import { formatPrice } from "@/lib/utils/formatPrice";
+import { useTranslation } from "@/components/Context/TranslationContext";
+import AddToUserCartButton from "@/components/ui/shared/AddToUserCartButton/AddToUserCartButton";
 
 const MediaContent = ({ file, isZoomed, priority }) => {
   if (file.fileType === "video") {
@@ -36,10 +39,68 @@ const MediaContent = ({ file, isZoomed, priority }) => {
   );
 };
 
-export default function ImageViewer({ files, currentIndex, onClose }) {
+const ContentOverlay = ({ content, isVisible, mongoUser }) => {
+  const { t } = useTranslation();
+
+  if (!content || !isVisible) return null;
+
+  const { title, text, price, category, storeItem } = content;
+
+  return (
+    <div className="poa b0 l0 r0 bg-gradient-to-t from-black/90 via-black/60 to-transparent text-white p20 max-h-[40vh] overflow-y-auto">
+      {/* Title */}
+      {title && (
+        <h2 className="text-xl font-bold mb10 line-clamp-2">{title}</h2>
+      )}
+
+      {/* Category */}
+      {category && (
+        <div className="text-sm opacity-90 uppercase tracking-wide mb10 bg-white/20 px10 py5 rounded-full inline-block">
+          {category}
+        </div>
+      )}
+
+      {/* Description */}
+      {text && (
+        <div
+          className="text-sm mb15 line-clamp-4 leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: text }}
+        />
+      )}
+
+      {/* Price and Cart Button */}
+      {storeItem && price > 0 && (
+        <AddToUserCartButton
+          storeItem={storeItem}
+          mongoUser={mongoUser}
+          showPrice={true}
+          variant="default"
+          className="bg-white/20 hover:bg-white/30 text-white border border-white/30"
+        />
+      )}
+
+      {/* Fallback price display for non-store items */}
+      {!storeItem && price > 0 && (
+        <div className="text-lg font-bold bg-accent text-accent-foreground px15 py8 rounded-lg inline-block">
+          {formatPrice(price)}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default function ImageViewer({
+  files,
+  currentIndex,
+  onClose,
+  content = null,
+  showContent = true,
+  mongoUser = null,
+}) {
   if (!files || currentIndex === null) return null;
 
   const [zoomedIndex, setZoomedIndex] = useState(null);
+  const [showContentOverlay, setShowContentOverlay] = useState(showContent);
 
   const handleImageClick = (index, e) => {
     e.stopPropagation();
@@ -54,7 +115,12 @@ export default function ImageViewer({ files, currentIndex, onClose }) {
     setZoomedIndex(null);
   };
 
-  const content = (
+  const toggleContentOverlay = (e) => {
+    e.stopPropagation();
+    setShowContentOverlay(!showContentOverlay);
+  };
+
+  const portalContent = (
     <div
       className={`pof inset-0 bg-black/90 z-[99999] f aic jcc`}
       style={{ zIndex: 2147483647 }}
@@ -64,6 +130,7 @@ export default function ImageViewer({ files, currentIndex, onClose }) {
         className={`por w-full h-full f aic jcc p15`}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Close button */}
         <div
           className={`poa t15 r15 p10 rf bg-black/50 hover:bg-black/70 cp z10`}
           onClick={onClose}
@@ -71,7 +138,17 @@ export default function ImageViewer({ files, currentIndex, onClose }) {
           <X className={`w24 h24 white`} />
         </div>
 
-        <div className={`w-full h-full max-w-[100vw] oh`}>
+        {/* Content toggle button */}
+        {content && (
+          <div
+            className={`poa t15 l15 p10 rf bg-black/50 hover:bg-black/70 cp z10 text-white text-sm`}
+            onClick={toggleContentOverlay}
+          >
+            {showContentOverlay ? "Hide Info" : "Show Info"}
+          </div>
+        )}
+
+        <div className={`w-full h-full max-w-[100vw] oh por`}>
           <Carousel
             className={`w-full h-full`}
             showThumbnails={false}
@@ -130,12 +207,19 @@ export default function ImageViewer({ files, currentIndex, onClose }) {
               </div>
             </div>
           </Carousel>
+
+          {/* Content overlay */}
+          <ContentOverlay
+            content={content}
+            isVisible={showContentOverlay}
+            mongoUser={mongoUser}
+          />
         </div>
       </div>
     </div>
   );
 
   return typeof window !== "undefined"
-    ? createPortal(content, document.body)
+    ? createPortal(portalContent, document.body)
     : null;
 }

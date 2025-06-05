@@ -147,6 +147,9 @@ async function handleCheckoutSessionCompleted(session) {
 
     // Get metadata from the session
     const {
+      type,
+      userId,
+      cartItemIds,
       planId,
       createdBy,
       subscriptionId,
@@ -159,6 +162,14 @@ async function handleCheckoutSessionCompleted(session) {
       cancelReason,
     } = session.metadata || {};
 
+    // Handle cart checkout
+    if (type === "cart_checkout") {
+      console.log(`Processing cart checkout for user: ${userId}`);
+      await handleCartCheckout(session, userId, cartItemIds);
+      return;
+    }
+
+    // Handle subscription checkout (existing logic)
     console.log(`Checkout completed for user: ${createdBy}, plan: ${planId}`);
 
     // Parse extraLinks to number if it exists
@@ -876,6 +887,104 @@ async function updateSubscriptionRecord(
     //   },
     // });
     throw error;
+  }
+}
+
+/**
+ * Handle cart checkout completion
+ * @param {Object} session - The Stripe checkout session
+ * @param {string} userId - The user's MongoDB ID
+ * @param {string} cartItemIds - Comma-separated cart item IDs
+ */
+async function handleCartCheckout(session, userId, cartItemIds) {
+  try {
+    console.log(
+      `Processing cart checkout for user ${userId}, session ${session.id}`
+    );
+
+    // Find the order by session ID
+    const order = await models.storeitemsorders.findOne({
+      stripeSessionId: session.id,
+      createdBy: userId,
+    });
+
+    if (!order) {
+      console.error(`Order not found for session ${session.id}`);
+      return;
+    }
+
+    console.log(`Found order ${order.orderNumber} for session ${session.id}`);
+
+    // Get the payment intent to get the actual amount paid
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    let paymentIntent = null;
+
+    if (session.payment_intent) {
+      try {
+        paymentIntent = await stripe.paymentIntents.retrieve(
+          session.payment_intent
+        );
+      } catch (error) {
+        console.error(`Error retrieving payment intent: ${error.message}`);
+      }
+    }
+
+    // Update order with payment information
+    const updateData = {
+      paymentStatus: "paid",
+      orderStatus: "processing",
+      stripePaymentIntentId: session.payment_intent,
+      total: paymentIntent ? paymentIntent.amount / 100 : order.total, // Convert from cents
+    };
+
+    // Add shipping address if available
+    if (session.shipping_details?.address) {
+      updateData.shippingAddress = {
+        name: session.shipping_details.name,
+        line1: session.shipping_details.address.line1,
+        line2: session.shipping_details.address.line2,
+        city: session.shipping_details.address.city,
+        state: session.shipping_details.address.state,
+        postal_code: session.shipping_details.address.postal_code,
+        country: session.shipping_details.address.country,
+      };
+    }
+
+    await update({
+      col: "storeitemsorders",
+      data: { _id: order._id },
+      update: updateData,
+    });
+
+    console.log(`Updated order ${order.orderNumber} to paid status`);
+
+    // Clear user's cart items that were purchased
+    if (cartItemIds) {
+      const itemIds = cartItemIds.split(",");
+      for (const itemId of itemIds) {
+        try {
+          await models.usercarts.findByIdAndDelete(itemId.trim());
+          console.log(`Removed cart item ${itemId} from user's cart`);
+        } catch (error) {
+          console.error(`Error removing cart item ${itemId}: ${error.message}`);
+        }
+      }
+    }
+
+    console.log(
+      `Successfully processed cart checkout for order ${order.orderNumber}`
+    );
+  } catch (error) {
+    console.error(`Error handling cart checkout: ${error.message}`);
+    // await sendErrorToAdmin({
+    //   error,
+    //   subject: "Cart Checkout Handler Error",
+    //   context: {
+    //     sessionId: session.id,
+    //     userId,
+    //     cartItemIds,
+    //   },
+    // });
   }
 }
 

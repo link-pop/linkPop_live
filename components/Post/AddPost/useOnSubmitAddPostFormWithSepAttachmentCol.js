@@ -16,6 +16,7 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
   expirationPeriod,
   scheduleAt,
   price,
+  customData = {},
   onSuccess,
   onError,
 }) {
@@ -243,6 +244,7 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
         expirationPeriod: expirationPeriod || null,
         scheduleAt: scheduleAt ? new Date(scheduleAt).toISOString() : null,
         price: price > 0 ? price : null, // Ensure price is null when not set
+        ...customData, // Spread custom data (title, category, etc.)
       };
 
       let postId;

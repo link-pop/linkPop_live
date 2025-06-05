@@ -28,7 +28,7 @@ const attachmentSchema = new mongoose.Schema(
     uploadedFrom: {
       type: String,
       required: true,
-      enum: ["chatmessages", "welcomeMessage", "feeds", null],
+      enum: ["chatmessages", "welcomeMessage", "feeds", "storeitems", null],
     },
     isPaid: {
       type: Boolean,

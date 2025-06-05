@@ -9,6 +9,7 @@ import {
   DASHBOARD_ROUTE,
   MY_ROUTE,
   DISCOVER_VIDEO_ROUTE,
+  CART_ROUTE,
 } from "@/lib/utils/constants";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import {
@@ -28,6 +29,7 @@ import {
   PieChart,
   CalendarCheck,
   Search,
+  ShoppingCart,
 } from "lucide-react";
 import { SITE2 } from "@/config/env";
 import useWindowWidth from "@/hooks/useWindowWidth";
@@ -63,6 +65,12 @@ export const navItems = () => {
       name: showTitles ? t("messages") : "",
       icon: <MessageSquare className="w-6 h-6" />,
       href: CHATS_ROUTE,
+    },
+    {
+      id: "cart",
+      name: showTitles ? t("cart") : "",
+      icon: <ShoppingCart className="w-6 h-6" />,
+      href: CART_ROUTE,
     },
     // { id: "collections", name: t("collections"), icon: <Bookmark className="w-6 h-6" />, href: "/collections" },
     // {

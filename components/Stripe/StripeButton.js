@@ -20,7 +20,7 @@ export default function StripeButton(props) {
     try {
       setIsLoading(true);
 
-      // Determine the type of payment (feed post, chat message, or subscription)
+      // Determine the type of payment (feed post, chat message, cart, or subscription)
       const postType = props.postType || "feeds";
       let endpoint,
         requestData = {};
@@ -38,6 +38,9 @@ export default function StripeButton(props) {
         }
         endpoint = "/api/stripe/chatmessages";
         requestData = { messageId: props.messageId };
+      } else if (postType === "cart") {
+        endpoint = "/api/stripe/cart";
+        requestData = {}; // Cart items are fetched server-side
       } else if (postType === "subscription") {
         if (!props.planId) {
           throw new Error("Missing required property: planId");

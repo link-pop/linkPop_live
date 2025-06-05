@@ -76,6 +76,9 @@ export default function Carousel({
   aspectRatio = "aspect-square",
   imageSize = { width: 600, height: 600 },
   fileIcon = null,
+  content = null,
+  showContentInViewer = true,
+  mongoUser = null,
 }) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
 
@@ -97,7 +100,7 @@ export default function Carousel({
   // Default file icon if none provided
   const defaultFileIcon = (file) => {
     const showCounts = [];
-    
+
     if (fileCounts.images > 0) {
       showCounts.push(
         <div key="images" className="f g5 aic">
@@ -106,7 +109,7 @@ export default function Carousel({
         </div>
       );
     }
-    
+
     if (fileCounts.videos > 0) {
       showCounts.push(
         <div key="videos" className="f g5 aic">
@@ -150,7 +153,7 @@ export default function Carousel({
                   onClick?.(index);
                 }}
               >
-                <MediaContent 
+                <MediaContent
                   file={file}
                   className={`${imageClassName} w-full h-full`}
                   style={{
@@ -185,7 +188,7 @@ export default function Carousel({
             {files.map((file, index) => (
               <SliderThumbItem key={index} index={index}>
                 <div className={`por aspect-square w-full max-w-[80px]`}>
-                  <MediaContent 
+                  <MediaContent
                     file={file}
                     className={`${imageClassName} w-full h-full`}
                     style={{
@@ -209,6 +212,9 @@ export default function Carousel({
           files={files}
           currentIndex={selectedImageIndex}
           onClose={() => setSelectedImageIndex(null)}
+          content={content}
+          showContent={showContentInViewer}
+          mongoUser={mongoUser}
         />
       )}
     </>

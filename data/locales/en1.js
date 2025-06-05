@@ -1554,6 +1554,76 @@ const en = {
 
   // Media page
   media: "Media",
+
+  // UserStore functionality
+  storeCount: "Store",
+  addStoreItem: "Add Store Item",
+  describeYourStoreItem: "Describe your store item...",
+  addToStore: "Add to Store",
+  editStoreItem: "Edit Store Item",
+  updateStoreItem: "Update Store Item",
+  deleteStoreItem: "Delete Store Item",
+  areYouSureDeleteStoreItem: "Are you sure you want to delete this store item?",
+  storeItemUpdated: "Store item updated",
+  storeItemDeleted: "Store item deleted",
+  errorDeletingStoreItem: "Error deleting store item",
+  errorLoadingStoreItems: "Error loading store items",
+  noStoreItemsYet: "No store items yet. Add your first item!",
+  noStoreItemsFromThisUser: "This user hasn't added any store items yet",
+  storeItem: "Store Item",
+  storeItemTitle: "Item Name",
+  storeItemCategory: "Category",
+  storeItemDescription: "Description",
+  storeItemPrice: "Price",
+
+  // Cart functionality
+  addToCart: "Add to Cart",
+  addedToCart: "Added to Cart",
+  removeFromCart: "Remove from Cart",
+  removedFromCart: "Removed from Cart",
+  cart: "Cart",
+  cartEmpty: "Your cart is empty",
+  cartItems: "Cart Items",
+  quantity: "Quantity",
+  total: "Total",
+  checkout: "Checkout",
+  errorAddingToCart: "Error adding item to cart",
+  errorRemovingFromCart: "Error removing item from cart",
+  itemAlreadyInCart: "Item already in cart",
+  cartUpdated: "Cart updated",
+  viewCart: "View Cart",
+  continueShoppingCart: "Continue Shopping",
+  proceedToCheckout: "Proceed to Checkout",
+
+  // Order success and management
+  orderConfirmed: "Order Confirmed!",
+  thankYouForOrder: "Thank you for your order",
+  orderDetails: "Order Details",
+  orderNumber: "Order Number",
+  orderDate: "Order Date",
+  paymentStatus: "Payment Status",
+  items: "Items",
+  whatHappensNext: "What happens next?",
+  orderProcessingMessage: "We'll process your order within 1-2 business days",
+  shippingNotificationMessage:
+    "You'll receive a shipping notification via email",
+  trackingInfoMessage: "Track your package with the provided tracking number",
+  continueShopping: "Continue Shopping",
+  viewOrders: "View Orders",
+  backToCart: "Back to Cart",
+
+  // Orders page functionality
+  orders: "Orders",
+  order: "Order",
+  noOrdersYet: "No orders yet",
+  startShopping: "Start Shopping",
+  errorLoadingOrders: "Error loading orders",
+  shippingAddress: "Shipping Address",
+  ordered: "Ordered",
+  shipped: "Shipped",
+  delivered: "Delivered",
+  tracking: "Tracking",
+  each: "each",
 };
 
 export default en;

@@ -13,6 +13,8 @@ import {
   DISCOVER_VIDEO_ROUTE,
   DISCOVER_SEARCH_ROUTE,
   DISCOVER_MEDIA_ROUTE,
+  CART_ROUTE,
+  ORDERS_ROUTE,
 } from "@/lib/utils/constants";
 import { ArrowLeft } from "lucide-react";
 import { CHATS_ROUTE } from "../../../lib/utils/constants";
@@ -78,6 +80,10 @@ const PageTitle = () => {
   } else if (pathname.includes(DISCOVER_MEDIA_ROUTE)) {
     // This will be handled by triple title
     title = null;
+  } else if (pathname.includes(CART_ROUTE)) {
+    title = t("cart");
+  } else if (pathname.includes(ORDERS_ROUTE)) {
+    title = t("orders");
   }
 
   // if (!title) return null;
@@ -91,7 +97,9 @@ const PageTitle = () => {
     pathname?.includes("/analytics") ||
     pathname?.includes("/affiliate") ||
     pathname?.includes("/my/queue") ||
-    pathname?.includes("/discover/search");
+    pathname?.includes("/discover/search") ||
+    pathname?.includes(CART_ROUTE) ||
+    pathname?.includes(ORDERS_ROUTE);
 
   const width = isWiderPath ? "maw1000" : "maw597";
 
