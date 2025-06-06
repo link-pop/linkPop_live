@@ -1,24 +1,24 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { useContext } from "@/components/Context/Context";
-import { getAll, removeOne, update } from "@/lib/actions/crud";
-import { formatPrice } from "@/lib/utils/formatPrice";
-import { Trash2, Plus, Minus, ShoppingCart } from "lucide-react";
-import { useState, useEffect } from "react";
-import PostsLoader from "@/components/Post/Posts/PostsLoader";
+import { ShoppingCart, Minus, Plus, Trash2, Store } from "lucide-react";
 import Link from "next/link";
-import StripeButton from "@/components/Stripe/StripeButton";
-import { ORDERS_ROUTE } from "@/lib/utils/constants";
+import { update, removeOne } from "@/lib/actions/crud";
+import { getUserCartItemsGroupedByStoreOwner } from "@/lib/actions/userCartActions";
+import { formatPrice } from "@/lib/utils/formatPrice";
+import PostsLoader from "@/components/Post/Posts/PostsLoader";
 
 export default function CartPageClient({ mongoUser }) {
   const { t } = useTranslation();
   const { toastSet } = useContext();
   const queryClient = useQueryClient();
   const [loadingItems, setLoadingItems] = useState(new Set());
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-  // Refresh cart data when page becomes visible (e.g., returning from checkout)
+  // Refresh cart when page becomes visible (e.g., returning from another page)
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden && mongoUser?._id) {
@@ -32,51 +32,8 @@ export default function CartPageClient({ mongoUser }) {
     };
   }, [mongoUser?._id, queryClient]);
 
-  // Check for error parameters in URL and show appropriate messages
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const error = urlParams.get("error");
-
-    if (error) {
-      let errorMessage = t("error");
-      switch (error) {
-        case "missing_session":
-          errorMessage = t("paymentSessionNotFound");
-          break;
-        case "session_not_found":
-          errorMessage = t("paymentSessionExpired");
-          break;
-        case "payment_not_completed":
-          errorMessage = t("paymentNotCompleted");
-          break;
-        case "order_not_found":
-          errorMessage = t("orderNotFound");
-          break;
-        case "update_failed":
-          errorMessage = t("failedToUpdateOrderStatus");
-          break;
-        case "processing_failed":
-          errorMessage = t("paymentProcessingFailed");
-          break;
-        default:
-          errorMessage = t("checkoutError");
-      }
-
-      toastSet({
-        isOpen: true,
-        title: t("error"),
-        text: errorMessage,
-      });
-
-      // Clean up URL by removing error parameter
-      const newUrl = new URL(window.location);
-      newUrl.searchParams.delete("error");
-      window.history.replaceState({}, "", newUrl);
-    }
-  }, [toastSet, t]);
-
   const {
-    data: cartItems = [],
+    data: cartGroups = [],
     isLoading,
     error,
   } = useQuery({
@@ -85,16 +42,8 @@ export default function CartPageClient({ mongoUser }) {
       if (!mongoUser?._id) return [];
 
       try {
-        const items = await getAll({
-          col: "usercarts",
-          data: {
-            createdBy: mongoUser._id,
-          },
-          populate: "storeItemId",
-          sort: { createdAt: -1 },
-        });
-
-        return items || [];
+        const groups = await getUserCartItemsGroupedByStoreOwner();
+        return groups.error ? [] : groups;
       } catch (error) {
         console.error("Error fetching cart items:", error);
         return [];
@@ -178,11 +127,46 @@ export default function CartPageClient({ mongoUser }) {
     }
   };
 
-  const calculateTotal = () => {
-    return cartItems.reduce((total, item) => {
-      const price = item.storeItemId?.price || 0;
-      return total + price * item.quantity;
-    }, 0);
+  const calculateGrandTotal = () => {
+    return cartGroups.reduce((total, group) => total + group.subtotal, 0);
+  };
+
+  const getTotalItemCount = () => {
+    return cartGroups.reduce((total, group) => total + group.totalItems, 0);
+  };
+
+  const handleCheckout = async () => {
+    setIsCheckingOut(true);
+
+    try {
+      const response = await fetch("/api/stripe/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create checkout session");
+      }
+
+      if (data.sessionUrl) {
+        // Redirect to Stripe checkout
+        window.location.href = data.sessionUrl;
+      } else {
+        throw new Error("No checkout URL received");
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      toastSet({
+        isOpen: true,
+        title: t("errorProcessingCheckout"),
+        text: error.message || "An error occurred during checkout",
+      });
+      setIsCheckingOut(false);
+    }
   };
 
   if (!mongoUser?._id) {
@@ -215,7 +199,7 @@ export default function CartPageClient({ mongoUser }) {
     );
   }
 
-  if (!cartItems.length) {
+  if (!cartGroups.length) {
     return (
       <div className="fcc min-h-screen p20">
         <div className="text-center">
@@ -238,124 +222,156 @@ export default function CartPageClient({ mongoUser }) {
       <div className="mb20">
         <h1 className="text-2xl font-bold mb5">{t("cart")}</h1>
         <p className="text-muted-foreground">
-          {cartItems.length} {cartItems.length === 1 ? "item" : "items"}
+          {getTotalItemCount()} {getTotalItemCount() === 1 ? "item" : "items"}{" "}
+          from {cartGroups.length}{" "}
+          {cartGroups.length === 1 ? "store" : "stores"}
         </p>
       </div>
 
-      <div className="fc g15">
-        {cartItems.map((cartItem) => {
-          const storeItem = cartItem.storeItemId;
-          const isLoading = loadingItems.has(cartItem._id);
-
-          if (!storeItem) {
-            return null; // Skip if store item was deleted
-          }
-
-          return (
-            <div
-              key={cartItem._id}
-              className={`f g15 p15 border rounded-lg bg-background ${
-                isLoading ? "opacity-50" : ""
-              }`}
-            >
-              {/* Store Item Image */}
-              <div className="w80 h80 bg-muted rounded-lg overflow-hidden flex-shrink-0">
-                {storeItem.files?.[0]?.fileUrl ? (
-                  <img
-                    src={storeItem.files[0].fileUrl}
-                    alt={storeItem.title || "Store item"}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full fcc">
-                    <ShoppingCart className="w30 h30 text-muted-foreground" />
-                  </div>
-                )}
+      {/* Cart Groups by Store Owner */}
+      <div className="fc g20">
+        {cartGroups.map((group, groupIndex) => (
+          <div
+            key={group.storeOwner._id}
+            className="border rounded-lg bg-background p20"
+          >
+            {/* Store Owner Header */}
+            <div className="f aic g10 mb15 pb15 border-b">
+              <Store className="w20 h20 text-muted-foreground" />
+              <div>
+                <h2 className="font-semibold text-lg">
+                  {group.storeOwner.username ||
+                    group.storeOwner.email ||
+                    "Unknown Store Owner"}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {group.totalItems} {group.totalItems === 1 ? "item" : "items"}{" "}
+                  • {formatPrice(group.subtotal)}
+                </p>
               </div>
+            </div>
 
-              {/* Item Details */}
-              <div className="flex-1 fc g10">
-                <div>
-                  <h3 className="font-semibold text-lg">
-                    {storeItem.title || "Untitled Item"}
-                  </h3>
-                  {storeItem.category && (
-                    <p className="text-sm text-muted-foreground uppercase tracking-wide">
-                      {storeItem.category}
-                    </p>
-                  )}
-                  {storeItem.text && (
-                    <p className="text-sm text-muted-foreground line-clamp-2 mt5">
-                      {storeItem.text}
-                    </p>
-                  )}
-                </div>
+            {/* Items from this store owner */}
+            <div className="fc g15">
+              {group.items.map((cartItem) => {
+                const storeItem = cartItem.storeItemId;
+                const isLoading = loadingItems.has(cartItem._id);
 
-                <div className="f aic jcsb">
-                  {/* Quantity Controls */}
-                  <div className="f aic g10">
-                    <span className="text-sm text-muted-foreground">
-                      {t("quantity")}:
-                    </span>
-                    <div className="f aic g5 border rounded-lg px8 py5">
-                      <button
-                        onClick={() =>
-                          updateQuantity(cartItem._id, cartItem.quantity - 1)
-                        }
-                        disabled={cartItem.quantity <= 1 || isLoading}
-                        className="f aic jcc w20 h20 rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        <Minus size={12} />
-                      </button>
-                      <span className="min-w-[30px] text-center text-sm font-medium">
-                        {cartItem.quantity}
-                      </span>
-                      <button
-                        onClick={() =>
-                          updateQuantity(cartItem._id, cartItem.quantity + 1)
-                        }
-                        disabled={isLoading}
-                        className="f aic jcc w20 h20 rounded hover:bg-muted"
-                      >
-                        <Plus size={12} />
-                      </button>
-                    </div>
-                  </div>
+                if (!storeItem) {
+                  return null; // Skip if store item was deleted
+                }
 
-                  {/* Price and Remove */}
-                  <div className="f aic g15">
-                    <div className="text-right">
-                      <div className="text-lg font-bold">
-                        {formatPrice(storeItem.price * cartItem.quantity)}
-                      </div>
-                      {cartItem.quantity > 1 && (
-                        <div className="text-sm text-muted-foreground">
-                          {formatPrice(storeItem.price)} each
+                return (
+                  <div
+                    key={cartItem._id}
+                    className={`f g15 p15 border rounded-lg bg-muted/30 ${
+                      isLoading ? "opacity-50" : ""
+                    }`}
+                  >
+                    {/* Store Item Image */}
+                    <div className="w80 h80 bg-muted rounded-lg overflow-hidden flex-shrink-0">
+                      {storeItem.files?.[0]?.fileUrl ? (
+                        <img
+                          src={storeItem.files[0].fileUrl}
+                          alt={storeItem.title || "Store item"}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full fcc">
+                          <ShoppingCart className="w30 h30 text-muted-foreground" />
                         </div>
                       )}
                     </div>
-                    <button
-                      onClick={() => removeFromCart(cartItem._id)}
-                      disabled={isLoading}
-                      className="p8 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
-                      title={t("removeFromCart")}
-                    >
-                      <Trash2 size={16} />
-                    </button>
+
+                    {/* Item Details */}
+                    <div className="flex-1 fc g10">
+                      <div>
+                        <h3 className="font-semibold text-lg">
+                          {storeItem.title || t("storeItem")}
+                        </h3>
+                        {storeItem.category && (
+                          <p className="text-sm text-muted-foreground uppercase tracking-wide">
+                            {storeItem.category}
+                          </p>
+                        )}
+                        {storeItem.text && (
+                          <p className="text-sm text-muted-foreground mt5 line-clamp-2">
+                            {storeItem.text}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="f jcsb aic">
+                        <div className="text-lg font-bold">
+                          {formatPrice(storeItem.price)}
+                        </div>
+
+                        {/* Quantity Controls */}
+                        <div className="f aic g10">
+                          <div className="f aic g5 border rounded-lg px8 py5 bg-background">
+                            <button
+                              onClick={() =>
+                                updateQuantity(
+                                  cartItem._id,
+                                  cartItem.quantity - 1
+                                )
+                              }
+                              disabled={cartItem.quantity <= 1 || isLoading}
+                              className="f aic jcc w25 h25 rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <Minus size={14} />
+                            </button>
+                            <span className="min-w-[40px] text-center font-medium">
+                              {cartItem.quantity}
+                            </span>
+                            <button
+                              onClick={() =>
+                                updateQuantity(
+                                  cartItem._id,
+                                  cartItem.quantity + 1
+                                )
+                              }
+                              disabled={isLoading}
+                              className="f aic jcc w25 h25 rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <Plus size={14} />
+                            </button>
+                          </div>
+
+                          <button
+                            onClick={() => removeFromCart(cartItem._id)}
+                            disabled={isLoading}
+                            className="f aic jcc w35 h35 rounded-lg border border-destructive/20 hover:bg-destructive/10 text-destructive disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Item Total */}
+                      <div className="text-right">
+                        <div className="text-lg font-bold">
+                          {formatPrice(storeItem.price * cartItem.quantity)}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {formatPrice(storeItem.price)} × {cartItem.quantity}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                );
+              })}
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
 
       {/* Cart Summary */}
-      <div className="mt20 p20 border rounded-lg bg-muted/50">
+      <div className="mt20 p20 border rounded-lg bg-background">
         <div className="f jcsb aic mb15">
-          <span className="text-lg font-semibold">{t("total")}:</span>
+          <span className="text-xl font-semibold">{t("total")}:</span>
           <span className="text-2xl font-bold">
-            {formatPrice(calculateTotal())}
+            {formatPrice(calculateGrandTotal())}
           </span>
         </div>
 
@@ -366,17 +382,13 @@ export default function CartPageClient({ mongoUser }) {
           >
             {t("continueShoppingCart")}
           </Link>
-          <Link
-            href={ORDERS_ROUTE}
-            className="flex-1 px20 py10 border border-border hover:bg-muted text-center rounded-lg transition-colors"
+          <button
+            onClick={handleCheckout}
+            disabled={isCheckingOut}
+            className="flex-1 px20 py10 bg-accent hover:bg-accent/80 text-accent-foreground rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {t("viewOrders")}
-          </Link>
-          <div className="flex-1">
-            <StripeButton postType="cart" disabled={!cartItems.length}>
-              {t("proceedToCheckout")}
-            </StripeButton>
-          </div>
+            {isCheckingOut ? t("processing") : t("proceedToCheckout")}
+          </button>
         </div>
       </div>
     </div>

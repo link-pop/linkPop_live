@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "@/components/Context/TranslationContext";
-import { CheckCircle, Package, ArrowRight } from "lucide-react";
+import { CheckCircle, Package, ArrowRight, Store } from "lucide-react";
 import Link from "next/link";
 import PostsLoader from "@/components/Post/Posts/PostsLoader";
 import { getAll } from "@/lib/actions/crud";
@@ -13,7 +13,7 @@ export default function CartSuccessClient({ mongoUser }) {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
-  const [order, setOrder] = useState(null);
+  const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { clearCartAndRefresh } = useCartOperations(mongoUser);
@@ -27,19 +27,19 @@ export default function CartSuccessClient({ mongoUser }) {
       }
 
       try {
-        // Find the order by Stripe session ID
-        const orders = await getAll({
+        // Find ALL orders by Stripe session ID (multiple orders for different store owners)
+        const fetchedOrders = await getAll({
           col: "storeitemsorders",
           data: {
             stripeSessionId: sessionId,
             createdBy: mongoUser._id,
           },
-          populate: "items.storeItemId",
-          limit: 1,
+          populate: "items.storeItemId storeOwner",
+          sort: { createdAt: -1 },
         });
 
-        if (orders && orders.length > 0) {
-          setOrder(orders[0]);
+        if (fetchedOrders && fetchedOrders.length > 0) {
+          setOrders(fetchedOrders);
 
           // Clear cart and refresh cache after successful order
           try {
@@ -52,10 +52,10 @@ export default function CartSuccessClient({ mongoUser }) {
             // Don't fail the order display if cart clearing fails
           }
         } else {
-          setError("Order not found");
+          setError("Orders not found");
         }
       } catch (err) {
-        console.error("Error fetching order:", err);
+        console.error("Error fetching orders:", err);
         setError("Failed to load order details");
       } finally {
         setIsLoading(false);
@@ -83,11 +83,11 @@ export default function CartSuccessClient({ mongoUser }) {
     );
   }
 
-  if (error || !order) {
+  if (error || !orders.length) {
     return (
       <div className="fcc min-h-screen p20">
         <div className="text-center">
-          <p className="text-destructive">{error || "Order not found"}</p>
+          <p className="text-destructive">{error || "Orders not found"}</p>
           <Link
             href="/cart"
             className="mt15 px20 py10 bg-accent hover:bg-accent/80 text-accent-foreground rounded-lg transition-colors inline-block"
@@ -99,77 +99,111 @@ export default function CartSuccessClient({ mongoUser }) {
     );
   }
 
+  const totalAmount = orders.reduce((sum, order) => sum + order.total, 0);
+
   return (
-    <div className="max-w-2xl mx-auto p20">
+    <div className="max-w-4xl mx-auto p20">
       {/* Success Header */}
       <div className="text-center mb30">
         <CheckCircle className="w60 h60 text-green-500 mx-auto mb15" />
         <h1 className="text-3xl font-bold mb10">{t("orderConfirmed")}</h1>
         <p className="text-muted-foreground">
-          {t("thankYouForOrder")} {order.orderNumber}
+          {t("thankYouForOrder")} - {orders.length}{" "}
+          {orders.length === 1 ? t("order") : t("orders")} {t("created")}
+        </p>
+        <p className="text-lg font-semibold mt5">
+          {t("total")}: ${totalAmount.toFixed(2)}
         </p>
       </div>
 
-      {/* Order Details */}
-      <div className="bg-background border rounded-lg p20 mb20">
-        <h2 className="text-xl font-semibold mb15">{t("orderDetails")}</h2>
-
-        <div className="fc g10 mb15">
-          <div className="f jcsb">
-            <span className="text-muted-foreground">{t("orderNumber")}:</span>
-            <span className="font-medium">{order.orderNumber}</span>
-          </div>
-          <div className="f jcsb">
-            <span className="text-muted-foreground">{t("orderDate")}:</span>
-            <span className="font-medium">
-              {new Date(order.createdAt).toLocaleDateString()}
-            </span>
-          </div>
-          <div className="f jcsb">
-            <span className="text-muted-foreground">{t("paymentStatus")}:</span>
-            <span className="font-medium capitalize text-green-600">
-              {order.paymentStatus}
-            </span>
-          </div>
-        </div>
-
-        {/* Order Items */}
-        <div className="border-t pt15">
-          <h3 className="font-semibold mb10">{t("items")}:</h3>
-          <div className="fc g10">
-            {order.items.map((item, index) => (
-              <div key={index} className="f jcsb aic">
-                <div className="f aic g10">
-                  <Package className="w16 h16 text-muted-foreground" />
-                  <div>
-                    <div className="font-medium">{item.title}</div>
-                    {item.category && (
-                      <div className="text-sm text-muted-foreground">
-                        {item.category}
-                      </div>
-                    )}
-                  </div>
+      {/* Multiple Orders */}
+      <div className="fc g20 mb20">
+        {orders.map((order, orderIndex) => (
+          <div key={order._id} className="bg-background border rounded-lg p20">
+            {/* Order Header */}
+            <div className="f jcsb aic mb15 pb15 border-b">
+              <div>
+                <h2 className="text-xl font-semibold">
+                  {t("order")} #{orderIndex + 1}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {order.orderNumber}
+                </p>
+              </div>
+              <div className="text-right">
+                <div className="text-lg font-bold">
+                  ${order.total.toFixed(2)}
                 </div>
-                <div className="text-right">
-                  <div className="font-medium">
-                    ${item.priceAtTime.toFixed(2)} × {item.quantity}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    ${(item.priceAtTime * item.quantity).toFixed(2)}
-                  </div>
+                <div className="text-sm text-green-600 font-medium">
+                  {order.paymentStatus}
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
 
-        {/* Order Total */}
-        <div className="border-t pt15 mt15">
-          <div className="f jcsb aic">
-            <span className="text-lg font-semibold">{t("total")}:</span>
-            <span className="text-xl font-bold">${order.total.toFixed(2)}</span>
+            {/* Store Owner Info */}
+            <div className="f aic g10 mb15 p10 bg-muted/30 rounded-lg">
+              <Store className="w16 h16 text-muted-foreground" />
+              <div>
+                <span className="text-sm text-muted-foreground">
+                  {t("storeOwner")}:
+                </span>
+                <span className="ml5 font-medium">
+                  {order.storeOwner?.username ||
+                    order.storeOwner?.email ||
+                    "Unknown Store Owner"}
+                </span>
+              </div>
+            </div>
+
+            {/* Order Details */}
+            <div className="fc g10 mb15">
+              <div className="f jcsb">
+                <span className="text-muted-foreground">{t("orderDate")}:</span>
+                <span className="font-medium">
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+            </div>
+
+            {/* Order Items */}
+            <div className="border-t pt15">
+              <h3 className="font-semibold mb10">{t("items")}:</h3>
+              <div className="fc g10">
+                {order.items.map((item, index) => (
+                  <div key={index} className="f jcsb aic">
+                    <div className="f aic g10">
+                      <Package className="w16 h16 text-muted-foreground" />
+                      <div>
+                        <div className="font-medium">{item.title}</div>
+                        {item.category && (
+                          <div className="text-sm text-muted-foreground">
+                            {item.category}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-medium">
+                        ${item.priceAtTime.toFixed(2)} × {item.quantity}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        ${(item.priceAtTime * item.quantity).toFixed(2)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Order Subtotal */}
+            <div className="border-t pt15 mt15">
+              <div className="f jcsb aic">
+                <span className="font-semibold">{t("orderTotal")}:</span>
+                <span className="font-bold">${order.total.toFixed(2)}</span>
+              </div>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
 
       {/* Next Steps */}

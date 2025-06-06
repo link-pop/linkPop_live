@@ -4,8 +4,8 @@ CODE STYLE & STANDARDS:
 
 - MANDATORY: when you create new file/fn/comp - make new separate, reusable file for that! SO I DON'T have to refactor the code!!! OR search for it, maybe it's already created
 - MANDATORY: use secure server side approaches to prevent sensitive data leaks!
+- MANDATORY: be sure you use all variables you created - unless delete unused variales
 - append new translations in the bottom of translations file and only to en1.js file!
-- be sure you use all variables you created - unless delete unused variales
 - use all MCPs if you need it!
 - don't hardcode values!
 - don't run: npm run dev, npm run build, npm run lint (and any forms of it)

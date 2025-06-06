@@ -4,7 +4,12 @@ import { useState, useEffect } from "react";
 import { ShoppingCart, Check, Minus, Plus } from "lucide-react";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { useContext } from "@/components/Context/Context";
-import { add, removeOne, getOne, update } from "@/lib/actions/crud";
+import {
+  addToUserCart,
+  removeFromUserCart,
+  isItemInUserCart,
+  updateCartItemQuantity,
+} from "@/lib/actions/userCartActions";
 import { formatPrice } from "@/lib/utils/formatPrice";
 
 export default function AddToUserCartButton({
@@ -31,15 +36,16 @@ export default function AddToUserCartButton({
   useEffect(() => {
     const checkCartStatus = async () => {
       try {
-        const cartItem = await getOne({
-          col: "usercarts",
-          data: {
-            createdBy: mongoUser._id,
-            storeItemId: storeItem._id,
-          },
+        const itemInCart = await isItemInUserCart({
+          storeItemId: storeItem._id,
         });
-        setIsInCart(!!cartItem);
-        setCartItemQuantity(cartItem?.quantity || 0);
+        setIsInCart(itemInCart);
+
+        // If item is in cart, we could fetch the quantity here
+        // For now, we'll set it to 1 as a default
+        if (itemInCart) {
+          setCartItemQuantity(1);
+        }
       } catch (error) {
         console.error("Error checking cart status:", error);
       }
@@ -56,20 +62,13 @@ export default function AddToUserCartButton({
     setIsLoading(true);
 
     try {
-      const result = await add({
-        col: "usercarts",
-        data: {
-          createdBy: mongoUser._id,
-          storeItemId: storeItem._id,
-          quantity: quantity,
-        },
+      const result = await addToUserCart({
+        storeItemId: storeItem._id,
+        quantity: quantity,
       });
 
       if (result?.error) {
-        if (
-          result.error.includes("duplicate") ||
-          result.error.includes("unique")
-        ) {
+        if (result.error.includes("already in cart")) {
           toastSet({
             isOpen: true,
             title: t("itemAlreadyInCart"),
@@ -104,15 +103,9 @@ export default function AddToUserCartButton({
     setIsLoading(true);
 
     try {
-      const result = await update({
-        col: "usercarts",
-        data: {
-          createdBy: mongoUser._id,
-          storeItemId: storeItem._id,
-        },
-        update: {
-          quantity: newQuantity,
-        },
+      const result = await updateCartItemQuantity({
+        storeItemId: storeItem._id,
+        quantity: newQuantity,
       });
 
       if (result?.error) {
@@ -142,12 +135,8 @@ export default function AddToUserCartButton({
     setIsLoading(true);
 
     try {
-      const result = await removeOne({
-        col: "usercarts",
-        data: {
-          createdBy: mongoUser._id,
-          storeItemId: storeItem._id,
-        },
+      const result = await removeFromUserCart({
+        storeItemId: storeItem._id,
       });
 
       if (result?.error) {

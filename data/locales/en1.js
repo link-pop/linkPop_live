@@ -1669,6 +1669,20 @@ const en = {
   orderMarkedAsShipped: "Order Marked as Shipped",
   orderMarkedAsShippedMessage:
     "The order has been successfully marked as shipped. Please ensure you complete the actual shipping process.",
+
+  // Store owner functionality
+  myPurchases: "My Purchases",
+  mySales: "My Sales",
+  purchased: "purchased",
+  sold: "sold",
+  trackingNumber: "Tracking Number",
+  storeOwner: "Store Owner",
+  buyer: "Buyer",
+  seller: "Seller",
+  created: "created",
+  orderTotal: "Order Total",
+  errorProcessingCheckout: "Error processing checkout",
+  shippedViaUSPS: "Shipped via USPS",
 };
 
 export default en;

@@ -7,9 +7,12 @@ import { formatPrice } from "@/lib/utils/formatPrice";
 import {
   createShippingLabel,
   createLabelBrokerQRCode,
+  downloadShippingLabel,
+  downloadLabelBrokerQRCode,
 } from "@/lib/actions/shippoActions";
 import { useQueryClient } from "@tanstack/react-query";
 import ShippingConfirmationDialog from "./ShippingConfirmationDialog";
+import ShippingCarrierDisplay from "@/components/ui/shared/ShippingCarrierDisplay/ShippingCarrierDisplay";
 import {
   Package,
   Calendar,
@@ -21,7 +24,7 @@ import {
   QrCode,
 } from "lucide-react";
 
-export default function OrderCard({ order }) {
+export default function OrderCard({ order, isStoreOwner = false }) {
   const { t } = useTranslation();
   const { toastSet } = useContext();
   const queryClient = useQueryClient();
@@ -29,15 +32,55 @@ export default function OrderCard({ order }) {
   const [isCreatingQRCode, setIsCreatingQRCode] = useState(false);
 
   // Define actual download functions first
-  const actualDownloadLabel = () => {
-    if (order.shippingLabelUrl) {
-      window.open(order.shippingLabelUrl, "_blank");
+  const actualDownloadLabel = async () => {
+    try {
+      const result = await downloadShippingLabel({ orderId: order._id });
+
+      if (result.error) {
+        toastSet({
+          isOpen: true,
+          title: t("error"),
+          text: result.error,
+        });
+        return;
+      }
+
+      if (result.success && result.label?.url) {
+        window.open(result.label.url, "_blank");
+      }
+    } catch (error) {
+      console.error("Error downloading shipping label:", error);
+      toastSet({
+        isOpen: true,
+        title: t("error"),
+        text: error.message || "Failed to download shipping label",
+      });
     }
   };
 
-  const actualDownloadLabelBrokerQRCode = () => {
-    if (order.labelBrokerQRCodeUrl) {
-      window.open(order.labelBrokerQRCodeUrl, "_blank");
+  const actualDownloadLabelBrokerQRCode = async () => {
+    try {
+      const result = await downloadLabelBrokerQRCode({ orderId: order._id });
+
+      if (result.error) {
+        toastSet({
+          isOpen: true,
+          title: t("error"),
+          text: result.error,
+        });
+        return;
+      }
+
+      if (result.success && result.qrCode?.url) {
+        window.open(result.qrCode.url, "_blank");
+      }
+    } catch (error) {
+      console.error("Error downloading Label Broker QR Code:", error);
+      toastSet({
+        isOpen: true,
+        title: t("error"),
+        text: error.message || "Failed to download Label Broker QR Code",
+      });
     }
   };
 
@@ -179,7 +222,7 @@ export default function OrderCard({ order }) {
 
     // If order is already shipped, download directly
     if (order.orderStatus === "shipped") {
-      window.open(order.shippingLabelUrl, "_blank");
+      actualDownloadLabel();
       return;
     }
 
@@ -263,7 +306,7 @@ export default function OrderCard({ order }) {
 
     // If order is already shipped, download directly
     if (order.orderStatus === "shipped") {
-      window.open(order.labelBrokerQRCodeUrl, "_blank");
+      actualDownloadLabelBrokerQRCode();
       return;
     }
 
@@ -314,6 +357,17 @@ export default function OrderCard({ order }) {
         )}
       </div>
 
+      {/* Shipping Carrier Display */}
+      {(order.carrierAccount || order.trackingNumber) && (
+        <div className="mb15">
+        <ShippingCarrierDisplay
+          carrierAccount={order.carrierAccount}
+          trackingNumber={order.trackingNumber}
+          variant="default"
+        />
+        </div>
+      )}
+
       {/* Order Items */}
       <div className="fc g10">
         {order.items?.map((item, index) => (
@@ -359,7 +413,8 @@ export default function OrderCard({ order }) {
       </div>
 
       {/* Shipping Address */}
-      {process.env.NEXT_PUBLIC_DEV_MODE && order.shippingAddress && (
+      {/* // ! don't delete or uncomment this ! */}
+      {/* {process.env.NEXT_PUBLIC_DEV_MODE && order.shippingAddress && (
         <div className="mt15 pt15 border-t">
           <h4 className="font-medium mb5">Dev mode: {t("shippingAddress")}:</h4>
           <div className="text-sm text-muted-foreground">
@@ -375,7 +430,7 @@ export default function OrderCard({ order }) {
             <div>{order.shippingAddress.country}</div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Order Dates */}
       <div className="mt15 pt15 border-t">
@@ -399,113 +454,127 @@ export default function OrderCard({ order }) {
         </div>
       </div>
 
-      {/* Shipping Actions */}
-      <div className="mt15 pt15 border-t">
-        <div className="f g10 aic">
-          {/* Show download button if label already exists */}
-          {order.shippingLabelUrl && (
-            <button
-              onClick={handleDownloadLabel}
-              className="px15 py8 bg-green-600 hover:bg-green-700 text-white rounded-lg f aic g8 text-sm font-medium transition-colors"
-            >
-              <ExternalLink size={16} />
-              {t("downloadLabel")}
-            </button>
-          )}
-
-          {/* Show download button for Label Broker QR Code if it exists */}
-          {order.labelBrokerQRCodeUrl && (
-            <button
-              onClick={handleDownloadLabelBrokerQRCode}
-              className="px15 py8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg f aic g8 text-sm font-medium transition-colors"
-              title={t("labelBrokerQRDescription")}
-            >
-              <QrCode size={16} />
-              {t("downloadLabelBrokerQR")}
-            </button>
-          )}
-
-          {/* Show create Label Broker QR Code button if label exists but QR code doesn't */}
-          {order.shippingLabelUrl &&
-            !order.labelBrokerQRCodeUrl &&
-            order.shippoTransactionId && (
+      {/* Shipping Actions - Only show for store owners */}
+      {isStoreOwner && (
+        <div className="mt15 pt15 border-t">
+          <div className="f g10 aic">
+            {/* Show download button if label already exists */}
+            {order.shippingLabelUrl && (
               <button
-                onClick={handleCreateLabelBrokerQRCode}
-                disabled={isCreatingQRCode}
-                className={`px15 py8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg f aic g8 text-sm font-medium transition-colors ${
-                  isCreatingQRCode ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                onClick={handleDownloadLabel}
+                className="px15 py8 bg-green-600 hover:bg-green-700 text-white rounded-lg f aic g8 text-sm font-medium transition-colors"
+              >
+                <ExternalLink size={16} />
+                {t("downloadLabel")}
+              </button>
+            )}
+
+            {/* Show download button for Label Broker QR Code if it exists */}
+            {order.labelBrokerQRCodeUrl && (
+              <button
+                onClick={handleDownloadLabelBrokerQRCode}
+                className="px15 py8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg f aic g8 text-sm font-medium transition-colors"
                 title={t("labelBrokerQRDescription")}
               >
                 <QrCode size={16} />
-                {isCreatingQRCode
-                  ? t("creatingLabelBrokerQR")
-                  : t("createLabelBrokerQR")}
+                {t("downloadLabelBrokerQR")}
               </button>
             )}
 
-          {/* Show create label button if no label exists yet but payment is made */}
-          {!order.shippingLabelUrl &&
-            order.paymentStatus === "paid" &&
-            order.shippoShipmentId && (
-              <button
-                onClick={handleCreateLabel}
-                disabled={isCreatingLabel}
-                className={`px15 py8 bg-accent hover:bg-accent/80 text-accent-foreground rounded-lg f aic g8 text-sm font-medium transition-colors ${
-                  isCreatingLabel ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                <Download size={16} />
-                {isCreatingLabel ? t("creatingLabel") : t("createLabel")}
-              </button>
-            )}
+            {/* Show create Label Broker QR Code button if label exists but QR code doesn't */}
+            {order.shippingLabelUrl &&
+              !order.labelBrokerQRCodeUrl &&
+              order.shippoTransactionId && (
+                <button
+                  onClick={handleCreateLabelBrokerQRCode}
+                  disabled={isCreatingQRCode}
+                  className={`px15 py8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg f aic g8 text-sm font-medium transition-colors ${
+                    isCreatingQRCode ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  title={t("labelBrokerQRDescription")}
+                >
+                  <QrCode size={16} />
+                  {isCreatingQRCode
+                    ? t("creatingLabelBrokerQR")
+                    : t("createLabelBrokerQR")}
+                </button>
+              )}
 
-          {/* Show shipment status messages */}
-          {order.shippoShipmentId &&
-            !order.shippingLabelUrl &&
-            order.paymentStatus === "paid" &&
-            !isCreatingLabel && (
+            {/* Show create label button if no label exists yet but payment is made */}
+            {!order.shippingLabelUrl &&
+              order.paymentStatus === "paid" &&
+              order.shippoShipmentId && (
+                <button
+                  onClick={handleCreateLabel}
+                  disabled={isCreatingLabel}
+                  className={`px15 py8 bg-accent hover:bg-accent/80 text-accent-foreground rounded-lg f aic g8 text-sm font-medium transition-colors ${
+                    isCreatingLabel ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  <Download size={16} />
+                  {isCreatingLabel ? t("creatingLabel") : t("createLabel")}
+                </button>
+              )}
+
+            {/* Show shipment status messages */}
+            {order.shippoShipmentId &&
+              !order.shippingLabelUrl &&
+              order.paymentStatus === "paid" &&
+              !isCreatingLabel && (
+                <span className="text-sm text-muted-foreground">
+                  {t("shipmentCreated")} - {t("readyForLabel")}
+                </span>
+              )}
+
+            {!order.shippoShipmentId && order.paymentStatus === "paid" && (
               <span className="text-sm text-muted-foreground">
-                {t("shipmentCreated")} - {t("readyForLabel")}
+                {t("preparingShipment")}
               </span>
             )}
 
-          {!order.shippoShipmentId && order.paymentStatus === "paid" && (
-            <span className="text-sm text-muted-foreground">
-              {t("preparingShipment")}
-            </span>
-          )}
-
-          {order.paymentStatus === "pending" && (
-            <span className="text-sm text-yellow-600">
-              {t("paymentPending")}
-            </span>
-          )}
-
-          {order.paymentStatus !== "paid" &&
-            order.paymentStatus !== "pending" && (
-              <span className="text-sm text-muted-foreground">
-                {t("paymentRequired")}
+            {order.paymentStatus === "pending" && (
+              <span className="text-sm text-yellow-600">
+                {t("paymentPending")}
               </span>
             )}
-        </div>
 
-        {/* Label Broker QR Code Info */}
-        {(order.labelBrokerQRCodeUrl ||
-          (order.shippingLabelUrl && order.shippoTransactionId)) && (
-          <div className="mt10 p10 bg-blue-50 border border-blue-200 rounded-lg">
-            <div className="f aic g8 mb5">
-              <QrCode size={16} className="text-blue-600" />
-              <span className="text-sm font-medium text-blue-800">
-                {t("labelBrokerQRCode")}
-              </span>
-            </div>
-            <p className="text-xs text-blue-700">
-              {t("labelBrokerQRDescription")} • {t("noPrinterNeeded")}
-            </p>
+            {order.paymentStatus !== "paid" &&
+              order.paymentStatus !== "pending" && (
+                <span className="text-sm text-muted-foreground">
+                  {t("paymentRequired")}
+                </span>
+              )}
           </div>
-        )}
-      </div>
+
+          {/* Label Broker QR Code Info */}
+          {(order.labelBrokerQRCodeUrl ||
+            (order.shippingLabelUrl && order.shippoTransactionId)) && (
+            <div className="mt10 p10 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="f aic g8 mb5">
+                <QrCode size={16} className="text-blue-600" />
+                <span className="text-sm font-medium text-blue-800">
+                  {t("labelBrokerQRCode")}
+                </span>
+              </div>
+              <p className="text-xs text-blue-700">
+                {t("labelBrokerQRDescription")} • {t("noPrinterNeeded")}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Order Status for Buyers - Show tracking info without shipping actions */}
+      {!isStoreOwner && order.trackingNumber && (
+        <div className="mt15 pt15 border-t">
+          <div className="f aic g10">
+            <span className="text-sm font-medium">{t("trackingNumber")}:</span>
+            <span className="text-sm text-muted-foreground font-mono">
+              {order.trackingNumber}
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

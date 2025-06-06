@@ -7,6 +7,9 @@ import { connectToDb } from "@/lib/db/connectToDb";
 import { update } from "@/lib/actions/crud";
 import { clearUserCart } from "@/lib/actions/userCartActions";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
+import { processCartItems } from "@/lib/actions/processCartItems";
+import { createMultipleStoreItemsOrders } from "@/lib/actions/createStoreItemsOrder";
+import { createShippoShipmentsForOrders } from "@/lib/actions/createShippoShipment";
 
 export async function GET(request) {
   try {
@@ -54,36 +57,40 @@ export async function GET(request) {
     // Connect to database
     await connectToDb();
 
-    // Find the order by Stripe session ID
-    const order = await models.storeitemsorders
-      .findOne({
+    // Check if orders already exist for this session
+    const existingOrders = await models.storeitemsorders
+      .find({
         stripeSessionId: sessionId,
       })
       .lean();
 
-    if (!order) {
-      console.error("Order not found for session:", sessionId);
-      return NextResponse.redirect(
-        new URL("/cart?error=order_not_found", request.url)
+    if (existingOrders && existingOrders.length > 0) {
+      console.log(
+        `Orders already exist for session ${sessionId}, redirecting to success page`
       );
-    }
-
-    console.log("Order found:", order.orderNumber);
-
-    // Check if order is already marked as paid
-    if (order.paymentStatus === "paid") {
-      console.log("Order already marked as paid, redirecting to success page");
       return NextResponse.redirect(
         new URL(`/cart/success?session_id=${sessionId}`, request.url)
       );
     }
+
+    // Process cart items to get order data
+    const cartResult = await processCartItems();
+
+    if (cartResult.error) {
+      console.error("Cart processing error:", cartResult.error);
+      return NextResponse.redirect(
+        new URL("/cart?error=cart_processing_failed", request.url)
+      );
+    }
+
+    const { allOrders } = cartResult;
 
     // Calculate final total from Stripe session
     const finalTotal = session.amount_total / 100; // Convert from cents to dollars
     const tax = (session.total_details?.amount_tax || 0) / 100;
     const shipping = (session.total_details?.amount_shipping || 0) / 100;
 
-    // Update shipping address from Stripe session
+    // Get shipping address from Stripe session
     const shippingAddress = session.shipping?.address
       ? {
           name: session.shipping.name,
@@ -94,40 +101,101 @@ export async function GET(request) {
           postal_code: session.shipping.address.postal_code,
           country: session.shipping.address.country,
         }
-      : order.shippingAddress; // Keep existing dummy address if no shipping collected
+      : {
+          // Add dummy shipping address for Shippo shipment creation if no real address
+          name: "John Doe",
+          line1: "1600 Amphitheatre Parkway",
+          line2: "",
+          city: "Mountain View",
+          state: "CA",
+          postal_code: "94043",
+          country: "US",
+        };
 
-    // Update order with payment information
-    const updateResult = await update({
-      col: "storeitemsorders",
-      data: { _id: order._id },
-      update: {
-        paymentStatus: "paid",
-        orderStatus: "processing",
-        stripePaymentIntentId: session.payment_intent?.id,
-        total: finalTotal,
-        tax: tax,
-        shipping: shipping,
-        shippingAddress: shippingAddress,
-      },
+    // Create orders with paid status since payment is confirmed
+    const orderCreationResult = await createMultipleStoreItemsOrders({
+      allOrders,
+      stripeSessionId: sessionId,
+      shippingAddress: shippingAddress,
+      paymentStatus: "paid",
+      orderStatus: "processing",
     });
 
-    if (updateResult.error) {
-      console.error("Error updating order payment status:", updateResult.error);
+    if (orderCreationResult.error) {
+      console.error("Error creating orders:", orderCreationResult.error);
       return NextResponse.redirect(
-        new URL("/cart?error=update_failed", request.url)
+        new URL("/cart?error=order_creation_failed", request.url)
       );
     }
 
-    console.log(`✅ Order ${order.orderNumber} marked as paid`);
-    console.log("Updated order data:", updateResult);
+    const createdOrders = orderCreationResult.orders;
+    console.log(`✅ ${createdOrders.length} orders created successfully`);
 
-    // Clear user's cart after successful payment
+    // Update orders with final payment details
+    const updatePromises = createdOrders.map(async (order) => {
+      // Calculate proportional amounts for each order based on subtotal
+      const orderProportion =
+        order.subtotal / createdOrders.reduce((sum, o) => sum + o.subtotal, 0);
+      const orderTax = tax * orderProportion;
+      const orderShipping = shipping * orderProportion;
+      const orderTotal = order.subtotal + orderTax + orderShipping;
+
+      return update({
+        col: "storeitemsorders",
+        data: { _id: order._id },
+        update: {
+          stripePaymentIntentId: session.payment_intent?.id,
+          total: orderTotal,
+          tax: orderTax,
+          shipping: orderShipping,
+        },
+      });
+    });
+
+    const updateResults = await Promise.allSettled(updatePromises);
+
+    // Check for any failed updates
+    const failedUpdates = updateResults.filter(
+      (result) => result.status === "rejected" || result.value?.error
+    );
+
+    if (failedUpdates.length > 0) {
+      console.error("Some order updates failed:", failedUpdates);
+      // Continue anyway - partial success is better than complete failure
+    }
+
+    const successfulUpdates = updateResults.filter(
+      (result) => result.status === "fulfilled" && !result.value?.error
+    );
+
+    console.log(
+      `✅ ${successfulUpdates.length} orders updated with payment details`
+    );
+
+    // Create Shippo shipments for all orders
     try {
-      // Get user from order
+      console.log("Creating Shippo shipments for orders...");
+      const shippoResult = await createShippoShipmentsForOrders(createdOrders);
+
+      if (shippoResult.error) {
+        console.error("Error creating Shippo shipments:", shippoResult.error);
+        // Continue anyway - orders are created, shipping can be handled later
+      } else {
+        console.log(
+          `✅ Shippo shipments processed for ${createdOrders.length} orders`
+        );
+      }
+    } catch (shippoError) {
+      console.error("Error in Shippo shipment creation:", shippoError);
+      // Continue anyway - orders are created, shipping can be handled later
+    }
+
+    // Clear user's cart after successful payment and order creation
+    try {
       const { mongoUser } = await getMongoUser();
       if (
         mongoUser &&
-        mongoUser._id.toString() === order.createdBy.toString()
+        mongoUser._id.toString() === createdOrders[0].createdBy.toString()
       ) {
         const clearResult = await clearUserCart();
         if (clearResult.error) {

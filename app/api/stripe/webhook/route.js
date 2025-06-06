@@ -899,178 +899,22 @@ async function updateSubscriptionRecord(
 async function handleCartCheckout(session, userId, cartItemIds) {
   try {
     console.log(
-      `Processing cart checkout for user ${userId}, session ${session.id}`
+      `Cart checkout webhook received for user ${userId}, session ${session.id}`
     );
 
-    // Find the order by session ID
-    const order = await models.storeitemsorders.findOne({
-      stripeSessionId: session.id,
-      createdBy: userId,
-    });
-
-    if (!order) {
-      console.error(`Order not found for session ${session.id}`);
-      return;
-    }
-
-    console.log(`Found order ${order.orderNumber} for session ${session.id}`);
-    console.log(
-      `Current order status: ${order.orderStatus}, payment status: ${order.paymentStatus}`
-    );
-
-    // Get the payment intent to get the actual amount paid
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-    let paymentIntent = null;
-
-    if (session.payment_intent) {
-      try {
-        paymentIntent = await stripe.paymentIntents.retrieve(
-          session.payment_intent
-        );
-        console.log(`Payment intent status: ${paymentIntent.status}`);
-      } catch (error) {
-        console.error(`Error retrieving payment intent: ${error.message}`);
-      }
-    }
-
-    // Update order with payment information
-    const updateData = {
-      paymentStatus: "paid",
-      orderStatus: "shipped", // Update to shipped since label should be created
-      stripePaymentIntentId: session.payment_intent,
-      total: paymentIntent ? paymentIntent.amount / 100 : order.total, // Convert from cents
-    };
-
-    // Add shipping address if available
-    if (session.shipping_details?.address) {
-      updateData.shippingAddress = {
-        name: session.shipping_details.name,
-        line1: session.shipping_details.address.line1,
-        line2: session.shipping_details.address.line2,
-        city: session.shipping_details.address.city,
-        state: session.shipping_details.address.state,
-        postal_code: session.shipping_details.address.postal_code,
-        country: session.shipping_details.address.country,
-      };
-      console.log(`Updated shipping address for order ${order.orderNumber}`);
-    }
-
-    console.log(`Updating order ${order.orderNumber} with data:`, updateData);
-
-    const updateResult = await update({
-      col: "storeitemsorders",
-      data: { _id: order._id },
-      update: updateData,
-    });
-
-    if (updateResult.error) {
-      console.error(
-        `Error updating order ${order.orderNumber}:`,
-        updateResult.error
-      );
-    } else {
-      console.log(`✅ Updated order ${order.orderNumber} to paid status`);
-    }
-
-    // Update Shippo shipment with real shipping address if we have one
-    if (session.shipping_details?.address && order.shippoShipmentId) {
-      try {
-        console.log(
-          `Updating Shippo shipment ${order.shippoShipmentId} with real address`
-        );
-
-        // Import shippoService
-        const shippoService = (await import("@/lib/utils/shippo/shippoService"))
-          .default;
-
-        // Create new shipment with real address
-        const updatedOrder = {
-          ...order,
-          shippingAddress: updateData.shippingAddress,
-        };
-        const newShipment = await shippoService.createShipment(updatedOrder);
-
-        // Create shipping label immediately with the new shipment
-        let labelUpdateData = {
-          shippoShipmentId: newShipment.object_id,
-          shippoRates: newShipment.rates,
-        };
-
-        if (newShipment.rates && newShipment.rates.length > 0) {
-          try {
-            const cheapestRate = shippoService.getCheapestRate(
-              newShipment.rates
-            );
-            const transaction = await shippoService.createShippingLabel(
-              newShipment.object_id,
-              cheapestRate.object_id
-            );
-
-            if (transaction && transaction.label_url) {
-              labelUpdateData.shippingLabelUrl = transaction.label_url;
-              labelUpdateData.trackingNumber = transaction.tracking_number;
-              labelUpdateData.shippoTransactionId = transaction.object_id;
-              labelUpdateData.carrierAccount =
-                transaction.rate?.carrier_account;
-              labelUpdateData.shippedAt = new Date();
-
-              // Add Label Broker QR Code URL if available
-              if (transaction.qr_code_url) {
-                labelUpdateData.labelBrokerQRCodeUrl = transaction.qr_code_url;
-                console.log(
-                  `✅ Label Broker QR Code available: ${transaction.qr_code_url}`
-                );
-              }
-
-              console.log(
-                `✅ Created shipping label: ${transaction.label_url}`
-              );
-            }
-          } catch (labelError) {
-            console.error(`Error creating shipping label:`, labelError);
-          }
-        }
-
-        // Update order with new shipment and label info
-        await update({
-          col: "storeitemsorders",
-          data: { _id: order._id },
-          update: labelUpdateData,
-        });
-
-        console.log(
-          `✅ Updated Shippo shipment for order ${order.orderNumber}: ${newShipment.object_id}`
-        );
-      } catch (shippoError) {
-        console.error(
-          `❌ Error updating Shippo shipment for order ${order.orderNumber}:`,
-          shippoError
-        );
-        // Continue even if Shippo update fails
-      }
-    }
-
-    // Clear user's cart items that were purchased
-    if (cartItemIds) {
-      const itemIds = cartItemIds.split(",");
-      for (const itemId of itemIds) {
-        try {
-          await models.usercarts.findByIdAndDelete(itemId.trim());
-          console.log(`Removed cart item ${itemId} from user's cart`);
-        } catch (error) {
-          console.error(`Error removing cart item ${itemId}: ${error.message}`);
-        }
-      }
-    }
+    // Note: Order creation and Shippo shipment logic has been moved to
+    // /api/stripe/cart/success/route.js to ensure orders are only created
+    // after successful payment confirmation. This webhook is now primarily
+    // for logging and potential future webhook-specific logic.
 
     console.log(
-      `Successfully processed cart checkout for order ${order.orderNumber}`
+      `Cart checkout processing is handled by success route for session ${session.id}`
     );
   } catch (error) {
-    console.error(`Error handling cart checkout: ${error.message}`);
+    console.error(`Error handling cart checkout webhook: ${error.message}`);
     // await sendErrorToAdmin({
     //   error,
-    //   subject: "Cart Checkout Handler Error",
+    //   subject: "Cart Checkout Webhook Handler Error",
     //   context: {
     //     sessionId: session.id,
     //     userId,

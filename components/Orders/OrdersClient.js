@@ -2,41 +2,47 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "@/components/Context/TranslationContext";
-import { getAll } from "@/lib/actions/crud";
+import {
+  getUserOrders,
+  getStoreOwnerOrders,
+} from "@/lib/actions/userCartActions";
 import PostsLoader from "@/components/Post/Posts/PostsLoader";
 import OrderCard from "./OrderCard";
-import { Package, ShoppingBag } from "lucide-react";
+import { Package, ShoppingBag, Store } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function OrdersClient({ mongoUser }) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState("buyer"); // "buyer" or "seller"
 
+  // Get user orders (as buyer)
   const {
-    data: orders = [],
-    isLoading,
-    error,
+    data: userOrders = [],
+    isLoading: isLoadingUserOrders,
+    error: userOrdersError,
   } = useQuery({
     queryKey: ["userOrders", mongoUser?._id],
     queryFn: async () => {
       if (!mongoUser?._id) return [];
+      const result = await getUserOrders();
+      return result.error ? [] : result;
+    },
+    enabled: Boolean(mongoUser?._id),
+  });
 
-      try {
-        const orders = await getAll({
-          col: "storeitemsorders",
-          data: {
-            createdBy: mongoUser._id,
-          },
-          populate: "items.storeItemId",
-          sort: { createdAt: -1 },
-        });
-
-        return orders || [];
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-        return [];
-      }
+  // Get store owner orders (as seller)
+  const {
+    data: storeOwnerOrders = [],
+    isLoading: isLoadingStoreOwnerOrders,
+    error: storeOwnerOrdersError,
+  } = useQuery({
+    queryKey: ["storeOwnerOrders", mongoUser?._id],
+    queryFn: async () => {
+      if (!mongoUser?._id) return [];
+      const result = await getStoreOwnerOrders();
+      return result.error ? [] : result;
     },
     enabled: Boolean(mongoUser?._id),
   });
@@ -46,6 +52,7 @@ export default function OrdersClient({ mongoUser }) {
     const handleVisibilityChange = () => {
       if (!document.hidden && mongoUser?._id) {
         queryClient.invalidateQueries(["userOrders", mongoUser._id]);
+        queryClient.invalidateQueries(["storeOwnerOrders", mongoUser._id]);
       }
     };
 
@@ -67,6 +74,9 @@ export default function OrdersClient({ mongoUser }) {
     );
   }
 
+  const isLoading = isLoadingUserOrders || isLoadingStoreOwnerOrders;
+  const error = userOrdersError || storeOwnerOrdersError;
+
   if (isLoading) {
     return (
       <div className="fcc min-h-screen">
@@ -85,7 +95,11 @@ export default function OrdersClient({ mongoUser }) {
     );
   }
 
-  if (!orders.length) {
+  const currentOrders = activeTab === "buyer" ? userOrders : storeOwnerOrders;
+  const hasUserOrders = userOrders.length > 0;
+  const hasStoreOwnerOrders = storeOwnerOrders.length > 0;
+
+  if (!hasUserOrders && !hasStoreOwnerOrders) {
     return (
       <div className="fcc min-h-screen p20">
         <div className="text-center">
@@ -107,14 +121,47 @@ export default function OrdersClient({ mongoUser }) {
     <div className="max-w-4xl mx-auto p20">
       <div className="mb20">
         <h1 className="text-2xl font-bold mb5">{t("orders")}</h1>
+
+        {/* Tab Navigation */}
+        <div className="fr g10 mb15">
+          <button
+            onClick={() => setActiveTab("buyer")}
+            className={`px15 py8 rounded-lg transition-colors fr g5 ${
+              activeTab === "buyer"
+                ? "bg-accent text-accent-foreground"
+                : "bg-muted text-muted-foreground hover:bg-muted/80"
+            }`}
+          >
+            <ShoppingBag size={16} />
+            {t("myPurchases")} ({userOrders.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("seller")}
+            className={`px15 py8 rounded-lg transition-colors fr g5 ${
+              activeTab === "seller"
+                ? "bg-accent text-accent-foreground"
+                : "bg-muted text-muted-foreground hover:bg-muted/80"
+            }`}
+          >
+            <Store size={16} />
+            {t("mySales")} ({storeOwnerOrders.length})
+          </button>
+        </div>
+
         <p className="text-muted-foreground">
-          {orders.length} {orders.length === 1 ? t("order") : t("orders")}
+          {currentOrders.length}{" "}
+          {currentOrders.length === 1 ? t("order") : t("orders")}
+          {activeTab === "buyer" ? ` ${t("purchased")}` : ` ${t("sold")}`}
         </p>
       </div>
 
       <div className="fc g15">
-        {orders.map((order) => (
-          <OrderCard key={order._id} order={order} />
+        {currentOrders.map((order) => (
+          <OrderCard
+            key={order._id}
+            order={order}
+            isStoreOwner={activeTab === "seller"}
+          />
         ))}
       </div>
     </div>
