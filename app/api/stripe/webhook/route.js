@@ -914,6 +914,9 @@ async function handleCartCheckout(session, userId, cartItemIds) {
     }
 
     console.log(`Found order ${order.orderNumber} for session ${session.id}`);
+    console.log(
+      `Current order status: ${order.orderStatus}, payment status: ${order.paymentStatus}`
+    );
 
     // Get the payment intent to get the actual amount paid
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -924,6 +927,7 @@ async function handleCartCheckout(session, userId, cartItemIds) {
         paymentIntent = await stripe.paymentIntents.retrieve(
           session.payment_intent
         );
+        console.log(`Payment intent status: ${paymentIntent.status}`);
       } catch (error) {
         console.error(`Error retrieving payment intent: ${error.message}`);
       }
@@ -932,7 +936,7 @@ async function handleCartCheckout(session, userId, cartItemIds) {
     // Update order with payment information
     const updateData = {
       paymentStatus: "paid",
-      orderStatus: "processing",
+      orderStatus: "shipped", // Update to shipped since label should be created
       stripePaymentIntentId: session.payment_intent,
       total: paymentIntent ? paymentIntent.amount / 100 : order.total, // Convert from cents
     };
@@ -948,15 +952,103 @@ async function handleCartCheckout(session, userId, cartItemIds) {
         postal_code: session.shipping_details.address.postal_code,
         country: session.shipping_details.address.country,
       };
+      console.log(`Updated shipping address for order ${order.orderNumber}`);
     }
 
-    await update({
+    console.log(`Updating order ${order.orderNumber} with data:`, updateData);
+
+    const updateResult = await update({
       col: "storeitemsorders",
       data: { _id: order._id },
       update: updateData,
     });
 
-    console.log(`Updated order ${order.orderNumber} to paid status`);
+    if (updateResult.error) {
+      console.error(
+        `Error updating order ${order.orderNumber}:`,
+        updateResult.error
+      );
+    } else {
+      console.log(`✅ Updated order ${order.orderNumber} to paid status`);
+    }
+
+    // Update Shippo shipment with real shipping address if we have one
+    if (session.shipping_details?.address && order.shippoShipmentId) {
+      try {
+        console.log(
+          `Updating Shippo shipment ${order.shippoShipmentId} with real address`
+        );
+
+        // Import shippoService
+        const shippoService = (await import("@/lib/utils/shippo/shippoService"))
+          .default;
+
+        // Create new shipment with real address
+        const updatedOrder = {
+          ...order,
+          shippingAddress: updateData.shippingAddress,
+        };
+        const newShipment = await shippoService.createShipment(updatedOrder);
+
+        // Create shipping label immediately with the new shipment
+        let labelUpdateData = {
+          shippoShipmentId: newShipment.object_id,
+          shippoRates: newShipment.rates,
+        };
+
+        if (newShipment.rates && newShipment.rates.length > 0) {
+          try {
+            const cheapestRate = shippoService.getCheapestRate(
+              newShipment.rates
+            );
+            const transaction = await shippoService.createShippingLabel(
+              newShipment.object_id,
+              cheapestRate.object_id
+            );
+
+            if (transaction && transaction.label_url) {
+              labelUpdateData.shippingLabelUrl = transaction.label_url;
+              labelUpdateData.trackingNumber = transaction.tracking_number;
+              labelUpdateData.shippoTransactionId = transaction.object_id;
+              labelUpdateData.carrierAccount =
+                transaction.rate?.carrier_account;
+              labelUpdateData.shippedAt = new Date();
+
+              // Add Label Broker QR Code URL if available
+              if (transaction.qr_code_url) {
+                labelUpdateData.labelBrokerQRCodeUrl = transaction.qr_code_url;
+                console.log(
+                  `✅ Label Broker QR Code available: ${transaction.qr_code_url}`
+                );
+              }
+
+              console.log(
+                `✅ Created shipping label: ${transaction.label_url}`
+              );
+            }
+          } catch (labelError) {
+            console.error(`Error creating shipping label:`, labelError);
+          }
+        }
+
+        // Update order with new shipment and label info
+        await update({
+          col: "storeitemsorders",
+          data: { _id: order._id },
+          update: labelUpdateData,
+        });
+
+        console.log(
+          `✅ Updated Shippo shipment for order ${order.orderNumber}: ${newShipment.object_id}`
+        );
+      } catch (shippoError) {
+        console.error(
+          `❌ Error updating Shippo shipment for order ${order.orderNumber}:`,
+          shippoError
+        );
+        // Continue even if Shippo update fails
+      }
+    }
 
     // Clear user's cart items that were purchased
     if (cartItemIds) {

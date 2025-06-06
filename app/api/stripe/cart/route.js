@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { models } from "@/lib/db/models/models";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
-import { add } from "@/lib/actions/crud";
+import { add, update } from "@/lib/actions/crud";
+import shippoService from "@/lib/utils/shippo/shippoService";
 
 export async function POST(request) {
   try {
@@ -92,8 +93,8 @@ export async function POST(request) {
     const baseUrl =
       process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000";
     const successUrl = baseUrl.startsWith("http")
-      ? `${baseUrl}/cart/success?session_id={CHECKOUT_SESSION_ID}`
-      : `https://${baseUrl}/cart/success?session_id={CHECKOUT_SESSION_ID}`;
+      ? `${baseUrl}/api/stripe/cart/success?session_id={CHECKOUT_SESSION_ID}`
+      : `https://${baseUrl}/api/stripe/cart/success?session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = baseUrl.startsWith("http")
       ? `${baseUrl}/cart`
       : `https://${baseUrl}/cart`;
@@ -149,6 +150,16 @@ export async function POST(request) {
         stripeSessionId: session.id,
         paymentStatus: "pending",
         orderStatus: "pending",
+        // Add dummy shipping address for Shippo shipment creation
+        shippingAddress: {
+          name: "John Doe",
+          line1: "1600 Amphitheatre Parkway",
+          line2: "",
+          city: "Mountain View",
+          state: "CA",
+          postal_code: "94043",
+          country: "US",
+        },
       },
     });
 
@@ -164,6 +175,94 @@ export async function POST(request) {
     }
 
     console.log("Order created:", order.orderNumber);
+
+    // Create Shippo shipment immediately after order creation
+    try {
+      console.log(`Creating Shippo shipment for order ${order.orderNumber}`);
+      const shipment = await shippoService.createShipment(order);
+
+      // Get the cheapest rate and create the shipping label immediately
+      let shippingLabelUrl = null;
+      let trackingNumber = null;
+      let shippoTransactionId = null;
+      let carrierAccount = null;
+      let labelBrokerQRCodeUrl = null;
+
+      if (shipment.rates && shipment.rates.length > 0) {
+        try {
+          console.log(`Creating shipping label for order ${order.orderNumber}`);
+          const cheapestRate = shippoService.getCheapestRate(shipment.rates);
+          const transaction = await shippoService.createShippingLabel(
+            shipment.object_id,
+            cheapestRate.object_id
+          );
+
+          if (transaction && transaction.label_url) {
+            shippingLabelUrl = transaction.label_url;
+            trackingNumber = transaction.tracking_number;
+            shippoTransactionId = transaction.object_id;
+            carrierAccount = transaction.rate?.carrier_account;
+            console.log(
+              `✅ Shipping label created for order ${order.orderNumber}: ${shippingLabelUrl}`
+            );
+
+            // Get Label Broker QR Code URL if available
+            if (transaction.qr_code_url) {
+              labelBrokerQRCodeUrl = transaction.qr_code_url;
+              console.log(
+                `✅ Label Broker QR Code available for order ${order.orderNumber}: ${labelBrokerQRCodeUrl}`
+              );
+            }
+          }
+        } catch (labelError) {
+          console.error(
+            `❌ Error creating shipping label for order ${order.orderNumber}:`,
+            labelError
+          );
+          // Continue even if label creation fails
+        }
+      }
+
+      // Update order with Shippo shipment information and label if created
+      const updateResult = await update({
+        col: "storeitemsorders",
+        data: { _id: order._id },
+        update: {
+          shippoShipmentId: shipment.object_id,
+          shippoRates: shipment.rates,
+          orderStatus: "processing",
+          ...(shippingLabelUrl && {
+            shippingLabelUrl: shippingLabelUrl,
+            trackingNumber: trackingNumber,
+            shippoTransactionId: shippoTransactionId,
+            carrierAccount: carrierAccount,
+            ...(labelBrokerQRCodeUrl && {
+              labelBrokerQRCodeUrl: labelBrokerQRCodeUrl,
+            }),
+          }),
+        },
+      });
+
+      if (updateResult.error) {
+        console.error(
+          "Error updating order with shipment info:",
+          updateResult.error
+        );
+      } else {
+        console.log(
+          `✅ Shippo shipment created for order ${order.orderNumber}: ${shipment.object_id}`
+        );
+        if (shippingLabelUrl) {
+          console.log(`✅ Shipping label URL saved: ${shippingLabelUrl}`);
+        }
+      }
+    } catch (shippoError) {
+      console.error(
+        `❌ Error creating Shippo shipment for order ${order.orderNumber}:`,
+        shippoError
+      );
+      // Continue even if Shippo fails - don't break the checkout
+    }
 
     return NextResponse.json({
       sessionUrl: session.url,

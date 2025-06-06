@@ -1,15 +1,17 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { getAll } from "@/lib/actions/crud";
 import PostsLoader from "@/components/Post/Posts/PostsLoader";
 import OrderCard from "./OrderCard";
 import { Package, ShoppingBag } from "lucide-react";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export default function OrdersClient({ mongoUser }) {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   const {
     data: orders = [],
@@ -38,6 +40,20 @@ export default function OrdersClient({ mongoUser }) {
     },
     enabled: Boolean(mongoUser?._id),
   });
+
+  // Refresh orders when page becomes visible (e.g., returning from payment)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && mongoUser?._id) {
+        queryClient.invalidateQueries(["userOrders", mongoUser._id]);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [mongoUser?._id, queryClient]);
 
   if (!mongoUser?._id) {
     return (

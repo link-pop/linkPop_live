@@ -1624,6 +1624,51 @@ const en = {
   delivered: "Delivered",
   tracking: "Tracking",
   each: "each",
+
+  // Shippo/Shipping functionality
+  getLabel: "Get Label",
+  createLabel: "Create Label",
+  creatingLabel: "Creating Label...",
+  downloadLabel: "Download Label",
+  shippingLabelCreated: "Shipping Label Created",
+  shippingLabelCreatedMessage:
+    "Your shipping label has been created successfully",
+  shipmentCreated: "Shipment Created",
+  readyForLabel: "Ready for Label",
+  preparingShipment: "Preparing Shipment...",
+  paymentRequired: "Payment Required",
+  paymentPending: "Payment Pending",
+  error: "Error",
+
+  // Label Broker QR Code functionality
+  labelBrokerQRCode: "Label Broker QR Code",
+  downloadLabelBrokerQR: "Download Label Broker QR",
+  labelBrokerQRDescription:
+    "Show this QR code at USPS to print your shipping label",
+  labelBrokerQRCreated: "Label Broker QR Code Created",
+  labelBrokerQRCreatedMessage:
+    "Your Label Broker QR code has been created successfully",
+  createLabelBrokerQR: "Create Label Broker QR",
+  creatingLabelBrokerQR: "Creating Label Broker QR...",
+  noPrinterNeeded: "No printer needed - show at USPS counter",
+
+  // Payment error messages
+  paymentSessionNotFound: "Payment session not found",
+  paymentSessionExpired: "Payment session expired",
+  paymentNotCompleted: "Payment was not completed",
+  orderNotFound: "Order not found",
+  failedToUpdateOrderStatus: "Failed to update order status",
+  paymentProcessingFailed: "Payment processing failed",
+  checkoutError: "An error occurred during checkout",
+
+  // Shipping confirmation dialog
+  confirmShipping: "Confirm Shipping",
+  confirmShippingMessage:
+    "After you click 'Confirm' button, you will get a shipping label, and this order will be marked as shipped, and you need to make the shipping!",
+  confirmAndMarkShipped: "Confirm & Mark as Shipped",
+  orderMarkedAsShipped: "Order Marked as Shipped",
+  orderMarkedAsShippedMessage:
+    "The order has been successfully marked as shipped. Please ensure you complete the actual shipping process.",
 };
 
 export default en;

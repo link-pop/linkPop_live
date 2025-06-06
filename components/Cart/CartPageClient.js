@@ -32,6 +32,49 @@ export default function CartPageClient({ mongoUser }) {
     };
   }, [mongoUser?._id, queryClient]);
 
+  // Check for error parameters in URL and show appropriate messages
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get("error");
+
+    if (error) {
+      let errorMessage = t("error");
+      switch (error) {
+        case "missing_session":
+          errorMessage = t("paymentSessionNotFound");
+          break;
+        case "session_not_found":
+          errorMessage = t("paymentSessionExpired");
+          break;
+        case "payment_not_completed":
+          errorMessage = t("paymentNotCompleted");
+          break;
+        case "order_not_found":
+          errorMessage = t("orderNotFound");
+          break;
+        case "update_failed":
+          errorMessage = t("failedToUpdateOrderStatus");
+          break;
+        case "processing_failed":
+          errorMessage = t("paymentProcessingFailed");
+          break;
+        default:
+          errorMessage = t("checkoutError");
+      }
+
+      toastSet({
+        isOpen: true,
+        title: t("error"),
+        text: errorMessage,
+      });
+
+      // Clean up URL by removing error parameter
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.delete("error");
+      window.history.replaceState({}, "", newUrl);
+    }
+  }, [toastSet, t]);
+
   const {
     data: cartItems = [],
     isLoading,
