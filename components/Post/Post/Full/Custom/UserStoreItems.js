@@ -61,7 +61,7 @@ export default function UserStoreItems({
   }
 
   return (
-    <div className="fc g15">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {storeItems.map((item) => (
         <StoreItemCard
           key={item._id}

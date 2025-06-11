@@ -10,6 +10,7 @@ import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import { processCartItems } from "@/lib/actions/processCartItems";
 import { createMultipleStoreItemsOrders } from "@/lib/actions/createStoreItemsOrder";
 import { createShippoShipmentsForOrders } from "@/lib/actions/createShippoShipment";
+import { processStripeConnectTransfers } from "@/lib/actions/processStripeConnectTransfers";
 
 export async function GET(request) {
   try {
@@ -188,6 +189,33 @@ export async function GET(request) {
     } catch (shippoError) {
       console.error("Error in Shippo shipment creation:", shippoError);
       // Continue anyway - orders are created, shipping can be handled later
+    }
+
+    // Process Stripe Connect transfers for platform fees
+    try {
+      console.log("Processing Stripe Connect transfers...");
+      const transferResult = await processStripeConnectTransfers({
+        orders: createdOrders,
+        stripeSessionId: sessionId,
+      });
+
+      if (transferResult.error) {
+        console.error(
+          "Error processing Stripe Connect transfers:",
+          transferResult.error
+        );
+        // Continue anyway - orders are created, transfers can be retried later
+      } else {
+        console.log(
+          `✅ Stripe Connect transfers processed: ${transferResult.successfulTransfers} successful, ${transferResult.failedTransfers} failed`
+        );
+      }
+    } catch (transferError) {
+      console.error(
+        "Error in Stripe Connect transfer processing:",
+        transferError
+      );
+      // Continue anyway - orders are created, transfers can be retried later
     }
 
     // Clear user's cart after successful payment and order creation

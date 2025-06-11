@@ -3,7 +3,6 @@
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import HorizontalScroll from "@/components/ui/shared/HorizontalScroll/HorizontalScroll";
 
 export default function Toggle({
   labels = [
@@ -14,9 +13,10 @@ export default function Toggle({
   className = "",
   labelsClassName = "",
   style,
+  initialTab = 0,
 }) {
-  const [switched, setSwitched] = useState(0);
-  const [prevSwitched, setPrevSwitched] = useState(0);
+  const [switched, setSwitched] = useState(initialTab);
+  const [prevSwitched, setPrevSwitched] = useState(initialTab);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const { t } = useTranslation();
   const tabsContainerRef = useRef(null);
@@ -59,14 +59,10 @@ export default function Toggle({
   }, [switched]);
 
   return (
-    <div className={`fc ${className}`} style={style}>
-      <div className={`wf ${labelsClassName}`}>
-        <HorizontalScroll className="w-full">
-          <div
-            className="flex relative"
-            ref={tabsContainerRef}
-            style={{ minWidth: "100%" }}
-          >
+    <div className={`fc w-full ${className}`} style={style}>
+      <div className={`w-full ${labelsClassName}`}>
+        <div className="w-full">
+          <div className="flex relative w-full" ref={tabsContainerRef}>
             {/* Animated indicator - slides between tabs */}
             <div
               ref={indicatorRef}
@@ -79,7 +75,7 @@ export default function Toggle({
                 ref={(el) => (labelsRef.current[index] = el)}
                 onClick={() => handleTabSwitch(index)}
                 className={cn(
-                  "cp py-2 px-4 text-center whitespace-nowrap min-w-fit mx-1",
+                  "cp py-2 px-4 text-center flex-1",
                   switched === index
                     ? "brand font-medium"
                     : "text-foreground hover:bg-accent",
@@ -97,10 +93,10 @@ export default function Toggle({
               </div>
             ))}
           </div>
-        </HorizontalScroll>
+        </div>
       </div>
 
-      <div className="mt-4 relative overflow-hidden">
+      <div className="mt-4 relative overflow-hidden w-full">
         {/* Content transition container */}
         <div
           className={cn(

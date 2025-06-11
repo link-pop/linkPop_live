@@ -264,11 +264,14 @@ export default function CustomUserMenu({
               <div className="text-sm text-muted-foreground">
                 {user.emailAddresses[0].emailAddress}
               </div>
-              {SITE1 && (
+              {process.env.NEXT_PUBLIC_DEV_MODE && (
                 <div className="mt5 text-sm text-muted-foreground">
                   {mongoUser?.profileType?.toUpperCase() || ""} |{" "}
                   {mongoUser?.age || ""} |{" "}
                   {mongoUser?.lastUploadedCreatorTags?.gender || ""}
+                  {mongoUser?.stripeConnect?.accountType?.toUpperCase() ||
+                    ""} |{" "}
+                  {mongoUser?.stripeConnect?.accountId?.toUpperCase() || ""} |{" "}
                 </div>
               )}
             </div>

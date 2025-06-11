@@ -1682,7 +1682,81 @@ const en = {
   created: "created",
   orderTotal: "Order Total",
   errorProcessingCheckout: "Error processing checkout",
-  shippedViaUSPS: "Shipped via USPS",
+
+  // Stripe Connect functionality
+  stripeConnectAccount: "Stripe Connect Account",
+  stripeConnectRequired: "Stripe Connect Required",
+  stripeConnectRequiredMessage:
+    "You need to set up Stripe Connect to create store items and receive payments.",
+  completeStripeConnectBeforeCreatingItems:
+    "Please complete Stripe Connect onboarding before creating store items.",
+  stripeConnectSetupMessage:
+    "Set up your Stripe Connect account to start selling items and receiving payments.",
+  stripeConnectPendingMessage:
+    "Complete your Stripe Connect onboarding to start receiving payments.",
+  stripeConnectActiveMessage:
+    "Your Stripe Connect account is active and ready to receive payments.",
+  stripeConnectOnboardingInfo:
+    "Stripe Connect allows you to receive payments directly to your bank account with automatic payouts.",
+  setupStripeConnect: "Set up Stripe Connect",
+  completeStripeOnboarding: "Complete Stripe Onboarding",
+  stripeConnectCompleted: "Stripe Connect Active",
+  stripeConnectNotConfigured:
+    "Stripe Connect not configured. Please contact support.",
+  stripeConnectAccountCreated: "Stripe Connect account created successfully",
+  stripeConnectOnboardingStarted: "Stripe Connect onboarding started",
+  failedToCreateStripeAccount: "Failed to create Stripe Connect account",
+  processing: "Processing...",
+
+  // Stripe Connect transfers
+  transferPending: "Transfer Pending",
+  transferCompleted: "Transfer Completed",
+  transferFailed: "Transfer Failed",
+  platformFee: "Platform Fee",
+  transferAmount: "Transfer Amount",
+  transferredToStoreOwner: "Transferred to Store Owner",
+  transferProcessing: "Processing transfer...",
+  transferError: "Transfer Error",
+
+  // Dev mode Stripe Connect functionality
+  devModeActive: "Dev Mode Active",
+  devModeStripeConnectMessage:
+    "Developer mode is active. Stripe Connect requirements are bypassed for development purposes.",
+
+  // Store earnings functionality
+  storeEarnings: "Store Earnings",
+  trackYourStorePerformance: "Track your store performance and earnings",
+  errorLoadingStoreEarnings: "Error loading store earnings",
+  transferredEarnings: "Transferred Earnings",
+  monthlyPerformance: "Monthly Performance",
+  fromLastMonth: "from last month",
+  itemsSold: "Items Sold",
+  averageItemsPerOrder: "average items per order",
+  averageOrderValue: "Average Order Value",
+  across: "across",
+  noOrdersYet: "No orders yet",
+  startSellingToSeeEarnings: "Start selling items to see your earnings here",
+  noEarningsYet: "No earnings yet",
+  checkForEarnings: "Check for Earnings",
+  noOrdersThisMonth: "No orders this month",
+  orders: "Orders",
+  totalOrders: "Total Orders",
+  refresh: "Refresh",
+  shippingRequired: "Shipping Required",
+  ordersRequiringShipping: "orders requiring shipping",
+  additionalStats: "Additional Stats",
+
+  // Store item validation messages
+  priceRequired: "Price Required",
+  storeItemPriceValidation: "Store item price must be greater than $1.00",
+  titleRequired: "Title Required",
+  storeItemTitleRequired: "Store item title is required",
+
+  // Order status filter functionality
+  allOrders: "All Orders",
+  filtered: "filtered",
+  processing: "Processing",
+  cancelled: "Cancelled",
 };
 
 export default en;

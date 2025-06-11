@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { CheckCircle, Package, ArrowRight, Store } from "lucide-react";
@@ -8,6 +8,8 @@ import Link from "next/link";
 import PostsLoader from "@/components/Post/Posts/PostsLoader";
 import { getAll } from "@/lib/actions/crud";
 import { useCartOperations } from "@/lib/hooks/useCartOperations";
+import CreatedBy from "../Post/Post/CreatedBy";
+import OrderItemImageDisplay from "@/components/ui/shared/SimpleImageDisplay/OrderItemImageDisplay";
 
 export default function CartSuccessClient({ mongoUser }) {
   const { t } = useTranslation();
@@ -17,6 +19,19 @@ export default function CartSuccessClient({ mongoUser }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { clearCartAndRefresh } = useCartOperations(mongoUser);
+
+  // Memoize the clear cart function to prevent dependency issues
+  const handleClearCart = useCallback(async () => {
+    try {
+      const result = await clearCartAndRefresh();
+      if (!result.success) {
+        console.warn("Cart clearing issue:", result.error);
+      }
+    } catch (cartError) {
+      console.error("Error clearing cart:", cartError);
+      // Don't fail the order display if cart clearing fails
+    }
+  }, [clearCartAndRefresh]);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -34,7 +49,15 @@ export default function CartSuccessClient({ mongoUser }) {
             stripeSessionId: sessionId,
             createdBy: mongoUser._id,
           },
-          populate: "items.storeItemId storeOwner",
+          populate: [
+            {
+              path: "items.storeItemId",
+              populate: {
+                path: "files",
+              },
+            },
+            "storeOwner",
+          ],
           sort: { createdAt: -1 },
         });
 
@@ -42,15 +65,7 @@ export default function CartSuccessClient({ mongoUser }) {
           setOrders(fetchedOrders);
 
           // Clear cart and refresh cache after successful order
-          try {
-            const result = await clearCartAndRefresh();
-            if (!result.success) {
-              console.warn("Cart clearing issue:", result.error);
-            }
-          } catch (cartError) {
-            console.error("Error clearing cart:", cartError);
-            // Don't fail the order display if cart clearing fails
-          }
+          await handleClearCart();
         } else {
           setError("Orders not found");
         }
@@ -63,7 +78,7 @@ export default function CartSuccessClient({ mongoUser }) {
     };
 
     fetchOrderDetails();
-  }, [sessionId, mongoUser?._id, clearCartAndRefresh]);
+  }, [sessionId, mongoUser?._id, handleClearCart]);
 
   if (!mongoUser?._id) {
     return (
@@ -147,11 +162,11 @@ export default function CartSuccessClient({ mongoUser }) {
                 <span className="text-sm text-muted-foreground">
                   {t("storeOwner")}:
                 </span>
-                <span className="ml5 font-medium">
-                  {order.storeOwner?.username ||
-                    order.storeOwner?.email ||
-                    "Unknown Store Owner"}
-                </span>
+                <CreatedBy
+                  createdBy={order.storeOwner}
+                  mongoUser={mongoUser}
+                  className="text-sm text-muted-foreground"
+                />
               </div>
             </div>
 
@@ -170,18 +185,25 @@ export default function CartSuccessClient({ mongoUser }) {
               <h3 className="font-semibold mb10">{t("items")}:</h3>
               <div className="fc g10">
                 {order.items.map((item, index) => (
-                  <div key={index} className="f jcsb aic">
-                    <div className="f aic g10">
-                      <Package className="w16 h16 text-muted-foreground" />
-                      <div>
-                        <div className="font-medium">{item.title}</div>
-                        {item.category && (
-                          <div className="text-sm text-muted-foreground">
-                            {item.category}
-                          </div>
-                        )}
-                      </div>
+                  <div key={index} className="f g15 p10 bg-muted/30 rounded-lg">
+                    {/* Store Item Image */}
+                    <OrderItemImageDisplay
+                      item={item}
+                      size={60}
+                      alt={item.title || "Store item"}
+                    />
+
+                    {/* Item Details */}
+                    <div className="flex-1">
+                      <div className="font-medium">{item.title}</div>
+                      {item.category && (
+                        <div className="text-sm text-muted-foreground uppercase tracking-wide">
+                          {item.category}
+                        </div>
+                      )}
                     </div>
+
+                    {/* Price and Quantity */}
                     <div className="text-right">
                       <div className="font-medium">
                         ${item.priceAtTime.toFixed(2)} × {item.quantity}

@@ -42,7 +42,7 @@ export default function StoreItemCard({ item, mongoUser, isOwner, isAdmin }) {
       <CarouselWithContent
         files={carouselFiles}
         content={content}
-        className="w-full h-full"
+        className="w-full"
         contentPosition="bottom"
         aspectRatio="aspect-square"
         showThumbnails={false}
@@ -50,6 +50,7 @@ export default function StoreItemCard({ item, mongoUser, isOwner, isAdmin }) {
         showArrows={carouselFiles.length > 1}
         imageClassName="w-full h-full object-cover"
         mongoUser={mongoUser}
+        contentClassName="min-h-fit"
       />
     </div>
   );

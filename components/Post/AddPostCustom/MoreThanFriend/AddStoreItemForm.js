@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import PostsLoader from "../../Posts/PostsLoader";
 import { useContext } from "@/components/Context/Context";
 import VideoRecorder from "@/components/ui/shared/VideoRecorder/VideoRecorder";
+import UserStripeConnectOnboardingButton from "@/components/ui/shared/UserStripeConnectOnboardingButton/UserStripeConnectOnboardingButton";
 
 export default function AddStoreItemForm({
   col,
@@ -38,6 +39,7 @@ export default function AddStoreItemForm({
   const [title, setTitle] = useState(updatingPost?.title || "");
   const [category, setCategory] = useState(updatingPost?.category || "");
   const [price, priceSet] = useState(updatingPost?.price || 0);
+  const [isStripeConnectReady, setIsStripeConnectReady] = useState(false);
   const { toastSet } = useContext();
 
   const { TipTapSettings, isTipTapSettingsVisible } =
@@ -114,6 +116,37 @@ export default function AddStoreItemForm({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if Stripe Connect is ready before allowing submission
+    if (!isStripeConnectReady) {
+      toastSet({
+        isOpen: true,
+        title: t("stripeConnectRequired"),
+        text: t("completeStripeConnectBeforeCreatingItems"),
+      });
+      return;
+    }
+
+    // Validate that price is greater than 1
+    if (!price || price < 1) {
+      toastSet({
+        isOpen: true,
+        title: t("priceRequired"),
+        text: t("storeItemPriceValidation"),
+      });
+      return;
+    }
+
+    // Validate that title is provided
+    if (!title?.trim()) {
+      toastSet({
+        isOpen: true,
+        title: t("titleRequired"),
+        text: t("storeItemTitleRequired"),
+      });
+      return;
+    }
+
     if (customOnSubmit) {
       await customOnSubmit({
         files,
@@ -128,14 +161,27 @@ export default function AddStoreItemForm({
     onSubmitAddPostForm(e);
   };
 
+  const handleStripeConnectStatusChange = (isReady) => {
+    setIsStripeConnectReady(isReady);
+  };
+
   return (
-    <>
+    <div className="bb">
       <PostsLoader
         {...{
           isLoading: isFormLoading,
           className: "w40 h40 poa left-[46.5%] t100",
         }}
       />
+
+      {/* Stripe Connect Onboarding */}
+      <div className="mb20">
+        <UserStripeConnectOnboardingButton
+          mongoUser={mongoUser}
+          onOnboardingComplete={handleStripeConnectStatusChange}
+          variant="warning"
+        />
+      </div>
 
       <form
         className={`por f wf py15 ${isFormLoading ? "pen op5" : ""}`}
@@ -157,6 +203,7 @@ export default function AddStoreItemForm({
             placeholder={t("storeItemTitle")}
             className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
             required
+            disabled={!isStripeConnectReady}
           />
         </div>
 
@@ -171,6 +218,7 @@ export default function AddStoreItemForm({
             onChange={(e) => setCategory(e.target.value)}
             placeholder={t("storeItemCategory")}
             className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+            disabled={!isStripeConnectReady}
           />
         </div>
 
@@ -185,6 +233,7 @@ export default function AddStoreItemForm({
           setTipTapInputContent={setTipTapInputContent}
           editorClassName="mih20"
           placeholder={placeholder || t("storeItemDescription")}
+          disabled={!isStripeConnectReady}
         />
 
         {!hideSubmitButton && (
@@ -194,6 +243,7 @@ export default function AddStoreItemForm({
               onSubmit={onSubmitAddPostForm}
               buttonText={submitBtnText || t("addToStore")}
               className={submitBtnClassName}
+              disabled={!isStripeConnectReady}
             />
           </div>
         )}
@@ -206,17 +256,19 @@ export default function AddStoreItemForm({
             filesSet={filesSet}
             isRequiredFiles={false}
             col={col}
+            disabled={!isStripeConnectReady}
           />
           <VideoRecorder
             onVideoRecorded={(videoFile) => {
               filesSet((prev) => [...prev, videoFile]);
             }}
+            disabled={!isStripeConnectReady}
           />
-          <VaultFilesButton />
-          <PostPriceButton />
-          <TipTapSettings />
+          <VaultFilesButton disabled={!isStripeConnectReady} />
+          <PostPriceButton disabled={!isStripeConnectReady} />
+          <TipTapSettings disabled={!isStripeConnectReady} />
         </div>
       </form>
-    </>
+    </div>
   );
 }

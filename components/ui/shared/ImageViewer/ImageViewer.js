@@ -39,10 +39,10 @@ const MediaContent = ({ file, isZoomed, priority }) => {
   );
 };
 
-const ContentOverlay = ({ content, isVisible, mongoUser }) => {
+const ContentOverlay = ({ content, mongoUser }) => {
   const { t } = useTranslation();
 
-  if (!content || !isVisible) return null;
+  if (!content) return null;
 
   const { title, text, price, category, storeItem } = content;
 
@@ -100,7 +100,6 @@ export default function ImageViewer({
   if (!files || currentIndex === null) return null;
 
   const [zoomedIndex, setZoomedIndex] = useState(null);
-  const [showContentOverlay, setShowContentOverlay] = useState(showContent);
 
   const handleImageClick = (index, e) => {
     e.stopPropagation();
@@ -113,11 +112,6 @@ export default function ImageViewer({
   const resetZoom = (e) => {
     if (e) e.stopPropagation();
     setZoomedIndex(null);
-  };
-
-  const toggleContentOverlay = (e) => {
-    e.stopPropagation();
-    setShowContentOverlay(!showContentOverlay);
   };
 
   const portalContent = (
@@ -137,16 +131,6 @@ export default function ImageViewer({
         >
           <X className={`w24 h24 white`} />
         </div>
-
-        {/* Content toggle button */}
-        {content && (
-          <div
-            className={`poa t15 l15 p10 rf bg-black/50 hover:bg-black/70 cp z10 text-white text-sm`}
-            onClick={toggleContentOverlay}
-          >
-            {showContentOverlay ? "Hide Info" : "Show Info"}
-          </div>
-        )}
 
         <div className={`w-full h-full max-w-[100vw] oh por`}>
           <Carousel
@@ -208,12 +192,10 @@ export default function ImageViewer({
             </div>
           </Carousel>
 
-          {/* Content overlay */}
-          <ContentOverlay
-            content={content}
-            isVisible={showContentOverlay}
-            mongoUser={mongoUser}
-          />
+          {/* Content overlay - always show when content is available and showContent is true */}
+          {showContent && (
+            <ContentOverlay content={content} mongoUser={mongoUser} />
+          )}
         </div>
       </div>
     </div>

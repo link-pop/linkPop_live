@@ -5,6 +5,7 @@ import { formatPrice } from "@/lib/utils/formatPrice";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { Image } from "lucide-react";
 import AddToUserCartButton from "@/components/ui/shared/AddToUserCartButton/AddToUserCartButton";
+import RichTextContent from "@/components/ui/shared/RichTextContent/RichTextContent";
 
 export default function CarouselWithContent({
   files = [],
@@ -27,7 +28,7 @@ export default function CarouselWithContent({
       <div className={`por p15 bg-background ${contentClassName}`}>
         {/* Title */}
         {title && (
-          <h3 className="text-lg font-semibold text-foreground mb10 line-clamp-2">
+          <h3 className="text-lg font-semibold text-foreground mb10">
             {title}
           </h3>
         )}
@@ -41,10 +42,9 @@ export default function CarouselWithContent({
 
         {/* Description */}
         {text && (
-          <div
-            className="text-sm text-foreground mb10 line-clamp-3"
-            dangerouslySetInnerHTML={{ __html: text }}
-          />
+          <div className="text-sm text-foreground mb10">
+            <RichTextContent content={text} />
+          </div>
         )}
 
         {/* Price and Cart Button */}

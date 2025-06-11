@@ -8,6 +8,7 @@ import {
 } from "@/lib/actions/userCartActions";
 import PostsLoader from "@/components/Post/Posts/PostsLoader";
 import OrderCard from "./OrderCard";
+import OrderStatusFilter from "@/components/ui/shared/OrderStatusFilter/OrderStatusFilter";
 import { Package, ShoppingBag, Store } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -16,6 +17,7 @@ export default function OrdersClient({ mongoUser }) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("buyer"); // "buyer" or "seller"
+  const [selectedStatus, setSelectedStatus] = useState("all"); // Order status filter
 
   // Get user orders (as buyer)
   const {
@@ -62,6 +64,11 @@ export default function OrdersClient({ mongoUser }) {
     };
   }, [mongoUser?._id, queryClient]);
 
+  // Reset status filter when switching tabs
+  useEffect(() => {
+    setSelectedStatus("all");
+  }, [activeTab]);
+
   if (!mongoUser?._id) {
     return (
       <div className="fcc min-h-screen p20">
@@ -95,7 +102,17 @@ export default function OrdersClient({ mongoUser }) {
     );
   }
 
-  const currentOrders = activeTab === "buyer" ? userOrders : storeOwnerOrders;
+  const allCurrentOrders =
+    activeTab === "buyer" ? userOrders : storeOwnerOrders;
+
+  // Filter orders by selected status
+  const filteredOrders =
+    selectedStatus === "all"
+      ? allCurrentOrders
+      : allCurrentOrders.filter(
+          (order) => order.orderStatus === selectedStatus
+        );
+
   const hasUserOrders = userOrders.length > 0;
   const hasStoreOwnerOrders = storeOwnerOrders.length > 0;
 
@@ -148,15 +165,27 @@ export default function OrdersClient({ mongoUser }) {
           </button>
         </div>
 
+        {/* Order Status Filter */}
+        <div className="mb15">
+          <OrderStatusFilter
+            orders={allCurrentOrders}
+            selectedStatus={selectedStatus}
+            onStatusChange={setSelectedStatus}
+            className="mb10"
+          />
+        </div>
+
         <p className="text-muted-foreground">
-          {currentOrders.length}{" "}
-          {currentOrders.length === 1 ? t("order") : t("orders")}
+          {filteredOrders.length}{" "}
+          {filteredOrders.length === 1 ? t("order") : t("orders")}
           {activeTab === "buyer" ? ` ${t("purchased")}` : ` ${t("sold")}`}
+          {selectedStatus !== "all" &&
+            ` • ${t("filtered")} ${t(selectedStatus)}`}
         </p>
       </div>
 
       <div className="fc g15">
-        {currentOrders.map((order) => (
+        {filteredOrders.map((order) => (
           <OrderCard
             key={order._id}
             order={order}
