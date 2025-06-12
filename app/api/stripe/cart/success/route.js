@@ -11,6 +11,7 @@ import { processCartItems } from "@/lib/actions/processCartItems";
 import { createMultipleStoreItemsOrders } from "@/lib/actions/createStoreItemsOrder";
 import { createShippoShipmentsForOrders } from "@/lib/actions/createShippoShipment";
 import { processStripeConnectTransfers } from "@/lib/actions/processStripeConnectTransfers";
+import { updateMultipleStoreItemsStock } from "@/lib/actions/updateStoreItemStock";
 
 export async function GET(request) {
   try {
@@ -143,6 +144,38 @@ export async function GET(request) {
 
     const createdOrders = orderCreationResult.orders;
     console.log(`✅ ${createdOrders.length} orders created successfully`);
+
+    // Update stock for all purchased items
+    try {
+      console.log("Updating stock for purchased items...");
+
+      // Collect all items from all orders for stock update
+      const allPurchasedItems = [];
+      createdOrders.forEach((order) => {
+        order.items.forEach((item) => {
+          allPurchasedItems.push({
+            storeItemId: item.storeItemId,
+            quantity: item.quantity,
+          });
+        });
+      });
+
+      const stockUpdateResult = await updateMultipleStoreItemsStock(
+        allPurchasedItems
+      );
+
+      if (stockUpdateResult.error) {
+        console.error("Error updating stock:", stockUpdateResult.error);
+        // Continue anyway - orders are created, stock can be manually adjusted
+      } else {
+        console.log(
+          `✅ Stock updated for ${stockUpdateResult.updatedItems} items`
+        );
+      }
+    } catch (stockError) {
+      console.error("Error in stock update process:", stockError);
+      // Continue anyway - orders are created, stock can be manually adjusted
+    }
 
     // Update orders with final payment details
     const updatePromises = createdOrders.map(async (order) => {

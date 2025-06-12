@@ -6,11 +6,12 @@ CODE STYLE & STANDARDS:
 - MANDATORY: use secure server side approaches to prevent sensitive data leaks!
 - MANDATORY: be sure you use all variables you created - unless delete unused variales
 - MANDATORY: only use OOP - where it's 100% needed - in other ways - use Functional Programming!
+- MANDATORY: in console.log if error, add ❌ to error text
 - append new translations in the bottom of translations file and only to en1.js file!
 - use all MCPs if you need it!
 - don't hardcode values!
 - don't run: npm run dev, npm run build, npm run lint (and any forms of it)
-- say "🟢🟢🟢🟢🟢 HI THERE! 🟢🟢🟢🟢🟢" in the start on each message + add number (use emoji numbers) of the reply in this chat + LLM model you are using now (say the truth!) + Fast requests mode OR Slow requests mode
+- say "🟢🟢🟢🟢🟢 HI BRO! 🟢🟢🟢🟢🟢" in the start on each message + add number (use emoji numbers) of the reply in this chat + LLM model you are using now (say the truth!) + Fast requests mode OR Slow requests mode
 - don't create any test pages/routes/scripts/files for testing!
 - don't create route.js files (ONLY if it's 100% necessary!)
 - If you need to get/add/update/delete some data from DB use \lib\actions\crud.js file!

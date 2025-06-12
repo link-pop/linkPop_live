@@ -39,6 +39,7 @@ export default function AddStoreItemForm({
   const [title, setTitle] = useState(updatingPost?.title || "");
   const [category, setCategory] = useState(updatingPost?.category || "");
   const [price, priceSet] = useState(updatingPost?.price || 0);
+  const [stock, setStock] = useState(updatingPost?.stock || 0);
   const [isStripeConnectReady, setIsStripeConnectReady] = useState(false);
   const { toastSet } = useContext();
 
@@ -62,11 +63,12 @@ export default function AddStoreItemForm({
     setTitle("");
     setCategory("");
     priceSet(0);
+    setStock(0);
     formRef.current?.reset();
     onReset?.();
   };
 
-  // Custom submission handler that includes title and category
+  // Custom submission handler that includes title, category, and stock
   const { onSubmitAddPostForm, isFormLoading } =
     useOnSubmitAddPostFormWithSepAttachmentCol({
       mongoUser,
@@ -81,6 +83,7 @@ export default function AddStoreItemForm({
       customData: {
         title,
         category,
+        stock,
       },
       onSuccess: ({ res, formData, mode }) => {
         // Reset form and files after successful submission
@@ -147,6 +150,16 @@ export default function AddStoreItemForm({
       return;
     }
 
+    // Validate that stock is provided and greater than 0
+    if (stock < 0) {
+      toastSet({
+        isOpen: true,
+        title: t("stockRequired"),
+        text: t("storeItemStockValidation"),
+      });
+      return;
+    }
+
     if (customOnSubmit) {
       await customOnSubmit({
         files,
@@ -154,6 +167,7 @@ export default function AddStoreItemForm({
         title,
         category,
         price,
+        stock,
       });
       resetForm();
       return;
@@ -220,6 +234,27 @@ export default function AddStoreItemForm({
             className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
             disabled={!isStripeConnectReady}
           />
+        </div>
+
+        {/* Stock Field */}
+        <div className="fc g5 wf mb15">
+          <label className="text-sm font-medium text-foreground">
+            {t("storeItemStock")}
+          </label>
+          <input
+            type="number"
+            min="0"
+            step="1"
+            value={stock}
+            onChange={(e) => setStock(parseInt(e.target.value) || 0)}
+            placeholder={t("storeItemStockPlaceholder")}
+            className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+            required
+            disabled={!isStripeConnectReady}
+          />
+          <p className="text-xs text-muted-foreground">
+            {t("storeItemStockDescription")}
+          </p>
         </div>
 
         <AddFilesPreview {...{ files, filesSet }} />

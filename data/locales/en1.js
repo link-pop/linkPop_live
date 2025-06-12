@@ -1790,6 +1790,21 @@ const en = {
 
   // Store category filtering
   allCategories: "All Categories",
+
+  // Stock functionality
+  storeItemStock: "Stock Quantity",
+  storeItemStockPlaceholder: "Enter available quantity",
+  storeItemStockDescription:
+    "Number of items available for purchase. Set to 0 to mark as out of stock.",
+  stockRequired: "Stock Required",
+  storeItemStockValidation: "Stock quantity cannot be negative",
+  outOfStock: "Out of Stock",
+  inStock: "In Stock",
+  stockRemaining: "remaining",
+  itemOutOfStock: "This item is currently out of stock",
+  insufficientStock: "Insufficient Stock",
+  onlyXItemsAvailable: "Only {count} items available",
+  stockUpdatedAfterPurchase: "Stock updated after purchase",
 };
 
 export default en;

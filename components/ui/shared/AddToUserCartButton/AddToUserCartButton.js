@@ -11,6 +11,7 @@ import {
   updateCartItemQuantity,
 } from "@/lib/actions/userCartActions";
 import { formatPrice } from "@/lib/utils/formatPrice";
+import StockIndicator from "@/components/ui/shared/StockIndicator/StockIndicator";
 
 export default function AddToUserCartButton({
   storeItem,
@@ -19,6 +20,7 @@ export default function AddToUserCartButton({
   showPrice = true,
   variant = "default", // "default", "compact", "icon-only"
   showQuantitySelector = true,
+  showStockIndicator = true,
 }) {
   const { t } = useTranslation();
   const { toastSet } = useContext();
@@ -31,6 +33,10 @@ export default function AddToUserCartButton({
   if (!mongoUser?._id) {
     return null;
   }
+
+  // Check stock availability
+  const isOutOfStock = !storeItem?.stock || storeItem.stock <= 0;
+  const maxQuantity = storeItem?.stock || 0;
 
   // Check if item is already in cart on component mount
   useEffect(() => {
@@ -56,8 +62,15 @@ export default function AddToUserCartButton({
     }
   }, [mongoUser?._id, storeItem?._id]);
 
+  // Ensure quantity doesn't exceed stock
+  useEffect(() => {
+    if (quantity > maxQuantity && maxQuantity > 0) {
+      setQuantity(maxQuantity);
+    }
+  }, [quantity, maxQuantity]);
+
   const handleAddToCart = async () => {
-    if (isLoading) return;
+    if (isLoading || isOutOfStock) return;
 
     setIsLoading(true);
 
@@ -74,6 +87,21 @@ export default function AddToUserCartButton({
             title: t("itemAlreadyInCart"),
           });
           setIsInCart(true);
+          return;
+        }
+        if (result.error.includes("out of stock")) {
+          toastSet({
+            isOpen: true,
+            title: t("itemOutOfStock"),
+          });
+          return;
+        }
+        if (result.error.includes("Only")) {
+          toastSet({
+            isOpen: true,
+            title: t("insufficientStock"),
+            text: result.error,
+          });
           return;
         }
         throw new Error(result.error);
@@ -98,7 +126,7 @@ export default function AddToUserCartButton({
   };
 
   const handleUpdateQuantity = async (newQuantity) => {
-    if (isLoading || newQuantity < 1) return;
+    if (isLoading || newQuantity < 1 || newQuantity > maxQuantity) return;
 
     setIsLoading(true);
 
@@ -109,6 +137,21 @@ export default function AddToUserCartButton({
       });
 
       if (result?.error) {
+        if (result.error.includes("out of stock")) {
+          toastSet({
+            isOpen: true,
+            title: t("itemOutOfStock"),
+          });
+          return;
+        }
+        if (result.error.includes("Only")) {
+          toastSet({
+            isOpen: true,
+            title: t("insufficientStock"),
+            text: result.error,
+          });
+          return;
+        }
         throw new Error(result.error);
       }
 
@@ -162,7 +205,8 @@ export default function AddToUserCartButton({
   };
 
   const renderQuantitySelector = () => {
-    if (!showQuantitySelector || variant === "icon-only") return null;
+    if (!showQuantitySelector || variant === "icon-only" || isOutOfStock)
+      return null;
 
     return (
       <div className="f aic g5 border rounded-lg px8 py5 bg-background">
@@ -177,8 +221,9 @@ export default function AddToUserCartButton({
           {quantity}
         </span>
         <button
-          onClick={() => setQuantity(quantity + 1)}
-          className="f aic jcc w20 h20 rounded hover:bg-muted"
+          onClick={() => setQuantity(Math.min(maxQuantity, quantity + 1))}
+          disabled={quantity >= maxQuantity}
+          className="f aic jcc w20 h20 rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Plus size={12} />
         </button>
@@ -204,8 +249,8 @@ export default function AddToUserCartButton({
           </span>
           <button
             onClick={() => handleUpdateQuantity(cartItemQuantity + 1)}
-            disabled={isLoading}
-            className="f aic jcc w20 h20 rounded hover:bg-muted"
+            disabled={isLoading || cartItemQuantity >= maxQuantity}
+            className="f aic jcc w20 h20 rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Plus size={12} />
           </button>
@@ -232,19 +277,20 @@ export default function AddToUserCartButton({
         "p10 bg-accent hover:bg-accent/80 text-accent-foreground rounded-full",
     };
 
+    const isDisabled = isLoading || isOutOfStock;
     const buttonClasses = `${baseClasses} ${
       variantClasses[variant]
     } ${className} ${
-      isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+      isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
     }`;
 
     const icon = <ShoppingCart size={variant === "icon-only" ? 16 : 18} />;
-    const text = t("addToCart");
+    const text = isOutOfStock ? t("outOfStock") : t("addToCart");
 
     return (
       <button
         onClick={handleAddToCart}
-        disabled={isLoading}
+        disabled={isDisabled}
         className={buttonClasses}
         title={variant === "icon-only" ? text : undefined}
       >
@@ -260,9 +306,14 @@ export default function AddToUserCartButton({
     }
 
     return (
-      <div className="f aic g10">
-        {showQuantitySelector && renderQuantitySelector()}
-        {renderAddButton()}
+      <div className="fc g10">
+        {showStockIndicator && (
+          <StockIndicator stock={storeItem?.stock || 0} variant="compact" />
+        )}
+        <div className="f aic g10">
+          {showQuantitySelector && renderQuantitySelector()}
+          {renderAddButton()}
+        </div>
       </div>
     );
   };
