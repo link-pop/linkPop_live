@@ -25,6 +25,7 @@ import {
 import OrderItemImageDisplay from "@/components/ui/shared/SimpleImageDisplay/OrderItemImageDisplay";
 import USPSTrackingLink from "@/components/ui/shared/USPSTrackingLink/USPSTrackingLink";
 import CreatedBy from "@/components/Post/Post/CreatedBy";
+import OrderCostBreakdown from "@/components/ui/shared/OrderCostBreakdown/OrderCostBreakdown";
 
 export default function OrderCard({ order, isStoreOwner = false }) {
   const { t } = useTranslation();
@@ -429,6 +430,11 @@ export default function OrderCard({ order, isStoreOwner = false }) {
           <span className="font-medium text-foreground">{t("ordered")}:</span>{" "}
           {new Date(order.createdAt).toLocaleDateString()}
         </div>
+      </div>
+
+      {/* Order Cost Breakdown */}
+      <div className="mt15 pt15 border-t border-border">
+        <OrderCostBreakdown order={order} />
       </div>
 
       {/* Shipping Actions - Only show for store owners */}

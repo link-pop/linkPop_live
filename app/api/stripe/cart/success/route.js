@@ -89,29 +89,41 @@ export async function GET(request) {
     // Calculate final total from Stripe session
     const finalTotal = session.amount_total / 100; // Convert from cents to dollars
     const tax = (session.total_details?.amount_tax || 0) / 100;
-    const shipping = (session.total_details?.amount_shipping || 0) / 100;
 
-    // Get shipping address from Stripe session
-    const shippingAddress = session.shipping?.address
-      ? {
-          name: session.shipping.name,
-          line1: session.shipping.address.line1,
-          line2: session.shipping.address.line2 || "",
-          city: session.shipping.address.city,
-          state: session.shipping.address.state,
-          postal_code: session.shipping.address.postal_code,
-          country: session.shipping.address.country,
-        }
-      : {
-          // Add dummy shipping address for Shippo shipment creation if no real address
-          name: "John Doe",
-          line1: "1600 Amphitheatre Parkway",
-          line2: "",
-          city: "Mountain View",
-          state: "CA",
-          postal_code: "94043",
-          country: "US",
-        };
+    // Get shipping cost from session metadata (since total_details.amount_shipping is not reliable)
+    const shippingCostFromMetadata = parseFloat(
+      session.metadata?.shippingCost || "0"
+    );
+    const shipping = shippingCostFromMetadata;
+
+    // Get shipping address from session metadata (collected in our form)
+    let shippingAddress;
+    try {
+      shippingAddress = session.metadata?.shippingAddress
+        ? JSON.parse(session.metadata.shippingAddress)
+        : {
+            // Add dummy shipping address for Shippo shipment creation if no real address
+            name: "John Doe",
+            line1: "1600 Amphitheatre Parkway",
+            line2: "",
+            city: "Mountain View",
+            state: "CA",
+            postal_code: "94043",
+            country: "US",
+          };
+    } catch (error) {
+      console.error("Error parsing shipping address from metadata:", error);
+      shippingAddress = {
+        // Fallback dummy shipping address
+        name: "John Doe",
+        line1: "1600 Amphitheatre Parkway",
+        line2: "",
+        city: "Mountain View",
+        state: "CA",
+        postal_code: "94043",
+        country: "US",
+      };
+    }
 
     // Create orders with paid status since payment is confirmed
     const orderCreationResult = await createMultipleStoreItemsOrders({

@@ -10,6 +10,7 @@ import {
   MY_ROUTE,
   DISCOVER_VIDEO_ROUTE,
   CART_ROUTE,
+  ORDERS_ROUTE,
 } from "@/lib/utils/constants";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import {
@@ -30,6 +31,7 @@ import {
   CalendarCheck,
   Search,
   ShoppingCart,
+  Package,
 } from "lucide-react";
 import { SITE2 } from "@/config/env";
 import useWindowWidth from "@/hooks/useWindowWidth";
@@ -71,6 +73,12 @@ export const navItems = () => {
       name: showTitles ? t("cart") : "",
       icon: <ShoppingCart className="w-6 h-6" />,
       href: CART_ROUTE,
+    },
+    {
+      id: "orders",
+      name: showTitles ? t("orders") : "",
+      icon: <Package className="w-6 h-6" />,
+      href: ORDERS_ROUTE,
     },
     // { id: "collections", name: t("collections"), icon: <Bookmark className="w-6 h-6" />, href: "/collections" },
     // {

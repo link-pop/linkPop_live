@@ -36,15 +36,15 @@ export default function UserFullPostContent({
           labelsClassName={`f fwn px10`}
           labels={[
             {
-              text: `${counts.posts} ${t("postsCount")}`,
+              text: `${t("postsCount")} ${counts.posts}`,
               className: `w-1/3 ttu tac`,
             },
             {
-              text: `${showMediaCount ? counts.media : ""} ${t("mediaCount")}`,
+              text: `${t("mediaCount")} ${showMediaCount ? counts.media : ""}`,
               className: `w-1/3 ttu tac`,
             },
             {
-              text: `${showStoreCount ? counts.store : ""} ${t("storeCount")}`,
+              text: `${t("storeCount")} ${showStoreCount ? counts.store : ""}`,
               className: `w-1/3 ttu tac`,
             },
           ]}

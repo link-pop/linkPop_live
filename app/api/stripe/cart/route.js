@@ -5,6 +5,10 @@ import { isStripeConnectReadyIncludingDevBypass } from "@/lib/utils/stripe/strip
 
 export async function POST(request) {
   try {
+    // Parse request body for shipping information
+    const body = await request.json();
+    const { shippingAddress, shippingCost } = body;
+
     // Process cart items and prepare order data
     const cartResult = await processCartItems();
 
@@ -68,6 +72,21 @@ export async function POST(request) {
       };
     });
 
+    // Add shipping as a separate line item if provided
+    if (shippingCost && shippingCost > 0) {
+      lineItemsWithFees.push({
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: "Shipping",
+            description: "Shipping cost calculated via Shippo",
+          },
+          unit_amount: Math.round(shippingCost * 100), // Convert to cents
+        },
+        quantity: 1,
+      });
+    }
+
     // Prepare detailed metadata for session level
     const storeOwnerMetadata = {};
     const itemMetadata = {};
@@ -107,25 +126,13 @@ export async function POST(request) {
         cartItemIds: cartItems.map((item) => item._id.toString()).join(","),
         storeOwnerIds: storeOwnerIds.join(","),
         platformFeePercentage: (PLATFORM_FEE_PERCENTAGE * 100).toString(),
+        // Add shipping information to metadata
+        shippingCost: shippingCost ? shippingCost.toString() : "0",
+        shippingAddress: shippingAddress ? JSON.stringify(shippingAddress) : "",
         // Add store owner and item metadata
         ...storeOwnerMetadata,
         ...itemMetadata,
       },
-      shipping_address_collection: {
-        allowed_countries: [
-          "US",
-          "CA",
-          "GB",
-          "AU",
-          "DE",
-          "FR",
-          "IT",
-          "ES",
-          "NL",
-          "BE",
-        ],
-      },
-      billing_address_collection: "required",
       // Note: We'll handle the Connect transfers in the success webhook
       // since Stripe Checkout doesn't directly support destination charges
       // with multiple destinations in a single session

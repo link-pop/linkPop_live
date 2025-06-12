@@ -118,9 +118,14 @@ export default function LeftNav({ mongoUser }) {
       })
     : isMobile
     ? allNavItems.filter((item) =>
-        ["home", "discover", "notifications", "messages", "cart"].includes(
-          item.id
-        )
+        [
+          "home",
+          "discover",
+          "notifications",
+          "messages",
+          "cart",
+          "orders",
+        ].includes(item.id)
       )
     : allNavItems;
 

@@ -4,6 +4,8 @@ import Link from "next/link";
 import ClerkSignInButton from "@/components/Clerk/ClerkSignInButton";
 import LeftNavNewPostBtn from "./LeftNavNewPostBtn";
 import NotificationBadge from "@/components/ui/shared/NotificationBadge/NotificationBadge";
+import CartIndicator from "@/components/ui/shared/CartIndicator/CartIndicator";
+import OrderIndicator from "@/components/ui/shared/OrderIndicator/OrderIndicator";
 import { useEffect } from "react";
 import { SITE2 } from "@/config/env";
 import { useTranslation } from "@/components/Context/TranslationContext";
@@ -79,6 +81,8 @@ export default function MobileNavItems({
         component: <LeftNavNewPostBtn1 isMobile={true} />,
       });
       mobileItems.push(items.find((item) => item.id === "messages"));
+      mobileItems.push(items.find((item) => item.id === "cart"));
+      mobileItems.push(items.find((item) => item.id === "orders"));
 
       // Add pricing link for SITE1
       const pricing = items.find((item) => item.id === "pricing");
@@ -115,6 +119,12 @@ export default function MobileNavItems({
           <div className="flex relative">
             {item.icon}
             <NotificationBadge id={item.id} className="relative -t5" />
+            {item.id === "cart" && (
+              <CartIndicator className="absolute !-t5 !-l5" />
+            )}
+            {item.id === "orders" && (
+              <OrderIndicator className="absolute !-t5 !-r9" />
+            )}
           </div>
           <span className="wsn !fz9 mt-1">{item.name.split(" ")[0]}</span>
         </Link>

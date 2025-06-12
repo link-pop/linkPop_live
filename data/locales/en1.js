@@ -455,7 +455,6 @@ const en = {
   mo: "mo",
   currentPlan: "Current Plan",
   freePlan: "Free Plan",
-  processing: "Processing...",
   upgradePlan: "Upgrade Plan",
   downgradePlan: "Downgrade Plan",
   choosePlan: "Choose Your Plan",
@@ -1706,7 +1705,6 @@ const en = {
   stripeConnectAccountCreated: "Stripe Connect account created successfully",
   stripeConnectOnboardingStarted: "Stripe Connect onboarding started",
   failedToCreateStripeAccount: "Failed to create Stripe Connect account",
-  processing: "Processing...",
 
   // Stripe Connect transfers
   transferPending: "Transfer Pending",
@@ -1743,7 +1741,6 @@ const en = {
   totalOrders: "Total Orders",
   refresh: "Refresh",
   shippingRequired: "Shipping Required",
-  ordersRequiringShipping: "orders requiring shipping",
   additionalStats: "Additional Stats",
 
   // Store item validation messages
@@ -1755,8 +1752,44 @@ const en = {
   // Order status filter functionality
   allOrders: "All Orders",
   filtered: "filtered",
-  processing: "Processing",
+  shippingRequired: "Shipping Required",
   cancelled: "Cancelled",
+
+  // Shipping address form functionality
+  fullName: "Full Name",
+  enterFullName: "Enter your full name",
+  addressLine1: "Address Line 1",
+  streetAddress: "Street address",
+  addressLine2: "Address Line 2",
+  apartmentSuite: "Apartment, suite, etc. (optional)",
+  city: "City",
+  state: "State",
+  zipCode: "ZIP Code",
+  country: "Country",
+  calculateShipping: "Calculate Shipping",
+  calculatingShipping: "Calculating...",
+  shippingOptions: "Shipping Options",
+  selectedShipping: "Selected Shipping",
+  subtotal: "Subtotal",
+  shipping: "Shipping",
+  tax: "Tax",
+  incompleteAddress: "Incomplete Address",
+  pleaseCompleteShippingAddress:
+    "Please complete all required shipping address fields",
+  emptyCart: "Empty Cart",
+  addItemsToCalculateShipping: "Add items to your cart to calculate shipping",
+  shippingCalculationError: "Shipping Calculation Error",
+  shippingAddressRequired: "Shipping Address Required",
+  pleaseProvideShippingAddress:
+    "Please provide a shipping address before checkout",
+  shippingCostRequired: "Shipping Cost Required",
+  pleaseCalculateShippingCost: "Please calculate shipping cost before checkout",
+  store: "store",
+  stores: "stores",
+  item: "item",
+
+  // Store category filtering
+  allCategories: "All Categories",
 };
 
 export default en;

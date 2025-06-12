@@ -7,6 +7,7 @@ import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import { SITE1, SITE2 } from "@/config/env";
 import AddDirectlinkForm from "@/components/Post/AddPostCustom/LinkPop/AddDirectlinkForm";
 import AddLandingPageForm from "@/components/Post/AddPostCustom/LinkPop/AddLandingPageForm";
+import AddStoreItemForm from "@/components/Post/AddPostCustom/MoreThanFriend/AddStoreItemForm";
 
 export default async function updatePostPage({ params }) {
   const col = await getAllMongoCollectionsData(params.col);
@@ -16,6 +17,9 @@ export default async function updatePostPage({ params }) {
 
   // Check the specific collection name from params
   if (SITE1) {
+    if (params.col === "storeitems") {
+      return <AddStoreItemForm {...{ col, mongoUser, updatingPost }} />;
+    }
     return <AddFeedChatmessageForm {...{ col, mongoUser, updatingPost }} />;
   } else {
     // For SITE2, properly check which collection we're dealing with

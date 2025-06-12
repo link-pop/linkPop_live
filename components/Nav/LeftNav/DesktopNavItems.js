@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import NotificationBadge from "@/components/ui/shared/NotificationBadge/NotificationBadge";
+import CartIndicator from "@/components/ui/shared/CartIndicator/CartIndicator";
+import OrderIndicator from "@/components/ui/shared/OrderIndicator/OrderIndicator";
 
 export default function DesktopNavItems({
   items,
@@ -26,6 +28,12 @@ export default function DesktopNavItems({
           <div className="text-xl flex-shrink-0 relative">
             {item.icon}
             <NotificationBadge id={item.id} className="absolute !-t6 !r8" />
+            {item.id === "cart" && (
+              <CartIndicator className="absolute !-t6 !r8" />
+            )}
+            {item.id === "orders" && (
+              <OrderIndicator className="absolute !-t6 !r8" />
+            )}
           </div>
           <span
             className={`transition-all duration-300 ease-in-out whitespace-nowrap ${

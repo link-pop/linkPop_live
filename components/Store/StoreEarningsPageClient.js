@@ -162,18 +162,15 @@ export default function StoreEarningsPageClient({ mongoUser }) {
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-lg">
               <div className="w-8 h-8 rounded-full flex items-center justify-center">
-                <Truck size={18} className="text-yellow-500" />
+                <Truck size={18} className="text-red-500" />
               </div>
               <span className="text-sm">{t("shippingRequired")}</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-500 mb-1">
+            <div className="text-2xl font-bold text-red-500 mb-1">
               {earningsData?.shippingRequiredCount || 0}
             </div>
-            <p className="text-xs text-muted-foreground">
-              {t("ordersRequiringShipping")}
-            </p>
           </CardContent>
         </Card>
 

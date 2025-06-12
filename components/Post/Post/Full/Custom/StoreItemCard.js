@@ -43,7 +43,6 @@ export default function StoreItemCard({ item, mongoUser, isOwner, isAdmin }) {
         files={carouselFiles}
         content={content}
         className="w-full"
-        contentPosition="bottom"
         aspectRatio="aspect-square"
         showThumbnails={false}
         showIndicators={false}

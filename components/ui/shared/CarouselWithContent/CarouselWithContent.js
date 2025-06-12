@@ -12,7 +12,6 @@ export default function CarouselWithContent({
   content = {},
   className = "",
   showContent = true,
-  contentPosition = "bottom", // "bottom", "top", "overlay"
   contentClassName = "",
   mongoUser = null,
   ...carouselProps
@@ -67,44 +66,6 @@ export default function CarouselWithContent({
     );
   };
 
-  const renderOverlayContent = () => {
-    if (!showContent || contentPosition !== "overlay") return null;
-
-    return (
-      <div className="poa b0 l0 r0 bg-gradient-to-t from-black/80 to-transparent text-white p15">
-        {/* Title */}
-        {title && (
-          <h3 className="text-lg font-semibold mb5 line-clamp-1">{title}</h3>
-        )}
-
-        {/* Category and Price/Cart Button */}
-        <div className="por f jcsb aic">
-          {category && (
-            <div className="text-sm opacity-90 uppercase tracking-wide">
-              {category}
-            </div>
-          )}
-
-          {/* Price and Cart Button for store items */}
-          {storeItem && price > 0 && (
-            <AddToUserCartButton
-              storeItem={storeItem}
-              mongoUser={mongoUser}
-              showPrice={true}
-              variant="compact"
-              className="bg-white/20 hover:bg-white/30 text-white border border-white/30"
-            />
-          )}
-
-          {/* Fallback price display for non-store items */}
-          {!storeItem && price > 0 && (
-            <div className="text-lg font-bold">{formatPrice(price)}</div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
   const renderPlaceholder = () => {
     return (
       <div className="aspect-square bg-muted fcc border rounded-lg">
@@ -115,29 +76,23 @@ export default function CarouselWithContent({
 
   return (
     <div className={`por ${className}`}>
-      {/* Top content */}
-      {contentPosition === "top" && renderContent()}
-
-      {/* Carousel with overlay content or placeholder */}
-      <div className="por">
+      {/* Carousel or placeholder */}
+      <div className="por flex-shrink-0">
         {files.length > 0 ? (
-          <>
-            <Carousel
-              files={files}
-              content={content}
-              showContentInViewer={showContent}
-              mongoUser={mongoUser}
-              {...carouselProps}
-            />
-            {renderOverlayContent()}
-          </>
+          <Carousel
+            className=""
+            files={files}
+            content={content}
+            showContentInViewer={showContent}
+            mongoUser={mongoUser}
+            {...carouselProps}
+          />
         ) : (
           renderPlaceholder()
         )}
       </div>
 
-      {/* Bottom content */}
-      {contentPosition === "bottom" && renderContent()}
+      {renderContent()}
     </div>
   );
 }

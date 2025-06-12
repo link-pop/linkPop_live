@@ -37,11 +37,11 @@ export default function OrderStatusFilter({
     },
     {
       key: "processing",
-      label: t("processing") || "Processing",
+      label: t("shippingRequired") || "Shipping Required",
       icon: Calendar,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50 dark:bg-blue-950/30",
-      borderColor: "border-blue-200 dark:border-blue-800",
+      color: "text-red-600",
+      bgColor: "bg-red-50 dark:bg-red-950/30",
+      borderColor: "border-red-200 dark:border-red-800",
     },
     {
       key: "shipped",

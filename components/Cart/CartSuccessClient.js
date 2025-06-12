@@ -3,13 +3,14 @@
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "@/components/Context/TranslationContext";
-import { CheckCircle, Package, ArrowRight, Store } from "lucide-react";
+import { CheckCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import PostsLoader from "@/components/Post/Posts/PostsLoader";
 import { getAll } from "@/lib/actions/crud";
 import { useCartOperations } from "@/lib/hooks/useCartOperations";
 import CreatedBy from "../Post/Post/CreatedBy";
 import OrderItemImageDisplay from "@/components/ui/shared/SimpleImageDisplay/OrderItemImageDisplay";
+import OrderCostBreakdown from "@/components/ui/shared/OrderCostBreakdown/OrderCostBreakdown";
 
 export default function CartSuccessClient({ mongoUser }) {
   const { t } = useTranslation();
@@ -157,8 +158,7 @@ export default function CartSuccessClient({ mongoUser }) {
 
             {/* Store Owner Info */}
             <div className="f aic g10 mb15 p10 bg-muted/30 rounded-lg">
-              <Store className="w16 h16 text-muted-foreground" />
-              <div>
+                <div>
                 <span className="text-sm text-muted-foreground">
                   {t("storeOwner")}:
                 </span>
@@ -219,10 +219,7 @@ export default function CartSuccessClient({ mongoUser }) {
 
             {/* Order Subtotal */}
             <div className="border-t pt15 mt15">
-              <div className="f jcsb aic">
-                <span className="font-semibold">{t("orderTotal")}:</span>
-                <span className="font-bold">${order.total.toFixed(2)}</span>
-              </div>
+              <OrderCostBreakdown order={order} totalLabel={t("orderTotal")} />
             </div>
           </div>
         ))}

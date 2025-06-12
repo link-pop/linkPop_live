@@ -5,6 +5,7 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 import { useContext } from "@/components/Context/Context";
 import AddStoreItemButton from "./AddStoreItemButton";
 import UserStoreItems from "./UserStoreItems";
+import StoreCategoryFetchedSwitch from "@/components/Post/Posts/Custom/MoreThanFriend/StoreCategoryFetchedSwitch";
 
 export default function UserFullPostUserStore({
   post,
@@ -32,6 +33,13 @@ export default function UserFullPostUserStore({
           />
         </div>
       )}
+
+      {/* Category filter */}
+      <StoreCategoryFetchedSwitch
+        mongoUser={mongoUser}
+        visitedUserId={visitedMongoUser?._id}
+        collection="storeitems"
+      />
 
       {/* Store items display */}
       <UserStoreItems
