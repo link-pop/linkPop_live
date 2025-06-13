@@ -2,17 +2,21 @@
 
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { useContext } from "@/components/Context/Context";
+import { useRouter } from "next/navigation";
 import OrderItemImageDisplay from "@/components/ui/shared/SimpleImageDisplay/OrderItemImageDisplay";
+import { CART_ROUTE } from "@/lib/utils/constants";
 
-export default function CartToast() {
+export default function CartToast({ navigateToRoute = CART_ROUTE } = {}) {
   const { t } = useTranslation();
   const { toastSet } = useContext();
+  const router = useRouter();
 
   const showCartToast = ({
     type, // "added", "removed", "updated", "error"
     storeItem,
     quantity = 1,
     errorMessage = null,
+    onToastClick = null, // Custom click handler, if not provided will navigate to navigateToRoute
   }) => {
     const getToastConfig = () => {
       switch (type) {
@@ -53,10 +57,22 @@ export default function CartToast() {
 
     const config = getToastConfig();
 
+    // Handle toast click - either custom handler or navigate to route
+    const handleToastClick = () => {
+      if (onToastClick) {
+        onToastClick();
+      } else if (navigateToRoute) {
+        router.push(navigateToRoute);
+      }
+    };
+
     // Create custom content with image and title for non-error toasts
     if (type !== "error" && storeItem) {
       const customContent = (
-        <div className="f aic g10">
+        <div
+          className="f aic g10 cursor-pointer hover:opacity-80 transition-opacity"
+          onClick={handleToastClick}
+        >
           <OrderItemImageDisplay
             item={storeItem}
             size={40}
@@ -89,6 +105,10 @@ export default function CartToast() {
         title: config.title,
         text: config.text,
         duration: config.duration,
+        ...(type !== "error" &&
+          navigateToRoute && {
+            onClick: handleToastClick,
+          }),
       });
     }
   };

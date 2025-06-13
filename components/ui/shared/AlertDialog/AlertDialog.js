@@ -130,7 +130,10 @@ export default function AlertDialog() {
           >
             {dialog.showCancelBtn !== false && (
               <Button2
-                onClick={() => dialogSet({ isOpen: false })}
+                onClick={() => {
+                  dialog.onCancel?.();
+                  dialogSet({ isOpen: false });
+                }}
                 variant={"outline"}
                 text={dialog.cancelBtnText || t("cancel")}
               />

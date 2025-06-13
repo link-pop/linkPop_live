@@ -1603,7 +1603,10 @@ const en = {
   paymentStatus: "Payment Status",
   items: "Items",
   whatHappensNext: "What happens next?",
-  orderProcessingMessage: "We'll process your order within 1-2 business days",
+  orderProcessingMessage:
+    "Shop owner has 1 week to process and ship your order. You can cancel and get a full refund after 1 week if not shipped.",
+  orderProcessingMessageShopOwner:
+    "You have 1 week to ship the order. Otherwise, user can refund.",
   shippingNotificationMessage:
     "You'll receive a shipping notification via email",
   trackingInfoMessage: "Track your package with the provided tracking number",
@@ -1844,6 +1847,33 @@ const en = {
   shippingAddressSavedSuccessfully:
     "Your shipping address has been saved successfully",
   errorSavingAddress: "Error Saving Address",
+
+  // Cancel order functionality
+  cancelOrder: "Cancel Order",
+  cannotCancel: "Cannot Cancel",
+  cancelling: "Cancelling...",
+  orderCancelled: "Order Cancelled",
+  orderCancelledSuccessfully:
+    "Order cancelled and refund processed successfully",
+  confirmCancelOrder: "Confirm Order Cancellation",
+  cancelOrderConfirmationMessage:
+    "Are you sure you want to cancel this order? This action cannot be undone and a full refund will be processed.",
+  orderNumber: "Order Number",
+  refundAmount: "Refund Amount",
+  refundProcessingNote:
+    "The refund will be processed to your original payment method within 5-10 business days.",
+  confirmCancel: "Cancel Order",
+  keepOrder: "Keep Order",
+  orderCanBeCancelledAfter: "Order can be cancelled after",
+  week: "week",
+  daysRemaining: "days remaining",
+  cancelOrderAndProcessRefund: "Cancel order and process refund",
+
+  // Canceled amount functionality
+  canceledAmount: "Canceled Amount",
+  canceledOrders: "Canceled Orders",
+  processingOrders: "Processing Orders",
+  shippedOrders: "Shipped Orders",
 };
 
 export default en;

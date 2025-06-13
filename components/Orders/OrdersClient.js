@@ -137,7 +137,15 @@ export default function OrdersClient({ mongoUser }) {
   return (
     <div className="max-w-4xl mx-auto p20">
       <div className="mb20">
-        <h1 className="text-2xl font-bold mb5">{t("orders")}</h1>
+        <h1 className="text-2xl font-bold mb5">
+          {t("orders")}
+          {activeTab === "seller" && (
+            <span className="text-red-400 fz18">
+              {" "}
+              * {t("orderProcessingMessageShopOwner")}
+            </span>
+          )}
+        </h1>
 
         {/* Tab Navigation */}
         <div className="fr g10 mb15">
@@ -189,6 +197,7 @@ export default function OrdersClient({ mongoUser }) {
           <OrderCard
             key={order._id}
             order={order}
+            mongoUser={mongoUser}
             isStoreOwner={activeTab === "seller"}
           />
         ))}

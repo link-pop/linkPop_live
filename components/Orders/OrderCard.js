@@ -27,8 +27,9 @@ import USPSTrackingLink from "@/components/ui/shared/USPSTrackingLink/USPSTracki
 import CreatedBy from "@/components/Post/Post/CreatedBy";
 import OrderCostBreakdown from "@/components/ui/shared/OrderCostBreakdown/OrderCostBreakdown";
 import ShippingAddressDisplay from "@/components/ui/shared/ShippingAddressDisplay/ShippingAddressDisplay";
+import CancelOrderButton from "@/components/ui/shared/CancelOrderButton/CancelOrderButton";
 
-export default function OrderCard({ order, isStoreOwner = false }) {
+export default function OrderCard({ order, mongoUser, isStoreOwner = false }) {
   const { t } = useTranslation();
   const { toastSet } = useContext();
   const queryClient = useQueryClient();
@@ -448,8 +449,21 @@ export default function OrderCard({ order, isStoreOwner = false }) {
         <OrderCostBreakdown order={order} />
       </div>
 
+      {/* Cancel Order Button - Only show for buyers */}
+      {!isStoreOwner && (
+        <div className="mt15 pt15 border-t border-border">
+          <div className="mla wfc">
+            <CancelOrderButton
+              order={order}
+              mongoUser={mongoUser}
+              variant="default"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Shipping Actions - Only show for store owners */}
-      {isStoreOwner && (
+      {isStoreOwner && order.orderStatus !== "cancelled" && (
         <div className="mt15 pt15 border-t border-border">
           <div className="f g10 aic">
             {/* Show download button if label already exists */}
