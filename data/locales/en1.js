@@ -1819,7 +1819,20 @@ const en = {
     "Your store shipping address has been saved successfully",
   errorSavingAddress: "Error Saving Address",
   storeShippingAddressConfigured:
-    "✅ Store shipping address is configured and ready for use",
+    "Store shipping address is configured and ready for use",
+
+  // Store item creation step navigation
+  stripeConnect: "Get Payments",
+  setupPayments: "Setup Payments",
+  shippingAddress: "Shipping Address",
+  storeItem: "Store Item",
+  createStoreItem: "Create Store Item",
+  addItemToYourStore: "Add an item to your store",
+  describeYourStoreItem: "Describe your store item...",
+  stripeConnectRequiredForStore:
+    "Stripe Connect is required to create and sell store items.",
+  configureStoreShippingAddress:
+    "Configure your store's shipping address for order fulfillment.",
 };
 
 export default en;

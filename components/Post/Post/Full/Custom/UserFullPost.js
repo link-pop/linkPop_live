@@ -65,7 +65,7 @@ export default function UserFullPost({
         top7={
           // ! Don't delete this, it's for dev
           mongoUser?.isDev && (
-            <div className="bb poa t0">
+            <div className="poa t0">
               raceEthnicity:{" "}
               {mongoUser?.lastUploadedCreatorTags?.raceEthnicity?.map((tag) => (
                 <span key={tag}>{tag + " "}</span>

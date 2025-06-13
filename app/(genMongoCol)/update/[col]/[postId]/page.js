@@ -18,7 +18,16 @@ export default async function updatePostPage({ params }) {
   // Check the specific collection name from params
   if (SITE1) {
     if (params.col === "storeitems") {
-      return <AddStoreItemForm {...{ col, mongoUser, updatingPost }} />;
+      return (
+        <AddStoreItemForm
+          {...{
+            col,
+            mongoUser,
+            updatingPost,
+            submitBtnClassName: "z51 poa r15 -t55",
+          }}
+        />
+      );
     }
     return <AddFeedChatmessageForm {...{ col, mongoUser, updatingPost }} />;
   } else {

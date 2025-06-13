@@ -11,6 +11,7 @@ import {
   Shield,
 } from "lucide-react";
 import { isStripeConnectReadyIncludingDevBypass } from "@/lib/utils/stripe/stripeConnectHelpers";
+import Button2 from "../Button/Button2";
 
 export default function UserStripeConnectOnboardingButton({
   mongoUser,
@@ -169,9 +170,7 @@ export default function UserStripeConnectOnboardingButton({
           <CheckCircle className="w24 h24 text-green-600" />
         ) : hasAccount() ? (
           <AlertTriangle className="w24 h24 text-yellow-600" />
-        ) : (
-          <CreditCard className="w24 h24 text-muted-foreground" />
-        )}
+        ) : null}
         <div>
           <h3 className="font-semibold text-lg">{t("stripeConnectAccount")}</h3>
           <p className="text-sm text-muted-foreground">
@@ -184,14 +183,14 @@ export default function UserStripeConnectOnboardingButton({
         </div>
       </div>
 
-      <button
+      <Button2
         onClick={handleStartOnboarding}
         disabled={isLoading || buttonContent.disabled}
-        className={`f aic g8 px20 py10 rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed ${buttonContent.className} ${className}`}
+        variant={"primary"}
+        className={`f fwn aic g8 px20 py10`}
       >
-        {buttonContent.icon}
         <span>{isLoading ? t("loading") : buttonContent.text}</span>
-      </button>
+      </Button2>
 
       {!isOnboardingComplete() && (
         <div className="mt15 p15 bg-blue-50 border border-blue-200 rounded-lg">

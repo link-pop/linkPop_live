@@ -209,11 +209,11 @@ export default function AddToUserCartButton({
       return null;
 
     return (
-      <div className="f aic g5 border rounded-lg px8 py5 bg-background">
+      <div className="f aic g5 border rounded-lg px8 py5 bg-transparent">
         <button
           onClick={() => setQuantity(Math.max(1, quantity - 1))}
           disabled={quantity <= 1}
-          className="f aic jcc w20 h20 rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+          className="f aic jcc w20 h20 rounded hover:bg-muted/10 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Minus size={12} />
         </button>
@@ -223,7 +223,7 @@ export default function AddToUserCartButton({
         <button
           onClick={() => setQuantity(Math.min(maxQuantity, quantity + 1))}
           disabled={quantity >= maxQuantity}
-          className="f aic jcc w20 h20 rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+          className="f aic jcc w20 h20 rounded hover:bg-muted/10 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Plus size={12} />
         </button>
@@ -236,11 +236,11 @@ export default function AddToUserCartButton({
 
     return (
       <div className="f aic g10">
-        <div className="f aic g5 border rounded-lg px8 py5 bg-background">
+        <div className="f aic g5 border rounded-lg px8 py5">
           <button
             onClick={() => handleUpdateQuantity(cartItemQuantity - 1)}
             disabled={cartItemQuantity <= 1 || isLoading}
-            className="f aic jcc w20 h20 rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+            className="f aic jcc w20 h20 rounded hover:bg-muted/10 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Minus size={12} />
           </button>
@@ -250,7 +250,7 @@ export default function AddToUserCartButton({
           <button
             onClick={() => handleUpdateQuantity(cartItemQuantity + 1)}
             disabled={isLoading || cartItemQuantity >= maxQuantity}
-            className="f aic jcc w20 h20 rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+            className="f aic jcc w20 h20 rounded hover:bg-muted/10 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Plus size={12} />
           </button>
@@ -258,7 +258,7 @@ export default function AddToUserCartButton({
         <button
           onClick={handleRemoveFromCart}
           disabled={isLoading}
-          className="px10 py5 bg-destructive hover:bg-destructive/80 text-destructive-foreground rounded-lg text-sm font-medium transition-colors"
+          className="h33 px15 py4 bg-red-400 hover:bg-red-400/80 text-red-400-foreground rounded-lg text-sm font-medium transition-colors"
         >
           {t("removeFromCart")}
         </button>
@@ -270,7 +270,8 @@ export default function AddToUserCartButton({
     const baseClasses =
       "f aic jcc gap-2 transition-all duration-200 rounded-lg font-medium";
     const variantClasses = {
-      default: "px15 py10 bg-accent hover:bg-accent/80 text-accent-foreground",
+      default:
+        "h33 px15 py4 bg-accent hover:bg-accent/80 text-accent-foreground",
       compact:
         "px10 py8 bg-accent hover:bg-accent/80 text-accent-foreground text-sm",
       "icon-only":
@@ -325,9 +326,7 @@ export default function AddToUserCartButton({
 
     return (
       <div className="fc g10">
-        <div className="text-lg font-bold text-foreground">
-          {formatPrice(storeItem.price)}
-        </div>
+        <div className="text-lg font-bold">{formatPrice(storeItem.price)}</div>
         {renderContent()}
       </div>
     );

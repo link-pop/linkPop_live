@@ -2,20 +2,18 @@
 
 import { useRef, useState } from "react";
 import { useTranslation } from "@/components/Context/TranslationContext";
-import TipTapInput from "../../AddPost/AddPostFormInput/TipTapInput";
-import useAddFeedFormTipTapSettings from "./useAddFeedFormTipTapSettings";
-import useAddFeedFormVaultFiles from "./useAddFeedFormVaultFiles";
-import useAddFeedFormPostPrice from "./useAddFeedFormPostPrice";
-import AddFiles from "../../../Cloudinary/AddFiles";
+import TipTapInput from "@/components/Post/AddPost/AddPostFormInput/TipTapInput";
+import useAddFeedFormTipTapSettings from "@/components/Post/AddPostCustom/MoreThanFriend/useAddFeedFormTipTapSettings";
+import useAddFeedFormVaultFiles from "@/components/Post/AddPostCustom/MoreThanFriend/useAddFeedFormVaultFiles";
+import useAddFeedFormPostPrice from "@/components/Post/AddPostCustom/MoreThanFriend/useAddFeedFormPostPrice";
+import AddFiles from "@/components/Cloudinary/AddFiles";
 import AddFilesPreview from "@/components/Cloudinary/AddFilesPreview";
-import AddFeedFormSubmitButton from "./AddFeedFormSubmitButton";
-import useOnSubmitAddPostFormWithSepAttachmentCol from "../../AddPost/useOnSubmitAddPostFormWithSepAttachmentCol";
+import AddFeedFormSubmitButton from "@/components/Post/AddPostCustom/MoreThanFriend/AddFeedFormSubmitButton";
+import useOnSubmitAddPostFormWithSepAttachmentCol from "@/components/Post/AddPost/useOnSubmitAddPostFormWithSepAttachmentCol";
 import { useRouter } from "next/navigation";
-import PostsLoader from "../../Posts/PostsLoader";
+import PostsLoader from "@/components/Post/Posts/PostsLoader";
 import { useContext } from "@/components/Context/Context";
 import VideoRecorder from "@/components/ui/shared/VideoRecorder/VideoRecorder";
-import UserStripeConnectOnboardingButton from "@/components/ui/shared/UserStripeConnectOnboardingButton/UserStripeConnectOnboardingButton";
-import StoreOwnerShippingAddressForm from "@/components/ui/shared/StoreOwnerShippingAddressForm/StoreOwnerShippingAddressForm";
 
 export default function AddStoreItemForm({
   col,
@@ -41,8 +39,6 @@ export default function AddStoreItemForm({
   const [category, setCategory] = useState(updatingPost?.category || "");
   const [price, priceSet] = useState(updatingPost?.price || 0);
   const [stock, setStock] = useState(updatingPost?.stock || 0);
-  const [isStripeConnectReady, setIsStripeConnectReady] = useState(false);
-  const [storeShippingAddress, setStoreShippingAddress] = useState(null);
   const { toastSet } = useContext();
 
   const { TipTapSettings, isTipTapSettingsVisible } =
@@ -122,16 +118,6 @@ export default function AddStoreItemForm({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if Stripe Connect is ready before allowing submission
-    if (!isStripeConnectReady) {
-      toastSet({
-        isOpen: true,
-        title: t("stripeConnectRequired"),
-        text: t("completeStripeConnectBeforeCreatingItems"),
-      });
-      return;
-    }
-
     // Validate that price is greater than 1
     if (!price || price < 1) {
       toastSet({
@@ -177,33 +163,13 @@ export default function AddStoreItemForm({
     onSubmitAddPostForm(e);
   };
 
-  const handleStripeConnectStatusChange = (isReady) => {
-    setIsStripeConnectReady(isReady);
-  };
-
   return (
-    <div className="bb">
+    <div className="">
       <PostsLoader
         {...{
           isLoading: isFormLoading,
           className: "w40 h40 poa left-[46.5%] t100",
         }}
-      />
-
-      {/* Stripe Connect Onboarding */}
-      <div className="mb20">
-        <UserStripeConnectOnboardingButton
-          mongoUser={mongoUser}
-          onOnboardingComplete={handleStripeConnectStatusChange}
-          variant="warning"
-        />
-      </div>
-
-      {/* Store Owner Shipping Address */}
-      <StoreOwnerShippingAddressForm
-        mongoUser={mongoUser}
-        onAddressChange={setStoreShippingAddress}
-        disabled={!isStripeConnectReady}
       />
 
       <form
@@ -226,7 +192,6 @@ export default function AddStoreItemForm({
             placeholder={t("storeItemTitle")}
             className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
             required
-            disabled={!isStripeConnectReady}
           />
         </div>
 
@@ -241,7 +206,6 @@ export default function AddStoreItemForm({
             onChange={(e) => setCategory(e.target.value)}
             placeholder={t("storeItemCategory")}
             className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
-            disabled={!isStripeConnectReady}
           />
         </div>
 
@@ -259,7 +223,6 @@ export default function AddStoreItemForm({
             placeholder={t("storeItemStockPlaceholder")}
             className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
             required
-            disabled={!isStripeConnectReady}
           />
           <p className="text-xs text-muted-foreground">
             {t("storeItemStockDescription")}
@@ -277,7 +240,6 @@ export default function AddStoreItemForm({
           setTipTapInputContent={setTipTapInputContent}
           editorClassName="mih20"
           placeholder={placeholder || t("storeItemDescription")}
-          disabled={!isStripeConnectReady}
         />
 
         {!hideSubmitButton && (
@@ -287,7 +249,6 @@ export default function AddStoreItemForm({
               onSubmit={onSubmitAddPostForm}
               buttonText={submitBtnText || t("addToStore")}
               className={submitBtnClassName}
-              disabled={!isStripeConnectReady}
             />
           </div>
         )}
@@ -300,17 +261,15 @@ export default function AddStoreItemForm({
             filesSet={filesSet}
             isRequiredFiles={false}
             col={col}
-            disabled={!isStripeConnectReady}
           />
           <VideoRecorder
             onVideoRecorded={(videoFile) => {
               filesSet((prev) => [...prev, videoFile]);
             }}
-            disabled={!isStripeConnectReady}
           />
-          <VaultFilesButton disabled={!isStripeConnectReady} />
-          <PostPriceButton disabled={!isStripeConnectReady} />
-          <TipTapSettings disabled={!isStripeConnectReady} />
+          <VaultFilesButton />
+          <PostPriceButton />
+          <TipTapSettings />
         </div>
       </form>
     </div>

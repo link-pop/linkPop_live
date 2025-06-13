@@ -53,13 +53,6 @@ const ContentOverlay = ({ content, mongoUser }) => {
         <h2 className="text-xl font-bold mb10 line-clamp-2">{title}</h2>
       )}
 
-      {/* Category */}
-      {category && (
-        <div className="text-sm opacity-90 uppercase tracking-wide mb10 bg-white/20 px10 py5 rounded-full inline-block">
-          {category}
-        </div>
-      )}
-
       {/* Description */}
       {text && (
         <div

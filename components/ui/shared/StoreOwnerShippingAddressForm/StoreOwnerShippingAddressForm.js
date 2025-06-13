@@ -11,6 +11,7 @@ import { updateUserShippingAddress } from "@/lib/actions/updateUserShippingAddre
 export default function StoreOwnerShippingAddressForm({
   mongoUser,
   onAddressChange,
+  onAddressSaved,
   disabled = false,
 }) {
   const { t } = useTranslation();
@@ -83,6 +84,9 @@ export default function StoreOwnerShippingAddressForm({
         title: t("addressSaved"),
         text: t("storeShippingAddressSaved"),
       });
+
+      // Notify parent that address has been successfully saved
+      onAddressSaved?.(shippingAddress);
     } catch (error) {
       console.error("❌ Error saving shipping address:", error);
       toastSet({
@@ -233,7 +237,7 @@ export default function StoreOwnerShippingAddressForm({
         <div className="f jce">
           <Button2
             text={isSaving ? t("saving") : t("saveAddress")}
-            leftIcon={isSaving ? undefined : Save}
+            leftIcon={isSaving ? undefined : undefined}
             onClick={saveAddress}
             disabled={
               !isAddressValid() ||
@@ -241,7 +245,7 @@ export default function StoreOwnerShippingAddressForm({
               (!hasUnsavedChanges && isAddressSaved())
             }
             variant={hasUnsavedChanges ? "primary" : "outline"}
-            className="min-w-120"
+            className="mxa min-w-120"
           />
         </div>
       )}
