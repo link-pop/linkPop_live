@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import shippoService from "@/lib/utils/shippo/shippoService";
+import { getStoreOwnerShippingAddress } from "@/lib/actions/getStoreOwnerShippingAddress";
 
 export async function POST(request) {
   try {
@@ -50,6 +51,52 @@ export async function POST(request) {
 
     console.log("Calculating shipping rates for cart items...");
 
+    // TODO ! NOT NOW ! calculate rates per store owner
+    // For now, we'll use the first store owner's address for shipping calculation
+    // In a more complex scenario, you might want to calculate rates per store owner
+    const firstStoreOwner = cartGroups[0]?.storeOwner;
+    if (!firstStoreOwner?._id) {
+      return NextResponse.json(
+        { error: "No valid store owner found in cart items" },
+        { status: 400 }
+      );
+    }
+
+    // Get store owner's shipping address
+    const storeOwnerAddressResult = await getStoreOwnerShippingAddress({
+      storeOwnerId: firstStoreOwner._id,
+    });
+
+    let storeOwnerShippingAddress = null;
+    let isDev = firstStoreOwner.isDev || false;
+
+    // For dev users, allow bypassing shipping address requirement
+    if (storeOwnerAddressResult.error && !isDev) {
+      console.log(
+        "❌ Store owner shipping address error:",
+        storeOwnerAddressResult.error
+      );
+      return NextResponse.json(
+        {
+          error: storeOwnerAddressResult.error,
+          needsConfiguration: storeOwnerAddressResult.needsConfiguration,
+        },
+        { status: 400 }
+      );
+    }
+
+    if (storeOwnerAddressResult.success) {
+      storeOwnerShippingAddress = storeOwnerAddressResult.shippingAddress;
+      console.log(
+        "✅ Using store owner's shipping address for rate calculation"
+      );
+    } else if (isDev) {
+      console.log(
+        "⚠️ Dev user - using fallback address for shipping calculation"
+      );
+      // For dev users, we'll use the default address in shippoService
+    }
+
     // Create a mock order structure for Shippo rate calculation
     const mockOrder = {
       orderNumber: `RATE-CALC-${Date.now()}`,
@@ -81,8 +128,11 @@ export async function POST(request) {
       );
     }
 
-    // Create shipment in Shippo to get rates
-    const shipment = await shippoService.createShipment(mockOrder);
+    // Create shipment in Shippo to get rates using store owner's address
+    const shipment = await shippoService.createShipment(
+      mockOrder,
+      storeOwnerShippingAddress
+    );
 
     if (!shipment.rates || shipment.rates.length === 0) {
       return NextResponse.json(
@@ -102,7 +152,11 @@ export async function POST(request) {
       duration_terms: rate.duration_terms,
     }));
 
-    console.log(`Found ${formattedRates.length} shipping rates`);
+    console.log(
+      `Found ${
+        formattedRates.length
+      } shipping rates; Rates: ${formattedRates.map((rate) => rate.amount)}`
+    );
 
     return NextResponse.json({
       success: true,

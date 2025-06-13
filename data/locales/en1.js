@@ -1805,6 +1805,21 @@ const en = {
   insufficientStock: "Insufficient Stock",
   onlyXItemsAvailable: "Only {count} items available",
   stockUpdatedAfterPurchase: "Stock updated after purchase",
+
+  // Store owner shipping address
+  storeShippingAddress: "Store Shipping Address",
+  storeShippingAddressDescription:
+    "This is the address from which you will ship your store items to customers.",
+  businessName: "Business Name",
+  enterBusinessName: "Enter your business or store name",
+  saveAddress: "Save Address",
+  saving: "Saving...",
+  addressSaved: "Address Saved",
+  storeShippingAddressSaved:
+    "Your store shipping address has been saved successfully",
+  errorSavingAddress: "Error Saving Address",
+  storeShippingAddressConfigured:
+    "✅ Store shipping address is configured and ready for use",
 };
 
 export default en;

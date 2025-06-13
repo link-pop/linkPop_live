@@ -15,6 +15,7 @@ import PostsLoader from "../../Posts/PostsLoader";
 import { useContext } from "@/components/Context/Context";
 import VideoRecorder from "@/components/ui/shared/VideoRecorder/VideoRecorder";
 import UserStripeConnectOnboardingButton from "@/components/ui/shared/UserStripeConnectOnboardingButton/UserStripeConnectOnboardingButton";
+import StoreOwnerShippingAddressForm from "@/components/ui/shared/StoreOwnerShippingAddressForm/StoreOwnerShippingAddressForm";
 
 export default function AddStoreItemForm({
   col,
@@ -41,6 +42,7 @@ export default function AddStoreItemForm({
   const [price, priceSet] = useState(updatingPost?.price || 0);
   const [stock, setStock] = useState(updatingPost?.stock || 0);
   const [isStripeConnectReady, setIsStripeConnectReady] = useState(false);
+  const [storeShippingAddress, setStoreShippingAddress] = useState(null);
   const { toastSet } = useContext();
 
   const { TipTapSettings, isTipTapSettingsVisible } =
@@ -196,6 +198,13 @@ export default function AddStoreItemForm({
           variant="warning"
         />
       </div>
+
+      {/* Store Owner Shipping Address */}
+      <StoreOwnerShippingAddressForm
+        mongoUser={mongoUser}
+        onAddressChange={setStoreShippingAddress}
+        disabled={!isStripeConnectReady}
+      />
 
       <form
         className={`por f wf py15 ${isFormLoading ? "pen op5" : ""}`}
