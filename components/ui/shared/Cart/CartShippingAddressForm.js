@@ -3,15 +3,20 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { useContext } from "@/components/Context/Context";
-import { MapPin, Calculator, Truck } from "lucide-react";
+import { MapPin, Calculator, Truck, Save } from "lucide-react";
 import { formatPrice } from "@/lib/utils/formatPrice";
 import LoadingSpinner from "@/components/ui/shared/LoadingSpinner/LoadingSpinner";
 import Button2 from "@/components/ui/shared/Button/Button2";
 import CartShippingAddressFormCountries from "./CartShippingAddressFormCountries";
+import {
+  getUserShippingAddress,
+  saveUserShippingAddress,
+} from "@/lib/actions/userShippingAddressActions";
 
 export default function CartShippingAddressForm({
   onShippingAddressChange,
   onShippingCostChange,
+  onShippingRateChange,
   cartGroups = [],
   isLoading = false,
 }) {
@@ -30,6 +35,8 @@ export default function CartShippingAddressForm({
   const [shippingRates, setShippingRates] = useState([]);
   const [selectedShippingRate, setSelectedShippingRate] = useState(null);
   const [shippingError, setShippingError] = useState(null);
+  const [isSavingAddress, setIsSavingAddress] = useState(false);
+  const [isLoadingAddress, setIsLoadingAddress] = useState(true);
 
   // Form validation
   const isAddressValid = () => {
@@ -47,6 +54,36 @@ export default function CartShippingAddressForm({
   const isShippingInfoFilled = () => {
     return isAddressValid() && selectedShippingRate;
   };
+
+  // Load saved shipping address on component mount
+  useEffect(() => {
+    const loadSavedAddress = async () => {
+      try {
+        const result = await getUserShippingAddress();
+        if (result.success && result.hasAddress) {
+          const savedAddress = result.shippingAddress;
+          setShippingAddress({
+            name: savedAddress.name || "",
+            line1: savedAddress.line1 || "",
+            line2: savedAddress.line2 || "",
+            city: savedAddress.city || "",
+            state: savedAddress.state || "",
+            postal_code: savedAddress.postal_code || "",
+            country: savedAddress.country || "US",
+          });
+
+          // Notify parent of loaded address
+          onShippingAddressChange?.(savedAddress);
+        }
+      } catch (error) {
+        console.error("Error loading saved address:", error);
+      } finally {
+        setIsLoadingAddress(false);
+      }
+    };
+
+    loadSavedAddress();
+  }, []);
 
   // Handle address field changes
   const handleAddressChange = (field, value) => {
@@ -138,7 +175,61 @@ export default function CartShippingAddressForm({
   const handleShippingRateSelect = (rate) => {
     setSelectedShippingRate(rate);
     onShippingCostChange?.(parseFloat(rate.amount));
+    onShippingRateChange?.(rate);
   };
+
+  // Save shipping address
+  const handleSaveAddress = async () => {
+    if (!isAddressValid()) {
+      toastSet({
+        isOpen: true,
+        title: t("incompleteAddress"),
+        text: t("pleaseCompleteShippingAddress"),
+      });
+      return;
+    }
+
+    setIsSavingAddress(true);
+
+    try {
+      const result = await saveUserShippingAddress(shippingAddress);
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      toastSet({
+        isOpen: true,
+        title: t("addressSaved"),
+        text: t("shippingAddressSavedSuccessfully"),
+      });
+    } catch (error) {
+      console.error("Error saving address:", error);
+      toastSet({
+        isOpen: true,
+        title: t("errorSavingAddress"),
+        text: error.message || "Failed to save address",
+      });
+    } finally {
+      setIsSavingAddress(false);
+    }
+  };
+
+  if (isLoadingAddress) {
+    return (
+      <div className="bg-background border border-border rounded-xl p25 shadow-sm">
+        <div className="f aic g10 mb20">
+          <MapPin className="w20 h20 text-accent" />
+          <h3 className="text-lg font-semibold text-foreground">
+            {t("shippingAddress")}
+          </h3>
+        </div>
+        <div className="f aic jcc p20">
+          <LoadingSpinner size={24} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-background border border-border rounded-xl p25 shadow-sm">
@@ -250,8 +341,21 @@ export default function CartShippingAddressForm({
         />
       </div>
 
-      {/* Calculate Shipping Button */}
-      <div className="mb15">
+      {/* Action Buttons */}
+      <div className="fc g10 mb15">
+        {/* Save Address Button */}
+        <Button2
+          text={isSavingAddress ? t("savingAddress") : t("saveAddress")}
+          leftIcon={isSavingAddress ? undefined : Save}
+          onClick={handleSaveAddress}
+          disabled={!isAddressValid() || isLoading || isSavingAddress}
+          variant="outline"
+          className="w-full"
+        >
+          {isSavingAddress && <LoadingSpinner size={16} className="mr-2" />}
+        </Button2>
+
+        {/* Calculate Shipping Button */}
         {isCalculatingShipping ? (
           <Button2
             variant={isShippingInfoFilled() ? "outline" : "primary"}

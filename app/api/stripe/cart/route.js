@@ -7,7 +7,7 @@ export async function POST(request) {
   try {
     // Parse request body for shipping information
     const body = await request.json();
-    const { shippingAddress, shippingCost } = body;
+    const { shippingAddress, shippingCost, selectedShippingRate } = body;
 
     // Process cart items and prepare order data
     const cartResult = await processCartItems();
@@ -74,12 +74,45 @@ export async function POST(request) {
 
     // Add shipping as a separate line item if provided
     if (shippingCost && shippingCost > 0) {
+      // Create detailed shipping description
+      let shippingDescription = "Shipping cost calculated via Shippo";
+
+      if (shippingAddress) {
+        const addressParts = [
+          shippingAddress.line1,
+          shippingAddress.line2,
+          shippingAddress.city,
+          shippingAddress.state,
+          shippingAddress.postal_code,
+          shippingAddress.country,
+        ].filter(Boolean);
+
+        shippingDescription = `Shipping to: ${
+          shippingAddress.name
+        }, ${addressParts.join(", ")}`;
+
+        // Add selected shipping method info if available
+        if (selectedShippingRate) {
+          const serviceName =
+            selectedShippingRate.servicelevel?.name ||
+            selectedShippingRate.provider;
+          const estimatedDays = selectedShippingRate.estimated_days;
+
+          if (serviceName) {
+            shippingDescription += ` • Selected Shipping: ${serviceName}`;
+            if (estimatedDays) {
+              shippingDescription += ` • ${estimatedDays} business days`;
+            }
+          }
+        }
+      }
+
       lineItemsWithFees.push({
         price_data: {
           currency: "usd",
           product_data: {
             name: "Shipping",
-            description: "Shipping cost calculated via Shippo",
+            description: shippingDescription,
           },
           unit_amount: Math.round(shippingCost * 100), // Convert to cents
         },

@@ -8,6 +8,7 @@ import { isItemInUserCart } from "@/lib/actions/userCartActions";
 import { useCartActionsWithContext } from "@/lib/hooks/useCartActionsWithContext";
 import { formatPrice } from "@/lib/utils/formatPrice";
 import StockIndicator from "@/components/ui/shared/StockIndicator/StockIndicator";
+import CartToast from "@/components/ui/shared/Toast/CartToast";
 
 export default function AddToUserCartButton({
   storeItem,
@@ -22,6 +23,7 @@ export default function AddToUserCartButton({
   const { toastSet } = useContext();
   const { addToUserCart, removeFromUserCart, updateCartItemQuantity } =
     useCartActionsWithContext();
+  const { showCartToast } = CartToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isInCart, setIsInCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -80,25 +82,27 @@ export default function AddToUserCartButton({
 
       if (result?.error) {
         if (result.error.includes("already in cart")) {
-          toastSet({
-            isOpen: true,
-            title: t("itemAlreadyInCart"),
+          showCartToast({
+            type: "error",
+            storeItem,
+            errorMessage: t("itemAlreadyInCart"),
           });
           setIsInCart(true);
           return;
         }
         if (result.error.includes("out of stock")) {
-          toastSet({
-            isOpen: true,
-            title: t("itemOutOfStock"),
+          showCartToast({
+            type: "error",
+            storeItem,
+            errorMessage: t("itemOutOfStock"),
           });
           return;
         }
         if (result.error.includes("Only")) {
-          toastSet({
-            isOpen: true,
-            title: t("insufficientStock"),
-            text: result.error,
+          showCartToast({
+            type: "error",
+            storeItem,
+            errorMessage: result.error,
           });
           return;
         }
@@ -107,16 +111,17 @@ export default function AddToUserCartButton({
 
       setIsInCart(true);
       setCartItemQuantity(quantity);
-      toastSet({
-        isOpen: true,
-        title: t("addedToCart"),
+      showCartToast({
+        type: "added",
+        storeItem,
+        quantity,
       });
     } catch (error) {
       console.error("❌ Add to cart error:", error);
-      toastSet({
-        isOpen: true,
-        title: t("errorAddingToCart"),
-        text: error.message || "An error occurred",
+      showCartToast({
+        type: "error",
+        storeItem,
+        errorMessage: error.message || "An error occurred",
       });
     } finally {
       setIsLoading(false);
@@ -136,17 +141,18 @@ export default function AddToUserCartButton({
 
       if (result?.error) {
         if (result.error.includes("out of stock")) {
-          toastSet({
-            isOpen: true,
-            title: t("itemOutOfStock"),
+          showCartToast({
+            type: "error",
+            storeItem,
+            errorMessage: t("itemOutOfStock"),
           });
           return;
         }
         if (result.error.includes("Only")) {
-          toastSet({
-            isOpen: true,
-            title: t("insufficientStock"),
-            text: result.error,
+          showCartToast({
+            type: "error",
+            storeItem,
+            errorMessage: result.error,
           });
           return;
         }
@@ -154,16 +160,17 @@ export default function AddToUserCartButton({
       }
 
       setCartItemQuantity(newQuantity);
-      toastSet({
-        isOpen: true,
-        title: t("cartUpdated"),
+      showCartToast({
+        type: "updated",
+        storeItem,
+        quantity: newQuantity,
       });
     } catch (error) {
       console.error("❌ Update quantity error:", error);
-      toastSet({
-        isOpen: true,
-        title: t("errorAddingToCart"),
-        text: error.message || "An error occurred",
+      showCartToast({
+        type: "error",
+        storeItem,
+        errorMessage: error.message || "An error occurred",
       });
     } finally {
       setIsLoading(false);
@@ -186,16 +193,16 @@ export default function AddToUserCartButton({
 
       setIsInCart(false);
       setCartItemQuantity(0);
-      toastSet({
-        isOpen: true,
-        title: t("removedFromCart"),
+      showCartToast({
+        type: "removed",
+        storeItem,
       });
     } catch (error) {
       console.error("❌ Remove from cart error:", error);
-      toastSet({
-        isOpen: true,
-        title: t("errorRemovingFromCart"),
-        text: error.message || "An error occurred",
+      showCartToast({
+        type: "error",
+        storeItem,
+        errorMessage: error.message || "An error occurred",
       });
     } finally {
       setIsLoading(false);

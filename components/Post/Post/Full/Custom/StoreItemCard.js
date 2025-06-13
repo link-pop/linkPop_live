@@ -3,6 +3,7 @@
 import { useTranslation } from "@/components/Context/TranslationContext";
 import PostOtherIcons from "@/components/Post/Post/Icons/PostOtherIcons";
 import StoreItemCardContent from "@/components/ui/shared/StoreItemCardContent/StoreItemCardContent";
+import OutOfStockBadge from "@/components/ui/shared/StockIndicator/OutOfStockBadge";
 
 export default function StoreItemCard({ item, mongoUser, isOwner, isAdmin }) {
   const { t } = useTranslation();
@@ -25,8 +26,13 @@ export default function StoreItemCard({ item, mongoUser, isOwner, isAdmin }) {
     storeItem: item, // Pass the full store item for cart functionality
   };
 
+  const sizeFixClass = "maw575 !wf !mah575 !hf min-[600px]:miw575";
+  const isOutOfStock = item.stock < 1;
+
   return (
-    <div className="bg-background border rounded-lg overflow-hidden hover:shadow-md transition-shadow por">
+    <div
+      className={`${sizeFixClass} bg-background border rounded-lg overflow-hidden hover:shadow-md transition-shadow por`}
+    >
       {/* PostOtherIcons for update/delete functionality */}
       {isOwner && (
         <PostOtherIcons
@@ -38,6 +44,12 @@ export default function StoreItemCard({ item, mongoUser, isOwner, isAdmin }) {
           showAdminIcons={true}
           mongoUser={mongoUser}
         />
+      )}
+
+      {isOutOfStock && (
+        <div className="poa b10 r10 z-20">
+          <OutOfStockBadge variant="compact" />
+        </div>
       )}
 
       {/* StoreItemCardContent - combines images/videos with content */}

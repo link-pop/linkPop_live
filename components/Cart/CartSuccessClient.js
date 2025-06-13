@@ -12,6 +12,7 @@ import { useCartOperations } from "@/lib/hooks/useCartOperations";
 import CreatedBy from "../Post/Post/CreatedBy";
 import OrderItemImageDisplay from "@/components/ui/shared/SimpleImageDisplay/OrderItemImageDisplay";
 import OrderCostBreakdown from "@/components/ui/shared/OrderCostBreakdown/OrderCostBreakdown";
+import ShippingAddressDisplay from "@/components/ui/shared/ShippingAddressDisplay/ShippingAddressDisplay";
 
 export default function CartSuccessClient({ mongoUser }) {
   const { t } = useTranslation();
@@ -184,6 +185,16 @@ export default function CartSuccessClient({ mongoUser }) {
                 </span>
               </div>
             </div>
+
+            {/* Shipping Address */}
+            {order.shippingAddress && (
+              <div className="mb15">
+                <ShippingAddressDisplay
+                  shippingAddress={order.shippingAddress}
+                  variant="compact"
+                />
+              </div>
+            )}
 
             {/* Order Items */}
             <div className="border-t pt15">

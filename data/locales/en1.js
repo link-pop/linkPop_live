@@ -1833,6 +1833,17 @@ const en = {
     "Stripe Connect is required to create and sell store items.",
   configureStoreShippingAddress:
     "Configure your store's shipping address for order fulfillment.",
+
+  // Cart toast notifications
+  storeItem: "Store Item",
+  quantity: "Quantity",
+
+  // User shipping address functionality
+  savingAddress: "Saving Address...",
+  addressSaved: "Address Saved",
+  shippingAddressSavedSuccessfully:
+    "Your shipping address has been saved successfully",
+  errorSavingAddress: "Error Saving Address",
 };
 
 export default en;

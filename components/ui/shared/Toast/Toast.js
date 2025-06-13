@@ -37,11 +37,11 @@ export default function Toast() {
   };
 
   return (
-    <Toaster.Provider duration={5000} swipeDirection="right">
+    <Toaster.Provider duration={toast.duration || 5000} swipeDirection="right">
       <Toaster.Root
         key={toastKey}
-        style={{ "--toast-duration": "5s" }}
-        className="ToastRoot wfc maw300 fixed t64 r10 min-[1919px]:r160 cursor-pointer bg-accent/90 hover:bg-accent"
+        style={{ "--toast-duration": `${(toast.duration || 5000) / 1000}s` }}
+        className="por z99 ToastRoot wfc maw300 fixed t64 r10 min-[1919px]:r160 cursor-pointer bg-accent/90 hover:bg-accent"
         open={toast.isOpen}
         onOpenChange={(isOpen) => toastSet({ ...toast, isOpen })}
         onClick={toast.onClick}
@@ -51,12 +51,22 @@ export default function Toast() {
 
           {toast.showIcon && toastIcon}
 
-          <div className="fc">
-            <Toaster.Title className="ToastTitle">
-              {translateIfKey(toast.title)}
-            </Toaster.Title>
-            <div className="fz14">{translateIfKey(toast.text)}</div>
-          </div>
+          {/* Show custom content if provided, otherwise show default title/text */}
+          {toast.customContent ? (
+            <div className="fc wf">
+              <Toaster.Title className="ToastTitle">
+                {translateIfKey(toast.title)}
+              </Toaster.Title>
+              <div className="mt5">{toast.customContent}</div>
+            </div>
+          ) : (
+            <div className="fc">
+              <Toaster.Title className="ToastTitle">
+                {translateIfKey(toast.title)}
+              </Toaster.Title>
+              <div className="fz14">{translateIfKey(toast.text)}</div>
+            </div>
+          )}
         </div>
 
         {toast.action && (

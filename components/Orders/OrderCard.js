@@ -26,6 +26,7 @@ import OrderItemImageDisplay from "@/components/ui/shared/SimpleImageDisplay/Ord
 import USPSTrackingLink from "@/components/ui/shared/USPSTrackingLink/USPSTrackingLink";
 import CreatedBy from "@/components/Post/Post/CreatedBy";
 import OrderCostBreakdown from "@/components/ui/shared/OrderCostBreakdown/OrderCostBreakdown";
+import ShippingAddressDisplay from "@/components/ui/shared/ShippingAddressDisplay/ShippingAddressDisplay";
 
 export default function OrderCard({ order, isStoreOwner = false }) {
   const { t } = useTranslation();
@@ -431,6 +432,16 @@ export default function OrderCard({ order, isStoreOwner = false }) {
           {new Date(order.createdAt).toLocaleDateString()}
         </div>
       </div>
+
+      {/* Shipping Address */}
+      {order.shippingAddress && (
+        <div className="mt15 pt15 border-t border-border">
+          <ShippingAddressDisplay
+            shippingAddress={order.shippingAddress}
+            variant="compact"
+          />
+        </div>
+      )}
 
       {/* Order Cost Breakdown */}
       <div className="mt15 pt15 border-t border-border">

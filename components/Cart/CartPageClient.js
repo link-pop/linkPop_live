@@ -23,6 +23,7 @@ export default function CartPageClient({ mongoUser }) {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [shippingAddress, setShippingAddress] = useState(null);
   const [shippingCost, setShippingCost] = useState(0);
+  const [selectedShippingRate, setSelectedShippingRate] = useState(null);
   const { isMobileSm } = useWindowWidth();
 
   // Refresh cart when page becomes visible (e.g., returning from another page)
@@ -115,6 +116,7 @@ export default function CartPageClient({ mongoUser }) {
         body: JSON.stringify({
           shippingAddress,
           shippingCost,
+          selectedShippingRate,
         }),
       });
 
@@ -143,7 +145,7 @@ export default function CartPageClient({ mongoUser }) {
 
   if (!mongoUser?._id) {
     return (
-      <div className="fcc min-h-screen p20">
+      <div className="fcc min-h-[80vh] p20">
         <div className="text-center">
           <ShoppingCart className="w40 h40 text-muted-foreground mx-auto mb10" />
           <h2 className="text-xl font-semibold mb5">{t("cart")}</h2>
@@ -155,7 +157,7 @@ export default function CartPageClient({ mongoUser }) {
 
   if (isLoading) {
     return (
-      <div className="fcc min-h-screen">
+      <div className="fcc min-h-[80vh]">
         <PostsLoader isLoading />
       </div>
     );
@@ -163,7 +165,7 @@ export default function CartPageClient({ mongoUser }) {
 
   if (error) {
     return (
-      <div className="fcc min-h-screen p20">
+      <div className="fcc min-h-[80vh] p20">
         <div className="text-center">
           <p className="text-destructive">{t("errorLoadingStoreItems")}</p>
         </div>
@@ -173,7 +175,7 @@ export default function CartPageClient({ mongoUser }) {
 
   if (!cartGroups.length) {
     return (
-      <div className="fcc min-h-screen p20">
+      <div className="fcc min-h-[80vh] p20">
         <div className="text-center">
           <ShoppingCart className="w40 h40 text-muted-foreground mx-auto mb10" />
           <h2 className="text-xl font-semibold mb5">{t("cart")}</h2>
@@ -244,6 +246,7 @@ export default function CartPageClient({ mongoUser }) {
           <CartShippingAddressForm
             onShippingAddressChange={setShippingAddress}
             onShippingCostChange={setShippingCost}
+            onShippingRateChange={setSelectedShippingRate}
             cartGroups={cartGroups}
             isLoading={isCheckingOut}
           />

@@ -4,8 +4,6 @@ import Carousel from "../Carousel/Carousel";
 import { formatPrice } from "@/lib/utils/formatPrice";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { Image } from "lucide-react";
-import AddToUserCartButton from "@/components/ui/shared/AddToUserCartButton/AddToUserCartButton";
-import RichTextContent from "@/components/ui/shared/RichTextContent/RichTextContent";
 
 export default function StoreItemCardContent({
   files = [],
