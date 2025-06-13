@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { useContext } from "@/components/Context/Context";
+import { useCart } from "@/components/Context/CartContext";
 import { ShoppingCart } from "lucide-react";
 import { getUserCartItemsGroupedByStoreOwner } from "@/lib/actions/userCartActions";
 import { formatPrice } from "@/lib/utils/formatPrice";
@@ -17,6 +18,7 @@ import useWindowWidth from "@/hooks/useWindowWidth";
 export default function CartPageClient({ mongoUser }) {
   const { t } = useTranslation();
   const { toastSet } = useContext();
+  const { refreshCartCount } = useCart();
   const queryClient = useQueryClient();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [shippingAddress, setShippingAddress] = useState(null);
@@ -60,11 +62,13 @@ export default function CartPageClient({ mongoUser }) {
   const handleItemUpdate = () => {
     // Refresh cart data when item is updated
     queryClient.invalidateQueries(["userCart", mongoUser._id]);
+    // No need to refresh cart count since we count unique items, not quantities
   };
 
   const handleItemRemove = () => {
     // Refresh cart data when item is removed
     queryClient.invalidateQueries(["userCart", mongoUser._id]);
+    refreshCartCount();
   };
 
   const calculateGrandTotal = () => {

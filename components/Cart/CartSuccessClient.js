@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "@/components/Context/TranslationContext";
+import { useCart } from "@/components/Context/CartContext";
 import { CheckCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import PostsLoader from "@/components/Post/Posts/PostsLoader";
@@ -14,6 +15,7 @@ import OrderCostBreakdown from "@/components/ui/shared/OrderCostBreakdown/OrderC
 
 export default function CartSuccessClient({ mongoUser }) {
   const { t } = useTranslation();
+  const { clearCartCount } = useCart();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const [orders, setOrders] = useState([]);
@@ -27,12 +29,15 @@ export default function CartSuccessClient({ mongoUser }) {
       const result = await clearCartAndRefresh();
       if (!result.success) {
         console.warn("Cart clearing issue:", result.error);
+      } else {
+        // Also clear the context cart count
+        clearCartCount();
       }
     } catch (cartError) {
-      console.error("Error clearing cart:", cartError);
+      console.error("❌ Error clearing cart:", cartError);
       // Don't fail the order display if cart clearing fails
     }
-  }, [clearCartAndRefresh]);
+  }, [clearCartAndRefresh, clearCartCount]);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -158,7 +163,7 @@ export default function CartSuccessClient({ mongoUser }) {
 
             {/* Store Owner Info */}
             <div className="f aic g10 mb15 p10 bg-muted/30 rounded-lg">
-                <div>
+              <div>
                 <span className="text-sm text-muted-foreground">
                   {t("storeOwner")}:
                 </span>

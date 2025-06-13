@@ -4,12 +4,8 @@ import { useState, useEffect } from "react";
 import { ShoppingCart, Check, Minus, Plus } from "lucide-react";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { useContext } from "@/components/Context/Context";
-import {
-  addToUserCart,
-  removeFromUserCart,
-  isItemInUserCart,
-  updateCartItemQuantity,
-} from "@/lib/actions/userCartActions";
+import { isItemInUserCart } from "@/lib/actions/userCartActions";
+import { useCartActionsWithContext } from "@/lib/hooks/useCartActionsWithContext";
 import { formatPrice } from "@/lib/utils/formatPrice";
 import StockIndicator from "@/components/ui/shared/StockIndicator/StockIndicator";
 
@@ -24,6 +20,8 @@ export default function AddToUserCartButton({
 }) {
   const { t } = useTranslation();
   const { toastSet } = useContext();
+  const { addToUserCart, removeFromUserCart, updateCartItemQuantity } =
+    useCartActionsWithContext();
   const [isLoading, setIsLoading] = useState(false);
   const [isInCart, setIsInCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -114,7 +112,7 @@ export default function AddToUserCartButton({
         title: t("addedToCart"),
       });
     } catch (error) {
-      console.error("Add to cart error:", error);
+      console.error("❌ Add to cart error:", error);
       toastSet({
         isOpen: true,
         title: t("errorAddingToCart"),
@@ -161,7 +159,7 @@ export default function AddToUserCartButton({
         title: t("cartUpdated"),
       });
     } catch (error) {
-      console.error("Update quantity error:", error);
+      console.error("❌ Update quantity error:", error);
       toastSet({
         isOpen: true,
         title: t("errorAddingToCart"),
@@ -193,7 +191,7 @@ export default function AddToUserCartButton({
         title: t("removedFromCart"),
       });
     } catch (error) {
-      console.error("Remove from cart error:", error);
+      console.error("❌ Remove from cart error:", error);
       toastSet({
         isOpen: true,
         title: t("errorRemovingFromCart"),

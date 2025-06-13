@@ -20,6 +20,7 @@ import QueryProvider from "@/components/Context/QueryProvider";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import { ChatProvider } from "../components/Context/ChatContext";
 import { NotificationProvider } from "../components/Context/NotificationContext";
+import { CartProvider } from "../components/Context/CartContext";
 import LeftNav from "@/components/Nav/LeftNav/LeftNav";
 import RightNav from "@/components/Nav/RightNav/RightNav";
 import PageTitle from "@/components/Custom/MoreThanFriend/PageTitle";
@@ -75,29 +76,31 @@ export default async function RootLayout({ children }) {
                   <TranslationProvider>
                     <ChatProvider {...{ mongoUser }}>
                       <NotificationProvider {...{ mongoUser }}>
-                        <ThemeColorInitializer />
-                        <AppLoader />
-                        {/* // * HACK needs to be here to color the app  */}
-                        <ThemeSettings className="poa -t1000" />
-                        {SITE2 && <Header2 />}
-                        <OnboardingRedirector />
-                        {/* // ??? REMOVED overflow-y-auto */}
-                        <main className="scrollbar-hide max-w-[1300px] f jcc fwn mxa wf">
-                          <LeftNav {...{ mongoUser }} />
-                          <div className="LayoutMidContent wf">
-                            <PageTitle />
-                            <Suspense>{children}</Suspense>
-                          </div>
-                          <RightNav />
-                        </main>
-                        <AlertDialog />
-                        <Toast />
-                        <ScrollTopSimple />
-                        {/* <Footer /> */}
-                        {SITE2 && <Footer2 />}
-                        {/* Only include the exit intent handler on SITE1 */}
-                        {SITE1 && <ExitIntentHandler />}
-                        <ReferralCodeDetector />
+                        <CartProvider {...{ mongoUser }}>
+                          <ThemeColorInitializer />
+                          <AppLoader />
+                          {/* // * HACK needs to be here to color the app  */}
+                          <ThemeSettings className="poa -t1000" />
+                          {SITE2 && <Header2 />}
+                          <OnboardingRedirector />
+                          {/* // ??? REMOVED overflow-y-auto */}
+                          <main className="scrollbar-hide max-w-[1300px] f jcc fwn mxa wf">
+                            <LeftNav {...{ mongoUser }} />
+                            <div className="LayoutMidContent wf">
+                              <PageTitle />
+                              <Suspense>{children}</Suspense>
+                            </div>
+                            <RightNav />
+                          </main>
+                          <AlertDialog />
+                          <Toast />
+                          <ScrollTopSimple />
+                          {/* <Footer /> */}
+                          {SITE2 && <Footer2 />}
+                          {/* Only include the exit intent handler on SITE1 */}
+                          {SITE1 && <ExitIntentHandler />}
+                          <ReferralCodeDetector />
+                        </CartProvider>
                       </NotificationProvider>
                     </ChatProvider>
                   </TranslationProvider>

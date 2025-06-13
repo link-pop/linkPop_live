@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { useContext } from "@/components/Context/Context";
 import { Minus, Plus, Trash2, ShoppingCart } from "lucide-react";
-import { update, removeOne } from "@/lib/actions/crud";
+import { useCartActionsWithContext } from "@/lib/hooks/useCartActionsWithContext";
 import { formatPrice } from "@/lib/utils/formatPrice";
 import RichTextContent from "@/components/ui/shared/RichTextContent/RichTextContent";
 import OrderItemImageDisplay from "@/components/ui/shared/SimpleImageDisplay/OrderItemImageDisplay";
@@ -18,6 +18,8 @@ export default function CartItemCard({
 }) {
   const { t } = useTranslation();
   const { toastSet } = useContext();
+  const { updateCartItemQuantity, removeFromUserCart } =
+    useCartActionsWithContext();
   const [isUpdating, setIsUpdating] = useState(false);
 
   const storeItem = cartItem.storeItemId;
@@ -46,10 +48,9 @@ export default function CartItemCard({
     setIsUpdating(true);
 
     try {
-      const result = await update({
-        col: "usercarts",
-        data: { _id: cartItem._id },
-        update: { quantity: newQuantity },
+      const result = await updateCartItemQuantity({
+        storeItemId: storeItem._id,
+        quantity: newQuantity,
       });
 
       if (result?.error) {
@@ -63,7 +64,7 @@ export default function CartItemCard({
         title: t("cartUpdated"),
       });
     } catch (error) {
-      console.error("Error updating quantity:", error);
+      console.error("❌ Error updating quantity:", error);
       toastSet({
         isOpen: true,
         title: t("errorAddingToCart"),
@@ -80,9 +81,8 @@ export default function CartItemCard({
     setIsUpdating(true);
 
     try {
-      const result = await removeOne({
-        col: "usercarts",
-        data: { _id: cartItem._id },
+      const result = await removeFromUserCart({
+        storeItemId: storeItem._id,
       });
 
       if (result?.error) {
@@ -96,7 +96,7 @@ export default function CartItemCard({
         title: t("removedFromCart"),
       });
     } catch (error) {
-      console.error("Error removing from cart:", error);
+      console.error("❌ Error removing from cart:", error);
       toastSet({
         isOpen: true,
         title: t("errorRemovingFromCart"),
