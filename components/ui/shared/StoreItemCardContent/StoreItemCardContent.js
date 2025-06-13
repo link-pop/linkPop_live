@@ -7,7 +7,7 @@ import { Image } from "lucide-react";
 import AddToUserCartButton from "@/components/ui/shared/AddToUserCartButton/AddToUserCartButton";
 import RichTextContent from "@/components/ui/shared/RichTextContent/RichTextContent";
 
-export default function CarouselWithContent({
+export default function StoreItemCardContent({
   files = [],
   content = {},
   className = "",
@@ -24,41 +24,12 @@ export default function CarouselWithContent({
     if (!showContent) return null;
 
     return (
-      <div className={`por p15 bg-background ${contentClassName}`}>
+      <div className={`poa t0 bg-background/50 f jcsb wf px10 py5`}>
         {/* Title */}
-        {title && (
-          <h3 className="text-lg font-semibold text-foreground mb10">
-            {title}
-          </h3>
-        )}
+        {title && <h3 className="text-lg fw500 text-foreground/80">{title}</h3>}
 
-        {/* Category */}
-        {category && (
-          <div className="text-sm text-muted-foreground mb10 uppercase tracking-wide">
-            {category}
-          </div>
-        )}
-
-        {/* Description */}
-        {text && (
-          <div className="text-sm text-foreground mb10">
-            <RichTextContent content={text} />
-          </div>
-        )}
-
-        {/* Price and Cart Button */}
-        {storeItem && price > 0 && (
-          <AddToUserCartButton
-            storeItem={storeItem}
-            mongoUser={mongoUser}
-            showPrice={true}
-            variant="default"
-          />
-        )}
-
-        {/* Fallback price display for non-store items */}
-        {!storeItem && price > 0 && (
-          <div className="text-lg font-bold text-foreground">
+        {price > 0 && (
+          <div className="text-lg fw500 text-foreground/80">
             {formatPrice(price)}
           </div>
         )}

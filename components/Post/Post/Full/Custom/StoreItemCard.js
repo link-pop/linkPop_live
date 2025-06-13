@@ -2,7 +2,7 @@
 
 import { useTranslation } from "@/components/Context/TranslationContext";
 import PostOtherIcons from "@/components/Post/Post/Icons/PostOtherIcons";
-import CarouselWithContent from "@/components/ui/shared/CarouselWithContent/CarouselWithContent";
+import StoreItemCardContent from "@/components/ui/shared/StoreItemCardContent/StoreItemCardContent";
 
 export default function StoreItemCard({ item, mongoUser, isOwner, isAdmin }) {
   const { t } = useTranslation();
@@ -28,18 +28,20 @@ export default function StoreItemCard({ item, mongoUser, isOwner, isAdmin }) {
   return (
     <div className="bg-background border rounded-lg overflow-hidden hover:shadow-md transition-shadow por">
       {/* PostOtherIcons for update/delete functionality */}
-      <PostOtherIcons
-        col={{ name: "storeitems" }}
-        post={item}
-        postsPaginationType="infinite"
-        isAdmin={isAdmin}
-        isOwner={isOwner}
-        showAdminIcons={true}
-        mongoUser={mongoUser}
-      />
+      {isOwner && (
+        <PostOtherIcons
+          col={{ name: "storeitems" }}
+          post={item}
+          postsPaginationType="infinite"
+          isAdmin={isAdmin}
+          isOwner={isOwner}
+          showAdminIcons={true}
+          mongoUser={mongoUser}
+        />
+      )}
 
-      {/* CarouselWithContent - combines images/videos with content */}
-      <CarouselWithContent
+      {/* StoreItemCardContent - combines images/videos with content */}
+      <StoreItemCardContent
         files={carouselFiles}
         content={content}
         className="w-full"
