@@ -29,7 +29,12 @@ import OrderCostBreakdown from "@/components/ui/shared/OrderCostBreakdown/OrderC
 import ShippingAddressDisplay from "@/components/ui/shared/ShippingAddressDisplay/ShippingAddressDisplay";
 import CancelOrderButton from "@/components/ui/shared/CancelOrderButton/CancelOrderButton";
 
-export default function OrderCard({ order, mongoUser, isStoreOwner = false }) {
+export default function OrderCard({
+  order,
+  mongoUser,
+  isStoreOwner = false,
+  orderIndex,
+}) {
   const { t } = useTranslation();
   const { toastSet } = useContext();
   const queryClient = useQueryClient();
@@ -320,10 +325,19 @@ export default function OrderCard({ order, mongoUser, isStoreOwner = false }) {
   };
 
   return (
-    <div className="border border-border rounded-lg bg-background p20">
+    <div
+      className={`border border-border rounded-lg bg-background p20 ${
+        orderIndex % 2 === 0 ? "bg-muted/70" : ""
+      }`}
+    >
       {/* Order Header */}
       <div className="f jcsb aic mb15 pb15 border-b border-border">
         <div>
+          <div className="f aic g5">
+            <span className="text-sm brand">
+              {t("order")} #{orderIndex + 1}
+            </span>
+          </div>
           <h3 className="text-lg font-semibold text-foreground">
             {order.orderNumber}
           </h3>

@@ -45,8 +45,6 @@ const PageTitle = () => {
     title = t("editPost");
   } else if (pathname === FEEDS_ROUTE) {
     title = t("feed");
-  } else if (pathname.match(/^\/[^\/]+$/)) {
-    title = t("profile");
   } else if (pathname.includes("/feeds/")) {
     title = t("post");
   } else if (pathname.includes(CHATS_ROUTE)) {
@@ -71,6 +69,10 @@ const PageTitle = () => {
     title = t("analytics");
   } else if (pathname.includes("/my/queue")) {
     title = t("queue");
+  } else if (pathname.includes(CART_ROUTE)) {
+    title = t("cart");
+  } else if (pathname.includes(ORDERS_ROUTE)) {
+    title = t("orders");
   } else if (pathname.includes(DISCOVER_SEARCH_ROUTE)) {
     // This will be handled by dual title
     title = null;
@@ -80,10 +82,9 @@ const PageTitle = () => {
   } else if (pathname.includes(DISCOVER_MEDIA_ROUTE)) {
     // This will be handled by triple title
     title = null;
-  } else if (pathname.includes(CART_ROUTE)) {
-    title = t("cart");
-  } else if (pathname.includes(ORDERS_ROUTE)) {
-    title = t("orders");
+  } else if (pathname.match(/^\/[^\/]+$/)) {
+    // ! MUST BE LAST
+    title = t("profile");
   }
 
   // if (!title) return null;

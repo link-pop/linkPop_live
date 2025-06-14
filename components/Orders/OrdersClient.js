@@ -153,22 +153,20 @@ export default function OrdersClient({ mongoUser }) {
             onClick={() => setActiveTab("buyer")}
             className={`px15 py8 rounded-lg transition-colors fr g5 ${
               activeTab === "buyer"
-                ? "bg-accent text-accent-foreground"
+                ? "bg-accent brand border"
                 : "bg-muted text-muted-foreground hover:bg-muted/80"
             }`}
           >
-            <ShoppingBag size={16} />
             {t("myPurchases")} ({userOrders.length})
           </button>
           <button
             onClick={() => setActiveTab("seller")}
             className={`px15 py8 rounded-lg transition-colors fr g5 ${
               activeTab === "seller"
-                ? "bg-accent text-accent-foreground"
+                ? "bg-accent brand border"
                 : "bg-muted text-muted-foreground hover:bg-muted/80"
             }`}
           >
-            <Store size={16} />
             {t("mySales")} ({storeOwnerOrders.length})
           </button>
         </div>
@@ -193,12 +191,13 @@ export default function OrdersClient({ mongoUser }) {
       </div>
 
       <div className="fc g15">
-        {filteredOrders.map((order) => (
+        {filteredOrders.map((order, index) => (
           <OrderCard
             key={order._id}
             order={order}
             mongoUser={mongoUser}
             isStoreOwner={activeTab === "seller"}
+            orderIndex={index}
           />
         ))}
       </div>
