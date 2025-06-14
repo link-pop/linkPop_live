@@ -56,7 +56,7 @@ const ContentOverlay = ({ content, mongoUser }) => {
       {/* Description */}
       {text && (
         <div
-          className="text-sm mb15 line-clamp-4 leading-relaxed"
+          className="maw450 wf text-sm mb15 line-clamp-4 leading-relaxed"
           dangerouslySetInnerHTML={{ __html: text }}
         />
       )}

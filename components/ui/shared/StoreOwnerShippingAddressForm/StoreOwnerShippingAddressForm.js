@@ -118,7 +118,7 @@ export default function StoreOwnerShippingAddressForm({
   return (
     <div className="bg-background border border-border rounded-xl p20 shadow-sm mb20">
       <div className="f aic g10 mb15">
-        <MapPin className="w20 h20 text-accent" />
+        <MapPin className="w20 h20 text-foreground/50" />
         <h3 className="text-lg font-semibold text-foreground">
           {t("storeShippingAddress")}
         </h3>

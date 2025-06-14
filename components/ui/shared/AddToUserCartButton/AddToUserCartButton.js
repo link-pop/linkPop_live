@@ -263,7 +263,7 @@ export default function AddToUserCartButton({
         <button
           onClick={handleRemoveFromCart}
           disabled={isLoading}
-          className="h33 px15 py4 bg-red-400 hover:bg-red-400/80 text-red-400-foreground rounded-lg text-sm font-medium transition-colors"
+          className="h32 px15 py4 bg-red-400 hover:bg-red-400/80 text-red-400-foreground rounded-lg text-sm font-medium transition-colors"
         >
           {t("removeFromCart")}
         </button>
@@ -276,7 +276,7 @@ export default function AddToUserCartButton({
       "f aic jcc gap-2 transition-all duration-200 rounded-lg font-medium";
     const variantClasses = {
       default:
-        "h33 px15 py4 bg-accent hover:bg-accent/80 text-accent-foreground",
+        "h32 px15 py4 bg-accent hover:bg-accent/80 text-accent-foreground",
       compact:
         "px10 py8 bg-accent hover:bg-accent/80 text-accent-foreground text-sm",
       "icon-only":

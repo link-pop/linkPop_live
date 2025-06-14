@@ -9,6 +9,7 @@ import { formatPrice } from "@/lib/utils/formatPrice";
 import RichTextContent from "@/components/ui/shared/RichTextContent/RichTextContent";
 import OrderItemImageDisplay from "@/components/ui/shared/SimpleImageDisplay/OrderItemImageDisplay";
 import StockIndicator from "@/components/ui/shared/StockIndicator/StockIndicator";
+import removeHtmlFromText from "@/lib/utils/removeHtmlFromText";
 
 export default function CartItemCard({
   cartItem,
@@ -133,7 +134,10 @@ export default function CartItemCard({
           {/* Left Side - Item Details */}
           <div className="flex-1 fc g8">
             <div>
-              <h3 className="font-semibold text-base text-foreground line-clamp-1">
+              <h3
+                className="font-semibold text-base text-foreground line-clamp-1"
+                title={storeItem.title || t("storeItem")}
+              >
                 {storeItem.title || t("storeItem")}
               </h3>
               {storeItem.category && (
@@ -162,7 +166,10 @@ export default function CartItemCard({
               )}
 
               {storeItem.text && (
-                <div className="text-sm text-muted-foreground mt5 line-clamp-2">
+                <div
+                  className="text-sm text-muted-foreground mt5 line-clamp-2"
+                  title={removeHtmlFromText(storeItem.text)}
+                >
                   <RichTextContent content={storeItem.text} />
                 </div>
               )}
