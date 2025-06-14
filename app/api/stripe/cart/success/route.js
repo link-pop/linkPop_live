@@ -12,6 +12,7 @@ import { createMultipleStoreItemsOrders } from "@/lib/actions/createStoreItemsOr
 import { createShippoShipmentsForOrders } from "@/lib/actions/createShippoShipment";
 import { processStripeConnectTransfers } from "@/lib/actions/processStripeConnectTransfers";
 import { updateMultipleStoreItemsStock } from "@/lib/actions/updateStoreItemStock";
+import { sendOrderPurchaseNotificationToStoreOwner } from "@/lib/actions/emailNotifications";
 
 export async function GET(request) {
   try {
@@ -261,6 +262,52 @@ export async function GET(request) {
         transferError
       );
       // Continue anyway - orders are created, transfers can be retried later
+    }
+
+    // Send purchase notifications to store owners
+    try {
+      console.log("Sending purchase notifications to store owners...");
+      const notificationPromises = createdOrders.map(async (order) => {
+        try {
+          const result = await sendOrderPurchaseNotificationToStoreOwner({
+            orderId: order._id,
+          });
+          if (result.error) {
+            console.error(
+              `❌ Failed to send notification for order ${order.orderNumber}:`,
+              result.error
+            );
+          } else {
+            console.log(
+              `✅ Purchase notification sent for order ${order.orderNumber}`
+            );
+          }
+          return result;
+        } catch (error) {
+          console.error(
+            `❌ Error sending notification for order ${order.orderNumber}:`,
+            error
+          );
+          return { error: error.message };
+        }
+      });
+
+      const notificationResults = await Promise.allSettled(
+        notificationPromises
+      );
+      const successfulNotifications = notificationResults.filter(
+        (result) => result.status === "fulfilled" && result.value?.success
+      );
+
+      console.log(
+        `✅ ${successfulNotifications.length}/${createdOrders.length} purchase notifications sent successfully`
+      );
+    } catch (notificationError) {
+      console.error(
+        "Error in purchase notification process:",
+        notificationError
+      );
+      // Continue anyway - orders are created, notifications are not critical
     }
 
     // Clear user's cart after successful payment and order creation
