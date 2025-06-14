@@ -193,8 +193,8 @@ export default function UserStripeConnectOnboardingButton({
       </Button2>
 
       {!isOnboardingComplete() && (
-        <div className="mt15 p15 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-700">
+        <div className="mt15 p15 bg-green-50 border border-green-200 rounded-lg">
+          <p className="text-sm text-green-700">
             {t("stripeConnectOnboardingInfo")}
           </p>
         </div>

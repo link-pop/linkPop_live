@@ -15,6 +15,7 @@ import {
   DISCOVER_MEDIA_ROUTE,
   CART_ROUTE,
   ORDERS_ROUTE,
+  ADD_STOREITEM_ROUTE,
 } from "@/lib/utils/constants";
 import { ArrowLeft } from "lucide-react";
 import { CHATS_ROUTE } from "../../../lib/utils/constants";
@@ -73,6 +74,8 @@ const PageTitle = () => {
     title = t("cart");
   } else if (pathname.includes(ORDERS_ROUTE)) {
     title = t("orders");
+  } else if (pathname.includes(ADD_STOREITEM_ROUTE)) {
+    title = t("addStoreItem");
   } else if (pathname.includes(DISCOVER_SEARCH_ROUTE)) {
     // This will be handled by dual title
     title = null;
