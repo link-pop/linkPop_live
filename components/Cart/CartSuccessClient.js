@@ -13,6 +13,7 @@ import CreatedBy from "../Post/Post/CreatedBy";
 import OrderItemImageDisplay from "@/components/ui/shared/SimpleImageDisplay/OrderItemImageDisplay";
 import OrderCostBreakdown from "@/components/ui/shared/OrderCostBreakdown/OrderCostBreakdown";
 import ShippingAddressDisplay from "@/components/ui/shared/ShippingAddressDisplay/ShippingAddressDisplay";
+import { MAIN_ROUTE } from "@/lib/utils/constants";
 
 export default function CartSuccessClient({ mongoUser }) {
   const { t } = useTranslation();
@@ -263,10 +264,10 @@ export default function CartSuccessClient({ mongoUser }) {
       {/* Action Buttons */}
       <div className="f g10">
         <Link
-          href="/"
+          href={MAIN_ROUTE}
           className="flex-1 px20 py10 border border-border hover:bg-muted text-center rounded-lg transition-colors"
         >
-          {t("continueShopping")}
+          {t("home")}
         </Link>
         <Link
           href="/orders"

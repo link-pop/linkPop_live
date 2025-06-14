@@ -1591,7 +1591,6 @@ const en = {
   itemAlreadyInCart: "Item already in cart",
   cartUpdated: "Cart updated",
   viewCart: "View Cart",
-  continueShoppingCart: "Continue Shopping",
   proceedToCheckout: "Proceed to Checkout",
 
   // Order success and management
@@ -1610,7 +1609,6 @@ const en = {
   shippingNotificationMessage:
     "You'll receive a shipping notification via email",
   trackingInfoMessage: "Track your package with the provided tracking number",
-  continueShopping: "Continue Shopping",
   viewOrders: "View Orders",
   backToCart: "Back to Cart",
 
@@ -1874,6 +1872,8 @@ const en = {
   canceledOrders: "Canceled Orders",
   processingOrders: "Processing Orders",
   shippedOrders: "Shipped Orders",
+  usePOBoxForAnonymousDelivery:
+    "Use P.O. Box for Anonymous Delivery",
 };
 
 export default en;

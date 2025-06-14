@@ -219,7 +219,7 @@ export default function CartShippingAddressForm({
     return (
       <div className="bg-background border border-border rounded-xl p25 shadow-sm">
         <div className="f aic g10 mb20">
-          <MapPin className="w20 h20 text-accent" />
+          <MapPin className="w20 h20 text-foreground/50" />
           <h3 className="text-lg font-semibold text-foreground">
             {t("shippingAddress")}
           </h3>
@@ -234,7 +234,7 @@ export default function CartShippingAddressForm({
   return (
     <div className="bg-background border border-border rounded-xl p25 shadow-sm">
       <div className="f aic g10 mb20">
-        <MapPin className="w20 h20 text-accent" />
+        <MapPin className="w20 h20 text-foreground/50" />
         <h3 className="text-lg font-semibold text-foreground">
           {t("shippingAddress")}
         </h3>
@@ -270,6 +270,9 @@ export default function CartShippingAddressForm({
             className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
             disabled={isLoading}
           />
+          <p className="fz12 text-muted-foreground -mt4 pl3">
+            *{t("usePOBoxForAnonymousDelivery")}
+          </p>
         </div>
 
         {/* Address Line 2 */}
@@ -346,7 +349,7 @@ export default function CartShippingAddressForm({
         {/* Save Address Button */}
         <Button2
           text={isSavingAddress ? t("savingAddress") : t("saveAddress")}
-          leftIcon={isSavingAddress ? undefined : Save}
+          leftIcon={isSavingAddress ? undefined : undefined}
           onClick={handleSaveAddress}
           disabled={!isAddressValid() || isLoading || isSavingAddress}
           variant="outline"
@@ -368,7 +371,7 @@ export default function CartShippingAddressForm({
         ) : (
           <Button2
             text={t("calculateShipping")}
-            leftIcon={Calculator}
+            leftIcon={undefined}
             onClick={calculateShippingRates}
             disabled={!isAddressValid() || isLoading}
             variant={isShippingInfoFilled() ? "outline" : "primary"}
@@ -388,7 +391,7 @@ export default function CartShippingAddressForm({
       {shippingRates.length > 0 && (
         <div className="fc g10">
           <div className="f aic g8 mb10">
-            <Truck className="w16 h16 text-accent" />
+            <Truck className="w16 h16 text-foreground/50" />
             <h4 className="font-medium text-foreground">
               {t("shippingOptions")}
             </h4>
@@ -425,12 +428,12 @@ export default function CartShippingAddressForm({
 
       {/* Selected Shipping Summary */}
       {selectedShippingRate && (
-        <div className="mt15 p12 bg-accent/10 border border-accent/30 rounded-lg">
+        <div className="mt15 p12 bg-accent border border-accent/30 rounded-lg">
           <div className="f jcsb aic">
             <span className="font-medium text-foreground">
               {t("selectedShipping")}:
             </span>
-            <span className="font-bold text-accent-foreground">
+            <span className="font-bold text-foreground/50-foreground">
               {formatPrice(parseFloat(selectedShippingRate.amount))}
             </span>
           </div>

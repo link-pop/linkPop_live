@@ -114,10 +114,7 @@ export default function StoreEarningsPageClient({ mongoUser }) {
     <div className="container mx-auto p-4">
       {/* Header */}
       <div className="mb-8">
-        <TitleWithBackButton
-          title={t("storeEarnings")}
-          className="text-3xl font-bold mb-2"
-        />
+        <div className="text-2xl font-bold">{t("storeEarnings")}</div>
         <div className="flex items-center justify-between">
           <p className="text-muted-foreground">
             {t("trackYourStorePerformance")}
@@ -169,7 +166,13 @@ export default function StoreEarningsPageClient({ mongoUser }) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-500 mb-1">
-              {earningsData?.shippingRequiredCount || 0}
+              {earningsData?.shippingRequiredCount || 0}{" "}
+              {earningsData?.shippingRequiredCount === 1
+                ? t("order").toLowerCase().replace("s", "")
+                : t("orders").toLowerCase()}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {earningsData?.processingOrdersCount || 0} {t("processingOrders")}
             </div>
           </CardContent>
         </Card>
@@ -185,8 +188,11 @@ export default function StoreEarningsPageClient({ mongoUser }) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-500">
+            <div className="text-2xl font-bold text-green-500 mb-1">
               {formatPrice(earningsData?.totalEarnings || 0)}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {earningsData?.totalOrders || 0} {t("totalOrders")}
             </div>
           </CardContent>
         </Card>
@@ -202,8 +208,11 @@ export default function StoreEarningsPageClient({ mongoUser }) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-500">
+            <div className="text-2xl font-bold text-orange-500 mb-1">
               {formatPrice(earningsData?.pendingEarnings || 0)}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {earningsData?.shippedOrdersCount || 0} {t("shippedOrders")}
             </div>
           </CardContent>
         </Card>
@@ -225,19 +234,22 @@ export default function StoreEarningsPageClient({ mongoUser }) {
           </CardContent>
         </Card>
 
-        {/* Total Orders */}
+        {/* Canceled Amount */}
         <Card className="backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 rounded-xl shadow-md">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-lg">
               <div className="w-8 h-8 rounded-full flex items-center justify-center">
-                <Package size={18} className="text-purple-500" />
+                <AlertCircle size={18} className="text-red-500" />
               </div>
-              <span className="text-sm">{t("totalOrders")}</span>
+              <span className="text-sm">{t("canceledAmount")}</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-purple-500">
-              {earningsData?.totalOrders || 0}
+            <div className="text-2xl font-bold text-red-500 mb-1">
+              {formatPrice(earningsData?.canceledAmount || 0)}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {earningsData?.canceledOrdersCount || 0} {t("canceledOrders")}
             </div>
           </CardContent>
         </Card>

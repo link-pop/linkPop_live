@@ -13,7 +13,7 @@ export default function CartStoreOwnerHeader({
 
   return (
     <>
-      <div className="f aic g15 mb20 p15 bg-accent/20 border border-accent/30 rounded-xl">
+      <div className="f aic g15 mb20 p15 bg-accent/70 border border-accent/30 rounded-xl">
         <div className="flex-1">
           <div className="mb4 text-sm text-muted-foreground mr5">
             {t("storeOwner")}:
