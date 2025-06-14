@@ -161,6 +161,9 @@ export default function StoreOwnerShippingAddressForm({
             className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
             disabled={disabled}
           />
+          <p className="fz12 text-muted-foreground -mt4 pl3">
+            *{t("usePOBoxForAnonymousDelivery")}
+          </p>
         </div>
 
         {/* Address Line 2 */}
