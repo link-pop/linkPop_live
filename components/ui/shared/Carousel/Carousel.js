@@ -79,6 +79,8 @@ export default function Carousel({
   content = null,
   showContentInViewer = true,
   mongoUser = null,
+  children, // For custom overlay content (backward compatibility)
+  contentOverlay = null, // New prop for passing ContentOverlay component
 }) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
 
@@ -165,6 +167,9 @@ export default function Carousel({
                   }}
                 />
                 {(fileIcon || defaultFileIcon)(file)}
+
+                {/* Render custom overlay content - prioritize contentOverlay prop over children */}
+                {contentOverlay || children}
               </div>
             </SliderMainItem>
           ))}
@@ -215,6 +220,7 @@ export default function Carousel({
           content={content}
           showContent={showContentInViewer}
           mongoUser={mongoUser}
+          contentOverlay={contentOverlay}
         />
       )}
     </>

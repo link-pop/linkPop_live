@@ -5,7 +5,7 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 import StoreItemStepNavigation from "@/components/ui/shared/StoreItemStepNavigation/StoreItemStepNavigation";
 import UserStripeConnectOnboardingButton from "@/components/ui/shared/UserStripeConnectOnboardingButton/UserStripeConnectOnboardingButton";
 import StoreOwnerShippingAddressForm from "@/components/ui/shared/StoreOwnerShippingAddressForm/StoreOwnerShippingAddressForm";
-import AddStoreItemForm from "@/components/Post/AddPostCustom/MoreThanFriend/AddStoreItemForm";
+import AddStoreItemForms from "@/components/ui/shared/AddStoreItemForms/AddStoreItemForms";
 import { isStripeConnectReadyIncludingDevBypass } from "@/lib/utils/stripe/stripeConnectHelpers";
 
 export default function AddStoreItemWithSteps({ col, mongoUser }) {
@@ -117,7 +117,7 @@ export default function AddStoreItemWithSteps({ col, mongoUser }) {
               </h1>
               <p className="text-muted-foreground">{t("addItemToYourStore")}</p>
             </div>
-            <AddStoreItemForm
+            <AddStoreItemForms
               col={col}
               mongoUser={mongoUser}
               placeholder={t("describeYourStoreItem")}

@@ -8,11 +8,10 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel";
-import { useState } from "react";
+import { useState, cloneElement } from "react";
 import { createPortal } from "react-dom";
-import { formatPrice } from "@/lib/utils/formatPrice";
-import { useTranslation } from "@/components/Context/TranslationContext";
-import AddToUserCartButton from "@/components/ui/shared/AddToUserCartButton/AddToUserCartButton";
+import StoreItemRegularContentOverlay from "../ContentOverlay/StoreItemRegularContentOverlay";
+import StoreItemAuctionContentOverlay from "../ContentOverlay/StoreItemAuctionContentOverlay";
 
 const MediaContent = ({ file, isZoomed, priority }) => {
   if (file.fileType === "video") {
@@ -39,49 +38,6 @@ const MediaContent = ({ file, isZoomed, priority }) => {
   );
 };
 
-const ContentOverlay = ({ content, mongoUser }) => {
-  const { t } = useTranslation();
-
-  if (!content) return null;
-
-  const { title, text, price, category, storeItem } = content;
-
-  return (
-    <div className="poa b0 l0 r0 bg-gradient-to-t from-black/90 via-black/60 to-transparent text-white p20 max-h-[40vh] overflow-y-auto">
-      {/* Title */}
-      {title && (
-        <h2 className="text-xl font-bold mb10 line-clamp-2">{title}</h2>
-      )}
-
-      {/* Description */}
-      {text && (
-        <div
-          className="maw450 wf text-sm mb15 line-clamp-4 leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: text }}
-        />
-      )}
-
-      {/* Price and Cart Button */}
-      {storeItem && price > 0 && (
-        <AddToUserCartButton
-          storeItem={storeItem}
-          mongoUser={mongoUser}
-          showPrice={true}
-          variant="default"
-          className="bg-white/20 hover:bg-white/30 text-white border border-white/30"
-        />
-      )}
-
-      {/* Fallback price display for non-store items */}
-      {!storeItem && price > 0 && (
-        <div className="text-lg font-bold bg-accent text-accent-foreground px15 py8 rounded-lg inline-block">
-          {formatPrice(price)}
-        </div>
-      )}
-    </div>
-  );
-};
-
 export default function ImageViewer({
   files,
   currentIndex,
@@ -89,6 +45,7 @@ export default function ImageViewer({
   content = null,
   showContent = true,
   mongoUser = null,
+  contentOverlay = null,
 }) {
   if (!files || currentIndex === null) return null;
 
@@ -106,6 +63,19 @@ export default function ImageViewer({
     if (e) e.stopPropagation();
     setZoomedIndex(null);
   };
+
+  // Create fullscreen version of the contentOverlay if provided
+  const fullscreenOverlay =
+    contentOverlay && showContent
+      ? cloneElement(contentOverlay, {
+          variant: "fullscreen",
+          className: "", // Reset className for fullscreen
+        })
+      : null;
+
+  // Determine if this is an auction item
+  const isAuctionItem =
+    content?.type === "auction" || content?.storeItem?.type === "auction";
 
   const portalContent = (
     <div
@@ -185,10 +155,22 @@ export default function ImageViewer({
             </div>
           </Carousel>
 
-          {/* Content overlay - always show when content is available and showContent is true */}
-          {showContent && (
-            <ContentOverlay content={content} mongoUser={mongoUser} />
-          )}
+          {/* Content overlay - use passed contentOverlay or render appropriate overlay */}
+          {fullscreenOverlay ||
+            (showContent && isAuctionItem && (
+              <StoreItemAuctionContentOverlay
+                content={content}
+                mongoUser={mongoUser}
+                variant="fullscreen"
+              />
+            )) ||
+            (showContent && !isAuctionItem && (
+              <StoreItemRegularContentOverlay
+                content={content}
+                mongoUser={mongoUser}
+                variant="fullscreen"
+              />
+            ))}
         </div>
       </div>
     </div>

@@ -23,6 +23,11 @@ export default function UserStoreItems({
 
     const baseQuery = {
       createdBy: visitedMongoUser?._id,
+      // Filter out ended auctions - hide them from display
+      $or: [
+        { type: "regular" }, // Show all regular items
+        { type: "auction", auctionStatus: { $ne: "ended" } }, // Show only non-ended auctions
+      ],
     };
 
     // Add category filter if specified and not "all"

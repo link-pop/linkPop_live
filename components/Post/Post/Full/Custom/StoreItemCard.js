@@ -4,10 +4,24 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 import PostOtherIcons from "@/components/Post/Post/Icons/PostOtherIcons";
 import StoreItemCardContent from "@/components/ui/shared/StoreItemCardContent/StoreItemCardContent";
 import OutOfStockBadge from "@/components/ui/shared/StockIndicator/OutOfStockBadge";
+import StoreAuctionItemCard from "./StoreAuctionItemCard";
 
 export default function StoreItemCard({ item, mongoUser, isOwner, isAdmin }) {
   const { t } = useTranslation();
 
+  // Check if this is an auction item
+  if (item.type === "auction") {
+    return (
+      <StoreAuctionItemCard
+        item={item}
+        mongoUser={mongoUser}
+        isOwner={isOwner}
+        isAdmin={isAdmin}
+      />
+    );
+  }
+
+  // Continue with regular store item logic
   // Prepare files for carousel
   const carouselFiles =
     item.files?.map((file) => ({

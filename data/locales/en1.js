@@ -1872,8 +1872,115 @@ const en = {
   canceledOrders: "Canceled Orders",
   processingOrders: "Processing Orders",
   shippedOrders: "Shipped Orders",
-  usePOBoxForAnonymousDelivery:
-    "Use P.O. Box for Anonymous Delivery",
+  usePOBoxForAnonymousDelivery: "Use P.O. Box for Anonymous Delivery",
+
+  // Auction translations
+  auctionItem: "Auction Item",
+  auctionTitle: "Auction Title",
+  auctionCategory: "Auction Category",
+  auctionDescription: "Describe your auction item",
+  auctionStartPrice: "Starting Price",
+  auctionStartPriceDescription: "The minimum price to start bidding",
+  auctionStartTime: "Auction Start Time",
+  auctionEndTime: "Auction End Time",
+  selectAuctionStartTime: "Select when the auction should start",
+  selectAuctionEndTime: "Select when the auction should end",
+  minBidIncrement: "Minimum Bid Increment",
+  minBidIncrementDescription: "The minimum amount each bid must increase",
+  buyNowPrice: "Buy Now Price",
+  buyNowPricePlaceholder: "Optional instant purchase price",
+  buyNowPriceDescription: "Allow buyers to purchase immediately at this price",
+  reservePrice: "Reserve Price",
+  reservePricePlaceholder: "Optional minimum sale price",
+  reservePriceDescription: "The auction won't sell below this price",
+  createAuction: "Create Auction",
+  regularStoreItem: "Regular Store Item",
+  regularStoreItemDescription: "Standard item with fixed price and inventory",
+  auctionItemDescription: "Auction item with bidding functionality",
+  selectItemType: "Select Item Type",
+  creating: "Creating",
+  describeYourAuctionItem: "Describe your auction item",
+
+  // Auction validation
+  startPriceRequired: "Starting Price Required",
+  auctionStartPriceValidation: "Starting price must be at least $0.01",
+  auctionTitleRequired: "Auction title is required",
+  invalidAuctionDates: "Invalid Auction Dates",
+  invalidBidIncrement: "Invalid Bid Increment",
+  bidIncrementValidation: "Bid increment must be at least $0.01",
+  invalidBuyNowPrice: "Invalid Buy Now Price",
+  buyNowPriceValidation: "Buy now price must be higher than starting price",
+  invalidReservePrice: "Invalid Reserve Price",
+  reservePriceValidation:
+    "Reserve price must be at least equal to starting price",
+
+  // Auction display
+  currentBid: "Current Bid",
+  startingBid: "Starting Bid",
+  bid: "bid",
+  bids: "bids",
+  live: "LIVE",
+  ended: "ENDED",
+  upcoming: "UPCOMING",
+  youWon: "You Won!",
+  sold: "SOLD",
+  auctionEnded: "Auction Ended",
+  youWonThisAuction: "You won this auction!",
+  auctionSold: "Auction sold",
+  youAreWinning: "You're winning!",
+  reserveNotMet: "Reserve price not met",
+
+  // Bidding
+  placeBid: "Place Bid",
+  bidAmount: "Bid Amount",
+  minimumBid: "Minimum bid",
+  placingBid: "Placing Bid...",
+  purchasing: "Purchasing...",
+  buyNow: "Buy Now",
+  buyNowPriceTooLow: "Buy Now Price Too Low",
+  buyNowPriceMustBeHigherThanCurrentBid:
+    "Buy now price must be higher than the current highest bid",
+  pleaseLoginToBid: "Please login to place a bid",
+  pleaseLoginToBuyNow: "Please login to buy now",
+  reservePriceMet: "Reserve price met!",
+  progressToReserve: "Progress towards reserve price",
+  cannotBidOnOwnItem: "Cannot bid on your own item",
+  cannotBidOnOwnItemDescription:
+    "You cannot place bids on auctions you created",
+  cannotBuyOwnItem: "Cannot buy your own item",
+  cannotBuyOwnItemDescription: "You cannot buy your own auction items",
+
+  // Bid responses
+  loginRequired: "Login Required",
+  bidFailed: "Bid Failed",
+  bidPlaced: "Bid Placed!",
+  bidPlacedSuccessfully: "Your bid has been placed successfully",
+  bidMustBeAtLeast: "Bid must be at least",
+  invalidBidAmount: "Invalid Bid Amount",
+  buyNowFailed: "Buy Now Failed",
+  purchaseSuccessful: "Purchase Successful",
+  itemPurchasedSuccessfully: "Item purchased successfully",
+  unexpectedError: "An unexpected error occurred",
+
+  // Seller info
+  seller: "Seller",
+
+  // Time labels
+  startsIn: "Starts in",
+  endsIn: "Ends in",
+
+  // Auction time validation
+  auctionStartTimeInPast: "Auction start time cannot be in the past",
+
+  // Real-time auction updates
+  loadingAuction: "Loading auction...",
+
+  // Auction form buttons
+  now: "now",
+  oneWeek: "1w",
+  twoWeeks: "2w",
+  oneMonth: "1mo",
+  startNow: "Start Now",
 };
 
 export default en;

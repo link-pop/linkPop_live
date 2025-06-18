@@ -1,7 +1,8 @@
 "use client";
 
 import Carousel from "../Carousel/Carousel";
-import { formatPrice } from "@/lib/utils/formatPrice";
+import StoreItemRegularContentOverlay from "../ContentOverlay/StoreItemRegularContentOverlay";
+import StoreItemAuctionContentOverlay from "../ContentOverlay/StoreItemAuctionContentOverlay";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { Image } from "lucide-react";
 
@@ -12,28 +13,14 @@ export default function StoreItemCardContent({
   showContent = true,
   contentClassName = "",
   mongoUser = null,
+  customOverlay = null,
+  customContent = null,
   ...carouselProps
 }) {
   const { t } = useTranslation();
 
-  const { title, text, price, category, storeItem } = content;
-
-  const renderContent = () => {
-    if (!showContent) return null;
-
-    return (
-      <div className={`poa t0 bg-background/50 f jcsb wf px10 py5`}>
-        {/* Title */}
-        {title && <h3 className="text-lg fw500 text-foreground/80">{title}</h3>}
-
-        {price > 0 && (
-          <div className="text-lg fw500 text-foreground/80">
-            {formatPrice(price)}
-          </div>
-        )}
-      </div>
-    );
-  };
+  const isAuctionItem =
+    content?.type === "auction" || content?.storeItem?.type === "auction";
 
   const renderPlaceholder = () => {
     return (
@@ -43,9 +30,27 @@ export default function StoreItemCardContent({
     );
   };
 
+  const contentOverlay = showContent
+    ? customOverlay ||
+      (isAuctionItem ? (
+        <StoreItemAuctionContentOverlay
+          content={content}
+          mongoUser={mongoUser}
+          variant="default"
+          className={contentClassName}
+        />
+      ) : (
+        <StoreItemRegularContentOverlay
+          content={content}
+          mongoUser={mongoUser}
+          variant="default"
+          className={contentClassName}
+        />
+      ))
+    : null;
+
   return (
     <div className={`por ${className}`}>
-      {/* Carousel or placeholder */}
       <div className="por flex-shrink-0">
         {files.length > 0 ? (
           <Carousel
@@ -54,6 +59,7 @@ export default function StoreItemCardContent({
             content={content}
             showContentInViewer={showContent}
             mongoUser={mongoUser}
+            contentOverlay={contentOverlay}
             {...carouselProps}
           />
         ) : (
@@ -61,7 +67,7 @@ export default function StoreItemCardContent({
         )}
       </div>
 
-      {renderContent()}
+      {customContent && <div className="wf">{customContent}</div>}
     </div>
   );
 }

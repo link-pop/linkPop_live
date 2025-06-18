@@ -7,7 +7,7 @@ import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import { SITE1, SITE2 } from "@/config/env";
 import AddDirectlinkForm from "@/components/Post/AddPostCustom/LinkPop/AddDirectlinkForm";
 import AddLandingPageForm from "@/components/Post/AddPostCustom/LinkPop/AddLandingPageForm";
-import AddStoreItemForm from "@/components/Post/AddPostCustom/MoreThanFriend/AddStoreItemForm";
+import AddStoreItemForms from "@/components/ui/shared/AddStoreItemForms/AddStoreItemForms";
 
 export default async function updatePostPage({ params }) {
   const col = await getAllMongoCollectionsData(params.col);
@@ -19,12 +19,20 @@ export default async function updatePostPage({ params }) {
   if (SITE1) {
     if (params.col === "storeitems") {
       return (
-        <AddStoreItemForm
+        <AddStoreItemForms
           {...{
             col,
             mongoUser,
             updatingPost,
             submitBtnClassName: "z51 poa r15 -t55",
+            placeholder:
+              updatingPost?.type === "auction"
+                ? "Describe your auction item"
+                : "Describe your store item",
+            submitBtnText:
+              updatingPost?.type === "auction"
+                ? "Update Auction"
+                : "Update Store Item",
           }}
         />
       );
