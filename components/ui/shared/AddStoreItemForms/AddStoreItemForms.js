@@ -58,7 +58,7 @@ export default function AddStoreItemForms({
               onClick={() => setActiveForm(option.key)}
               className={`p15 border rounded-lg text-left transition-all hover:shadow-sm ${
                 activeForm === option.key
-                  ? "border-accent bg-accent/10 text-foreground"
+                  ? "border-accent bg-accent/10 text-foreground brand"
                   : "border-border bg-background text-muted-foreground hover:border-accent/50"
               }`}
             >
@@ -110,18 +110,6 @@ export default function AddStoreItemForms({
   return (
     <div className="w-full">
       {renderFormSelector()}
-
-      {/* Current Form Type Indicator */}
-      <div className="mb10 p10 bg-accent/10 border border-accent/20 rounded-lg">
-        <div className="f aic g8">
-          {formOptions.find((opt) => opt.key === activeForm)?.icon}
-          <span className="text-sm font-medium">
-            {updatingPost ? t("updating").replace("...", "") : t("creating")}{" "}
-            {formOptions.find((opt) => opt.key === activeForm)?.label}
-          </span>
-        </div>
-      </div>
-
       {renderActiveForm()}
     </div>
   );

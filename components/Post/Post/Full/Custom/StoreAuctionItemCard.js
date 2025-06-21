@@ -4,8 +4,10 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 import PostOtherIcons from "@/components/Post/Post/Icons/PostOtherIcons";
 import StoreItemCardContent from "@/components/ui/shared/StoreItemCardContent/StoreItemCardContent";
 import { useAuctionTimer } from "@/lib/hooks/useAuctionTimer";
+import { AUCTION_PAYMENT_ROUTE, STOREITEMS_ROUTE } from "@/lib/utils/constants";
 import { formatPrice } from "@/lib/utils/formatPrice";
 import { Clock, Gavel, Trophy, Users } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function StoreAuctionItemCard({
   item,
@@ -16,6 +18,7 @@ export default function StoreAuctionItemCard({
   const { t } = useTranslation();
   const { formattedTimeLeft, auctionStatus, statusInfo, isActive, isEnded } =
     useAuctionTimer(item);
+  const pathname = usePathname();
 
   // Prepare files for carousel
   const carouselFiles =
@@ -42,9 +45,12 @@ export default function StoreAuctionItemCard({
 
   const renderAuctionTimer = () => {
     if (!formattedTimeLeft && !isEnded) return null;
+    // don't show auction timer in some places
+    if (pathname.includes(AUCTION_PAYMENT_ROUTE)) return null;
+    if (pathname.includes(STOREITEMS_ROUTE)) return null;
 
     return (
-      <div className="poa t6 l5 z-20">
+      <div className="poa b6 r5 z-20">
         <div
           className={`px8 py4 rounded-lg text-xs font-medium border ${statusInfo.color} ${statusInfo.bgColor} ${statusInfo.borderColor}`}
         >

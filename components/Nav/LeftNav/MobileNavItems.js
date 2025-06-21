@@ -81,6 +81,7 @@ export default function MobileNavItems({
         component: <LeftNavNewPostBtn1 isMobile={true} />,
       });
       mobileItems.push(items.find((item) => item.id === "messages"));
+      mobileItems.push(items.find((item) => item.id === "stores"));
       mobileItems.push(items.find((item) => item.id === "cart"));
       mobileItems.push(items.find((item) => item.id === "orders"));
 

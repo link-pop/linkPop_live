@@ -186,7 +186,7 @@ if (!storeItemsOrderSchema.$compiled && !storeItemsOrderSchema.$indexesAdded) {
   try {
     // Indexes for better performance
     storeItemsOrderSchema.index({ createdBy: 1, createdAt: -1 });
-    storeItemsOrderSchema.index({ orderNumber: 1 });
+    // orderNumber index is already created by unique: true property
     storeItemsOrderSchema.index({ stripeSessionId: 1 });
     storeItemsOrderSchema.index({ paymentStatus: 1 });
     storeItemsOrderSchema.index({ orderStatus: 1 });

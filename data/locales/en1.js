@@ -1244,6 +1244,7 @@ const en = {
   customColor: "Brand Color",
   textColor: "Text Color",
   reset: "Reset",
+  settings: "Settings",
 
   //
   noMessages: "No messages",
@@ -1889,8 +1890,9 @@ const en = {
   reservePricePlaceholder: "Optional minimum sale price",
   reservePriceDescription: "The auction won't sell below this price",
   createAuction: "Create Auction",
+  regular: "regular",
   regularStoreItem: "Regular Store Item",
-  regularStoreItemDescription: "Standard item with fixed price and inventory",
+  regularStoreItemDescription: "Standard item with fixed price",
   auctionItemDescription: "Auction item with bidding functionality",
   selectItemType: "Select Item Type",
   creating: "Creating",

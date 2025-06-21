@@ -11,6 +11,7 @@ import {
   DISCOVER_VIDEO_ROUTE,
   CART_ROUTE,
   ORDERS_ROUTE,
+  STOREITEMS_ROUTE,
 } from "@/lib/utils/constants";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import {
@@ -32,9 +33,11 @@ import {
   Search,
   ShoppingCart,
   Package,
+  Store,
 } from "lucide-react";
 import { SITE2 } from "@/config/env";
 import useWindowWidth from "@/hooks/useWindowWidth";
+import capitalize from "@/lib/utils/capitalize";
 
 export const navItems = () => {
   const { t } = useTranslation();
@@ -67,6 +70,12 @@ export const navItems = () => {
       name: showTitles ? t("messages") : "",
       icon: <MessageSquare className="w-6 h-6" />,
       href: CHATS_ROUTE,
+    },
+    {
+      id: "stores",
+      name: showTitles ? capitalize(t("stores")) : "",
+      icon: <Store className="w-6 h-6" />,
+      href: STOREITEMS_ROUTE,
     },
     {
       id: "cart",

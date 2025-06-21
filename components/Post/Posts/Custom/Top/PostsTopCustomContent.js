@@ -3,6 +3,7 @@
 import DirectLinkLandingPagePostsTopCustomContent from "./DirectLinkLandingPagePostsTopCustomContent";
 import FeedPostsTopCustomContent from "./FeedPostsTopCustomContent";
 import NotificationPostsTopCustomContent from "./NotificationPostsTopCustomContent";
+import StoreitemsPostsTopCustomContent from "./StoreitemsPostsTopCustomContent";
 
 export default function PostsTopCustomContent({
   col,
@@ -20,6 +21,9 @@ export default function PostsTopCustomContent({
         {...{ col, posts, showCategories, mongoUser }}
       />
       <DirectLinkLandingPagePostsTopCustomContent
+        {...{ col, posts, showCategories, mongoUser }}
+      />
+      <StoreitemsPostsTopCustomContent
         {...{ col, posts, showCategories, mongoUser }}
       />
     </>

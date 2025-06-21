@@ -36,7 +36,10 @@ export default async function Posts({
 
   // Always apply special handling for notifications and other collections
   // Admin users also need filtering for their own notifications
-  if (!isAdmin || ["notifications", "chatrooms"].includes(col.name)) {
+  if (
+    !isAdmin ||
+    ["notifications", "chatrooms", "storeitems"].includes(col.name)
+  ) {
     data = await postsColSpecialHandling(col, searchParams, data, mongoUser);
   }
 

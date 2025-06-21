@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import PostsLoader from "@/components/Post/Posts/PostsLoader";
 import { useContext } from "@/components/Context/Context";
 import VideoRecorder from "@/components/ui/shared/VideoRecorder/VideoRecorder";
+import Input from "@/components/ui/shared/Input/Input";
 
 export default function AddStoreItemForm({
   col,
@@ -182,51 +183,43 @@ export default function AddStoreItemForm({
 
         {/* Title Field */}
         <div className="fc g5 wf mb15">
-          <label className="text-sm font-medium text-foreground">
-            {t("storeItemTitle")}
-          </label>
-          <input
+          <Input
             type="text"
+            name="title"
+            label={t("storeItemTitle")}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder={t("storeItemTitle")}
-            className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
             required
           />
         </div>
 
         {/* Category Field */}
         <div className="fc g5 wf mb15">
-          <label className="text-sm font-medium text-foreground">
-            {t("storeItemCategory")}
-          </label>
-          <input
+          <Input
             type="text"
+            name="category"
+            label={t("storeItemCategory")}
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             placeholder={t("storeItemCategory")}
-            className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
           />
         </div>
 
         {/* Stock Field */}
         <div className="fc g5 wf mb15">
-          <label className="text-sm font-medium text-foreground">
-            {t("storeItemStock")}
-          </label>
-          <input
+          <Input
             type="number"
+            name="stock"
+            label={t("storeItemStock")}
             min="0"
             step="1"
             value={stock}
             onChange={(e) => setStock(parseInt(e.target.value) || 0)}
             placeholder={t("storeItemStockPlaceholder")}
-            className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+            helperText={t("storeItemStockDescription")}
             required
           />
-          <p className="text-xs text-muted-foreground">
-            {t("storeItemStockDescription")}
-          </p>
         </div>
 
         <AddFilesPreview {...{ files, filesSet }} />

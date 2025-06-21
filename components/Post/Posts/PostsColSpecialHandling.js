@@ -38,6 +38,34 @@ export const postsColSpecialHandling = async (
     };
   }
 
+  // * HANDLE STOREITEMS FILTERING
+  if (["storeitems"].includes(col.name) && searchParams.storeitemType) {
+    console.log("🔍 Storeitems filtering:", {
+      colName: col.name,
+      storeitemType: searchParams.storeitemType,
+      searchParams: searchParams,
+    });
+
+    if (searchParams.storeitemType === "regular") {
+      // Filter for regular store items (not auction type)
+      data = {
+        ...data,
+        $or: [
+          { type: { $exists: false } }, // Items without type field
+          { type: null }, // Items with null type
+          { type: { $ne: "auction" } }, // Items with type not equal to "auction"
+        ],
+      };
+    } else if (searchParams.storeitemType === "auction") {
+      // Filter for auction store items
+      data = {
+        ...data,
+        type: "auction",
+      };
+    }
+    // If storeitemType is "all", no additional filtering is needed
+  }
+
   // * HANDLE FEED FILTERING
   if (["feeds"].includes(col.name) && searchParams.feedType) {
     if (searchParams.feedType === "liked") {

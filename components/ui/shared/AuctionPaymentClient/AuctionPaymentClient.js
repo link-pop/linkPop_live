@@ -245,7 +245,7 @@ export default function AuctionPaymentClient({ mongoUser }) {
         </div>
 
         {/* Order Status */}
-        <div className="bg-background border rounded-lg p20 mb20 text-center">
+        <div className="maw570 wf mxa bg-background border rounded-lg p20 mb20 text-center">
           <h3 className="text-lg font-semibold mb10">{t("orderStatus")}</h3>
           <div className="f aic jcc g10 mb10">
             <CheckCircle className="w20 h20 text-green-600" />
