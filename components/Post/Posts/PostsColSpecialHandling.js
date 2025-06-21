@@ -1,4 +1,5 @@
 import { getAll } from "@/lib/actions/crud";
+import { checkAuctionNotificationPaymentStatus } from "@/lib/utils/mongo/checkAuctionNotificationPaymentStatus";
 
 export const postsColSpecialHandling = async (
   col,
@@ -15,12 +16,25 @@ export const postsColSpecialHandling = async (
 
   // * GET ALL NOTIFICATIONS BUT MESSAGES
   if (["notifications"].includes(col.name)) {
+    const notificationFilter =
+      searchParams.notificationType && searchParams.notificationType !== "all"
+        ? searchParams.notificationType === "auction"
+          ? {
+              type: {
+                $in: [
+                  "auction_won",
+                  "auction_sold",
+                  "auction_ended",
+                  "auction_outbid",
+                ],
+              },
+            }
+          : { type: searchParams.notificationType }
+        : { type: { $ne: "message" } };
+
     data = {
       userId: mongoUser._id,
-      ...(searchParams.notificationType &&
-      searchParams.notificationType !== "all"
-        ? { type: searchParams.notificationType }
-        : { type: { $ne: "message" } }),
+      ...notificationFilter,
     };
   }
 
@@ -157,4 +171,21 @@ export const postsColSpecialHandling = async (
   }
 
   return data;
+};
+
+// * POST-PROCESSING FUNCTION FOR NOTIFICATIONS WITH AUCTION PAYMENT STATUS
+export const postsColPostProcessing = async (posts, col, mongoUser) => {
+  // * CHECK AUCTION PAYMENT STATUS FOR NOTIFICATIONS
+  if (["notifications"].includes(col.name) && mongoUser?._id) {
+    try {
+      const processedNotifications =
+        await checkAuctionNotificationPaymentStatus(posts, mongoUser._id);
+      return processedNotifications;
+    } catch (error) {
+      console.error("❌ Error processing auction payment status:", error);
+      return posts; // Return original posts if processing fails
+    }
+  }
+
+  return posts;
 };

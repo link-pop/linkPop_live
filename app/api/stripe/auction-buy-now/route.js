@@ -6,9 +6,14 @@ import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 
 export async function POST(request) {
   try {
-    // Parse request body for auction item ID
+    // Parse request body for auction item ID and shipping information
     const body = await request.json();
-    const { auctionItemId } = body;
+    const {
+      auctionItemId,
+      shippingAddress,
+      shippingCost,
+      selectedShippingRate,
+    } = body;
 
     if (!auctionItemId) {
       return NextResponse.json(
@@ -78,33 +83,62 @@ export async function POST(request) {
     // Calculate platform fee (20%)
     const PLATFORM_FEE_PERCENTAGE = 0.2;
     const buyNowAmount = Math.round(buyNowPrice * 100); // Convert to cents
+    const shippingAmount = shippingCost ? Math.round(shippingCost * 100) : 0; // Convert to cents
+    const totalAmount = buyNowAmount + shippingAmount;
     const platformFee = Math.round(buyNowAmount * PLATFORM_FEE_PERCENTAGE);
 
-    // Create line item for the auction item
-    const lineItem = {
-      price_data: {
-        currency: "usd",
-        product_data: {
-          name: `Auction: ${auctionItem.title || "Auction Item"}`,
-          description: `Buy now price for auction item${
-            auctionItem.category ? ` • Category: ${auctionItem.category}` : ""
-          }`,
-          // Add auction images if available
-          images:
-            auctionItem.files
-              ?.filter((file) => file.fileType === "image")
-              .slice(0, 8) // Stripe allows max 8 images
-              .map((file) => file.fileUrl) || [],
+    // Create line items for the auction item and shipping
+    const lineItems = [
+      {
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: `Auction: ${auctionItem.title || "Auction Item"}`,
+            description: `Buy now price for auction item${
+              auctionItem.category ? ` • Category: ${auctionItem.category}` : ""
+            }`,
+            // Add auction images if available
+            images:
+              auctionItem.files
+                ?.filter((file) => file.fileType === "image")
+                .slice(0, 8) // Stripe allows max 8 images
+                .map((file) => file.fileUrl) || [],
+          },
+          unit_amount: buyNowAmount,
         },
-        unit_amount: buyNowAmount,
+        quantity: 1,
       },
-      quantity: 1,
-    };
+    ];
+
+    // Add shipping line item if shipping cost exists
+    if (shippingAmount > 0) {
+      lineItems.push({
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: "Shipping",
+            description: selectedShippingRate
+              ? `${
+                  selectedShippingRate.servicelevel?.name ||
+                  selectedShippingRate.provider
+                }${
+                  selectedShippingRate.estimated_days
+                    ? ` • ${selectedShippingRate.estimated_days} business days`
+                    : ""
+                }`
+              : "Shipping cost",
+          },
+          unit_amount: shippingAmount,
+        },
+        quantity: 1,
+      });
+    }
 
     // Create Stripe checkout session with Connect integration
-    const session = await stripe.checkout.sessions.create({
+    // For dev users, we skip Stripe Connect and handle payment directly
+    const sessionConfig = {
       payment_method_types: ["card"],
-      line_items: [lineItem],
+      line_items: lineItems,
       mode: "payment",
       success_url: successUrl,
       cancel_url: cancelUrl,
@@ -115,19 +149,44 @@ export async function POST(request) {
         auctionItemId: auctionItemId,
         storeOwnerId: storeOwner._id?.toString() || storeOwner.toString(),
         buyNowPrice: buyNowPrice.toString(),
+        shippingCost: shippingCost ? shippingCost.toString() : "0",
+        totalAmount: (totalAmount / 100).toString(),
         platformFeePercentage: (PLATFORM_FEE_PERCENTAGE * 100).toString(),
         platformFee: platformFee.toString(),
-        originalAmount: buyNowAmount.toString(),
-        // Add store owner Stripe account if not dev
+        originalAmount: totalAmount.toString(),
+        isDevUser: storeOwner.isDev ? "true" : "false",
+        // Add shipping information to metadata
+        ...(shippingAddress && {
+          shippingAddress: JSON.stringify(shippingAddress),
+        }),
+        ...(selectedShippingRate && {
+          shippingRate: JSON.stringify(selectedShippingRate),
+        }),
+        // Add store owner Stripe account if not dev and has account
         ...(storeOwner.isDev || !storeOwner.stripeConnect?.accountId
           ? {}
           : { stripeAccount: storeOwner.stripeConnect.accountId }),
       },
-    });
+    };
+
+    // For non-dev users with Stripe Connect, add application fee
+    if (!storeOwner.isDev && storeOwner.stripeConnect?.accountId) {
+      sessionConfig.payment_intent_data = {
+        application_fee_amount: platformFee,
+        transfer_data: {
+          destination: storeOwner.stripeConnect.accountId,
+          amount: totalAmount - platformFee, // Transfer total amount minus platform fee
+        },
+      };
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     console.log("Auction buy-now Stripe session created:", session.id);
     console.log("Auction item:", auctionItemId);
     console.log("Buy now price:", buyNowPrice);
+    console.log("Shipping cost:", shippingCost || 0);
+    console.log("Total amount:", totalAmount / 100, "USD");
     console.log("Platform fee:", platformFee / 100, "USD");
 
     return NextResponse.json({

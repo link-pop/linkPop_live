@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
-export const storeItemsOrderSchema = new mongoose.Schema(
+const storeItemsOrderSchema = new mongoose.Schema(
   {
     // User who placed the order
     createdBy: {
@@ -180,20 +180,56 @@ export const storeItemsOrderSchema = new mongoose.Schema(
   }
 );
 
-// Indexes for better performance
-storeItemsOrderSchema.index({ createdBy: 1, createdAt: -1 });
-storeItemsOrderSchema.index({ orderNumber: 1 });
-storeItemsOrderSchema.index({ stripeSessionId: 1 });
-storeItemsOrderSchema.index({ paymentStatus: 1 });
-storeItemsOrderSchema.index({ orderStatus: 1 });
-storeItemsOrderSchema.index({ storeOwner: 1 });
+// Only add indexes and middleware if schema hasn't been compiled yet
+// Use multiple checks to ensure we don't duplicate indexes
+if (!storeItemsOrderSchema.$compiled && !storeItemsOrderSchema.$indexesAdded) {
+  try {
+    // Indexes for better performance
+    storeItemsOrderSchema.index({ createdBy: 1, createdAt: -1 });
+    storeItemsOrderSchema.index({ orderNumber: 1 });
+    storeItemsOrderSchema.index({ stripeSessionId: 1 });
+    storeItemsOrderSchema.index({ paymentStatus: 1 });
+    storeItemsOrderSchema.index({ orderStatus: 1 });
+    storeItemsOrderSchema.index({ storeOwner: 1 });
 
-// Generate order number before saving
-storeItemsOrderSchema.pre("save", async function (next) {
-  if (this.isNew && !this.orderNumber) {
-    const timestamp = Date.now().toString();
-    const random = Math.random().toString(36).substring(2, 8).toUpperCase();
-    this.orderNumber = `ORD-${timestamp}-${random}`;
+    // Mark that indexes have been added
+    storeItemsOrderSchema.$indexesAdded = true;
+  } catch (error) {
+    // Silently ignore index errors (likely already compiled)
+    console.log("Indexes already exist for storeitemsorders schema");
   }
-  next();
-});
+
+  try {
+    // Generate order number before saving
+    storeItemsOrderSchema.pre("save", async function (next) {
+      if (this.isNew && !this.orderNumber) {
+        const timestamp = Date.now().toString();
+        const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+        this.orderNumber = `ORD-${timestamp}-${random}`;
+      }
+      next();
+    });
+  } catch (error) {
+    // Silently ignore middleware errors (likely already added)
+    console.log("Middleware already exists for storeitemsorders schema");
+  }
+
+  // Mark schema as compiled to prevent future modifications
+  storeItemsOrderSchema.$compiled = true;
+}
+
+// Create and export the model for chatServer (CommonJS)
+// Check if model already exists to prevent overwrite error
+let StoreItemsOrder;
+try {
+  // Try to get existing model first
+  StoreItemsOrder = mongoose.model("storeitemsorders");
+} catch (error) {
+  // Model doesn't exist, create it
+  StoreItemsOrder = mongoose.model("storeitemsorders", storeItemsOrderSchema);
+}
+
+module.exports = StoreItemsOrder;
+
+// Also export the schema for importing in models.js
+module.exports.storeItemsOrderSchema = storeItemsOrderSchema;

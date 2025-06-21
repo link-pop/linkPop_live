@@ -3,10 +3,14 @@
 import { useNotification } from "@/components/Context/NotificationContext";
 import Link from "next/link";
 import { useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import Post from "../Post";
 import CreatedBy from "../CreatedBy";
 import getNotificationIcon from "@/components/Context/getNotificationIcon";
 import removeHtmlFromText from "@/lib/utils/removeHtmlFromText";
+import { useTranslation } from "@/components/Context/TranslationContext";
+import NotificationAuctionPost from "./NotificationAuctionPost";
+import { NOTIFICATIONS_ROUTE } from "@/lib/utils/constants";
 
 export default function NotificationPost(props) {
   const {
@@ -17,6 +21,9 @@ export default function NotificationPost(props) {
     onClick,
   } = props;
   const { markAsRead } = useNotification();
+  const router = useRouter();
+  const pathname = usePathname();
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Mark as read when viewed
@@ -28,6 +35,27 @@ export default function NotificationPost(props) {
   const handleClick = (e) => {
     onClick?.(e);
   };
+
+  // Check if this is an auction-related notification
+  const isAuctionNotification = [
+    "auction_won",
+    "auction_sold",
+    "auction_ended",
+    "auction_outbid",
+  ].includes(notification.type);
+
+  // Check if we're on the notifications route
+  const isOnNotificationsRoute = pathname.includes(NOTIFICATIONS_ROUTE);
+
+  // If it's an auction notification, use the specialized component
+  if (isAuctionNotification) {
+    return (
+      <NotificationAuctionPost
+        {...props}
+        isOnNotificationsRoute={isOnNotificationsRoute}
+      />
+    );
+  }
 
   return (
     <Post
@@ -60,7 +88,7 @@ export default function NotificationPost(props) {
                   } hover:bg-accent/20 transition-colors`}
                 >
                   <div className="por shrink-0">
-                    {getNotificationIcon()}
+                    {getNotificationIcon(notification.type)}
                     {showNotificationUnread && !notification.read && (
                       <div className="poa t-1 r-1 w-2 h-2 rounded-full bg-red-500"></div>
                     )}

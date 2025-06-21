@@ -3,7 +3,11 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { SITE2 } from "@/config/env";
-import { CART_ROUTE, ORDERS_ROUTE } from "@/lib/utils/constants";
+import {
+  AUCTION_PAYMENT_ROUTE,
+  CART_ROUTE,
+  ORDERS_ROUTE,
+} from "@/lib/utils/constants";
 
 export default function useLayoutWidth(width = "1000") {
   if (SITE2) return;
@@ -19,7 +23,8 @@ export default function useLayoutWidth(width = "1000") {
       pathname?.includes("/my/queue") ||
       pathname?.includes("/discover/search") ||
       pathname?.includes(CART_ROUTE) ||
-      pathname?.includes(ORDERS_ROUTE);
+      pathname?.includes(ORDERS_ROUTE) ||
+      pathname?.includes(AUCTION_PAYMENT_ROUTE);
     const layoutElement = document.querySelector(".LayoutMidContent");
 
     if (layoutElement) {

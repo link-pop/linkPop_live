@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const usersSchema = new mongoose.Schema(
   {
@@ -161,6 +161,11 @@ const usersSchema = new mongoose.Schema(
       updatedAt: { type: Date }, // When address was last updated
     },
 
+    // Auction restrictions
+    auctionBidAllowed: { type: Boolean, default: true, required: false }, // Can user bid on auctions
+    auctionBidRestrictedAt: { type: Date, required: false }, // When user was restricted from bidding
+    auctionBidRestrictedReason: { type: String, required: false }, // Reason for restriction
+
     // Required fields
     clerkId: { type: String, required: true },
     name: { type: String, default: "", required: true },
@@ -247,21 +252,43 @@ const usersSchema = new mongoose.Schema(
   { timestamps: true, strict: false }
 );
 
-// Add compound indexes for better suggestion system performance
-usersSchema.index({ profileType: 1, profileImage: 1 }); // For finding creators with profile images
-usersSchema.index({ "lastUploadedCreatorTags.raceEthnicity": 1 }); // For creator tag matching
-usersSchema.index({ "lastUploadedCreatorTags.hairColor": 1 }); // For creator tag matching
-usersSchema.index({ "lastUploadedCreatorTags.bodyType": 1 }); // For creator tag matching
-usersSchema.index({
-  profileType: 1,
-  preferRaceEthnicity: 1,
-  preferHairColor: 1,
-  preferBodyType: 1,
-}); // For traditional preference matching
+// Only add indexes if schema hasn't been compiled yet
+// Use multiple checks to ensure we don't duplicate indexes
+if (!usersSchema.$compiled && !usersSchema.$indexesAdded) {
+  try {
+    // Add compound indexes for better suggestion system performance
+    usersSchema.index({ profileType: 1, profileImage: 1 }); // For finding creators with profile images
+    usersSchema.index({ "lastUploadedCreatorTags.raceEthnicity": 1 }); // For creator tag matching
+    usersSchema.index({ "lastUploadedCreatorTags.hairColor": 1 }); // For creator tag matching
+    usersSchema.index({ "lastUploadedCreatorTags.bodyType": 1 }); // For creator tag matching
+    usersSchema.index({
+      profileType: 1,
+      preferRaceEthnicity: 1,
+      preferHairColor: 1,
+      preferBodyType: 1,
+    }); // For traditional preference matching
+
+    // Mark that indexes have been added
+    usersSchema.$indexesAdded = true;
+  } catch (error) {
+    // Silently ignore index errors (likely already compiled)
+    console.log("Indexes already exist for users schema");
+  }
+
+  // Mark schema as compiled to prevent future modifications
+  usersSchema.$compiled = true;
+}
 
 usersSchema.settings = {
   noUpdateIcon: true,
   noDeleteIcon: true,
 };
 
-export { usersSchema };
+// Create and export the model for chatServer (CommonJS)
+// Check if model already exists to prevent overwrite error
+const User = mongoose.models?.users || mongoose.model("users", usersSchema);
+
+module.exports = User;
+
+// Also export the schema for importing in models.js
+module.exports.usersSchema = usersSchema;

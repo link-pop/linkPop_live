@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { redirect } from "next/navigation";
-import { completeBuyNowAfterPayment } from "@/lib/actions/auctionActions";
 import { add, update } from "@/lib/actions/crud";
 import { processStripeConnectTransfers } from "@/lib/actions/processStripeConnectTransfers";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
-import { sendAuctionWinnerPaymentNotificationToStoreOwner } from "@/lib/actions/emailNotifications";
 import shippoService from "@/lib/utils/shippo/shippoService";
 import { getStoreOwnerShippingAddress } from "@/lib/actions/getStoreOwnerShippingAddress";
+import { sendAuctionWinnerPaymentNotificationToStoreOwner } from "@/lib/actions/emailNotifications";
 
 export async function GET(request) {
   try {
@@ -42,7 +41,7 @@ export async function GET(request) {
     const {
       auctionItemId,
       storeOwnerId,
-      buyNowPrice,
+      winningAmount,
       shippingCost,
       totalAmount,
       platformFee,
@@ -50,10 +49,9 @@ export async function GET(request) {
       shippingAddress,
       shippingRate,
       stripeAccount,
-      isDevUser,
     } = session.metadata;
 
-    if (!auctionItemId || !storeOwnerId || !buyNowPrice) {
+    if (!auctionItemId || !storeOwnerId || !winningAmount) {
       console.error("Missing required metadata in session");
       return redirect("/");
     }
@@ -73,18 +71,12 @@ export async function GET(request) {
       console.error("Error parsing shipping data:", parseError);
     }
 
-    // Complete the auction buy now (end auction and set winner)
-    const auctionResult = await completeBuyNowAfterPayment({
-      auctionItemId,
-      stripeSessionId: sessionId,
-    });
+    console.log(
+      "🏆 Processing auction winner payment success for:",
+      auctionItemId
+    );
 
-    if (auctionResult.error) {
-      console.error("Failed to complete auction:", auctionResult.error);
-      // Even if auction completion fails, we need to create an order since payment was made
-    }
-
-    // Create order record for the auction purchase
+    // Create order record for the auction winner payment
     const orderData = {
       createdBy: mongoUser._id,
       storeOwner: storeOwnerId,
@@ -92,16 +84,16 @@ export async function GET(request) {
         {
           storeItemId: auctionItemId,
           quantity: 1,
-          priceAtTime: parseFloat(buyNowPrice),
-          title: `Auction Item (Buy Now)`,
+          priceAtTime: parseFloat(winningAmount),
+          title: `Auction Won`,
           category: "Auction",
           stockAtTime: 1, // Auction items are unique
         },
       ],
-      subtotal: parseFloat(buyNowPrice),
+      subtotal: parseFloat(winningAmount),
       tax: 0,
       shipping: parseFloat(shippingCost) || 0,
-      total: parseFloat(totalAmount) || parseFloat(buyNowPrice),
+      total: parseFloat(totalAmount) || parseFloat(winningAmount),
       stripeSessionId: sessionId,
       stripePaymentIntentId: session.payment_intent,
       paymentStatus: "paid",
@@ -113,8 +105,9 @@ export async function GET(request) {
         (parseFloat(originalAmount) - parseFloat(platformFee)) / 100 || 0, // Convert from cents
       transferStatus: "pending",
       metadata: {
-        auctionBuyNow: true,
+        auctionWinnerPayment: true,
         originalSessionId: sessionId,
+        auctionCompleted: true,
       },
     };
 
@@ -127,13 +120,13 @@ export async function GET(request) {
       console.error("Failed to create order:", order.error);
       // Don't fail the process, continue with transfer
     } else {
-      console.log("Auction buy-now order created:", order._id);
+      console.log("🏆 Auction winner payment order created:", order._id);
     }
 
     // Create shipping label if order was created successfully
     if (order && !order.error && parsedShippingAddress) {
       try {
-        console.log("🏆 Creating shipping label for auction buy-now order...");
+        console.log("🏆 Creating shipping label for auction winner order...");
 
         // Get store owner's shipping address
         const storeOwnerAddressResult = await getStoreOwnerShippingAddress({
@@ -151,7 +144,7 @@ export async function GET(request) {
         } else if (storeOwnerAddressResult.success) {
           storeOwnerShippingAddress = storeOwnerAddressResult.shippingAddress;
           console.log(
-            "✅ Using store owner's shipping address for auction buy-now shipment creation"
+            "✅ Using store owner's shipping address for auction shipment creation"
           );
         }
 
@@ -172,7 +165,7 @@ export async function GET(request) {
           if (shipment.rates && shipment.rates.length > 0) {
             try {
               console.log(
-                `🏆 Creating shipping label for auction buy-now order ${order.orderNumber}`
+                `🏆 Creating shipping label for auction order ${order.orderNumber}`
               );
               const cheapestRate = shippoService.getCheapestRate(
                 shipment.rates
@@ -194,7 +187,7 @@ export async function GET(request) {
                   "USPS";
 
                 console.log(
-                  `✅ Auction buy-now shipping label created for order ${order.orderNumber}: ${shippingLabelUrl}`
+                  `✅ Auction shipping label created for order ${order.orderNumber}: ${shippingLabelUrl}`
                 );
                 console.log(`✅ Carrier: ${carrierAccount}`);
 
@@ -202,13 +195,13 @@ export async function GET(request) {
                 if (transaction.qr_code_url) {
                   labelBrokerQRCodeUrl = transaction.qr_code_url;
                   console.log(
-                    `✅ Label Broker QR Code available for auction buy-now order ${order.orderNumber}: ${labelBrokerQRCodeUrl}`
+                    `✅ Label Broker QR Code available for auction order ${order.orderNumber}: ${labelBrokerQRCodeUrl}`
                   );
                 }
               }
             } catch (labelError) {
               console.error(
-                `❌ Error creating shipping label for auction buy-now order ${order.orderNumber}:`,
+                `❌ Error creating shipping label for auction order ${order.orderNumber}:`,
                 labelError
               );
               // Continue even if label creation fails
@@ -237,12 +230,12 @@ export async function GET(request) {
 
           if (updateResult.error) {
             console.error(
-              "❌ Error updating auction buy-now order with shipment info:",
+              "❌ Error updating auction order with shipment info:",
               updateResult.error
             );
           } else {
             console.log(
-              `✅ Auction buy-now shipment created for order ${order.orderNumber}: ${shipment.object_id}`
+              `✅ Auction shipment created for order ${order.orderNumber}: ${shipment.object_id}`
             );
             console.log(`✅ Carrier account set to: ${carrierAccount}`);
             if (shippingLabelUrl) {
@@ -252,18 +245,18 @@ export async function GET(request) {
         }
       } catch (shippoError) {
         console.error(
-          `❌ Error creating Shippo shipment for auction buy-now order:`,
+          `❌ Error creating Shippo shipment for auction order:`,
           shippoError
         );
         // Continue without shipping label - can be created later
       }
     }
 
-    // Send auction buy-now payment notification to store owner
+    // Send auction winner payment notification to store owner
     if (order && !order.error) {
       try {
         console.log(
-          `🏆 Sending auction buy-now payment notification to store owner for order ${order.orderNumber}`
+          `🏆 Sending auction winner payment notification to store owner for order ${order.orderNumber}`
         );
         const notificationResult =
           await sendAuctionWinnerPaymentNotificationToStoreOwner({
@@ -291,8 +284,7 @@ export async function GET(request) {
     }
 
     // Process Stripe Connect transfer to store owner (if applicable)
-    // Skip transfers for dev users since they bypass Stripe Connect
-    if (stripeAccount && order && !order.error && isDevUser !== "true") {
+    if (stripeAccount && order && !order.error) {
       try {
         await processStripeConnectTransfers([
           {
@@ -304,7 +296,9 @@ export async function GET(request) {
           },
         ]);
 
-        console.log("Stripe Connect transfer initiated for auction buy-now");
+        console.log(
+          "🏆 Stripe Connect transfer initiated for auction winner payment"
+        );
       } catch (transferError) {
         console.error(
           "Transfer failed but payment was successful:",
@@ -312,20 +306,18 @@ export async function GET(request) {
         );
         // Don't fail the success flow - transfers can be retried
       }
-    } else if (isDevUser === "true") {
-      console.log("Skipping Stripe Connect transfer for dev user");
     }
 
     // Redirect to success page with order information
     const redirectUrl =
       order && !order.error
-        ? `/orders?highlight=${order._id}&auction_success=true`
-        : `/orders?auction_success=true`;
+        ? `/orders?highlight=${order._id}&auction_payment_success=true`
+        : `/orders?auction_payment_success=true`;
 
     return redirect(redirectUrl);
   } catch (error) {
-    console.error("Auction buy-now success processing error:", error);
+    console.error("❌ Auction winner payment success processing error:", error);
     // Redirect to orders page even on error - payment was successful
-    return redirect("/orders?auction_success=true&error=processing");
+    return redirect("/orders?auction_payment_success=true&error=processing");
   }
 }

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const storeitemsSchema = new mongoose.Schema(
   {
@@ -103,31 +103,64 @@ const storeitemsSchema = new mongoose.Schema(
   { timestamps: true, strict: true }
 );
 
-// Indexes for auction queries
-storeitemsSchema.index({ type: 1, auctionStatus: 1, auctionEndTime: 1 });
-storeitemsSchema.index({ auctionEndTime: 1 });
-storeitemsSchema.index({ "auctionCurrentBid.bidderId": 1 });
+// Only add indexes and middleware if schema hasn't been compiled yet
+// Use multiple checks to ensure we don't duplicate indexes
+if (!storeitemsSchema.$compiled && !storeitemsSchema.$indexesAdded) {
+  try {
+    // Indexes for auction queries
+    storeitemsSchema.index({ type: 1, auctionStatus: 1, auctionEndTime: 1 });
+    storeitemsSchema.index({ auctionEndTime: 1 });
+    storeitemsSchema.index({ "auctionCurrentBid.bidderId": 1 });
 
-// Pre-save middleware to update auction status
-storeitemsSchema.pre("save", function (next) {
-  if (this.type === "auction") {
-    const now = new Date();
-
-    if (this.auctionEndTime <= now && this.auctionStatus === "active") {
-      this.auctionStatus = "ended";
-
-      // Set winner if there are bids
-      if (this.auctionCurrentBid.bidderId) {
-        this.auctionWinnerId = this.auctionCurrentBid.bidderId;
-      }
-    } else if (
-      this.auctionStartTime <= now &&
-      this.auctionStatus === "pending"
-    ) {
-      this.auctionStatus = "active";
-    }
+    // Mark that indexes have been added
+    storeitemsSchema.$indexesAdded = true;
+  } catch (error) {
+    // Silently ignore index errors (likely already compiled)
+    console.log("Indexes already exist for storeitems schema");
   }
-  next();
-});
 
-export { storeitemsSchema };
+  try {
+    // Pre-save middleware to update auction status
+    storeitemsSchema.pre("save", function (next) {
+      if (this.type === "auction") {
+        const now = new Date();
+
+        if (this.auctionEndTime <= now && this.auctionStatus === "active") {
+          this.auctionStatus = "ended";
+
+          // Set winner if there are bids
+          if (this.auctionCurrentBid.bidderId) {
+            this.auctionWinnerId = this.auctionCurrentBid.bidderId;
+          }
+        } else if (
+          this.auctionStartTime <= now &&
+          this.auctionStatus === "pending"
+        ) {
+          this.auctionStatus = "active";
+        }
+      }
+      next();
+    });
+  } catch (error) {
+    // Silently ignore middleware errors (likely already added)
+    console.log("Middleware already exists for storeitems schema");
+  }
+
+  // Mark schema as compiled to prevent future modifications
+  storeitemsSchema.$compiled = true;
+}
+
+// Create and export model with check for existing model
+let StoreItems;
+try {
+  // Try to get existing model
+  StoreItems = mongoose.model("storeitems");
+} catch (error) {
+  // Model doesn't exist, create it
+  StoreItems = mongoose.model("storeitems", storeitemsSchema);
+}
+
+module.exports = StoreItems;
+
+// Also export the schema for importing in models.js
+module.exports.storeitemsSchema = storeitemsSchema;

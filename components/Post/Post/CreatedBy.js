@@ -17,6 +17,7 @@ export default function CreatedBy({
   bottomClassName = "",
   icon,
   imageClassName = "",
+  displayName,
 }) {
   // Default values
   const defaultName = "Anonymous User";
@@ -25,7 +26,7 @@ export default function CreatedBy({
   const { isUserOnline } = useChat();
 
   // Check if we have valid createdBy data
-  const name = createdBy?.name || defaultName;
+  const name = displayName || createdBy?.name || defaultName;
   const avatar = createdBy?.profileImage || createdBy?.avatar || defaultAvatar;
   const userId = createdBy?._id;
 

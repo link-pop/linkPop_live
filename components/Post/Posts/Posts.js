@@ -25,7 +25,7 @@ export default async function Posts({
             ? "max-[768px]:!hidden max-[768px]:!w-[0px]"
             : "max-[767px]:miwf"
         } LeftChatroomPart`
-      : ""
+      : "g15"
   }`,
 }) {
   if (!col) return;
@@ -34,7 +34,9 @@ export default async function Posts({
   const limit = 8;
   let data = {};
 
-  if (!isAdmin) {
+  // Always apply special handling for notifications and other collections
+  // Admin users also need filtering for their own notifications
+  if (!isAdmin || ["notifications", "chatrooms"].includes(col.name)) {
     data = await postsColSpecialHandling(col, searchParams, data, mongoUser);
   }
 

@@ -559,7 +559,6 @@ const en = {
   tryAgain: "Please try again",
   paymentError: "Payment Error",
   unknownPaymentError: "An unknown error occurred during payment processing",
-  buyNow: "Buy Now",
   error: "Error",
   errorCheckingPurchaseStatus: "Error checking purchase status",
 
@@ -626,7 +625,6 @@ const en = {
   unlockMessageFor: "Unlock this message for",
   paymentError: "Payment Error",
   unknownPaymentError: "An unknown error occurred during payment processing",
-  buyNow: "Buy Now",
   pricePerMonth: "Price per month",
 
   // Bio
@@ -941,7 +939,6 @@ const en = {
   failedToSaveDirectlink: "Failed to save directlink",
   destinationUrl: "Destination URL",
   freeUrl: "Free URL",
-  description: "Description",
   creating: "Creating...",
   updating: "Updating...",
   failedTo: "Failed to",
@@ -1437,7 +1434,6 @@ const en = {
   dragAndDropOrClickToUpload: "Drag and drop or click to upload",
   pleaseUploadImageFile: "Please upload an image file",
   pleaseSelectImage: "Please select an image",
-  processing: "Processing...",
   extract: "Extract DOB",
   errorProcessingID: "Error processing ID document",
   failedToExtractDOB: "Failed to extract date of birth",
@@ -1513,7 +1509,7 @@ const en = {
   // Price filter toggle translations
   showPaidCreators: "Show paid creators",
   showFreeCreators: "Show free creators",
-  free: "Free",
+  free: "free",
 
   // Refresh suggestions functionality
   refreshSuggestions: "Show different suggestions",
@@ -1620,6 +1616,7 @@ const en = {
   errorLoadingOrders: "Error loading orders",
   shippingAddress: "Shipping Address",
   ordered: "Ordered",
+  processing: "Processing",
   shipped: "Shipped",
   delivered: "Delivered",
   tracking: "Tracking",
@@ -1841,10 +1838,8 @@ const en = {
 
   // User shipping address functionality
   savingAddress: "Saving Address...",
-  addressSaved: "Address Saved",
   shippingAddressSavedSuccessfully:
     "Your shipping address has been saved successfully",
-  errorSavingAddress: "Error Saving Address",
 
   // Cancel order functionality
   cancelOrder: "Cancel Order",
@@ -1981,6 +1976,73 @@ const en = {
   twoWeeks: "2w",
   oneMonth: "1mo",
   startNow: "Start Now",
+
+  // Won auction notification
+  buyWonItemNow: "BUY WON ITEM NOW",
+  auction: "auction",
+  ifDenyToBuyAuctionItem:
+    "If you don't buy the item after 7 days, you won't be able to participate in auctions again!",
+
+  // Auction bid restrictions
+  auctionBiddingRestricted: "Bidding Restricted",
+  auctionBiddingRestrictedReason:
+    "You are restricted from bidding because you failed to purchase a previously won auction item within 7 days.",
+
+  // Unpaid won auctions
+  unpaidWonAuctionsError:
+    "You have unpaid won auctions - pay them first to proceed",
+
+  // Auction payment countdown
+  timeLeftToPay: "Time left to pay",
+  paymentDeadlineWarning: "Payment deadline expires in 7 days from winning",
+  paymentDeadlineExpired: "Payment deadline expired",
+  calculatingTimeLeft: "Calculating time left...",
+  daysShort: "d",
+  hoursShort: "h",
+  minutesShort: "m",
+  secondsShort: "s",
+
+  // Auction payment page
+  paymentCompleted: "Payment Completed!",
+  thankYouForPurchase: "Thank you for your purchase!",
+  paidAmount: "Paid Amount",
+  orderStatus: "Order Status",
+  paid: "paid",
+  congratulations: "Congratulations!",
+  winningBid: "Winning Bid",
+  payNow: "Pay Now",
+  completePaymentToClaim: "Complete payment to claim your auction item",
+  securePaymentByStripe: "Secure payment powered by Stripe",
+  viewOrders: "View Orders",
+  goBack: "Go Back",
+  paymentFailed: "Payment Failed",
+
+  // Auction notification translations
+  auctionWon: "Auction Won",
+  auctionSold: "Auction Sold",
+  auctionEnded: "Auction Ended",
+  auctionOutbid: "Auction Outbid",
+  placeBidAgain: "Place a higher bid to stay in the running",
+  youveBeenOutbid: "You've Been Outbid",
+  someoneOutbidYou: "Someone placed a higher bid on this auction",
+  checkingPaymentStatus: "Checking payment status",
+  congratulationsOnSale: "Congratulations on your sale!",
+  auctionHasEnded: "The auction has ended",
+  placeBidAgain: "Place a new bid to win!",
+  auctions: "auctions",
+
+  // Auction payment with shipping
+  paymentSummary: "Payment Summary",
+  shippingAddressRequired: "Shipping Address Required",
+  pleaseProvideShippingAddress: "Please provide a shipping address to continue",
+  shippingCostRequired: "Shipping Cost Required",
+  pleaseCalculateShippingCost: "Please calculate shipping cost to continue",
+
+  // Auction buy now shipping
+  shippingInformation: "Shipping Information",
+  provideShippingDetailsForAuction:
+    "Provide shipping details for your auction purchase",
+  itemSummary: "Item Summary",
 };
 
 export default en;

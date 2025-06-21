@@ -16,6 +16,8 @@ import {
   CART_ROUTE,
   ORDERS_ROUTE,
   ADD_STOREITEM_ROUTE,
+  AUCTION_PAYMENT_ROUTE,
+  STOREITEMS_ROUTE,
 } from "@/lib/utils/constants";
 import { ArrowLeft } from "lucide-react";
 import { CHATS_ROUTE } from "../../../lib/utils/constants";
@@ -74,6 +76,8 @@ const PageTitle = () => {
     title = t("cart");
   } else if (pathname.includes(ORDERS_ROUTE)) {
     title = t("orders");
+  } else if (pathname.includes(STOREITEMS_ROUTE)) {
+    title = t("stores");
   } else if (pathname.includes(ADD_STOREITEM_ROUTE)) {
     title = t("addStoreItem");
   } else if (pathname.includes(DISCOVER_SEARCH_ROUTE)) {
@@ -85,6 +89,8 @@ const PageTitle = () => {
   } else if (pathname.includes(DISCOVER_MEDIA_ROUTE)) {
     // This will be handled by triple title
     title = null;
+  } else if (pathname.includes(AUCTION_PAYMENT_ROUTE)) {
+    title = t("auction") + " " + t("payment");
   } else if (pathname.match(/^\/[^\/]+$/)) {
     // ! MUST BE LAST
     title = t("profile");
@@ -103,7 +109,8 @@ const PageTitle = () => {
     pathname?.includes("/my/queue") ||
     pathname?.includes("/discover/search") ||
     pathname?.includes(CART_ROUTE) ||
-    pathname?.includes(ORDERS_ROUTE);
+    pathname?.includes(ORDERS_ROUTE) ||
+    pathname?.includes(AUCTION_PAYMENT_ROUTE);
 
   const width = isWiderPath ? "maw1000" : "maw597";
 

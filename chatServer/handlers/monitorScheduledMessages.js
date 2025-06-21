@@ -2,7 +2,6 @@ const ChatMessage = require("../models/ChatMessageModel");
 const ChatRoom = require("../models/ChatRoomModel");
 const SOCKET_EVENTS = require("../constants/socketEvents");
 
-// TODO rename to handleScheduledMessages
 // * checks for scheduled messages that have now passed to Update chat room's last message
 function startScheduledMessagesHandler(io) {
   setInterval(async () => {

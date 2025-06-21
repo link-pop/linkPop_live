@@ -5,7 +5,7 @@ export default function AddFeedFormSubmitButton({
   formRef,
   onSubmit,
   buttonText,
-  className = "z51 poa r15 -t55",
+  className = "",
 }) {
   const { t } = useTranslation();
 
@@ -17,7 +17,10 @@ export default function AddFeedFormSubmitButton({
   };
 
   return (
-    <Button onClick={handleClick} className={`${className}`}>
+    <Button
+      onClick={handleClick}
+      className={`!fixed z99 cx l100 wfc ml195 !t10 ${className}`}
+    >
       {buttonText || t("post")}
     </Button>
   );

@@ -6,19 +6,20 @@ import { useContext } from "@/components/Context/Context";
 import { formatPrice } from "@/lib/utils/formatPrice";
 import { useAuctionTimer } from "@/lib/hooks/useAuctionTimer";
 import { useAuctionItem } from "@/lib/hooks/useAuctionItem";
-import { placeBid, buyNow } from "@/lib/actions/auctionActions";
+import { useAuctionBuyNowShipping } from "@/hooks/useAuctionBuyNowShipping";
+import { placeBid, checkUnpaidWonAuctions } from "@/lib/actions/auctionActions";
 import CreatedBy from "@/components/Post/Post/CreatedBy";
 import RichTextContent from "@/components/ui/shared/RichTextContent/RichTextContent";
+import AuctionBuyNowShippingForm from "@/components/ui/shared/AuctionBuyNowShippingForm/AuctionBuyNowShippingForm";
 import {
   Clock,
-  Gavel,
   Trophy,
   Users,
-  TrendingUp,
   ShoppingCart,
   AlertCircle,
   DollarSign,
 } from "lucide-react";
+import Button from "../Button/Button2";
 
 export default function StoreItemAuctionContentOverlay({
   content,
@@ -42,7 +43,18 @@ export default function StoreItemAuctionContentOverlay({
 
   const [bidAmount, setBidAmount] = useState("");
   const [isPlacingBid, setIsPlacingBid] = useState(false);
-  const [isBuyingNow, setIsBuyingNow] = useState(false);
+  const [hasUnpaidAuctions, setHasUnpaidAuctions] = useState(false);
+  const [isCheckingUnpaidAuctions, setIsCheckingUnpaidAuctions] =
+    useState(false);
+
+  // Use auction buy now shipping hook
+  const {
+    showShippingForm,
+    isBuyingNow,
+    handleBuyNowClick,
+    handleBuyNowWithShipping,
+    handleBackFromShipping,
+  } = useAuctionBuyNowShipping();
 
   const {
     formattedTimeLeft,
@@ -55,6 +67,7 @@ export default function StoreItemAuctionContentOverlay({
 
   const isOwner = auctionItem?.createdBy?._id === mongoUser?._id;
   const isLoggedIn = Boolean(mongoUser?._id);
+  const isBidRestricted = mongoUser?.auctionBidAllowed === false;
   const currentBid = auctionItem?.auctionCurrentBid?.amount || 0;
   const startPrice = auctionItem?.auctionStartPrice || 0;
   const minBidIncrement = auctionItem?.auctionMinBidIncrement || 1;
@@ -78,6 +91,31 @@ export default function StoreItemAuctionContentOverlay({
       setBidAmount(minNextBid.toFixed(2));
     }
   }, [isActive, minNextBid, bidAmount]);
+
+  // Check for unpaid won auctions when component mounts
+  useEffect(() => {
+    const checkUnpaidAuctions = async () => {
+      if (!isLoggedIn || isOwner || isBidRestricted) {
+        return; // Skip check if user can't bid anyway
+      }
+
+      setIsCheckingUnpaidAuctions(true);
+      try {
+        const result = await checkUnpaidWonAuctions();
+        if (result.error) {
+          console.error("Error checking unpaid auctions:", result.error);
+        } else {
+          setHasUnpaidAuctions(result.hasUnpaidAuctions);
+        }
+      } catch (error) {
+        console.error("Error checking unpaid auctions:", error);
+      } finally {
+        setIsCheckingUnpaidAuctions(false);
+      }
+    };
+
+    checkUnpaidAuctions();
+  }, [isLoggedIn, isOwner, isBidRestricted]);
 
   const handlePlaceBid = async () => {
     if (!isLoggedIn) {
@@ -122,7 +160,7 @@ export default function StoreItemAuctionContentOverlay({
       setBidAmount((bid + minBidIncrement).toFixed(2));
 
       const result = await placeBid({
-        auctionItemId: auctionItem._id,
+        auctionId: auctionItem._id,
         bidAmount: bid,
       });
 
@@ -163,102 +201,16 @@ export default function StoreItemAuctionContentOverlay({
     }
   };
 
-  const handleBuyNow = async () => {
-    if (!isLoggedIn) {
-      toastSet({
-        isOpen: true,
-        title: t("loginRequired"),
-        text: t("pleaseLoginToBuyNow"),
-      });
-      return;
-    }
-
-    if (isOwner) {
-      toastSet({
-        isOpen: true,
-        title: t("cannotBuyOwnItem"),
-        text: t("cannotBuyOwnItemDescription"),
-      });
-      return;
-    }
-
-    // Validate buy now price vs current bid before proceeding to payment
-    const currentBid = auctionItem?.auctionCurrentBid?.amount || 0;
-    const startPrice = auctionItem?.auctionStartPrice || 0;
-    const highestPrice = Math.max(currentBid, startPrice);
-
-    if (buyNowPrice <= highestPrice) {
-      toastSet({
-        isOpen: true,
-        title: t("buyNowPriceTooLow"),
-        text: t("buyNowPriceMustBeHigherThanCurrentBid"),
-      });
-      return;
-    }
-
-    setIsBuyingNow(true);
-
-    try {
-      // Create Stripe checkout session for auction buy-now
-      const response = await fetch("/api/stripe/auction-buy-now", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          auctionItemId: auctionItem._id,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to create checkout session");
-      }
-
-      if (data.sessionUrl) {
-        // Redirect to Stripe checkout
-        window.location.href = data.sessionUrl;
-      } else {
-        throw new Error("No checkout URL received");
-      }
-    } catch (error) {
-      console.error("❌ Error creating buy now checkout:", error);
-
-      toastSet({
-        isOpen: true,
-        title: t("buyNowFailed"),
-        text: error.message || t("unexpectedError"),
-      });
-      setIsBuyingNow(false);
-    }
-    // Note: Don't set isBuyingNow to false here since user is being redirected
-  };
-
   const renderAuctionHeader = () => (
     <div className="p20 border-b border-border">
       <div className="f jcsb aic mb10">
         <h2 className="text-xl font-bold">{content.title}</h2>
-        <div
-          className={`px10 py5 rounded-lg text-sm font-medium border ${statusInfo.color} ${statusInfo.bgColor} ${statusInfo.borderColor}`}
-        >
-          <div className="f aic g5">
-            <Gavel size={14} />
-            <span className="uppercase">
-              {isActive ? t("live") : isEnded ? t("ended") : t("upcoming")}
-            </span>
-          </div>
-        </div>
       </div>
 
-      {content.category && (
-        <p className="text-sm text-muted-foreground uppercase tracking-wide mb10">
-          {content.category}
-        </p>
-      )}
+      {renderDescription()}
 
       {/* Seller info */}
-      <div className="f aic g10">
+      <div className="fc g10">
         <span className="text-sm text-muted-foreground">{t("seller")}:</span>
         <CreatedBy
           createdBy={auctionItem.createdBy}
@@ -364,8 +316,38 @@ export default function StoreItemAuctionContentOverlay({
         <h4 className="font-semibold mb15">{t("placeBid")}</h4>
 
         <div className="fc g15">
+          {/* Bid restriction message */}
+          {isLoggedIn && !isOwner && isBidRestricted && (
+            <div className="p10 bg-red-50 border border-red-200 rounded-lg">
+              <div className="f aic g8 mb5">
+                <AlertCircle size={16} className="text-red-600" />
+                <p className="text-sm font-medium text-red-800">
+                  {t("auctionBiddingRestricted")}
+                </p>
+              </div>
+              <p className="text-xs text-red-700">
+                {t("auctionBiddingRestrictedReason")}
+              </p>
+            </div>
+          )}
+
+          {/* Unpaid won auctions restriction message */}
+          {isLoggedIn && !isOwner && !isBidRestricted && hasUnpaidAuctions && (
+            <div className="p10 bg-red-50 border border-red-200 rounded-lg">
+              <div className="f aic g8 mb5">
+                <AlertCircle size={16} className="text-red-600" />
+                <p className="text-sm font-medium text-red-800">
+                  {t("auctionBiddingRestricted")}
+                </p>
+              </div>
+              <p className="text-xs text-red-700">
+                {t("unpaidWonAuctionsError")}
+              </p>
+            </div>
+          )}
+
           {/* Bid amount input */}
-          <div className="f g10">
+          <div className="fcc g10">
             <div className="flex-1">
               <label className="text-sm text-muted-foreground mb5 block">
                 {t("bidAmount")}
@@ -373,7 +355,7 @@ export default function StoreItemAuctionContentOverlay({
               <div className="por">
                 <DollarSign
                   size={16}
-                  className="poa l10 t50 -translate-y-1/2 text-muted-foreground"
+                  className="poa l10 t20 -translate-y-1/2 text-muted-foreground"
                 />
                 <input
                   type="number"
@@ -383,7 +365,12 @@ export default function StoreItemAuctionContentOverlay({
                   onChange={(e) => setBidAmount(e.target.value)}
                   className="w-full pl30 pr10 py8 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
                   placeholder={minNextBid.toFixed(2)}
-                  disabled={!isLoggedIn || isOwner}
+                  disabled={
+                    !isLoggedIn ||
+                    isOwner ||
+                    isBidRestricted ||
+                    hasUnpaidAuctions
+                  }
                 />
               </div>
               <p className="text-xs text-muted-foreground mt5">
@@ -391,23 +378,28 @@ export default function StoreItemAuctionContentOverlay({
               </p>
             </div>
 
-            <button
+            <Button
               onClick={handlePlaceBid}
               disabled={
                 !isLoggedIn ||
                 isOwner ||
+                isBidRestricted ||
+                hasUnpaidAuctions ||
                 isPlacingBid ||
                 parseFloat(bidAmount) < minNextBid
               }
-              className={`px15 py8 bg-accent hover:bg-accent/80 text-accent-foreground rounded-md font-medium transition-colors f aic g8 ${
-                !isLoggedIn || isOwner || isPlacingBid
+              className={`${
+                !isLoggedIn ||
+                isOwner ||
+                isBidRestricted ||
+                hasUnpaidAuctions ||
+                isPlacingBid
                   ? "opacity-50 cursor-not-allowed"
                   : ""
               }`}
             >
-              <Gavel size={16} />
               {isPlacingBid ? t("placingBid") : t("placeBid")}
-            </button>
+            </Button>
           </div>
 
           {/* Buy now option */}
@@ -428,7 +420,14 @@ export default function StoreItemAuctionContentOverlay({
                   )}
                 </div>
                 <button
-                  onClick={handleBuyNow}
+                  onClick={() =>
+                    handleBuyNowClick({
+                      isLoggedIn,
+                      isOwner,
+                      buyNowPrice,
+                      auctionItem,
+                    })
+                  }
                   disabled={
                     !isLoggedIn || isOwner || isBuyingNow || !isBuyNowValid
                   }
@@ -470,12 +469,7 @@ export default function StoreItemAuctionContentOverlay({
   const renderDescription = () => {
     if (!content.text) return null;
 
-    return (
-      <div className="p20">
-        <h4 className="font-semibold mb10">{t("description")}</h4>
-        <RichTextContent content={content.text} />
-      </div>
-    );
+    return <RichTextContent content={content.text} />;
   };
 
   // Show loading state if auction data is loading
@@ -508,15 +502,6 @@ export default function StoreItemAuctionContentOverlay({
           <div className="text-lg fw500 text-foreground/80">
             {formatPrice(Math.max(currentBid, startPrice))}
           </div>
-          {/* Show timer for active auctions */}
-          {formattedTimeLeft && !isEnded && (
-            <div className="text-xs text-foreground/70">
-              {statusInfo.label} {formattedTimeLeft.formatted}
-            </div>
-          )}
-          {isEnded && (
-            <div className="text-xs text-red-600">{t("auctionEnded")}</div>
-          )}
         </div>
       </div>
     );
@@ -529,12 +514,27 @@ export default function StoreItemAuctionContentOverlay({
 
   return (
     <div className={`${baseClasses} ${className}`}>
-      <div className="h-full fc">
-        {renderAuctionHeader()}
-        {renderCurrentBidInfo()}
-        {renderBiddingSection()}
-        {renderDescription()}
-      </div>
+      {showShippingForm ? (
+        <AuctionBuyNowShippingForm
+          auctionItem={auctionItem}
+          content={content}
+          buyNowPrice={buyNowPrice}
+          onBack={handleBackFromShipping}
+          onProceedToPayment={(shippingData) =>
+            handleBuyNowWithShipping({
+              auctionItemId: auctionItem._id,
+              shippingData,
+            })
+          }
+          isBuyingNow={isBuyingNow}
+        />
+      ) : (
+        <div className="h-full fc">
+          {renderAuctionHeader()}
+          {renderCurrentBidInfo()}
+          {renderBiddingSection()}
+        </div>
+      )}
     </div>
   );
 }

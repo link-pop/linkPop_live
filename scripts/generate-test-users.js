@@ -66,7 +66,7 @@ async function connectToDatabase() {
     console.log("Connected to MongoDB");
 
     // Import the schema and register the model
-    const { usersSchema } = require("../lib/db/models/UserModel");
+    const { usersSchema } = require("../chatServer/models/UserModel");
     if (!mongoose.models.users) {
       mongoose.model("users", usersSchema);
     }

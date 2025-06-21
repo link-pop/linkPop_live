@@ -44,7 +44,7 @@ export default function StoreAuctionItemCard({
     if (!formattedTimeLeft && !isEnded) return null;
 
     return (
-      <div className="poa t10 l10 z-20">
+      <div className="poa t6 l5 z-20">
         <div
           className={`px8 py4 rounded-lg text-xs font-medium border ${statusInfo.color} ${statusInfo.bgColor} ${statusInfo.borderColor}`}
         >
@@ -90,7 +90,7 @@ export default function StoreAuctionItemCard({
     const isCurrentUserWinner = item.auctionWinnerId === mongoUser?._id;
 
     return (
-      <div className="poa b10 l10 z-20">
+      <div className="poa b10 r10 z-20">
         <div
           className={`px8 py4 rounded-lg text-xs font-medium border ${
             isCurrentUserWinner
@@ -126,7 +126,8 @@ export default function StoreAuctionItemCard({
 
       {/* Auction timer and status badges overlaid on the carousel */}
       {renderAuctionTimer()}
-      {renderAuctionStatus()}
+      {/* // ! don't uncomment/delete this ! */}
+      {/* {renderAuctionStatus()} */}
       {renderWinnerBadge()}
 
       {/* StoreItemCardContent with proper auction overlay handling */}

@@ -18,7 +18,10 @@ const ChatRoom = require("./models/ChatRoomModel");
 const ChatMessage = require("./models/ChatMessageModel");
 const Notification = require("./models/NotificationModel");
 const Attachment = require("./models/AttachmentModel");
-const startScheduledMessagesHandler = require("./handlers/scheduledMessages");
+const startScheduledMessagesHandler = require("./handlers/monitorScheduledMessages");
+const startAuctionMonitor = require("./handlers/monitorEndedAuctions");
+const startAuctionPurchaseMonitor = require("./handlers/monitorIfAuctionWasPurchased");
+const startAuctionOutbidMonitor = require("./handlers/monitorAuctionOutbid");
 const sendNotificationCounts = require("./handlers/sendNotificationCounts");
 const {
   updateChatRoomUnreadCounts,
@@ -54,6 +57,15 @@ function startServer() {
 
   // Start scheduled messages handler
   startScheduledMessagesHandler(io);
+
+  // Start auction monitor
+  startAuctionMonitor(io);
+
+  // Start auction purchase compliance monitor
+  startAuctionPurchaseMonitor(io);
+
+  // Start auction outbid notification monitor
+  startAuctionOutbidMonitor(io);
 
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);

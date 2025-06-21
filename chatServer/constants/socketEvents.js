@@ -8,17 +8,17 @@ const SOCKET_EVENTS = {
       DELETED: (chatId) => `chat:message:deleted:${chatId}`,
       HIDE: "chat:message:hide",
       HIDDEN: (chatId) => `chat:message:hidden:${chatId}`,
-      ERROR: "chat:message:error"
+      ERROR: "chat:message:error",
     },
     USER: {
       JOIN: "user:join",
-      LIST: "user:list"
+      LIST: "user:list",
     },
     ROOM: {
       VIEW: "chat:room:view",
       GET_UNREAD_COUNTS: "chat:room:get_unread_counts",
-      UNREAD_COUNTS: "chat:room:unread_counts"
-    }
+      UNREAD_COUNTS: "chat:room:unread_counts",
+    },
   },
   NOTIFICATION: {
     NEW: "notification:new",
@@ -27,8 +27,26 @@ const SOCKET_EVENTS = {
     READ_ALL: "notification:read:all",
     DELETE: "notification:delete",
     COUNT: "notification:count",
-    USER: (userId) => `notification:user:${userId}`
-  }
+    USER: (userId) => `notification:user:${userId}`,
+    ERROR: "notification:error",
+    BATCH_COMPLETE: "notification:batch_complete",
+  },
+  STORE: {
+    AUCTION: {
+      STARTED: "store:auction:started",
+      ENDED: "store:auction:ended",
+      ENDED_NO_BIDS: "store:auction:ended_no_bids",
+      WON: "store:auction:won",
+      SOLD: "store:auction:sold",
+      BID_PLACED: "store:auction:bid_placed",
+      OUTBID: "store:auction:outbid",
+      UPDATED: "store:auction:updated",
+      ERROR: "store:auction:error",
+      BIDDER_NOTIFICATION: "store:auction:bidder_notification",
+      BID_RESTRICTED: (userId) => `auction:bid_restricted:${userId}`,
+      MONITOR_ERROR: "auction:monitor_error",
+    },
+  },
 };
 
 module.exports = SOCKET_EVENTS;

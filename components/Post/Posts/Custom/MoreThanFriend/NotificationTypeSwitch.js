@@ -62,6 +62,21 @@ export default function NotificationTypeSwitch({ mongoUser }) {
       },
     },
     {
+      value: "auction",
+      label: "auctions",
+      query: {
+        userId: mongoUser?._id,
+        type: {
+          $in: [
+            "auction_won",
+            "auction_sold",
+            "auction_ended",
+            "auction_outbid",
+          ],
+        },
+      },
+    },
+    {
       value: "system",
       label: "system",
       query: {
@@ -96,10 +111,23 @@ export default function NotificationTypeSwitch({ mongoUser }) {
 
       // Count specific notification types
       notificationTypes.slice(1).forEach((type) => {
-        counts[type.value] =
-          allNotifications?.filter(
-            (notification) => notification.type === type.value
-          ).length || 0;
+        if (type.value === "auction") {
+          // Count all auction-related notifications
+          counts[type.value] =
+            allNotifications?.filter((notification) =>
+              [
+                "auction_won",
+                "auction_sold",
+                "auction_ended",
+                "auction_outbid",
+              ].includes(notification.type)
+            ).length || 0;
+        } else {
+          counts[type.value] =
+            allNotifications?.filter(
+              (notification) => notification.type === type.value
+            ).length || 0;
+        }
       });
 
       return counts;

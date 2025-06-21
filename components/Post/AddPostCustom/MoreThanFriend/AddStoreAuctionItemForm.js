@@ -14,6 +14,7 @@ import PostsLoader from "@/components/Post/Posts/PostsLoader";
 import { useContext } from "@/components/Context/Context";
 import VideoRecorder from "@/components/ui/shared/VideoRecorder/VideoRecorder";
 import { SmartDatetimeInput } from "@/components/ui/shared/SmartDatetimeInput/SmartDatetimeInput";
+import Input from "@/components/ui/shared/Input/Input";
 
 export default function AddStoreAuctionItemForm({
   col,
@@ -178,7 +179,10 @@ export default function AddStoreAuctionItemForm({
     }
 
     const minDuration = 60 * 60 * 1000; // 1 hour minimum
-    if (endTime.getTime() - startTime.getTime() < minDuration) {
+    if (
+      endTime.getTime() - startTime.getTime() < minDuration &&
+      !mongoUser?.isDev
+    ) {
       return "Auction must run for at least 1 hour";
     }
 
@@ -291,39 +295,30 @@ export default function AddStoreAuctionItemForm({
       >
         {/* Title Field */}
         <div className="fc g5 wf mb15">
-          <label className="text-sm font-medium text-foreground">
-            {t("auctionTitle")}
-          </label>
-          <input
+          <Input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder={t("auctionTitle")}
-            className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+            label={t("auctionTitle")}
+            name="title"
             required
           />
         </div>
 
         {/* Category Field */}
         <div className="fc g5 wf mb15">
-          <label className="text-sm font-medium text-foreground">
-            {t("auctionCategory")}
-          </label>
-          <input
+          <Input
             type="text"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            placeholder={t("auctionCategory")}
-            className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+            label={t("auctionCategory")}
+            name="category"
           />
         </div>
 
         {/* Auction Start Price */}
         <div className="fc g5 wf mb15">
-          <label className="text-sm font-medium text-foreground">
-            {t("auctionStartPrice")}
-          </label>
-          <input
+          <Input
             type="number"
             min="0.01"
             step="0.01"
@@ -331,13 +326,11 @@ export default function AddStoreAuctionItemForm({
             onChange={(e) =>
               setAuctionStartPrice(parseFloat(e.target.value) || 0)
             }
-            placeholder="1.00"
-            className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+            label={t("auctionStartPrice")}
+            name="auctionStartPrice"
+            helperText={t("auctionStartPriceDescription")}
             required
           />
-          <p className="text-xs text-muted-foreground">
-            {t("auctionStartPriceDescription")}
-          </p>
         </div>
 
         {/* Auction Start Time */}
@@ -359,7 +352,7 @@ export default function AddStoreAuctionItemForm({
             <button
               type="button"
               onClick={() => setAuctionStartTime(new Date())}
-              className="px15 py8 bg-accent hover:bg-accent/80 text-accent-foreground rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
+              className="px10 py8 bg-accent hover:bg-accent/80 text-accent-foreground rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
             >
               {t("now")}
             </button>
@@ -386,6 +379,22 @@ export default function AddStoreAuctionItemForm({
                 />
               </div>
               <div className="f aic g5">
+                {/* // * DEV MODE ONLY: 30s */}
+                {mongoUser?.isDev && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const startTime = new Date(auctionStartTime);
+                      const endTime = new Date(
+                        startTime.getTime() + 1 * 30 * 1000
+                      );
+                      setAuctionEndTime(endTime);
+                    }}
+                    className="px10 py8 bg-accent hover:bg-accent/80 text-accent-foreground rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
+                  >
+                    30s
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => {
@@ -431,10 +440,7 @@ export default function AddStoreAuctionItemForm({
 
         {/* Minimum Bid Increment */}
         <div className="fc g5 wf mb15">
-          <label className="text-sm font-medium text-foreground">
-            {t("minBidIncrement")}
-          </label>
-          <input
+          <Input
             type="number"
             min="0.01"
             step="0.01"
@@ -442,51 +448,39 @@ export default function AddStoreAuctionItemForm({
             onChange={(e) =>
               setAuctionMinBidIncrement(parseFloat(e.target.value) || 1)
             }
-            placeholder="1.00"
-            className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+            label={t("minBidIncrement")}
+            name="auctionMinBidIncrement"
+            helperText={t("minBidIncrementDescription")}
             required
           />
-          <p className="text-xs text-muted-foreground">
-            {t("minBidIncrementDescription")}
-          </p>
         </div>
 
         {/* Buy Now Price (Optional) */}
         <div className="fc g5 wf mb15">
-          <label className="text-sm font-medium text-foreground">
-            {t("buyNowPrice")} ({t("optional")})
-          </label>
-          <input
+          <Input
             type="number"
             min="0.01"
             step="0.01"
             value={auctionBuyNowPrice}
             onChange={(e) => setAuctionBuyNowPrice(e.target.value)}
-            placeholder={t("buyNowPricePlaceholder")}
-            className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+            label={`${t("buyNowPrice")} (${t("optional")})`}
+            name="auctionBuyNowPrice"
+            helperText={t("buyNowPriceDescription")}
           />
-          <p className="text-xs text-muted-foreground">
-            {t("buyNowPriceDescription")}
-          </p>
         </div>
 
         {/* Reserve Price (Optional) */}
         <div className="fc g5 wf mb15">
-          <label className="text-sm font-medium text-foreground">
-            {t("reservePrice")} ({t("optional")})
-          </label>
-          <input
+          <Input
             type="number"
             min="0.01"
             step="0.01"
             value={auctionReservePrice}
             onChange={(e) => setAuctionReservePrice(e.target.value)}
-            placeholder={t("reservePricePlaceholder")}
-            className="w-full p10 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+            label={`${t("reservePrice")} (${t("optional")})`}
+            name="auctionReservePrice"
+            helperText={t("reservePriceDescription")}
           />
-          <p className="text-xs text-muted-foreground">
-            {t("reservePriceDescription")}
-          </p>
         </div>
 
         <AddFilesPreview {...{ files, filesSet }} />

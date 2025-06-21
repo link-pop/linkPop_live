@@ -37,10 +37,10 @@ export default function Toast() {
   };
 
   return (
-    <Toaster.Provider duration={toast.duration || 5000} swipeDirection="right">
+    <Toaster.Provider duration={toast.duration || 10000} swipeDirection="right">
       <Toaster.Root
         key={toastKey}
-        style={{ "--toast-duration": `${(toast.duration || 5000) / 1000}s` }}
+        style={{ "--toast-duration": `${(toast.duration || 10000) / 1000}s` }}
         className="ToastRoot wfc maw300 fixed t64 r10 min-[1919px]:r160 cursor-pointer bg-accent/90 hover:bg-accent"
         open={toast.isOpen}
         onOpenChange={(isOpen) => toastSet({ ...toast, isOpen })}
