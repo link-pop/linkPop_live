@@ -17,7 +17,6 @@ import PostsLoader from "../../Posts/PostsLoader";
 import { useContext } from "@/components/Context/Context";
 import VideoRecorder from "@/components/ui/shared/VideoRecorder/VideoRecorder";
 import ReplyPreview from "@/components/Reply/ReplyPreview";
-import AddTestFeedChatmessageFormButton from "./AddTestFeedChatmessageFormButton";
 import { useTranslation } from "@/components/Context/TranslationContext";
 
 // TODO !!!!! prevent empty messages from being submitted
@@ -214,11 +213,6 @@ export default function AddFeedChatmessageForm({
           {!hideExpirationPeriod && <ExpirationPeriodButton />}
           {!hideSchedule && <ScheduleButton />}
           <TipTapSettings />
-
-          {/* // ! Test posts button */}
-          {mongoUser?.isDev && (
-            <AddTestFeedChatmessageFormButton {...{ mongoUser, col }} />
-          )}
         </div>
       </form>
     </>
