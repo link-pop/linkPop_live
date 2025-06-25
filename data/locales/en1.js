@@ -2046,6 +2046,9 @@ const en = {
   provideShippingDetailsForAuction:
     "Provide shipping details for your auction purchase",
   itemSummary: "Item Summary",
+
+  // Chatrooms
+  newMessage: "New Message",
 };
 
 export default en;

@@ -8,7 +8,7 @@ const MessagesScheduledIcon = () => {
   const router = useRouter();
   return (
     <Calendar
-      className="w24 h24 cp"
+      className="w24 h24 cp hs"
       onClick={() => router.push("/my/queue?contentType=messages")}
     />
   );
