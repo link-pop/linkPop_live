@@ -18,6 +18,8 @@ export default function MessagesInfiniteScroll({
 }) {
   const scrollContainerRef = useRef(null);
   const lastScrollHeightRef = useRef(0);
+  const lastPostsLengthRef = useRef(0);
+  const scrollPositionRef = useRef({ scrollTop: 0, scrollHeight: 0 });
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
   const { replyTo } = useChat();
 
@@ -90,30 +92,57 @@ export default function MessagesInfiniteScroll({
     }
   }, [isLoading, allPosts, hasScrolledToBottom]);
 
+  // Save scroll position before fetching
+  useEffect(() => {
+    if (isFetchingNextPage && scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      scrollPositionRef.current = {
+        scrollTop: container.scrollTop,
+        scrollHeight: container.scrollHeight,
+      };
+    }
+  }, [isFetchingNextPage]);
+
   // Preserve scroll position when loading more messages
   useEffect(() => {
     if (
       scrollContainerRef.current &&
-      !isFetchingNextPage &&
-      allPosts.length > 0
+      allPosts.length > 0 &&
+      !isFetchingNextPage
     ) {
-      requestAnimationFrame(() => {
-        const container = scrollContainerRef.current;
-        if (!container) return;
+      const container = scrollContainerRef.current;
+      if (!container) return;
 
-        const newScrollHeight = container.scrollHeight;
-        const oldScrollHeight = lastScrollHeightRef.current;
+      const currentPostsLength = allPosts.length;
+      const previousPostsLength = lastPostsLengthRef.current;
 
-        if (newScrollHeight > oldScrollHeight) {
-          // Calculate how many pixels were added
-          const addedHeight = newScrollHeight - oldScrollHeight;
+      // Only adjust scroll if new posts were added (length increased) and we were fetching
+      if (currentPostsLength > previousPostsLength && previousPostsLength > 0) {
+        // Use setTimeout instead of requestAnimationFrame for better reliability
+        setTimeout(() => {
+          const newScrollHeight = container.scrollHeight;
+          const { scrollTop: oldScrollTop, scrollHeight: oldScrollHeight } =
+            scrollPositionRef.current;
 
-          // Adjust scroll position to keep viewport at the same place
-          container.scrollTop = container.scrollTop + addedHeight;
-        }
+          if (newScrollHeight > oldScrollHeight && oldScrollHeight > 0) {
+            // Check if user was not at the bottom when fetch started
+            const wasNearBottom =
+              oldScrollTop + container.clientHeight >= oldScrollHeight - 100;
 
-        lastScrollHeightRef.current = newScrollHeight;
-      });
+            if (!wasNearBottom) {
+              // Calculate how much content was added
+              const addedHeight = newScrollHeight - oldScrollHeight;
+
+              // Maintain the same relative position by adding the new content height
+              container.scrollTop = oldScrollTop + addedHeight;
+            }
+          }
+
+          lastScrollHeightRef.current = newScrollHeight;
+        }, 50); // Small delay to ensure DOM is fully updated
+      }
+
+      lastPostsLengthRef.current = currentPostsLength;
     }
   }, [allPosts, isFetchingNextPage]);
 

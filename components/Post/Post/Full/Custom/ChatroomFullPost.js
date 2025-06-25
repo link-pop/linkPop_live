@@ -2,7 +2,7 @@
 
 import MessagesInfiniteScroll from "@/components/Post/Posts/MessagesInfiniteScroll";
 import { useChat } from "@/components/Context/ChatContext";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import ChatroomFullPostHeader from "./ChatroomFullPostHeader";
 import AddFeedChatmessageForm from "@/components/Post/AddPostCustom/MoreThanFriend/AddFeedChatmessageForm";
@@ -26,6 +26,7 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
   const { toastSet } = useContext();
   const feedFormRef = useRef();
   const { t } = useTranslation();
+  const [isSubmittingMessage, setIsSubmittingMessage] = useState(false);
 
   // TODO !!!!! REMOVE not needed: added h-[calc(100dvh-75px)] to ChatroomFullPostAllMsg
   // useNormalizeChatroomFullPostAllMsg();
@@ -42,6 +43,8 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
       feedFormRef?.current?.reset();
       // Clear reply state
       onCancelReply();
+      // Clear loading state
+      setIsSubmittingMessage(false);
     });
 
     socket.on(SOCKET_EVENTS.CHAT.MESSAGE.ERROR, (error) => {
@@ -51,6 +54,8 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
         title: t("errorSendingMessage"),
         text: error,
       });
+      // Clear loading state on error
+      setIsSubmittingMessage(false);
     });
 
     return () => {
@@ -70,9 +75,13 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
     if (
       (files.length === 0 && !tipTapInputContent.trim()) ||
       !connected ||
-      !socket
+      !socket ||
+      isSubmittingMessage
     )
       return;
+
+    // Set loading state
+    setIsSubmittingMessage(true);
 
     try {
       // Handle files
@@ -138,19 +147,26 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
         replyToMsgId: replyTo?._id || null,
         price: price > 0 ? price : null,
       });
+
+      // Fallback timeout in case socket event doesn't fire
+      setTimeout(() => {
+        setIsSubmittingMessage(false);
+      }, 10000); // 10 second timeout
     } catch (error) {
-      console.error("Error handling files:", error);
+      console.error("❌ Error handling files:", error);
       toastSet({
         isOpen: true,
         title: t("errorUploadingFiles"),
         text: t("failedToUploadFiles"),
       });
+      // Clear loading state on error
+      setIsSubmittingMessage(false);
     }
   };
 
   return (
     <div
-      className={`ChatroomFullPostAllMsg border-l border-r !oh !oyh !fc !fwn h-[calc(100dvh-75px)] !w-[600px] !maw-[600px] max-[768px]:!w-[100vw] max-[768px]:!mw-[100vw] RightChatroomPart`}
+      className={`fixed maw600 wf h-[calc(100dvh-60px)] bb flex flex-col ChatroomFullPostAllMsg !oh !oyh max-[768px]:!w-[100vw] max-[768px]:!mw-[100vw] RightChatroomPart`}
     >
       {/* Handle notifications for this chat */}
       <ChatNotificationHandler chatId={chatId} mongoUser={mongoUser} />
@@ -158,7 +174,7 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
       {/* // * ABSOLUTE */}
       <ChatroomFullPostHeader {...{ chat, mongoUser }} />
 
-      <div className="oh">
+      <div className="oh flex-1">
         {/* // * MESSAGES  */}
         <MessagesInfiniteScroll
           col={{
@@ -173,7 +189,7 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
         />
       </div>
 
-      <div className="mta h-auto max-h-[50dvh] oya shrink-0 border-t">
+      <div className="h-auto max-h-[50dvh] oya shrink-0 border-t">
         <AddFeedChatmessageForm
           hideExpirationPeriod={true}
           placeholder={t("writeMessage")}
@@ -181,10 +197,11 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
           col={{ name: "chatmessages" }}
           mongoUser={mongoUser}
           customOnSubmit={handleMessageSubmit}
-          submitBtnClassName={`poa !b15 !r15 mla`}
+          submitBtnClassName={`!poa !t0 !l0 !b0 !r0 mla`}
           submitBtnText={t("send")}
           replyTo={replyTo}
           onCancelReply={onCancelReply}
+          customIsLoading={isSubmittingMessage}
         />
       </div>
     </div>

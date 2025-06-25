@@ -158,12 +158,15 @@ export default function ChatmessagePost(props) {
                   </span>
 
                   {/* Reply button */}
-                  {onReply && post?.hasPurchased && (
-                    <ReplyButton
-                      className="!fz12"
-                      onClick={() => onReply(post)}
-                    />
-                  )}
+                  {onReply &&
+                    !isChatRoom &&
+                    !isOwnMessage &&
+                    (post?.price <= 0 || post?.hasPurchased) && (
+                      <ReplyButton
+                        className="!fz12"
+                        onClick={() => onReply(post)}
+                      />
+                    )}
 
                   {isOwnMessage && post?.price > 0 && (
                     <span className="brand">${post?.price}</span>

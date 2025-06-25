@@ -29,6 +29,8 @@ const PageTitle = () => {
 
   const pathname = usePathname();
   if (pathname?.startsWith(ONBOARDING_ROUTE)) return null;
+  // Don't show PageTitle on chatrooms routes - MessagesTitle handles those
+  if (pathname?.includes("/chatrooms")) return null;
   const searchParams = useSearchParams();
   const { t } = useTranslation();
   console.log("Pathname:", pathname);
@@ -50,10 +52,6 @@ const PageTitle = () => {
     title = t("feed");
   } else if (pathname.includes("/feeds/")) {
     title = t("post");
-  } else if (pathname.includes(CHATS_ROUTE)) {
-    if (!searchParams.get("chatId")) {
-      title = t("messages");
-    }
   } else if (pathname.includes("/settings")) {
     // * SETTINGS
     // Get the path segments

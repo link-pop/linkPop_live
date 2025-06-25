@@ -36,6 +36,7 @@ export default function AddFeedChatmessageForm({
   submitBtnText,
   replyTo,
   onCancelReply,
+  customIsLoading = false,
 }) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -129,8 +130,14 @@ export default function AddFeedChatmessageForm({
       },
     });
 
+  // Use custom loading state if provided, otherwise use hook's loading state
+  const currentIsLoading = customOnSubmit ? customIsLoading : isFormLoading;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Don't submit if loading
+    if (currentIsLoading) return;
+
     if (customOnSubmit) {
       await customOnSubmit({
         files,
@@ -149,13 +156,13 @@ export default function AddFeedChatmessageForm({
     <>
       <PostsLoader
         {...{
-          isLoading: isFormLoading,
+          isLoading: currentIsLoading,
           className: "w40 h40 poa left-[46.5%] t100",
         }}
       />
 
       <form
-        className={`por f wf py15 ${isFormLoading ? "pen op5" : ""}`}
+        className={`por f wf py15 ${currentIsLoading ? "pen op5" : ""}`}
         ref={formRef}
         onSubmit={handleSubmit}
       >
@@ -190,6 +197,7 @@ export default function AddFeedChatmessageForm({
                 scheduleAt ? t("schedule") : submitBtnText || t("post")
               }
               className={submitBtnClassName}
+              isLoading={currentIsLoading}
             />
           </div>
         )}

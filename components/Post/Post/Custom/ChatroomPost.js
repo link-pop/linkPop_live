@@ -7,7 +7,7 @@ import {
 } from "@/lib/utils/constants";
 import ChatmessagePost from "./ChatmessagePost";
 import CreatedBy from "../CreatedBy";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { useChat } from "@/components/Context/ChatContext";
 import removeHtmlFromText from "@/lib/utils/removeHtmlFromText";
@@ -18,9 +18,11 @@ export default function ChatroomPost(props) {
     (user) => user._id !== mongoUser._id
   );
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const { windowWidth } = useWindowWidth();
-  const chatId = searchParams.get("chatId");
+  const chatId = pathname.startsWith("/chatrooms/")
+    ? pathname.split("/")[2]
+    : null;
   const { getUnreadCount, setActiveChatRoomId } = useChat();
 
   // Get unread count for this chat room
@@ -56,7 +58,10 @@ export default function ChatroomPost(props) {
         iconsClassName="poa r20 -t2"
         top={
           <div
-            onClick={() => router.push(`${CHATS_ROUTE}?chatId=${post._id}`)}
+            onClick={() => {
+              // Clear search query when navigating to specific chat room
+              router.push(`${CHATS_ROUTE}/${post._id}`);
+            }}
             className={`db wf md:!maw400 wf relative`}
           >
             {/* // TODO !!!!! use NotificationBadge */}

@@ -242,6 +242,7 @@ export default function AddStoreItemForm({
               onSubmit={onSubmitAddPostForm}
               buttonText={submitBtnText || t("addToStore")}
               className={submitBtnClassName}
+              isLoading={isFormLoading}
             />
           </div>
         )}

@@ -77,10 +77,11 @@ export default function PostsClientInfiniteScroll({
       return hasMore ? lastPage.pageParam + 1 : undefined;
     },
     initialPageParam: 0,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     enabled: Boolean(col),
-    staleTime: 0, // Always refetch when parameters change
+    staleTime: col.name === "chatrooms" && searchParams?.q ? 0 : 1000 * 60 * 5, // No cache for chatroom search
     refetchOnMount: true, // Always refetch when component mounts
+    cacheTime: col.name === "chatrooms" && searchParams?.q ? 0 : 1000 * 60 * 5, // Don't cache chatroom search results
   });
 
   const posts = postsFetchedData?.pages.flatMap((page) => page.posts) ?? [];

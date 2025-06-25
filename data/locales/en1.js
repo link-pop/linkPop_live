@@ -665,6 +665,7 @@ const en = {
   hiddenByReceiver: "Hidden by receiver",
   selectAnyConversationOrSendANewMessage:
     "Select any conversation or send a new message",
+  noConversationsYet: "No conversations yet",
 
   // Comments
   addComment: "Add a comment...",

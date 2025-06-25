@@ -11,8 +11,8 @@ export default function ChatroomFullPostHeader({ chat, mongoUser }) {
 
   return (
     <div
-      className={`!w-[598px] !maw-[598px] wf fixed z51 t0 border-b border-l border-r h60 p10 bg-background flex items-center ${
-        windowWidth <= MOBILE_SM ? "!miwf" : ""
+      className={`w-full fixed z-[51] top-0 border-b h-[60px] p-2.5 bg-background flex items-center ${
+        windowWidth <= MOBILE_SM ? "min-w-full" : ""
       }`}
     >
       {windowWidth <= MOBILE_SM && <BackButton className="mr-2" />}

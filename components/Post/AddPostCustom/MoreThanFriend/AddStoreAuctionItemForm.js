@@ -503,6 +503,7 @@ export default function AddStoreAuctionItemForm({
               onSubmit={onSubmitAddPostForm}
               buttonText={submitBtnText || t("createAuction")}
               className={submitBtnClassName}
+              isLoading={isFormLoading}
             />
           </div>
         )}
