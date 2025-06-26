@@ -3,12 +3,19 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ChatroomsRedirect from "./ChatroomsRedirect";
+import useChatRoomsUpdates from "@/hooks/useChatRoomsUpdates";
 
 // * Client component to handle responsive layout and redirects
 export default function ChatroomsLayoutClient({ children }) {
   const pathname = usePathname();
   const isSpecificChat = pathname !== "/chatrooms";
   const [isMobile, setIsMobile] = useState(false);
+
+  // Get chatId if we're in a specific chat room
+  const chatId = isSpecificChat ? pathname.split("/")[2] : null;
+
+  // Enable real-time updates for chatrooms
+  useChatRoomsUpdates(chatId);
 
   useEffect(() => {
     const checkIsMobile = () => {

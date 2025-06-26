@@ -32,23 +32,6 @@ export default function useChatRoomsUpdates(chatId = null) {
   useEffect(() => {
     if (!socket) return;
 
-    const invalidateQueries = () => {
-      // Always invalidate the chat rooms list
-      queryClient.invalidateQueries({
-        queryKey: ["posts", "chatrooms"],
-        type: "all", // Invalidate all query instances
-        refetchType: "all", // Refetch all pages for infinite queries
-      });
-
-      // Always invalidate messages for this chat room
-      if (chatId) {
-        queryClient.invalidateQueries({
-          queryKey: ["chat", "messages", chatId],
-          type: "all",
-        });
-      }
-    };
-
     // Function to handle any chat message event
     const handleChatEvent = (event) => {
       // Extract chatId from the event name if present
@@ -63,12 +46,23 @@ export default function useChatRoomsUpdates(chatId = null) {
       ) {
         console.log("Chat event received:", event);
 
-        // If we're in a specific chat room, only update for events from this room
-        if (chatId && eventChatId !== chatId) {
-          return;
-        }
+        // Always invalidate the chat rooms list for ANY message event
+        // This ensures the last message preview is updated in real-time
+        queryClient.invalidateQueries({
+          queryKey: ["posts", "chatrooms"],
+          type: "all", // Invalidate all query instances
+          refetchType: "all", // Refetch all pages for infinite queries
+        });
 
-        invalidateQueries();
+        // Only invalidate messages for the current chat room if:
+        // 1. We have a chatId (we're viewing a specific chat room)
+        // 2. The event is for this specific chat room OR we want to update all chat messages
+        if (chatId && (eventChatId === chatId || !eventChatId)) {
+          queryClient.invalidateQueries({
+            queryKey: ["chat", "messages", chatId],
+            type: "all",
+          });
+        }
       }
     };
 
