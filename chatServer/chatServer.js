@@ -31,6 +31,7 @@ const createMessageNotifications = require("./handlers/createMessageNotification
 const {
   startPendingNotificationsProcessor,
 } = require("./handlers/processPendingNotifications");
+const markMessagesAsRead = require("./handlers/markMessagesAsRead");
 const SOCKET_EVENTS = require("./constants/socketEvents");
 
 const PORT = process.env.PORT || 3001;
@@ -242,11 +243,14 @@ function startServer() {
       }
     );
 
-    // Handle chat room view (reset unread count)
+    // Handle chat room view (reset unread count and mark messages as read)
     socket.on(SOCKET_EVENTS.CHAT.ROOM.VIEW, async ({ chatId, userId }) => {
       try {
         // Reset unread count for this user in this chat room
         await resetChatRoomUnreadCount(chatId, userId);
+
+        // Mark messages as read for this user in this chat room
+        await markMessagesAsRead(chatId, userId, io);
 
         // Send updated unread counts to the user
         await sendChatRoomUnreadCounts(userId, io);

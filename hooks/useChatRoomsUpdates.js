@@ -58,7 +58,8 @@ export default function useChatRoomsUpdates(chatId = null) {
       if (
         event.startsWith("chat:message:received:") ||
         event.startsWith("chat:message:deleted:") ||
-        event.startsWith("chat:message:hidden:")
+        event.startsWith("chat:message:hidden:") ||
+        event.startsWith("chat:message:read_status_updated:")
       ) {
         console.log("Chat event received:", event);
 

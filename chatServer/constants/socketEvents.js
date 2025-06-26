@@ -8,6 +8,8 @@ const SOCKET_EVENTS = {
       DELETED: (chatId) => `chat:message:deleted:${chatId}`,
       HIDE: "chat:message:hide",
       HIDDEN: (chatId) => `chat:message:hidden:${chatId}`,
+      READ_STATUS_UPDATED: (chatId) =>
+        `chat:message:read_status_updated:${chatId}`,
       ERROR: "chat:message:error",
     },
     USER: {

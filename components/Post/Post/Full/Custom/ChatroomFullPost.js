@@ -34,11 +34,20 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
   useEffect(() => {
     if (!socket || !userId) return;
 
-    socket.on(SOCKET_EVENTS.CHAT.MESSAGE.RECEIVED(chatId), () => {
+    socket.on(SOCKET_EVENTS.CHAT.MESSAGE.RECEIVED(chatId), (messageData) => {
       // Invalidate and refetch messages query
       queryClient.invalidateQueries({
         queryKey: ["chat", "messages", chatId],
       });
+
+      // If the message was not sent by the current user, mark it as read since they're viewing the chat
+      if (messageData?.createdBy !== userId) {
+        socket.emit(SOCKET_EVENTS.CHAT.ROOM.VIEW, {
+          chatId,
+          userId,
+        });
+      }
+
       // Reset form
       feedFormRef?.current?.reset();
       // Clear reply state

@@ -119,13 +119,36 @@ export default function useMessagesInfiniteScroll({
       refetch(); // Refetch to update the messages list
     };
 
-    socket.on(SOCKET_EVENTS.CHAT.MESSAGE.DELETED(chatRoomId), handleMessageDelete);
+    // Listen for read status updates
+    const handleReadStatusUpdate = ({
+      chatRoomId: eventChatRoomId,
+      updatedMessageIds,
+      newStatus,
+    }) => {
+      console.log("Message read status updated:", {
+        eventChatRoomId,
+        updatedMessageIds,
+        newStatus,
+      });
+      refetch(); // Refetch to update the messages list with new read status
+    };
+
+    socket.on(
+      SOCKET_EVENTS.CHAT.MESSAGE.DELETED(chatRoomId),
+      handleMessageDelete
+    );
 
     socket.on(SOCKET_EVENTS.CHAT.MESSAGE.HIDDEN(chatRoomId), handleMessageHide);
+
+    socket.on(
+      SOCKET_EVENTS.CHAT.MESSAGE.READ_STATUS_UPDATED(chatRoomId),
+      handleReadStatusUpdate
+    );
 
     return () => {
       socket.off(SOCKET_EVENTS.CHAT.MESSAGE.DELETED(chatRoomId));
       socket.off(SOCKET_EVENTS.CHAT.MESSAGE.HIDDEN(chatRoomId));
+      socket.off(SOCKET_EVENTS.CHAT.MESSAGE.READ_STATUS_UPDATED(chatRoomId));
     };
   }, [chatRoomId, refetch, socket]);
 
