@@ -28,6 +28,7 @@ const {
   resetChatRoomUnreadCount,
 } = require("./handlers/updateChatRoomUnreadCounts");
 const sendChatRoomUnreadCounts = require("./handlers/sendChatRoomUnreadCounts");
+const createMessageNotifications = require("./handlers/createMessageNotifications");
 const SOCKET_EVENTS = require("./constants/socketEvents");
 
 const PORT = process.env.PORT || 3001;
@@ -173,6 +174,7 @@ function startServer() {
 
           const messageObj = {
             _id: chatMessage._id,
+            chatRoomId: chatId,
             chatMsgText: message,
             createdBy: userId,
             chatMsgStatus: chatMessage.chatMsgStatus,
@@ -189,53 +191,9 @@ function startServer() {
           // Broadcast message to all users in the chat
           io.emit(SOCKET_EVENTS.CHAT.MESSAGE.RECEIVED(chatId), messageObj);
 
-          // Update unread counts for this chat room
+          // Create notifications and update unread counts for non-scheduled messages
           if (!scheduleAt) {
-            await updateChatRoomUnreadCounts(chatId, userId);
-
-            // Send updated unread counts to all users in the chat
-            for (const chatRoomUser of chatRoom.chatRoomUsers) {
-              if (chatRoomUser.toString() !== userId.toString()) {
-                await sendChatRoomUnreadCounts(chatRoomUser, io);
-              }
-            }
-          }
-
-          // ! notifications 1
-          // Create notification for all users in the chat except sender
-          // Get all users in the chat room
-          const chatRoomUsers = chatRoom.chatRoomUsers || [];
-
-          // Create notifications for all users except the sender
-          for (const chatRoomUser of chatRoomUsers) {
-            if (chatRoomUser.toString() !== userId.toString()) {
-              const notification = await Notification.create({
-                userId: chatRoomUser,
-                type: "message",
-                title: "New Message",
-                content:
-                  message && message.length > 0
-                    ? message.length > 50
-                      ? `${message.substring(0, 50)}...`
-                      : message
-                    : files && files.length > 0
-                    ? "Sent files"
-                    : "New message",
-                sourceId: chatMessage._id,
-                sourceModel: "chatmessages",
-                sourceUserId: userId,
-                link: `/chatrooms?chatId=${chatId}`,
-              });
-
-              // Emit notification to the user
-              io.emit(
-                SOCKET_EVENTS.NOTIFICATION.USER(chatRoomUser),
-                notification
-              );
-
-              // Send updated notification counts (total and message-specific)
-              await sendNotificationCounts(chatRoomUser, io);
-            }
+            await createMessageNotifications(messageObj, io);
           }
         } catch (error) {
           console.error("Error saving message:", error);

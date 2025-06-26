@@ -1,6 +1,7 @@
 const ChatMessage = require("../models/ChatMessageModel");
 const ChatRoom = require("../models/ChatRoomModel");
 const SOCKET_EVENTS = require("../constants/socketEvents");
+const createMessageNotifications = require("./createMessageNotifications");
 
 // * checks for scheduled messages that have now passed to Update chat room's last message
 function startScheduledMessagesHandler(io) {
@@ -27,7 +28,7 @@ function startScheduledMessagesHandler(io) {
 
         // Notify clients about the now-active message
         // Client side will handle population of createdBy and other fields
-        io.emit(SOCKET_EVENTS.CHAT.MESSAGE.RECEIVED(message.chatRoomId), {
+        const messageObj = {
           _id: message._id,
           chatRoomId: message.chatRoomId,
           chatMsgText: message.chatMsgText,
@@ -38,7 +39,15 @@ function startScheduledMessagesHandler(io) {
           scheduleAt: null, // Already cleared above
           createdAtOriginal: message.createdAtOriginal,
           chatReplyToMsgId: message.chatReplyToMsgId,
-        });
+        };
+
+        io.emit(
+          SOCKET_EVENTS.CHAT.MESSAGE.RECEIVED(message.chatRoomId),
+          messageObj
+        );
+
+        // Create notifications for all users in the chat room except sender
+        await createMessageNotifications(messageObj, io);
       }
       console.log(`Finished processing scheduled messages at: ${new Date()}`);
     } catch (error) {
@@ -47,7 +56,7 @@ function startScheduledMessagesHandler(io) {
         error: "Error processing scheduled messages",
       });
     }
-  }, 3000); // TODO ! NOT NOW ! 1 minute
+  }, 3000); // TODO ! NOT NOW ! 1 minute - currently 3s for testing
 }
 
 module.exports = startScheduledMessagesHandler;
