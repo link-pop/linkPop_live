@@ -146,7 +146,7 @@ export default function ChatmessagePost(props) {
                 >
                   {/* // * Status */}
                   {isOwnMessage && (
-                    <span className="">
+                    <span className="bb">
                       {post.chatMsgStatus === "delivered" && "✓"}
                       {post.chatMsgStatus === "read" && "✓✓"}
                       {post.chatMsgStatus === "failed" && "⚠️"}

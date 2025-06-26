@@ -24,11 +24,13 @@ const startAuctionPurchaseMonitor = require("./handlers/monitorIfAuctionWasPurch
 const startAuctionOutbidMonitor = require("./handlers/monitorAuctionOutbid");
 const sendNotificationCounts = require("./handlers/sendNotificationCounts");
 const {
-  updateChatRoomUnreadCounts,
   resetChatRoomUnreadCount,
 } = require("./handlers/updateChatRoomUnreadCounts");
 const sendChatRoomUnreadCounts = require("./handlers/sendChatRoomUnreadCounts");
 const createMessageNotifications = require("./handlers/createMessageNotifications");
+const {
+  startPendingNotificationsProcessor,
+} = require("./handlers/processPendingNotifications");
 const SOCKET_EVENTS = require("./constants/socketEvents");
 
 const PORT = process.env.PORT || 3001;
@@ -67,6 +69,9 @@ function startServer() {
 
   // Start auction outbid notification monitor
   startAuctionOutbidMonitor(io);
+
+  // Start pending notifications processor
+  startPendingNotificationsProcessor(io);
 
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
