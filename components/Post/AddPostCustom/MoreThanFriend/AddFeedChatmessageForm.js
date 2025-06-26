@@ -139,14 +139,17 @@ export default function AddFeedChatmessageForm({
     if (currentIsLoading) return;
 
     if (customOnSubmit) {
-      await customOnSubmit({
+      const result = await customOnSubmit({
         files,
         tipTapInputContent,
         expirationPeriod,
         scheduleAt,
         price,
       });
-      resetForm();
+      // Only reset form if customOnSubmit returns success
+      if (result?.success) {
+        resetForm();
+      }
       return;
     }
     onSubmitAddPostForm(e);
@@ -189,17 +192,13 @@ export default function AddFeedChatmessageForm({
         />
 
         {!hideSubmitButton && (
-          <div className="f jcsb wf">
-            <AddFeedFormSubmitButton
-              formRef={formRef}
-              onSubmit={onSubmitAddPostForm}
-              buttonText={
-                scheduleAt ? t("schedule") : submitBtnText || t("post")
-              }
-              className={submitBtnClassName}
-              isLoading={currentIsLoading}
-            />
-          </div>
+          <AddFeedFormSubmitButton
+            formRef={formRef}
+            onSubmit={onSubmitAddPostForm}
+            buttonText={scheduleAt ? t("schedule") : submitBtnText || t("post")}
+            className={submitBtnClassName}
+            isLoading={currentIsLoading}
+          />
         )}
 
         {/* // * ICONS/SETTINGS */}

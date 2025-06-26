@@ -54,7 +54,7 @@ export default function useAddFeedFormSchedule({ scheduleAtSet, scheduleAt }) {
               value={scheduleAt}
               onValueChange={(date) => {
                 scheduleAtSet(date);
-                dialogSet({ isOpen: false });
+                // Don't close dialog immediately, let user select time
               }}
               placeholder={t("selectWhenToPublish")}
             />

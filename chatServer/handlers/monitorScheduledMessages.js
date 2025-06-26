@@ -47,8 +47,7 @@ function startScheduledMessagesHandler(io) {
         error: "Error processing scheduled messages",
       });
     }
-    // TODO !!!!! 1 min
-  }, 60000 * 99); // Check every 99 minute 
+  }, 3000); // TODO ! NOT NOW ! 1 minute
 }
 
 module.exports = startScheduledMessagesHandler;

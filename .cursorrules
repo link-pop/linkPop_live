@@ -61,6 +61,7 @@ DATA FETCHING:
 
 TASK COMMUNICATION:
 
+- if you found bad code/pattern/vulnerability/etc - write [BADCODE]
 - in the end of each task that you ended write [GOOD] if you think it was a good idea, [BETTERIDEA] if you think it was a bad idea and describe why, and [IDONTKNOW] if you dont know or not sure
 - write [SUGGESTION] if you think its a good idea to make a change, and describe why
 - write [CAUTION] if you think its a dangerous/bad idea and describe why

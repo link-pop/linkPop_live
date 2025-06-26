@@ -2049,6 +2049,26 @@ const en = {
 
   // Chatrooms
   newMessage: "New Message",
+
+  // Mass messaging translations
+  massMessage: "Mass Message",
+  recipients: "recipients",
+  searchUsers: "Search users...",
+  noUsersFound: "No users found",
+  searchToFindUsers: "Search to find users",
+  selectUsersToSendMessage: "Select users to send a message",
+  composeYourMassMessage: "Compose your mass message...",
+  sendToAllSelected: "Send to All Selected",
+  clearAll: "Clear All",
+  noUsersSelected: "No Users Selected",
+  pleaseSelectUsersFirst: "Please select users first",
+  emptyMessage: "Empty Message",
+  pleaseWriteMessageOrAddFiles: "Please write a message or add files",
+  massMessageSent: "Mass Message Sent",
+  massMessageSentSuccessfully: "Mass message sent successfully",
+  errorSendingMassMessage: "Error Sending Mass Message",
+  sentMassMessagesStatistics: "Sent Mass Messages Statistics",
+  sentFiles: "Sent files",
 };
 
 export default en;

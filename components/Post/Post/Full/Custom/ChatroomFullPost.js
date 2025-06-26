@@ -139,7 +139,7 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
       // Send message through socket
       socket.emit(SOCKET_EVENTS.CHAT.MESSAGE.SEND, {
         chatId,
-        message: tipTapInputContent.trim() || " ", // Send space if empty to satisfy server validation
+        message: tipTapInputContent.trim() || "", // Send empty string for file-only messages
         userId,
         files: processedFiles,
         expirationPeriod,
@@ -166,7 +166,7 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
 
   return (
     <div
-      className={`fixed maw600 wf h-[calc(100dvh-60px)] bb flex flex-col ChatroomFullPostAllMsg !oh !oyh max-[768px]:!w-[100vw] max-[768px]:!mw-[100vw] RightChatroomPart`}
+      className={`fixed maw600 wf h-[calc(100dvh-60px)] flex flex-col ChatroomFullPostAllMsg !oh !oyh max-[768px]:!w-[100vw] max-[768px]:!mw-[100vw] RightChatroomPart`}
     >
       {/* Handle notifications for this chat */}
       <ChatNotificationHandler chatId={chatId} mongoUser={mongoUser} />
@@ -197,7 +197,7 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
           col={{ name: "chatmessages" }}
           mongoUser={mongoUser}
           customOnSubmit={handleMessageSubmit}
-          submitBtnClassName={`!poa !t0 !l0 !b0 !r0 mla`}
+          submitBtnClassName={`!poa !b20 !-r35 !ml0 !mla !mta`}
           submitBtnText={t("send")}
           replyTo={replyTo}
           onCancelReply={onCancelReply}

@@ -214,9 +214,13 @@ function startServer() {
                 type: "message",
                 title: "New Message",
                 content:
-                  message.length > 50
-                    ? `${message.substring(0, 50)}...`
-                    : message,
+                  message && message.length > 0
+                    ? message.length > 50
+                      ? `${message.substring(0, 50)}...`
+                      : message
+                    : files && files.length > 0
+                    ? "Sent files"
+                    : "New message",
                 sourceId: chatMessage._id,
                 sourceModel: "chatmessages",
                 sourceUserId: userId,

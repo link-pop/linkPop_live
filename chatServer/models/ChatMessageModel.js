@@ -13,7 +13,8 @@ const chatMessageSchema = new mongoose.Schema(
     },
     chatMsgText: {
       type: String,
-      required: true,
+      required: false,
+      default: "",
     },
     chatMsgStatus: {
       type: String,
