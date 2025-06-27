@@ -1,15 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { useContext } from "@/components/Context/Context";
 import AddFeedChatmessageForm from "@/components/Post/AddPostCustom/MoreThanFriend/AddFeedChatmessageForm";
 import { sendMassMessage } from "@/lib/actions/sendMassMessage";
 import { Users } from "lucide-react";
-import Button from "@/components/ui/shared/Button/Button2";
+
 import uploadFilesToCloudinary from "@/components/Cloudinary/uploadFilesToCloudinary";
 import { add } from "@/lib/actions/crud";
 import { formatAttachmentData } from "@/lib/utils/files/formatFileData";
+import { CHATROOMS_STATISTICS_ROUTE } from "@/lib/utils/constants";
 
 // * Form for composing and sending mass messages
 export default function ChatroomsSendMessageForm({
@@ -19,6 +21,7 @@ export default function ChatroomsSendMessageForm({
 }) {
   const { t } = useTranslation();
   const { toastSet } = useContext();
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleMassMessageSubmit = async ({
@@ -119,6 +122,10 @@ export default function ChatroomsSendMessageForm({
           text: t("massMessageSentSuccessfully"),
         });
         onClearSelection();
+
+        // Redirect to statistics page after successful mass message sending
+        router.push(CHATROOMS_STATISTICS_ROUTE);
+
         return { success: true }; // Return success to indicate form should be reset
       } else {
         throw new Error(result.error || "Failed to send mass message");
@@ -135,40 +142,15 @@ export default function ChatroomsSendMessageForm({
     }
   };
 
-  const removeUser = (userId) => {
-    const userToRemove = selectedUsers.find((u) => u._id === userId);
-    if (userToRemove) {
-      onClearSelection();
-      // Re-add all users except the one being removed
-      selectedUsers
-        .filter((u) => u._id !== userId)
-        .forEach((user) => {
-          // This would need to be passed from parent, but for simplicity we'll clear all
-        });
-    }
-  };
-
   return (
     <div className="h-full flex flex-col">
       {/* Header with selected users */}
       <div className="border-b p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Users size={20} />
-            <span className="font-medium">
-              {t("massMessage")} ({selectedUsers.length} {t("recipients")})
-            </span>
-          </div>
-          {selectedUsers.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onClearSelection}
-              className="text-xs"
-            >
-              {t("clearAll")}
-            </Button>
-          )}
+        <div className="flex items-center gap-2">
+          <Users size={20} />
+          <span className="font-medium">
+            {t("massMessage")} ({selectedUsers.length} {t("recipients")})
+          </span>
         </div>
       </div>
 

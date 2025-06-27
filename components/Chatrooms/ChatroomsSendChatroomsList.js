@@ -7,6 +7,8 @@ import PostsLoader from "@/components/Post/Posts/PostsLoader";
 import ChatroomsSendUserItem from "./ChatroomsSendUserItem";
 import InfiniteScroll from "@/components/ui/infinite-scroll";
 import { useTranslation } from "@/components/Context/TranslationContext";
+import Button2 from "../ui/shared/Button/Button2";
+import SearchInput from "@/components/ui/shared/SearchInput/SearchInput";
 
 // * Component that shows list of users from existing chatrooms for mass messaging
 export default function ChatroomsSendChatroomsList({
@@ -112,19 +114,53 @@ export default function ChatroomsSendChatroomsList({
     onUserSelect(user, !isSelected);
   };
 
+  const handleSelectAll = () => {
+    // Select all users that are not already selected
+    users.forEach((user) => {
+      const isSelected = selectedUsers.some((u) => u._id === user._id);
+      if (!isSelected) {
+        onUserSelect(user, true);
+      }
+    });
+  };
+
+  const handleDeselectAll = () => {
+    // Deselect all users that are currently selected
+    users.forEach((user) => {
+      const isSelected = selectedUsers.some((u) => u._id === user._id);
+      if (isSelected) {
+        onUserSelect(user, false);
+      }
+    });
+  };
+
+  const allUsersSelected =
+    users.length > 0 &&
+    users.every((user) => selectedUsers.some((u) => u._id === user._id));
+
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col border border-border">
       <div className="p-3 border-b">
-        <div className="text-sm font-medium mb-2">
+        <div className="text-sm font-medium mb10 pl2">
           {t("selectUsersToSendMessage")} ({selectedUsers.length})
         </div>
-        <input
-          type="text"
+        <SearchInput
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={setSearchQuery}
+          onClear={() => setSearchQuery("")}
           placeholder={t("search")}
-          className="w-full p-2 border rounded-md text-sm"
+          className="mb-2"
         />
+        {users.length > 0 && (
+          <div className="mla wfc flex gap-2">
+            <Button2
+              variant="ghost"
+              text={allUsersSelected ? t("deselectAll") : t("selectAll")}
+              onClick={allUsersSelected ? handleDeselectAll : handleSelectAll}
+              className="text-xs h-8 px-3"
+            />
+          </div>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto">

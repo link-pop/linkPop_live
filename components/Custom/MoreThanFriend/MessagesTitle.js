@@ -5,10 +5,16 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { ArrowLeft } from "lucide-react";
 import { SITE2 } from "@/config/env";
-import { CHATS_ROUTE } from "@/lib/utils/constants";
+import {
+  CHATROOMS_SEND_ROUTE,
+  CHATROOMS_STATISTICS_ROUTE,
+  CHATS_ROUTE,
+  MAIN_ROUTE,
+} from "@/lib/utils/constants";
 import MessagesScheduledIcon from "./MessagesScheduledIcon";
 import MessagesSearchIcon from "./MessagesSearchIcon";
 import MessagesSearchInput from "./MessagesSearchInput";
+import MassMessagesSearchInput from "./MassMessagesSearchInput";
 import MessagesNewIcon from "./MessagesNewIcon";
 import MessagesSentStatisticsIcon from "./MessagesSentStatisticsIcon";
 
@@ -35,7 +41,7 @@ const MessagesTitle = () => {
     if (shouldTriggerSearch) {
       const params = new URLSearchParams(searchParams);
       params.delete("search");
-      const newUrl = `/chatrooms${
+      const newUrl = `${CHATS_ROUTE}${
         params.toString() ? `?${params.toString()}` : ""
       }`;
       router.replace(newUrl, { scroll: false });
@@ -43,19 +49,23 @@ const MessagesTitle = () => {
   }, [searchParams, router]);
 
   // Only show on chatrooms routes
-  if (!pathname?.includes("/chatrooms")) return null;
+  if (!pathname?.includes(CHATS_ROUTE)) return null;
 
   const width = "maw1000"; // Wider layout for chatrooms
 
-  // Check if we're on the mass message send page
-  const isOnSendPage = pathname === "/chatrooms/send";
+  // Check if we're on the mass message send page or statistics page
+  const isOnSendPage = pathname === CHATROOMS_SEND_ROUTE;
+  const isOnStatsPage = pathname === CHATROOMS_STATISTICS_ROUTE;
 
   const handleSearchIconClick = () => {
     // Check if we're on a specific chat room page
     const isOnSpecificChatRoom =
       pathname && pathname.match(/^\/chatrooms\/[^\/]+$/);
 
-    if (isOnSpecificChatRoom || isOnSendPage) {
+    if (isOnStatsPage) {
+      // If on statistics page, enable search mode for mass messages
+      setIsSearchMode(true);
+    } else if (isOnSpecificChatRoom || isOnSendPage) {
       // If on specific chat room or send page, redirect to main chatrooms page and trigger search mode
       router.push(`${CHATS_ROUTE}?search=true`);
     } else {
@@ -69,25 +79,36 @@ const MessagesTitle = () => {
     // Clear the search query from URL
     const params = new URLSearchParams(searchParams);
     params.delete("q");
-    const newUrl = `/chatrooms${
+
+    // Determine the correct URL based on current page
+    const baseUrl = isOnStatsPage ? CHATROOMS_STATISTICS_ROUTE : CHATS_ROUTE;
+    const newUrl = `${baseUrl}${
       params.toString() ? `?${params.toString()}` : ""
     }`;
     router.replace(newUrl, { scroll: false });
   };
 
   const handleNewMessageClick = () => {
-    router.push("/chatrooms/send");
+    router.push(CHATROOMS_SEND_ROUTE);
   };
 
   const getTitle = () => {
     if (isOnSendPage) {
       return t("newMessage").toUpperCase();
     }
+    if (isOnStatsPage) {
+      return "MASS MESSAGES STATISTICS";
+    }
     return t("messages").toUpperCase();
   };
 
   const handleBackClick = () => {
-    router.push(CHATS_ROUTE);
+    // If we're on the main chats route, go to main route, otherwise go to chats route
+    if (pathname === CHATS_ROUTE) {
+      router.push(MAIN_ROUTE);
+    } else {
+      router.push(CHATS_ROUTE);
+    }
   };
 
   return (
@@ -104,17 +125,25 @@ const MessagesTitle = () => {
             <div className="title">{getTitle()}</div>
             {!isOnSendPage && (
               <div className="mla f aic g10">
-                <MessagesScheduledIcon />
-                <div onClick={handleSearchIconClick}>
+                {!isOnStatsPage && <MessagesScheduledIcon />}
+                <div
+                  className={`bg-background ${isOnStatsPage ? "poa r15" : ""}`}
+                  onClick={handleSearchIconClick}
+                >
                   <MessagesSearchIcon />
                 </div>
-                <MessagesSentStatisticsIcon />
-                <div onClick={handleNewMessageClick}>
-                  <MessagesNewIcon />
-                </div>
+                {!isOnStatsPage && <MessagesSentStatisticsIcon />}
+                {!isOnStatsPage && (
+                  <div onClick={handleNewMessageClick}>
+                    <MessagesNewIcon />
+                  </div>
+                )}
               </div>
             )}
           </>
+        ) : // Show different search input based on current page
+        isOnStatsPage ? (
+          <MassMessagesSearchInput onCancel={handleCancelSearch} />
         ) : (
           <MessagesSearchInput onCancel={handleCancelSearch} />
         )}

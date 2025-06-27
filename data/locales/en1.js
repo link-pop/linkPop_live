@@ -2017,7 +2017,6 @@ const en = {
   completePaymentToClaim: "Complete payment to claim your auction item",
   securePaymentByStripe: "Secure payment powered by Stripe",
   viewOrders: "View Orders",
-  goBack: "Go Back",
   paymentFailed: "Payment Failed",
 
   // Auction notification translations
@@ -2059,7 +2058,6 @@ const en = {
   selectUsersToSendMessage: "Select users to send a message",
   composeYourMassMessage: "Compose your mass message...",
   sendToAllSelected: "Send to All Selected",
-  clearAll: "Clear All",
   noUsersSelected: "No Users Selected",
   pleaseSelectUsersFirst: "Please select users first",
   emptyMessage: "Empty Message",
@@ -2067,11 +2065,44 @@ const en = {
   massMessageSent: "Mass Message Sent",
   massMessageSentSuccessfully: "Mass message sent successfully",
   errorSendingMassMessage: "Error Sending Mass Message",
-  sentMassMessagesStatistics: "Sent Mass Messages Statistics",
   sentFiles: "Sent files",
+  goBack: "Go Back",
 
-  // Chatroom filters
-  unread: "Unread",
+  // Mass messages statistics table translations
+  massMessageTableNumber: "#",
+  massMessageTableDateTime: "Date & Time",
+  massMessageTableText: "Text",
+  massMessageTableFiles: "Files",
+  massMessageTablePrice: "Price",
+  massMessageTableSent: "Sent",
+  massMessageTableViewed: "Viewed",
+  massMessageTablePurchased: "Purchased",
+  massMessageTableUnsend: "Unsend",
+  massMessageUnsend: "Unsend",
+  massMessageConfirmUnsend: "Confirm Unsend",
+  massMessageUnsendConfirmation:
+    "Are you sure you want to unsend this mass message? This will delete {{count}} {{messages}} permanently.",
+  massMessageDeletedSuccess: "Successfully deleted {{count}} {{messages}}",
+  massMessageSkippedPurchased:
+    "{{count}} {{messages}} skipped (purchased by users)",
+  massMessagePartiallyDeleted: "Partially Deleted",
+  massMessageDeleted: "Messages Deleted",
+  massMessageDeleteFailed: "Failed to delete messages",
+  massMessagePartiallyCompleted: "Partially Completed",
+  massMessagePartialError: "Deleted {count} messages. Issues: {errors}",
+  messageSingular: "message",
+  messagesPlural: "messages",
+
+  // Mass messages filters
+  sent: "Sent",
+  scheduled: "Scheduled",
+  hasFiles: "Has Files",
+  hasPrice: "Has Price",
+  hasPurchases: "Has Purchases",
+
+  // Select/Deselect actions
+  selectAll: "Select All",
+  deselectAll: "Deselect All",
 };
 
 export default en;

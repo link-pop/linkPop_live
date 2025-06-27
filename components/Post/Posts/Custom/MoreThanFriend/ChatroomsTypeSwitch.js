@@ -99,6 +99,7 @@ export default function ChatroomsTypeSwitch({ mongoUser }) {
 
   return (
     <FetchedTypeSwitch
+      className="wfc mra"
       mongoUser={mongoUser}
       types={chatroomTypes}
       collection="chatrooms"

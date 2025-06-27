@@ -15,6 +15,8 @@ export default function FetchedTypeSwitch({
   queryFn = null,
   paramName = "type",
   defaultType = "all",
+  className = "",
+  horizontalScrollstyle = {},
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -81,16 +83,19 @@ export default function FetchedTypeSwitch({
   const currentValue = typeParam || defaultType;
 
   return (
-    <div className={`maw600 wf oxa f g5`}>
-      <HorizontalScroll className={`px10 pb8 g15`}>
+    <div className={`maw600 wf oxa f g5 ${className}`}>
+      <HorizontalScroll
+        className={`px10 pb8 g15`}
+        style={horizontalScrollstyle}
+      >
         {types.map((type) => (
           <div
             key={type.value}
             onClick={() => handleTypeChange(type.value)}
-            className={`wsn py5 px15 br20 cp flex-shrink-0 ${
+            className={`wsn py5 px15 br20 cp flex-shrink-0 transition-colors ${
               currentValue === type.value
                 ? "bg_brand"
-                : "bg-accent text-foreground"
+                : "bg-accent text-foreground hover:bg-accent/50"
             }`}
           >
             <span className={`${BRAND_INVERT_CLASS}`}>

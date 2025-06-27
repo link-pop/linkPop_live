@@ -10,7 +10,7 @@ CODE STYLE & STANDARDS:
 - MANDATORY: don't use emojis or signs (eg: ✓) in app UI!
 - MANDATORY: - use all MCPs if you need it (browser-tools, cursor-rules-mcp, context7, sequential-thinking, MongoDB)!
 - MANDATORY: don't use helper text near the loaders. Eg: "loading", "redirecting", etc...
-- append new translations in the bottom of translations file and only to en1.js file!
+- append new translations in the bottom of translations file and only to en1.js file! If you need to use variables in translations, make it like this: {{variable}}
 - don't hardcode values!
 - don't run: npm run dev, npm run build, npm run lint (and any forms of it)
 - say "🟢🟢🟢🟢🟢 LET'S START! 🟢🟢🟢🟢🟢" in the start on each message + add number (use emoji numbers) of the reply in this chat + LLM model you are using now (say the truth!) + Fast requests mode OR Slow requests mode
