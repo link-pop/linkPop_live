@@ -171,7 +171,7 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
 
   return (
     <div
-      className={`RightChatroomPart fixed maw600 wf h-[calc(100dvh-60px)] flex flex-col ChatroomFullPostAllMsg !oh !oyh max-[768px]:!w-[100vw] max-[768px]:!mw-[100vw]`}
+      className={`RightChatroomPart fixed w-[100vw] max-w-[1000px] min-[1301px]:!max-w-[600px] bb wf h-[calc(100dvh-60px)] flex flex-col ChatroomFullPostAllMsg !oh !oyh`}
     >
       {/* Handle notifications for this chat */}
       <ChatNotificationHandler chatId={chatId} mongoUser={mongoUser} />

@@ -9,6 +9,7 @@ import {
   CHATROOMS_STATISTICS_ROUTE,
   CHATS_ROUTE,
 } from "@/lib/utils/constants";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 // * Client component to handle responsive layout and redirects
 export default function ChatroomsLayoutClient({ children }) {
@@ -17,24 +18,13 @@ export default function ChatroomsLayoutClient({ children }) {
     pathname !== CHATS_ROUTE &&
     pathname !== CHATROOMS_SEND_ROUTE &&
     pathname !== CHATROOMS_STATISTICS_ROUTE;
-  const [isMobile, setIsMobile] = useState(false);
 
   // Get chatId if we're in a specific chat room
   const chatId = isSpecificChat ? pathname.split("/")[2] : null;
 
   // Enable real-time updates for chatrooms
   useChatRoomsUpdates(chatId);
-
-  useEffect(() => {
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    checkIsMobile();
-    window.addEventListener("resize", checkIsMobile);
-
-    return () => window.removeEventListener("resize", checkIsMobile);
-  }, []);
+  const { isMobile } = useWindowWidth();
 
   // Apply mobile hiding logic to the parent layout
   // Only hide LeftChatroomPart on mobile when viewing a specific chat room

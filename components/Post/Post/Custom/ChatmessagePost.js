@@ -51,11 +51,11 @@ export default function ChatmessagePost(props) {
       useCard={false}
       showAutoGenMongoFields={false}
       showCreatedBy={false}
-      className={`min-[769px]:maw600 wf fui ${
+      className={`maw500 wf fui ${
         isChatRoom
           ? "!m0 !p0"
           : isOwnMessage
-          ? "flex justify-end"
+          ? "mla flex justify-end"
           : "flex justify-start"
       }`}
       iconsClassName="poa r20 -t2"
