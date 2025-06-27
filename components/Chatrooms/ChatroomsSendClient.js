@@ -23,9 +23,9 @@ export default function ChatroomsSendClient({ mongoUser, isAdmin }) {
   };
 
   return (
-    <>
+    <div className="f">
       {/* Left side - Users search and selection */}
-      <div className="w-[400px] max-w-[400px] flex-shrink-0 border-r LeftChatroomPart">
+      <div className="w-[400px] max-w-[400px] max-[800px]:!miw800 flex-shrink-0 border-r LeftChatroomPart">
         <ChatroomsSendChatroomsList
           mongoUser={mongoUser}
           isAdmin={isAdmin}
@@ -36,13 +36,13 @@ export default function ChatroomsSendClient({ mongoUser, isAdmin }) {
       </div>
 
       {/* Right side - Message composition */}
-      <div className="flex-1 flex flex-col min-h-0">
+      <div className="RightChatroomPart w-[600px] max-w-[600px] miw400 max-[800px]:!miw800 flex-1 flex flex-col min-h-0">
         <ChatroomsSendMessageForm
           mongoUser={mongoUser}
           selectedUsers={selectedUsers}
           onClearSelection={handleClearSelection}
         />
       </div>
-    </>
+    </div>
   );
 }

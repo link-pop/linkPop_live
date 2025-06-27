@@ -16,6 +16,7 @@ export default function ChatroomMessages({ chatroom, mongoUser, isAdmin }) {
   }
 
   return (
+    // Right side - Exact chatroom messages
     <div className="flex-1 flex flex-col min-h-0">
       <ChatroomFullPost
         post={chatroom}

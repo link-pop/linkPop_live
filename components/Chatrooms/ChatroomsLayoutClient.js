@@ -4,11 +4,19 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import ChatroomsRedirect from "./ChatroomsRedirect";
 import useChatRoomsUpdates from "@/hooks/useChatRoomsUpdates";
+import {
+  CHATROOMS_SEND_ROUTE,
+  CHATROOMS_STATISTICS_ROUTE,
+  CHATS_ROUTE,
+} from "@/lib/utils/constants";
 
 // * Client component to handle responsive layout and redirects
 export default function ChatroomsLayoutClient({ children }) {
   const pathname = usePathname();
-  const isSpecificChat = pathname !== "/chatrooms";
+  const isSpecificChat =
+    pathname !== CHATS_ROUTE &&
+    pathname !== CHATROOMS_SEND_ROUTE &&
+    pathname !== CHATROOMS_STATISTICS_ROUTE;
   const [isMobile, setIsMobile] = useState(false);
 
   // Get chatId if we're in a specific chat room
@@ -29,6 +37,8 @@ export default function ChatroomsLayoutClient({ children }) {
   }, []);
 
   // Apply mobile hiding logic to the parent layout
+  // Only hide LeftChatroomPart on mobile when viewing a specific chat room
+  // Always show it on send page and statistics page
   useEffect(() => {
     const leftChatroomPart = document.querySelector(".LeftChatroomPart");
     if (leftChatroomPart) {

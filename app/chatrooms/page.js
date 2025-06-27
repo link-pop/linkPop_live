@@ -8,7 +8,7 @@ export default async function ChatroomsPage({ searchParams }) {
   return (
     <div className="flex h-full w-full">
       {/* Left side - Chatrooms list with search support */}
-      <div className="w-[400px] max-w-[400px] flex-shrink-0 border-r LeftChatroomPart">
+      <div className="LeftChatroomPart w-[400px] max-w-[400px] flex-shrink-0 border-r">
         <Suspense fallback={<PostsLoader isLoading={true} />}>
           <ChatroomsListServer searchParams={searchParams} />
         </Suspense>
