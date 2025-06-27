@@ -14,7 +14,6 @@ import { formatAttachmentData } from "@/lib/utils/files/formatFileData";
 import SOCKET_EVENTS from "@/chatServer/constants/socketEvents";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import ChatNotificationHandler from "@/components/Chat/ChatNotificationHandler";
-import useNormalizeChatroomFullPostAllMsg from "./hooks/useNormalizeChatroomFullPostAllMsg";
 
 // * shows chatroom & its messages
 export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
@@ -27,9 +26,6 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
   const feedFormRef = useRef();
   const { t } = useTranslation();
   const [isSubmittingMessage, setIsSubmittingMessage] = useState(false);
-
-  // TODO !!!!! REMOVE not needed: added h-[calc(100dvh-75px)] to ChatroomFullPostAllMsg
-  // useNormalizeChatroomFullPostAllMsg();
 
   useEffect(() => {
     if (!socket || !userId) return;

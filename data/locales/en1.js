@@ -2069,6 +2069,9 @@ const en = {
   errorSendingMassMessage: "Error Sending Mass Message",
   sentMassMessagesStatistics: "Sent Mass Messages Statistics",
   sentFiles: "Sent files",
+
+  // Chatroom filters
+  unread: "Unread",
 };
 
 export default en;

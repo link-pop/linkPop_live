@@ -12,6 +12,65 @@ export const postsColSpecialHandling = async (
     data = {
       chatRoomUsers: mongoUser._id,
     };
+
+    // Handle chatroom type filtering (all/unread)
+    if (searchParams.chatroomType === "unread") {
+      // Get all chatrooms for this user
+      const getAllChatroomsAndFilter = async () => {
+        try {
+          const allChatrooms = await getAll({
+            col: "chatrooms",
+            data: {
+              chatRoomUsers: mongoUser._id,
+            },
+          });
+
+          // Filter chatrooms that have unread messages for this user
+          const chatroomsWithUnread = allChatrooms.filter((chatroom) => {
+            // Handle both Map (from MongoDB) and Object (from JSON serialization)
+            let userUnreadCount = 0;
+
+            if (chatroom.unreadCounts) {
+              if (typeof chatroom.unreadCounts.get === "function") {
+                // It's a Map instance
+                userUnreadCount =
+                  chatroom.unreadCounts.get(mongoUser._id.toString()) || 0;
+              } else if (typeof chatroom.unreadCounts === "object") {
+                // It's a plain object (serialized Map)
+                userUnreadCount =
+                  chatroom.unreadCounts[mongoUser._id.toString()] || 0;
+              }
+            }
+
+            return userUnreadCount > 0;
+          });
+
+          // Extract the IDs of chatrooms with unread messages
+          const unreadChatroomIds = chatroomsWithUnread.map(
+            (chatroom) => chatroom._id
+          );
+
+          if (unreadChatroomIds.length > 0) {
+            // Add filter to only show chatrooms with unread messages
+            data = {
+              ...data,
+              _id: { $in: unreadChatroomIds },
+            };
+          } else {
+            // If no unread chatrooms, show no chatrooms
+            data = {
+              ...data,
+              _id: "no-chatrooms", // This ensures no chatrooms will match
+            };
+          }
+        } catch (error) {
+          console.error("❌ Error fetching unread chatrooms:", error);
+        }
+      };
+
+      // Execute the function
+      await getAllChatroomsAndFilter();
+    }
   }
 
   // * GET ALL NOTIFICATIONS BUT MESSAGES
