@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import Carousel from "@/components/ui/shared/Carousel/Carousel";
 import StripeButton from "@/components/Stripe/StripeButton";
 import PostIcons from "./Icons/PostIcons";
-import { slugify } from "@/lib/utils/slugify";
 import Image from "next/image";
 import PostOtherIcons from "./Icons/PostOtherIcons";
 import ExpiresAt from "./ExpiresAt";
@@ -76,25 +75,14 @@ export default function Post({
     // ! for analytics 1/3: set fullPostId in localStorage
     localStorage.setItem("fullPostId", _id);
 
-    // Use slug-based routing only for products and articles
-    if (col.name === "products" || col.name === "articles") {
-      const titleSlug = slugify(title);
-      // ???
-      window.open(`/${col.name}/${titleSlug}`, "_blank");
-    } else {
-      // Use ID-based routing for other collections
-      router.push(`/${col.name}/${_id}`);
-    }
+    // Use ID-based routing for all collections
+    router.push(`/${col.name}/${_id}`);
   }
 
   const activeClass = active === false ? "opacity-90" : "";
-  const shadowClass =
-    col.name === "products" || col.name === "articles"
-      ? "shadow-lg hover:shadow-xl hover:shadow-blue-200"
-      : "";
 
   const commonProps = {
-    className: `Post !br0 wbba wf por p10 cp ${shadowClass} ${activeClass} ${className}`,
+    className: `Post !br0 wbba wf por p10 cp ${activeClass} ${className}`,
     onClick: goToFullPost,
     style: {
       // * background: post?.["bg color"] || "#ffffff",

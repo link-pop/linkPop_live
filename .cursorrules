@@ -12,13 +12,13 @@ CODE STYLE & STANDARDS:
 - MANDATORY: don't use helper text near the loaders. Eg: "loading", "redirecting", etc...
 - append new translations in the bottom of translations file and only to en1.js file! If you need to use variables in translations, make it like this: {{variable}}
 - MANDATORY: for window width detection: use tailwind or if can not use tailwind - use useWindowWidth.js
-- MANDATORY: use constants.js file!
+- MANDATORY: use constants.js file, if needed!
+- MANDATORY: for DB ops use crud.js!
 - don't hardcode values!
 - don't run: npm run dev, npm run build, npm run lint (and any forms of it)
 - say "🟢🟢🟢🟢🟢 LET'S START! 🟢🟢🟢🟢🟢" in the start on each message + add number (use emoji numbers) of the reply in this chat + LLM model you are using now (say the truth!) + Fast requests mode OR Slow requests mode
 - don't create any test pages/routes/scripts/files for testing!
 - don't create route.js files (ONLY if it's 100% necessary!)
-- If you need to get/add/update/delete some data from DB use \lib\actions\crud.js file!
 - use theme compatible classNames like bg-background, bg-accent, text-foreground, etc, if needed
 - don't ever delete className that start with capital letter, eg: "LeftNav"
 

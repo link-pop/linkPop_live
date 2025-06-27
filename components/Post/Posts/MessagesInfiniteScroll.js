@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import InfiniteScroll from "@/components/ui/infinite-scroll";
 import PostsDepOnMongoCollection from "./PostsDepOnMongoCollection";
+import MessagesWithDateSeparators from "./MessagesWithDateSeparators";
 import { getAllPostsOwner } from "@/lib/actions/getAllPostsOwner";
 import PostsLoader from "./PostsLoader";
 import useMessagesInfiniteScroll from "@/hooks/useMessagesInfiniteScroll";
@@ -177,7 +178,7 @@ export default function MessagesInfiniteScroll({
             <div className="text-center fz14">Found: {totalCount}</div>
           )}
 
-          <PostsDepOnMongoCollection
+          <MessagesWithDateSeparators
             posts={allPosts}
             col={col}
             mongoUser={mongoUser}
