@@ -1034,7 +1034,7 @@ const es = {
   selectNumberOfLinks: "Selecciona número de enlaces",
   defaultLinksIncluded: "Predeterminado: 50 enlaces incluidos",
   baseLinksExtraLinksTotal:
-    "{baseLinks} enlaces base + {extraLinks} enlaces extra = {totalLinks} enlaces totales ($1 por enlace extra)",
+    "{baseLinks} enlaces base + {extraLinks} enlaces extra = {totalLinks} enlaces totales",
   noTrialWithExtraLinks:
     "Ten en cuenta que las suscripciones con enlaces extra no califican para períodos de prueba gratuitos.",
 

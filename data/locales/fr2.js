@@ -1138,7 +1138,7 @@ const fr = {
   selectNumberOfLinks: "Sélectionnez le nombre de liens",
   defaultLinksIncluded: "Par défaut : 50 liens inclus",
   baseLinksExtraLinksTotal:
-    "{baseLinks} liens de base + {extraLinks} liens supplémentaires = {totalLinks} liens au total (1$ par lien supplémentaire)",
+    "{baseLinks} liens de base + {extraLinks} liens supplémentaires = {totalLinks} liens au total",
   noTrialWithExtraLinks:
     "Veuillez noter que les abonnements avec des liens supplémentaires ne sont pas éligibles aux périodes d'essai gratuites.",
 

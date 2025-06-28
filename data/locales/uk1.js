@@ -1133,7 +1133,7 @@ const uk = {
   selectNumberOfLinks: "Виберіть кількість посилань",
   defaultLinksIncluded: "За замовчуванням: включено 50 посилань",
   baseLinksExtraLinksTotal:
-    "{baseLinks} базових посилань + {extraLinks} додаткових посилань = {totalLinks} всього посилань ($1 за додаткове посилання)",
+    "{baseLinks} базових посилань + {extraLinks} додаткових посилань = {totalLinks} всього посилань",
   noTrialWithExtraLinks:
     "Зверніть увагу, що підписки з додатковими посиланнями не передбачають безкоштовного пробного періоду.",
 

@@ -1134,9 +1134,9 @@ const en = {
   totalLinks: "Total Links",
   howManyLinksDoYouNeed: "How many links do you need?",
   selectNumberOfLinks: "Select number of links",
-  defaultLinksIncluded: "Default: 50 links included",
+  defaultLinksIncluded: "Default: 25 links included",
   baseLinksExtraLinksTotal:
-    "{baseLinks} base links + {extraLinks} extra links = {totalLinks} total links ($1 per extra link)",
+    "{baseLinks} base links + {extraLinks} extra links = {totalLinks} total links",
   noTrialWithExtraLinks:
     "Please note that subscriptions with extra links don't qualify for free trial periods.",
 
@@ -1175,16 +1175,13 @@ const en = {
   noReferralCodeYet: "You don't have a referral code yet",
 
   // ExtraLinks select options
-  linksOption50: "50 links - $39.99/mo",
-  linksOption100: "100 links - $89.99/mo",
-  linksOption150: "150 links - $139.99/mo",
-  linksOption200: "200 links - $189.99/mo",
-  linksOption250: "250 links - $239.99/mo",
-  linksOption300: "300 links - $289.99/mo",
-  linksOption350: "350 links - $339.99/mo",
-  linksOption400: "400 links - $389.99/mo",
-  linksOption450: "450 links - $439.99/mo",
-  linksOption500: "500 links - $489.99/mo",
+  linksOption25: "25 links - $7.99/mo",
+  linksOption50: "50 links - $14.99/mo",
+  linksOption100: "100 links - $29.99/mo",
+  linksOption150: "150 links - $39.99/mo",
+  linksOption200: "200 links - $49.99/mo",
+  linksOption250: "250 links - $54.99/mo",
+  linksOption500: "500 links - $99.99/mo",
 
   // Analytics export
   export: "CSV",

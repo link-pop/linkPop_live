@@ -311,7 +311,7 @@ export async function POST(request) {
                     : planDetails.name,
                 description:
                   extraLinks > 0
-                    ? `${planDetails.name} subscription with ${extraLinks} extra links ($1 per extra link)`
+                    ? `${planDetails.name} subscription with ${extraLinks} extra links`
                     : `${planDetails.name} subscription with premium features`,
               },
               unit_amount: Math.round(planDetails.price * 100), // Stripe uses cents, ensure integer

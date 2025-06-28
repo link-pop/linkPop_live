@@ -642,7 +642,7 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
           value:
             linksCount > 0
               ? `${planPrices.agency.totalLinks} Landing Pages or Direct Links`
-              : t("fiftyLandingPagesOrDirectLinks"),
+              : `${planPrices.agency.baseLinks} Landing Pages or Direct Links`,
           info: true,
           icon: <Link2 size={16} />,
         },
@@ -680,8 +680,8 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
       trialDays: 14,
       planId: planPrices.agency.planId,
       extraLinks: linksCount,
-      baseLinks: 50,
-      totalLinks: 50 + linksCount,
+      baseLinks: planPrices.agency.baseLinks,
+      totalLinks: planPrices.agency.baseLinks + linksCount,
     },
   ];
 
@@ -875,16 +875,13 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
                         value={String(linksCount)}
                         onValueChange={(value) => setLinksCount(Number(value))}
                         options={[
-                          { value: "0", label: t("linksOption50") },
-                          { value: "50", label: t("linksOption100") },
-                          { value: "100", label: t("linksOption150") },
-                          { value: "150", label: t("linksOption200") },
-                          { value: "200", label: t("linksOption250") },
-                          { value: "250", label: t("linksOption300") },
-                          { value: "300", label: t("linksOption350") },
-                          { value: "350", label: t("linksOption400") },
-                          { value: "400", label: t("linksOption450") },
-                          { value: "450", label: t("linksOption500") },
+                          { value: "0", label: t("linksOption25") },
+                          { value: "25", label: t("linksOption50") },
+                          { value: "75", label: t("linksOption100") },
+                          { value: "125", label: t("linksOption150") },
+                          { value: "175", label: t("linksOption200") },
+                          { value: "225", label: t("linksOption250") },
+                          { value: "475", label: t("linksOption500") },
                         ]}
                         className="w-full border-border"
                         placeholder={t("selectNumberOfLinks")}
@@ -1243,7 +1240,9 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
                 <p className="text-sm font-medium">
                   {t("thisIncludesExtraLinks", {
                     extraLinks: userSubscription.extraLinks || 0,
-                    totalLinks: 50 + (userSubscription.extraLinks || 0),
+                    totalLinks:
+                      planPrices.agency.baseLinks +
+                      (userSubscription.extraLinks || 0),
                   })}
                 </p>
               </div>

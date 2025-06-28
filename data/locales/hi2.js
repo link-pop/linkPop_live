@@ -1129,7 +1129,7 @@ const hi = {
   selectNumberOfLinks: "लिंक्स की संख्या चुनें",
   defaultLinksIncluded: "डिफ़ॉल्ट: 50 लिंक्स शामिल",
   baseLinksExtraLinksTotal:
-    "{baseLinks} बेस लिंक्स + {extraLinks} अतिरिक्त लिंक्स = {totalLinks} कुल लिंक्स (प्रति अतिरिक्त लिंक $1)",
+    "{baseLinks} बेस लिंक्स + {extraLinks} अतिरिक्त लिंक्स = {totalLinks} कुल लिंक्स",
   noTrialWithExtraLinks:
     "कृपया ध्यान दें कि अतिरिक्त लिंक्स वाली सदस्यताएं मुफ्त ट्रायल अवधि के लिए पात्र नहीं हैं।",
 

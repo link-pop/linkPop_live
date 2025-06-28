@@ -1053,7 +1053,7 @@ const zh = {
   selectNumberOfLinks: "选择链接数量",
   defaultLinksIncluded: "默认：包含50个链接",
   baseLinksExtraLinksTotal:
-    "{baseLinks} 基本链接 + {extraLinks} 额外链接 = {totalLinks} 总链接（每个额外链接$1）",
+    "{baseLinks} 基本链接 + {extraLinks} 额外链接 = {totalLinks} 总链接",
   noTrialWithExtraLinks: "请注意，带有额外链接的订阅不符合免费试用期条件。",
 
   // Pricing related translations

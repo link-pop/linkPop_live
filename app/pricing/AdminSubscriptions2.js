@@ -5,6 +5,7 @@ import CreatedBy from "@/components/Post/Post/CreatedBy";
 import AdminSubscriptions2Revenue from "./AdminSubscriptions2Revenue";
 import { getPaymentInfo } from "@/lib/utils/subscription/paymentUtils";
 import { getPriceByPlanId } from "@/lib/utils/pricing/getPlanPrices";
+import { AGENCY_BASE_LINKS } from "@/lib/utils/constants";
 import HorizontalTableScroll from "@/components/ui/shared/HorizontalScroll/HorizontalTableScroll";
 
 export default async function AdminSubscriptions2() {
@@ -265,7 +266,7 @@ export default async function AdminSubscriptions2() {
 
     // Get the plan details to know base links
     const planDetails = getPriceByPlanId(sub.planId, sub.extraLinks || 0);
-    const baseLinks = planDetails.baseLinks || 50;
+    const baseLinks = planDetails.baseLinks || AGENCY_BASE_LINKS;
     const extraLinks = sub.extraLinks || 0;
     const totalLinks = baseLinks + extraLinks;
 
