@@ -131,7 +131,10 @@ const Layout = async ({ children }) => {
         <div className={`wf min-[900px]:w-1/2 fcc bg-card dark:bg-card`}>
           <div className={`w-full fc aic p15`}>
             <div className={`fcc`}>
-              <Logo className="mb20 scale-[1.2]" />
+              <Logo
+                className="mb20 scale-[1.2]"
+                forceImgSrc="/img/logoDark2.png"
+              />
             </div>
             {children}
           </div>
@@ -254,7 +257,10 @@ const Layout = async ({ children }) => {
       <div className={`wf min-[900px]:w-1/2 fcc bg-card dark:bg-card`}>
         <div className={`w-full fc aic p15`}>
           <div className={`fcc`}>
-            <Logo className="mb20 scale-[1.2]" />
+            <Logo
+              className="mb20 scale-[1.2]"
+              forceImgSrc="/img/logoDark2.png"
+            />
           </div>
           {children}
         </div>

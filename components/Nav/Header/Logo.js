@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { SITE2 } from "@/config/env";
 import { useTheme } from "@/components/ui/shared/ThemeProvider/ThemeProvider";
 
-export default function Logo({ className = "", height = "40px" }) {
+export default function Logo({ className = "", height = "40px", forceImgSrc }) {
   const pathname = usePathname();
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -38,7 +38,9 @@ export default function Logo({ className = "", height = "40px" }) {
 
   return (
     <Link href="/" className={`Logo dib ${className}`}>
-      {SITE2 ? (
+      {forceImgSrc ? (
+        <img src={forceImgSrc} style={{ height }} />
+      ) : SITE2 ? (
         <img src={themeImg2} style={{ height }} />
       ) : (
         <img src={themeImg} style={{ height }} />
