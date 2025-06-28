@@ -41,6 +41,7 @@ import FormUsernameInput from "./FormUsernameInput";
 import FormBioTextarea from "./FormBioTextarea";
 import FormSubmitButton from "./FormSubmitButton";
 import TitleWithBackButton from "@/components/ui/shared/PageHeading/TitleWithBackButton";
+import { useQueryClient } from "@tanstack/react-query";
 
 function AddLandingPageForm({
   col = "landingpages",
@@ -53,6 +54,7 @@ function AddLandingPageForm({
   const formRef = useRef(null);
   const { toastSet } = useContext();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   // Get step and landingPageId from URL params if they exist
   const stepFromUrl = searchParams.get("step");
@@ -438,9 +440,13 @@ function AddLandingPageForm({
 
       if (updatingPost) {
         // If in true update mode with an existing updatingPost object, go straight to success flow
+        // Invalidate React Query cache for landingpages
+        queryClient.invalidateQueries(["posts", "landingpages"]);
         handleSuccessFlow(result, fullData);
       } else if (processedFormData.landingPageId) {
         // If we have a landingPageId (either from URL or from previous creation step), just stay on step 1 and show success message
+        // Invalidate React Query cache for landingpages
+        queryClient.invalidateQueries(["posts", "landingpages"]);
         toastSet({
           isOpen: true,
           title:
@@ -452,6 +458,8 @@ function AddLandingPageForm({
         setCreatedLandingPage(result);
       } else {
         // If creating for the first time (no landingPageId), move to step 2 and save the created landing page
+        // Invalidate React Query cache for landingpages
+        queryClient.invalidateQueries(["posts", "landingpages"]);
         setCreatedLandingPage(result);
 
         // Update formData with the new landingPageId

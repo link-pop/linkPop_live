@@ -33,6 +33,7 @@ import FormSection from "./FormSection";
 import FormSubmitButton from "./FormSubmitButton";
 import FormShieldProtectionSection from "./FormShieldProtectionSection";
 import TitleWithBackButton from "@/components/ui/shared/PageHeading/TitleWithBackButton";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function AddDirectlinkForm({
   col = "directlinks",
@@ -44,6 +45,7 @@ export default function AddDirectlinkForm({
   const formRef = useRef(null);
   const { toastSet } = useContext();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState({
     name: updatingPost?.name || "",
@@ -287,6 +289,8 @@ export default function AddDirectlinkForm({
             mode: "update",
           });
         } else {
+          // Invalidate React Query cache for directlinks
+          queryClient.invalidateQueries(["posts", "directlinks"]);
           toastSet({
             isOpen: true,
             title:
@@ -297,6 +301,8 @@ export default function AddDirectlinkForm({
         }
       } else if (savedDirectlinkId) {
         // When updating an existing directlink during creation flow, just show success toast
+        // Invalidate React Query cache for directlinks
+        queryClient.invalidateQueries(["posts", "directlinks"]);
         toastSet({
           isOpen: true,
           title:
@@ -305,6 +311,8 @@ export default function AddDirectlinkForm({
         });
       } else {
         // For brand new creations, save the ID and move to step 2
+        // Invalidate React Query cache for directlinks
+        queryClient.invalidateQueries(["posts", "directlinks"]);
         setSavedDirectlinkId(result._id);
         setCurrentStep(2);
 
