@@ -205,17 +205,7 @@ export default function CustomUserMenu({
     },
   ];
 
-  if (!user) {
-    // Show a loading spinner or default avatar while Clerk user is loading
-    return (
-      <div className="relative" style={{ width: 32, height: 32 }}>
-        <div className="flex items-center justify-center w-8 h-8 bg-accent rounded-full animate-pulse">
-          {/* You can use a spinner icon or a default user icon here */}
-          <User size={20} className="text-muted-foreground" />
-        </div>
-      </div>
-    );
-  }
+  if (!user) return null;
 
   return (
     <div className="relative">
@@ -235,8 +225,8 @@ export default function CustomUserMenu({
         }}
         style={{ position: "relative", width: "32px", height: "32px" }}
       >
-        {/* Always show user image in button (mobile & desktop) */}
-        {user.imageUrl ? (
+        {/* // mobile user image trace_1*/}
+        {isMobile && user.imageUrl && (
           <img
             src={user.imageUrl}
             alt="Profile"
@@ -251,10 +241,6 @@ export default function CustomUserMenu({
               display: "block",
             }}
           />
-        ) : (
-          <div className="flex items-center justify-center w-8 h-8 bg-accent rounded-full">
-            <User size={20} className="text-muted-foreground" />
-          </div>
         )}
       </div>
 
