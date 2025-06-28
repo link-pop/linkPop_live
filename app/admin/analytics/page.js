@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import AdminPageHeader from "@/components/ui/admin/AdminPageHeader";
 import { getAll } from "@/lib/actions/crud";
 import AdminAnalyticsClient from "./components/AdminAnalyticsClient";

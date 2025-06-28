@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import VideoFeed from "@/components/Video/VideoFeed/VideoFeed";
 
 export default function VideoPage() {

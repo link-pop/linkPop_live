@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import ChatroomsSendClient from "@/components/Chatrooms/ChatroomsSendClient";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import { redirect } from "next/navigation";

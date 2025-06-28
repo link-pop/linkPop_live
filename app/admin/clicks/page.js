@@ -1,4 +1,6 @@
-"use client";
+export const dynamic = "force-dynamic";
+
+("use client");
 
 import Toggle from "@/components/ui/shared/Toggle/Toggle";
 import AdminPageHeader from "@/components/ui/admin/AdminPageHeader";

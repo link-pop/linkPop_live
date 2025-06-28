@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getSerializedMongoUser } from "@/lib/utils/mongo/getMongoUser";
 import SearchCreatorPage from "@/components/Search/SearchCreatorPage";
 

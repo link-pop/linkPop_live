@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import AdminReferrals from "@/app/affiliate/AdminReferrals";
 import AdminPageHeader from "@/components/ui/admin/AdminPageHeader";
 

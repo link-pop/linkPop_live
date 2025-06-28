@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import AdminSubscriptions2 from "@/app/pricing/AdminSubscriptions2";
 import AdminPageHeader from "@/components/ui/admin/AdminPageHeader";
 
