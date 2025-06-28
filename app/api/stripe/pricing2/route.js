@@ -106,10 +106,23 @@ export async function POST(request) {
     // Set prices based on plan ID using the utility function with extra links
     const planDetails = getPriceByPlanId(planId, extraLinks);
 
-    // Check if user already has an active subscription
+    // Check if user already has an active subscription (excluding expired trials)
     const existingActiveSubscription = await models.subscriptions2.findOne({
-      createdBy: mongoUser._id,
-      status: { $in: ["active", "trialing"] },
+      $and: [
+        { createdBy: mongoUser._id },
+        { status: { $in: ["active", "trialing"] } },
+        {
+          $or: [
+            { status: "active" }, // Active subscriptions are always valid
+            {
+              $and: [
+                { status: "trialing" },
+                { trialEnd: { $gt: new Date() } }, // Trial is not expired
+              ],
+            },
+          ],
+        },
+      ],
     });
 
     // Log the current subscription details for debugging
