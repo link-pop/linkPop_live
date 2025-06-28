@@ -338,7 +338,48 @@ export default function ClientSideProfileTracker({
     return <div className="hidden">Tracking error: {error}</div>;
   }
 
-  // Fallback UI: show button to open in browser if auto-redirect fails
+  // Fallback UI: show button to open in browser if auto-redirect fails or if in-app browser is detected and redirected=true
+  if (redirected && isInAppBrowser() && redirectUrl) {
+    // Detect which app for better instructions
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    let appName = "in-app browser";
+    if (/Instagram/i.test(ua)) appName = "Instagram";
+    else if (/FBAN|FBAV|FBIOS|FB_IAB|FB4A/i.test(ua)) appName = "Facebook";
+    else if (/Twitter/i.test(ua)) appName = "Twitter";
+    else if (/TikTok/i.test(ua)) appName = "TikTok";
+    else if (/LinkedIn/i.test(ua)) appName = "LinkedIn";
+    else if (/Snapchat/i.test(ua)) appName = "Snapchat";
+    else if (/Line\//i.test(ua)) appName = "LINE";
+    else if (/MicroMessenger/i.test(ua)) appName = "WeChat";
+
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
+        <div className="p-6 rounded bg-accent text-foreground shadow-lg flex flex-col items-center max-w-[90vw]">
+          <div className="mb-4 text-lg font-semibold text-center">
+            You are using the {appName} browser.
+            <br />
+            For the best experience, please open this page in your device's
+            browser.
+          </div>
+          <a
+            href={redirectUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 rounded bg-primary text-primary-foreground font-bold mb-2"
+          >
+            Open in Browser
+          </a>
+          <div className="text-sm text-center mt-2">
+            If nothing happens, tap and hold the button above and choose{" "}
+            <b>"Open in browser"</b>.<br />
+            Or use the menu (<b>⋮</b> or <b>...</b>) and select{" "}
+            <b>"Open in browser"</b>.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (showOpenInBrowser && redirectUrl) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
@@ -346,12 +387,14 @@ export default function ClientSideProfileTracker({
           <div className="mb-4 text-lg font-semibold">
             Please open this page in your browser
           </div>
-          <button
+          <a
+            href={redirectUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="px-4 py-2 rounded bg-primary text-primary-foreground font-bold"
-            onClick={() => openInNativeBrowser(redirectUrl)}
           >
             Open in Browser
-          </button>
+          </a>
         </div>
       </div>
     );
