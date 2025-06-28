@@ -28,6 +28,7 @@ import { cancelSubscription2Immediately } from "@/lib/actions/cancelSubscription
 import { cancelSubscription2AtPeriodEnd } from "@/lib/actions/cancelSubscription2AtPeriodEnd";
 import ClickForSupport from "@/components/ui/shared/ClickForSupport/ClickForSupport";
 import AdminTestControls from "@/components/ui/shared/AdminTestControls/AdminTestControls";
+import SubscriptionResubscribeButton from "@/components/ui/shared/SubscriptionResubscribeButton/SubscriptionResubscribeButton";
 
 export default function Pricing2Content({ userSubscription, isAdmin = false }) {
   const { t } = useTranslation();
@@ -1019,6 +1020,14 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
                         : plan.buttonText}
                     </StripeButton>
                   )}
+
+                {/* SUBSCRIPTION BUTTON for users with canceled/expired subscriptions */}
+                <SubscriptionResubscribeButton
+                  isCurrent={isCurrent(plan.planId)}
+                  plan={plan}
+                  userSubscription={userSubscription}
+                  t={t}
+                />
 
                 {/* HIDDEN STRIPE BUTTON FOR PLAN CHANGES - this is the button that will be clicked programmatically */}
                 {!isCurrent(plan.planId) &&
