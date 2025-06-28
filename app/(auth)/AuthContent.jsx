@@ -183,6 +183,17 @@ const AuthContent = () => {
     };
   }, [t, currentLang]);
 
+  // Add this useEffect to reload if loader is shown for too long
+  useEffect(() => {
+    if (!showLoader) return;
+    const timeout = setTimeout(() => {
+      if (showLoader) {
+        window.location.reload();
+      }
+    }, 6000);
+    return () => clearTimeout(timeout);
+  }, [showLoader]);
+
   if (SITE2) {
     return (
       <>
