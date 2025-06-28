@@ -7,7 +7,11 @@ import { useRouter } from "next/navigation";
 // ! code start ClickForSupport
 export default function ClickForSupport({
   title,
-  hrefs = ["link.pop.com@gmail.com", "whatsapp.com/send?phone=380950168170"],
+  hrefs = [
+    "link.pop.com@gmail.com",
+    "whatsapp.com/send?phone=380950168170",
+    "t.me/Linkpop_support",
+  ],
   labels = [],
   className = "",
   buttonText,
@@ -55,12 +59,18 @@ export default function ClickForSupport({
       }
     }
 
-    if (
-      href.includes("telegram") &&
-      !href.startsWith("https://") &&
-      !href.startsWith("t.me")
-    ) {
-      return `https://${href}`;
+    if (href.includes("telegram") || href.includes("t.me")) {
+      // Handle Telegram links and usernames
+      if (href.startsWith("@")) {
+        // Convert @username to t.me/username
+        return `https://t.me/${href.slice(1)}`;
+      }
+      if (href.startsWith("t.me/")) {
+        return `https://${href}`;
+      }
+      if (!href.startsWith("https://") && !href.startsWith("t.me")) {
+        return `https://${href}`;
+      }
     }
 
     if (
