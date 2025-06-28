@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { fetchGeoData } from "@/lib/utils/fetchGeoData";
 import { add } from "@/lib/actions/crud";
 import { usePathname } from "next/navigation";
@@ -30,7 +30,9 @@ export default function ClientSideProfileTracker({
 }) {
   const [tracked, setTracked] = useState(false);
   const [error, setError] = useState(null);
+  const [showOpenInBrowser, setShowOpenInBrowser] = useState(false);
   const pathname = usePathname();
+  const redirectTimeoutRef = useRef(null);
 
   // Check if current path is in excluded routes
   const isExcludedRoute = [
@@ -52,6 +54,44 @@ export default function ClientSideProfileTracker({
       };
     }
   }, []);
+
+  // In-app browser detection
+  function isInAppBrowser() {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    // Instagram, Facebook, Messenger, TikTok, Twitter, LinkedIn, etc.
+    return /FBAN|FBAV|Instagram|Line\/|MicroMessenger|Twitter|LinkedIn|Snapchat|TikTok|com\.apple\.WebKit\/|FBIOS|FB_IAB|FB4A|FBAN|FBAV|FB_IAB|FB_IAB\/FB4A|FB_IAB\/FBAN|FB_IAB\/FBAV|FB_IAB\/FBIOS|FB_IAB\/Messenger|FB_IAB\/Instagram|FB_IAB\/Line|FB_IAB\/MicroMessenger|FB_IAB\/Twitter|FB_IAB\/LinkedIn|FB_IAB\/Snapchat|FB_IAB\/TikTok|FB_IAB\/com\.apple\.WebKit\//i.test(
+      ua
+    );
+  }
+
+  // Try to open in native browser
+  function openInNativeBrowser(url) {
+    // Android Chrome intent
+    if (/Android/i.test(navigator.userAgent)) {
+      // Try intent:// for Chrome
+      if (navigator.userAgent.includes("Chrome")) {
+        const intentUrl = url.replace(/^https?:\/\//, "");
+        window.location = `intent://${intentUrl}#Intent;scheme=https;package=com.android.chrome;end`;
+        return;
+      }
+    }
+    // iOS: window.open _blank sometimes triggers native browser
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      const win = window.open(url, "_blank");
+      if (win) {
+        win.opener = null;
+      }
+      return;
+    }
+    // Fallback: try window.open
+    const win = window.open(url, "_blank");
+    if (win) {
+      win.opener = null;
+    } else {
+      // If popup blocked, fallback to location.href
+      window.location.href = url;
+    }
+  }
 
   // Function to check if visitor is potentially a bot or moderator
   function checkForThreats(userAgent, geoData, referrer) {
@@ -230,11 +270,28 @@ export default function ClientSideProfileTracker({
           } else {
             // Redirect to original destination
             console.log("Shield Protection: Redirecting to destination");
-            window.location.href = redirectUrl;
+            // In-app browser handling
+            if (redirected && isInAppBrowser()) {
+              openInNativeBrowser(redirectUrl);
+              // Show fallback button if not redirected in 2s
+              redirectTimeoutRef.current = setTimeout(() => {
+                setShowOpenInBrowser(true);
+              }, 2000);
+            } else {
+              window.location.href = redirectUrl;
+            }
           }
         } else if (redirectUrl) {
           // No shield protection, redirect directly
-          window.location.href = redirectUrl;
+          if (redirected && isInAppBrowser()) {
+            openInNativeBrowser(redirectUrl);
+            // Show fallback button if not redirected in 2s
+            redirectTimeoutRef.current = setTimeout(() => {
+              setShowOpenInBrowser(true);
+            }, 2000);
+          } else {
+            window.location.href = redirectUrl;
+          }
         }
       } catch (err) {
         console.error("Error tracking profile visit:", err);
@@ -250,6 +307,12 @@ export default function ClientSideProfileTracker({
     if (!tracked && !error) {
       trackVisit();
     }
+    // Cleanup timeout on unmount
+    return () => {
+      if (redirectTimeoutRef.current) {
+        clearTimeout(redirectTimeoutRef.current);
+      }
+    };
   }, [
     tracked,
     error,
@@ -273,6 +336,25 @@ export default function ClientSideProfileTracker({
   // Add debugging message for development
   if (process.env.DEV_MODE === "true" && error) {
     return <div className="hidden">Tracking error: {error}</div>;
+  }
+
+  // Fallback UI: show button to open in browser if auto-redirect fails
+  if (showOpenInBrowser && redirectUrl) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
+        <div className="p-6 rounded bg-accent text-foreground shadow-lg flex flex-col items-center">
+          <div className="mb-4 text-lg font-semibold">
+            Please open this page in your browser
+          </div>
+          <button
+            className="px-4 py-2 rounded bg-primary text-primary-foreground font-bold"
+            onClick={() => openInNativeBrowser(redirectUrl)}
+          >
+            Open in Browser
+          </button>
+        </div>
+      </div>
+    );
   }
 
   // This component doesn't render anything visible in production
