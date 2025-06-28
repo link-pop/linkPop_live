@@ -961,6 +961,11 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
                   userSubscription &&
                   !userSubscription.isTrialHistoryOnly &&
                   userSubscription.planId &&
+                  userSubscription.status !== "canceled" &&
+                  !(
+                    userSubscription.status === "trialing" &&
+                    userSubscription.trialDaysRemaining <= 0
+                  ) &&
                   (() => {
                     // Calculate isDowngrade and gradientClass above the JSX return
                     const currentPlanIndex = plans.findIndex(
@@ -1052,7 +1057,12 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
                 {!isCurrent(plan.planId) &&
                   plan.planId &&
                   userSubscription &&
-                  !userSubscription.isTrialHistoryOnly && (
+                  !userSubscription.isTrialHistoryOnly &&
+                  userSubscription.status !== "canceled" &&
+                  !(
+                    userSubscription.status === "trialing" &&
+                    userSubscription.trialDaysRemaining <= 0
+                  ) && (
                     <div
                       className="invisible absolute opacity-0"
                       style={{ position: "absolute", left: "-9999px" }}
