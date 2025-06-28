@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import React from "react";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import { getAll } from "@/lib/actions/crud";

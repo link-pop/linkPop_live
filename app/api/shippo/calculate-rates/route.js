@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import shippoService from "@/lib/utils/shippo/shippoService";

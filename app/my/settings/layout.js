@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import SettingsNav from "@/app/my/settings/SettingsNav";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 

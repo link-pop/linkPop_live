@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 // npm i stripe
 import { getOne } from "@/lib/actions/crud";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import ChatroomsList from "./ChatroomsList";
 import { getAllMongoCollectionsData } from "@/lib/utils/mongo/getAllMongoCollectionsData";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";

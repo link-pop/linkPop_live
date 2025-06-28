@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { Suspense } from "react";
 import CartSuccessClient from "@/components/Cart/CartSuccessClient";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";

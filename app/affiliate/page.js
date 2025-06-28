@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getUserReferralData } from "@/lib/actions/referral/getUserReferralData";
 import AffiliateClient from "@/components/Affiliate/AffiliateClient";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";

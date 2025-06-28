@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { SITE2 } from "@/config/env";
 import { getAll } from "@/lib/actions/crud";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";

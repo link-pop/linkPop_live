@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getOne } from "@/lib/actions/crud";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import _stripe from "stripe";

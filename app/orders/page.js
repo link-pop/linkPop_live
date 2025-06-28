@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import CartOrdersEarningsClient from "@/components/Cart/CartOrdersEarningsClient";

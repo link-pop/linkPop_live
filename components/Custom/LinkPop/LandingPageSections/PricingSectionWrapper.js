@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { fetchUserSubscription2 } from "@/lib/actions/fetchUserSubscription2";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import PricingSection from "./PricingSection";

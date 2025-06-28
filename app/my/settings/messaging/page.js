@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import WelcomeMessage from "./WelcomeMessage";
 

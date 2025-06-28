@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { generateUserReferralCode } from "@/lib/actions/referral/generateUserReferralCode";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";

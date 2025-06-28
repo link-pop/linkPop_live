@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { Suspense } from "react";
 import Pricing2Content from "./Pricing2Content";
 import { fetchUserSubscription2 } from "../../lib/actions/fetchUserSubscription2";

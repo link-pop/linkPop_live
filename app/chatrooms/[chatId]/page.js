@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import ChatroomMessages from "@/components/Chatrooms/ChatroomMessages";
 import ChatroomsListServer from "@/components/Chatrooms/ChatroomsListServer";
 import PostsLoader from "@/components/Post/Posts/PostsLoader";
