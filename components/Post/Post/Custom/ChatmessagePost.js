@@ -34,6 +34,9 @@ export default function ChatmessagePost(props) {
   const hasPaidFiles = post?.price && post?.price > 0;
   const shouldShowOverlay = hasPaidFiles && !isOwnMessage && !post.hasPurchased;
 
+  // Check if message has been purchased (for preventing deletion/hiding)
+  const hasBeenPurchased = post?.hasPurchased === true;
+
   // TODO !!! format comp for all Timestamps
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return "";

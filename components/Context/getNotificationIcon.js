@@ -10,6 +10,7 @@ import {
   Gavel,
   Clock,
   DollarSign,
+  ShoppingCart,
 } from "lucide-react";
 
 // Function to get the appropriate icon based on notification type
@@ -37,6 +38,8 @@ const getNotificationIcon = (type) => {
       return <Clock className="!w16 !h16 text-muted-foreground" />;
     case "auction_outbid":
       return <Gavel className="!w16 !h16 text-amber-600" />;
+    case "message_purchase":
+      return <ShoppingCart className="!w16 !h16 text-green-600" />;
     default:
       return null;
   }

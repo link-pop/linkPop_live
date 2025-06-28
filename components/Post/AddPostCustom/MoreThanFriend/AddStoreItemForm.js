@@ -150,15 +150,23 @@ export default function AddStoreItemForm({
     }
 
     if (customOnSubmit) {
-      await customOnSubmit({
-        files,
-        tipTapInputContent,
-        title,
-        category,
-        price,
-        stock,
-      });
-      resetForm();
+      try {
+        const result = await customOnSubmit({
+          files,
+          tipTapInputContent,
+          title,
+          category,
+          price,
+          stock,
+        });
+        // Reset form if customOnSubmit completes successfully
+        if (result?.success !== false) {
+          resetForm();
+        }
+      } catch (error) {
+        console.error("❌ Custom submit error:", error);
+        throw error; // Re-throw to let parent handle
+      }
       return;
     }
     onSubmitAddPostForm(e);

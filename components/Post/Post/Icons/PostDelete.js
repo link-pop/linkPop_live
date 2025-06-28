@@ -26,6 +26,15 @@ export default function PostDelete({
   });
 
   async function _remove(e) {
+    // Check if this is a purchased message (prevent deletion)
+    if (post?.price > 0 && post?.hasPurchased === true) {
+      toastSet({
+        isOpen: true,
+        title: t("cannotDeletePurchasedMessage"),
+      });
+      return;
+    }
+
     const postElement = e.target.closest(".Post");
     dialogSet({
       isOpen: true,

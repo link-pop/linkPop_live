@@ -22,6 +22,7 @@ const notificationSchema = new mongoose.Schema(
         "auction_sold",
         "auction_ended",
         "auction_outbid",
+        "message_purchase",
       ],
       required: true,
     },

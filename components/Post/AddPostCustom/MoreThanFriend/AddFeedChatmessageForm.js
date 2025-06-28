@@ -139,16 +139,23 @@ export default function AddFeedChatmessageForm({
     if (currentIsLoading) return;
 
     if (customOnSubmit) {
-      const result = await customOnSubmit({
-        files,
-        tipTapInputContent,
-        expirationPeriod,
-        scheduleAt,
-        price,
-      });
-      // Only reset form if customOnSubmit returns success
-      if (result?.success) {
-        resetForm();
+      try {
+        const result = await customOnSubmit({
+          files,
+          tipTapInputContent,
+          expirationPeriod,
+          scheduleAt,
+          price,
+        });
+        // Reset form if customOnSubmit completes successfully
+        // Either when it explicitly returns success: true, or when it doesn't throw an error
+        if (result?.success !== false) {
+          resetForm();
+        }
+      } catch (error) {
+        // Don't reset form if there was an error
+        console.error("❌ Custom submit error:", error);
+        throw error; // Re-throw to let parent handle
       }
       return;
     }

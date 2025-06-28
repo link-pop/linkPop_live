@@ -2103,6 +2103,15 @@ const en = {
   // Select/Deselect actions
   selectAll: "Select All",
   deselectAll: "Deselect All",
+
+  // Purchased message protection
+  cannotDeletePurchasedMessage: "Cannot delete purchased message",
+  cannotHidePurchasedMessage: "Cannot hide purchased message",
+
+  // Message purchase notifications
+  messagePurchase: "Message Purchase",
+  messagePurchased: "Someone purchased your message",
+  purchases: "purchases",
 };
 
 export default en;

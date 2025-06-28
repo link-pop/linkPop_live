@@ -260,19 +260,27 @@ export default function AddStoreAuctionItemForm({
     }
 
     if (customOnSubmit) {
-      await customOnSubmit({
-        files,
-        tipTapInputContent,
-        title,
-        category,
-        auctionStartPrice,
-        auctionStartTime,
-        auctionEndTime,
-        auctionMinBidIncrement,
-        auctionBuyNowPrice,
-        auctionReservePrice,
-      });
-      resetForm();
+      try {
+        const result = await customOnSubmit({
+          files,
+          tipTapInputContent,
+          title,
+          category,
+          auctionStartPrice,
+          auctionStartTime,
+          auctionEndTime,
+          auctionMinBidIncrement,
+          auctionBuyNowPrice,
+          auctionReservePrice,
+        });
+        // Reset form if customOnSubmit completes successfully
+        if (result?.success !== false) {
+          resetForm();
+        }
+      } catch (error) {
+        console.error("❌ Custom submit error:", error);
+        throw error; // Re-throw to let parent handle
+      }
       return;
     }
 

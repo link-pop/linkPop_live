@@ -8,6 +8,7 @@ export default function PostAdminIcons({
   postsPaginationType,
   customUpdateIcon,
   customDeleteIcon,
+  canModify = true,
 }) {
   return (
     <>
@@ -16,7 +17,7 @@ export default function PostAdminIcons({
           {...{ post, col, iconClassName, customIcon: customUpdateIcon }}
         />
       )}
-      {col.settings?.noDeleteIcon ? null : (
+      {col.settings?.noDeleteIcon || !canModify ? null : (
         <PostDelete
           {...{
             post,

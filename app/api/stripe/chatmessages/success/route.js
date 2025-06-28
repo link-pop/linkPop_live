@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { models } from "@/lib/db/models/models";
+import { handleMessagePurchaseComplete } from "@/lib/actions/handleMessagePurchaseComplete";
 
 export async function GET(req) {
   try {
@@ -48,6 +49,7 @@ export async function GET(req) {
     });
 
     // Update the purchase record
+    let purchaseAmount = 0;
     try {
       const updatedPurchase = await models.purchases.findOneAndUpdate(
         { stripeSessionId: sessionId },
@@ -74,6 +76,7 @@ export async function GET(req) {
               "Updated purchase record using purchaseId:",
               purchaseId
             );
+            purchaseAmount = updatedByPurchaseId.amount;
           } else {
             console.error(
               "Failed to find purchase record by purchaseId:",
@@ -83,10 +86,37 @@ export async function GET(req) {
         }
       } else {
         console.log("Updated purchase record:", updatedPurchase._id);
+        purchaseAmount = updatedPurchase.amount;
       }
     } catch (updateError) {
       console.error("Error updating purchase record:", updateError.message);
       // Continue with the redirect even if the update fails
+    }
+
+    // Handle message purchase completion (notifications and chatroom updates)
+    try {
+      if (postId && userId && purchaseAmount > 0) {
+        const purchaseResult = await handleMessagePurchaseComplete({
+          messageId: postId,
+          buyerId: userId,
+          amount: purchaseAmount,
+        });
+
+        if (purchaseResult.success) {
+          console.log("✅ Message purchase completion handled successfully");
+        } else {
+          console.error(
+            "❌ Failed to handle message purchase completion:",
+            purchaseResult.error
+          );
+        }
+      }
+    } catch (purchaseHandlingError) {
+      console.error(
+        "❌ Error in message purchase completion handling:",
+        purchaseHandlingError
+      );
+      // Continue with redirect even if purchase handling fails
     }
 
     // Determine base URL for redirect

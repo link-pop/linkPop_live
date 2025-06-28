@@ -10,6 +10,7 @@ const SOCKET_EVENTS = {
       HIDDEN: (chatId) => `chat:message:hidden:${chatId}`,
       READ_STATUS_UPDATED: (chatId) =>
         `chat:message:read_status_updated:${chatId}`,
+      PURCHASE_UPDATE: (chatId) => `chat:message:purchase_update:${chatId}`,
       ERROR: "chat:message:error",
     },
     USER: {

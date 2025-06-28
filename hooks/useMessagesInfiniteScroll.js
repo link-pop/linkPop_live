@@ -133,6 +133,18 @@ export default function useMessagesInfiniteScroll({
       refetch(); // Refetch to update the messages list with new read status
     };
 
+    // Listen for purchase updates
+    const handlePurchaseUpdate = ({
+      chatRoomId: eventChatRoomId,
+      messageId,
+    }) => {
+      console.log("Message purchase update:", {
+        eventChatRoomId,
+        messageId,
+      });
+      refetch(); // Refetch to update the messages list with purchase status
+    };
+
     socket.on(
       SOCKET_EVENTS.CHAT.MESSAGE.DELETED(chatRoomId),
       handleMessageDelete
@@ -145,10 +157,16 @@ export default function useMessagesInfiniteScroll({
       handleReadStatusUpdate
     );
 
+    socket.on(
+      SOCKET_EVENTS.CHAT.MESSAGE.PURCHASE_UPDATE(chatRoomId),
+      handlePurchaseUpdate
+    );
+
     return () => {
       socket.off(SOCKET_EVENTS.CHAT.MESSAGE.DELETED(chatRoomId));
       socket.off(SOCKET_EVENTS.CHAT.MESSAGE.HIDDEN(chatRoomId));
       socket.off(SOCKET_EVENTS.CHAT.MESSAGE.READ_STATUS_UPDATED(chatRoomId));
+      socket.off(SOCKET_EVENTS.CHAT.MESSAGE.PURCHASE_UPDATE(chatRoomId));
     };
   }, [chatRoomId, refetch, socket]);
 

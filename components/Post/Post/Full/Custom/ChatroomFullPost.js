@@ -44,8 +44,6 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
         });
       }
 
-      // Reset form
-      feedFormRef?.current?.reset();
       // Clear reply state
       onCancelReply();
       // Clear loading state
@@ -157,6 +155,9 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
       setTimeout(() => {
         setIsSubmittingMessage(false);
       }, 10000); // 10 second timeout
+
+      // Return success to indicate message was sent (form should be reset)
+      return { success: true };
     } catch (error) {
       console.error("❌ Error handling files:", error);
       toastSet({

@@ -84,6 +84,14 @@ export default function NotificationTypeSwitch({ mongoUser }) {
         type: "system",
       },
     },
+    {
+      value: "message_purchase",
+      label: "purchases",
+      query: {
+        userId: mongoUser?._id,
+        type: "message_purchase",
+      },
+    },
   ];
 
   // Custom query function for notifications

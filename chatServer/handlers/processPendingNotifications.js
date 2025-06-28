@@ -69,6 +69,34 @@ async function processPendingNotifications(io) {
           }
         }
 
+        // Handle message purchase notifications - update chatroom to reflect purchase
+        if (
+          notification.type === "message_purchase" &&
+          notification.sourceModel === "chatmessages"
+        ) {
+          // Extract chatroom ID from the link
+          const linkMatch = notification.link.match(/chatId=([^&]+)/);
+          if (linkMatch && linkMatch[1]) {
+            const chatRoomId = linkMatch[1];
+
+            // Send updated unread counts to both buyer and seller
+            await sendChatRoomUnreadCounts(notification.userId, io); // seller
+            await sendChatRoomUnreadCounts(notification.sourceUserId, io); // buyer
+
+            // Emit purchase update event to trigger message refetch in the chatroom
+            io.emit(SOCKET_EVENTS.CHAT.MESSAGE.PURCHASE_UPDATE(chatRoomId), {
+              chatRoomId,
+              messageId: notification.sourceId,
+              buyerId: notification.sourceUserId,
+              sellerId: notification.userId,
+            });
+
+            console.log(
+              `🛒 Processed message purchase notification for chatroom ${chatRoomId}`
+            );
+          }
+        }
+
         // Emit notification to the user
         io.emit(
           SOCKET_EVENTS.NOTIFICATION.USER(notification.userId),

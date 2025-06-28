@@ -23,6 +23,15 @@ export default function PostHide({
 
   const handleHide = async () => {
     try {
+      // Check if this is a purchased message (prevent hiding)
+      if (post?.price > 0 && post?.hasPurchased === true) {
+        toastSet({
+          isOpen: true,
+          title: t("cannotHidePurchasedMessage"),
+        });
+        return;
+      }
+
       // Check if already hidden
       const existing = await getOne({
         col: hiddenCol,

@@ -7,6 +7,7 @@ import PostHide from "./PostHide";
 import PostHideUser from "./PostHideUser";
 import PostCopyText from "./PostCopyText";
 import { BRAND_INVERT_CLASS } from "@/lib/utils/constants";
+import { canMessageBeModified } from "@/lib/utils/canMessageBeModified";
 
 export default function PostOtherIcons({
   col,
@@ -20,6 +21,9 @@ export default function PostOtherIcons({
   if (col.settings?.noOtherIcons) return null;
 
   const iconClassName = `tal px15 py5 wsn cp hover:brand hover:bg-accent`;
+
+  // Check if message can be modified (for purchased messages)
+  const canModify = canMessageBeModified(post, mongoUser);
 
   return (
     <DropdownIcon
@@ -54,7 +58,7 @@ export default function PostOtherIcons({
       {["chatmessages"].includes(col.name) && (
         <>
           <PostCopyText {...{ post, iconClassName }} />
-          {mongoUser && !isOwner && (
+          {mongoUser && !isOwner && canModify && (
             <>
               <PostHide
                 {...{
@@ -75,7 +79,7 @@ export default function PostOtherIcons({
       <hr />
       {showAdminIcons && mongoUser && (isAdmin || isOwner) && (
         <PostAdminIcons
-          {...{ post, col, iconClassName, postsPaginationType }}
+          {...{ post, col, iconClassName, postsPaginationType, canModify }}
         />
       )}
     </DropdownIcon>
