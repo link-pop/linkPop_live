@@ -12,7 +12,7 @@ CODE STYLE & STANDARDS:
 - MANDATORY: don't use helper text near the loaders. Eg: "loading", "redirecting", etc...
 - append new translations in the bottom of translations file and only to en1.js file! If you need to use variables in translations, make it like this: {{variable}}
 - MANDATORY: for window width detection: use tailwind or if can not use tailwind - use useWindowWidth.js
-- MANDATORY: use constants.js file, if needed!
+- MANDATORY: use constants.js file, for url routes eg: MAIN_ROUTE!
 - MANDATORY: for DB ops use crud.js!
 - don't hardcode values!
 - don't run: npm run dev, npm run build, npm run lint (and any forms of it)

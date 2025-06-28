@@ -687,6 +687,20 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
 
   const isCurrent = (planId) => {
     if (!userSubscription) return planId === null; // Free plan is current if no subscription
+
+    // If subscription is canceled, don't show as current
+    if (userSubscription.status === "canceled") return false;
+
+    // If trial is expired, don't show as current
+    if (
+      userSubscription.status === "trialing" &&
+      userSubscription.trialDaysRemaining <= 0
+    )
+      return false;
+
+    // If subscription is only trial history, don't show as current
+    if (userSubscription.isTrialHistoryOnly) return false;
+
     return userSubscription.planId === planId;
   };
 
@@ -719,7 +733,12 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
     const hasActiveSubscription =
       userSubscription &&
       userSubscription.hasActiveSubscription !== false &&
-      !userSubscription.isTrialHistoryOnly;
+      !userSubscription.isTrialHistoryOnly &&
+      userSubscription.status !== "canceled" &&
+      !(
+        userSubscription.status === "trialing" &&
+        userSubscription.trialDaysRemaining <= 0
+      );
 
     if (hasActiveSubscription) {
       // User has a real subscription - determine if this is upgrade or downgrade
