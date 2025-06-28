@@ -1,4 +1,6 @@
-"use client";
+export const dynamic = "force-dynamic";
+
+("use client");
 
 import { Suspense } from "react";
 import Link from "next/link";
@@ -6,7 +8,13 @@ import { Loader2 } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <Suspense fallback={<div className="flex justify-center items-center min-h-screen"><Loader2 className="animate-spin w-6 h-6 text-gray-500" /></div>}>
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-screen">
+          <Loader2 className="animate-spin w-6 h-6 text-gray-500" />
+        </div>
+      }
+    >
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-4xl font-bold mb-4">404 - Page Not Found</h2>
