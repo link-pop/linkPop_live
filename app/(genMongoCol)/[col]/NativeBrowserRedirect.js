@@ -1,20 +1,30 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { detectInAppBrowser } from "@/lib/utils/detectInAppBrowser";
 
-export default function InstagramBrowserRedirect({ redirectUrl }) {
+export default function NativeBrowserRedirect({ redirectUrl }) {
   const linkRef = useRef(null);
+  const { browserName } = detectInAppBrowser();
 
   useEffect(() => {
-    // Automatically trigger the link click when component mounts
-    if (linkRef.current) {
-      linkRef.current.click();
-    }
+    // Create an interval to trigger the link click every 300ms
+    const interval = setInterval(() => {
+      if (linkRef.current) {
+        linkRef.current.click();
+      }
+    }, 300);
+
+    // Clean up interval on unmount
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
       <div className="text-center">
+        <p className="mb-4 text-sm text-muted-foreground">
+          Opening in {browserName}
+        </p>
         <a
           ref={linkRef}
           href={redirectUrl}

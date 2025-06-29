@@ -14,6 +14,7 @@ import {
 } from "@/lib/utils/constants";
 import InAppBrowserRedirect from "./InAppBrowserRedirect";
 import InstagramBrowserRedirect from "./InstagramBrowserRedirect";
+import NativeBrowserRedirect from "./NativeBrowserRedirect";
 import { detectInAppBrowser } from "@/lib/utils/detectInAppBrowser";
 
 export default function ClientSideProfileTracker({
@@ -36,6 +37,7 @@ export default function ClientSideProfileTracker({
   const [showInAppBrowserRedirect, setShowInAppBrowserRedirect] =
     useState(false);
   const [showInstagramRedirect, setShowInstagramRedirect] = useState(false);
+  const [useNativeBrowser, setUseNativeBrowser] = useState(false);
   const pathname = usePathname();
 
   // Check if current path is in excluded routes
@@ -132,13 +134,9 @@ export default function ClientSideProfileTracker({
           // Handle redirects even if we skip tracking
           if (redirectUrl) {
             // Check for in-app browsers and show redirect UI
-            const { isInAppBrowser, browserName } = detectInAppBrowser();
+            const { isInAppBrowser } = detectInAppBrowser();
             if (isInAppBrowser) {
-              if (browserName === "Instagram") {
-                setShowInstagramRedirect(true);
-              } else {
-                setShowInAppBrowserRedirect(true);
-              }
+              setUseNativeBrowser(true);
               return;
             }
             window.location.href = redirectUrl;
@@ -174,13 +172,9 @@ export default function ClientSideProfileTracker({
           // Handle redirects even if we skip tracking
           if (redirectUrl) {
             // Check for in-app browsers and show redirect UI
-            const { isInAppBrowser, browserName } = detectInAppBrowser();
+            const { isInAppBrowser } = detectInAppBrowser();
             if (isInAppBrowser) {
-              if (browserName === "Instagram") {
-                setShowInstagramRedirect(true);
-              } else {
-                setShowInAppBrowserRedirect(true);
-              }
+              setUseNativeBrowser(true);
               return;
             }
             window.location.href = redirectUrl;
@@ -257,13 +251,9 @@ export default function ClientSideProfileTracker({
             // Redirect to original destination
             console.log("Shield Protection: Redirecting to destination");
             // Check for in-app browsers and show redirect UI
-            const { isInAppBrowser, browserName } = detectInAppBrowser();
+            const { isInAppBrowser } = detectInAppBrowser();
             if (isInAppBrowser) {
-              if (browserName === "Instagram") {
-                setShowInstagramRedirect(true);
-              } else {
-                setShowInAppBrowserRedirect(true);
-              }
+              setUseNativeBrowser(true);
               return;
             }
             window.location.href = redirectUrl;
@@ -271,13 +261,9 @@ export default function ClientSideProfileTracker({
         } else if (redirectUrl) {
           // No shield protection, redirect directly
           // Check for in-app browsers and show redirect UI
-          const { isInAppBrowser, browserName } = detectInAppBrowser();
+          const { isInAppBrowser } = detectInAppBrowser();
           if (isInAppBrowser) {
-            if (browserName === "Instagram") {
-              setShowInstagramRedirect(true);
-            } else {
-              setShowInAppBrowserRedirect(true);
-            }
+            setUseNativeBrowser(true);
             return;
           }
           window.location.href = redirectUrl;
@@ -289,13 +275,9 @@ export default function ClientSideProfileTracker({
         // Still redirect even if tracking fails
         if (redirectUrl) {
           // Check for in-app browsers and show redirect UI
-          const { isInAppBrowser, browserName } = detectInAppBrowser();
+          const { isInAppBrowser } = detectInAppBrowser();
           if (isInAppBrowser) {
-            if (browserName === "Instagram") {
-              setShowInstagramRedirect(true);
-            } else {
-              setShowInAppBrowserRedirect(true);
-            }
+            setUseNativeBrowser(true);
             return;
           }
           window.location.href = redirectUrl;
@@ -336,9 +318,9 @@ export default function ClientSideProfileTracker({
     return <InstagramBrowserRedirect redirectUrl={redirectUrl} />;
   }
 
-  // Show in-app browser redirect UI if needed
-  if (showInAppBrowserRedirect && redirectUrl) {
-    return <InAppBrowserRedirect redirectUrl={redirectUrl} />;
+  // Show native browser redirect UI if needed
+  if (useNativeBrowser && redirectUrl) {
+    return <NativeBrowserRedirect redirectUrl={redirectUrl} />;
   }
 
   // This component doesn't render anything visible in production
