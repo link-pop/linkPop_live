@@ -12,6 +12,8 @@ import {
   DASHBOARD_ROUTE,
   MAIN_ROUTE,
 } from "@/lib/utils/constants";
+import InAppBrowserRedirect from "./InAppBrowserRedirect";
+import { detectInAppBrowser } from "@/lib/utils/detectInAppBrowser";
 
 export default function ClientSideProfileTracker({
   visitorId,
@@ -30,9 +32,9 @@ export default function ClientSideProfileTracker({
 }) {
   const [tracked, setTracked] = useState(false);
   const [error, setError] = useState(null);
-  const [showOpenInBrowser, setShowOpenInBrowser] = useState(false);
+  const [showInAppBrowserRedirect, setShowInAppBrowserRedirect] =
+    useState(false);
   const pathname = usePathname();
-  const redirectTimeoutRef = useRef(null);
 
   // Check if current path is in excluded routes
   const isExcludedRoute = [
@@ -54,44 +56,6 @@ export default function ClientSideProfileTracker({
       };
     }
   }, []);
-
-  // In-app browser detection
-  function isInAppBrowser() {
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
-    // Instagram, Facebook, Messenger, TikTok, Twitter, LinkedIn, etc.
-    return /FBAN|FBAV|Instagram|Line\/|MicroMessenger|Twitter|LinkedIn|Snapchat|TikTok|com\.apple\.WebKit\/|FBIOS|FB_IAB|FB4A|FBAN|FBAV|FB_IAB|FB_IAB\/FB4A|FB_IAB\/FBAN|FB_IAB\/FBAV|FB_IAB\/FBIOS|FB_IAB\/Messenger|FB_IAB\/Instagram|FB_IAB\/Line|FB_IAB\/MicroMessenger|FB_IAB\/Twitter|FB_IAB\/LinkedIn|FB_IAB\/Snapchat|FB_IAB\/TikTok|FB_IAB\/com\.apple\.WebKit\//i.test(
-      ua
-    );
-  }
-
-  // Try to open in native browser
-  function openInNativeBrowser(url) {
-    // Android Chrome intent
-    if (/Android/i.test(navigator.userAgent)) {
-      // Try intent:// for Chrome
-      if (navigator.userAgent.includes("Chrome")) {
-        const intentUrl = url.replace(/^https?:\/\//, "");
-        window.location = `intent://${intentUrl}#Intent;scheme=https;package=com.android.chrome;end`;
-        return;
-      }
-    }
-    // iOS: window.open _blank sometimes triggers native browser
-    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      const win = window.open(url, "_blank");
-      if (win) {
-        win.opener = null;
-      }
-      return;
-    }
-    // Fallback: try window.open
-    const win = window.open(url, "_blank");
-    if (win) {
-      win.opener = null;
-    } else {
-      // If popup blocked, fallback to location.href
-      window.location.href = url;
-    }
-  }
 
   // Function to check if visitor is potentially a bot or moderator
   function checkForThreats(userAgent, geoData, referrer) {
@@ -165,6 +129,12 @@ export default function ClientSideProfileTracker({
 
           // Handle redirects even if we skip tracking
           if (redirectUrl) {
+            // Check for in-app browsers and show redirect UI
+            const { isInAppBrowser } = detectInAppBrowser();
+            if (isInAppBrowser) {
+              setShowInAppBrowserRedirect(true);
+              return;
+            }
             window.location.href = redirectUrl;
           }
           return;
@@ -197,12 +167,18 @@ export default function ClientSideProfileTracker({
 
           // Handle redirects even if we skip tracking
           if (redirectUrl) {
+            // Check for in-app browsers and show redirect UI
+            const { isInAppBrowser } = detectInAppBrowser();
+            if (isInAppBrowser) {
+              setShowInAppBrowserRedirect(true);
+              return;
+            }
             window.location.href = redirectUrl;
           }
           return;
         }
 
-        // Basic visitor data
+        // Prepare visitor data for tracking
         const visitorData = {
           visitorId,
           profileId,
@@ -270,35 +246,36 @@ export default function ClientSideProfileTracker({
           } else {
             // Redirect to original destination
             console.log("Shield Protection: Redirecting to destination");
-            // In-app browser handling
-            if (redirected && isInAppBrowser()) {
-              openInNativeBrowser(redirectUrl);
-              // Show fallback button if not redirected in 2s
-              redirectTimeoutRef.current = setTimeout(() => {
-                setShowOpenInBrowser(true);
-              }, 2000);
-            } else {
-              window.location.href = redirectUrl;
+            // Check for in-app browsers and show redirect UI
+            const { isInAppBrowser } = detectInAppBrowser();
+            if (isInAppBrowser) {
+              setShowInAppBrowserRedirect(true);
+              return;
             }
+            window.location.href = redirectUrl;
           }
         } else if (redirectUrl) {
           // No shield protection, redirect directly
-          if (redirected && isInAppBrowser()) {
-            openInNativeBrowser(redirectUrl);
-            // Show fallback button if not redirected in 2s
-            redirectTimeoutRef.current = setTimeout(() => {
-              setShowOpenInBrowser(true);
-            }, 2000);
-          } else {
-            window.location.href = redirectUrl;
+          // Check for in-app browsers and show redirect UI
+          const { isInAppBrowser } = detectInAppBrowser();
+          if (isInAppBrowser) {
+            setShowInAppBrowserRedirect(true);
+            return;
           }
+          window.location.href = redirectUrl;
         }
       } catch (err) {
-        console.error("Error tracking profile visit:", err);
+        console.error("❌ Error tracking profile visit:", err);
         setError(err.message || "Unknown error occurred");
 
         // Still redirect even if tracking fails
         if (redirectUrl) {
+          // Check for in-app browsers and show redirect UI
+          const { isInAppBrowser } = detectInAppBrowser();
+          if (isInAppBrowser) {
+            setShowInAppBrowserRedirect(true);
+            return;
+          }
           window.location.href = redirectUrl;
         }
       }
@@ -307,12 +284,6 @@ export default function ClientSideProfileTracker({
     if (!tracked && !error) {
       trackVisit();
     }
-    // Cleanup timeout on unmount
-    return () => {
-      if (redirectTimeoutRef.current) {
-        clearTimeout(redirectTimeoutRef.current);
-      }
-    };
   }, [
     tracked,
     error,
@@ -338,66 +309,9 @@ export default function ClientSideProfileTracker({
     return <div className="hidden">Tracking error: {error}</div>;
   }
 
-  // Fallback UI: show button to open in browser if auto-redirect fails or if in-app browser is detected and redirected=true
-  if (redirected && isInAppBrowser() && redirectUrl) {
-    // Detect which app for better instructions
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
-    let appName = "in-app browser";
-    if (/Instagram/i.test(ua)) appName = "Instagram";
-    else if (/FBAN|FBAV|FBIOS|FB_IAB|FB4A/i.test(ua)) appName = "Facebook";
-    else if (/Twitter/i.test(ua)) appName = "Twitter";
-    else if (/TikTok/i.test(ua)) appName = "TikTok";
-    else if (/LinkedIn/i.test(ua)) appName = "LinkedIn";
-    else if (/Snapchat/i.test(ua)) appName = "Snapchat";
-    else if (/Line\//i.test(ua)) appName = "LINE";
-    else if (/MicroMessenger/i.test(ua)) appName = "WeChat";
-
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
-        <div className="p-6 rounded bg-accent text-foreground shadow-lg flex flex-col items-center max-w-[90vw]">
-          <div className="mb-4 text-lg font-semibold text-center">
-            You are using the {appName} browser.
-            <br />
-            For the best experience, please open this page in your device's
-            browser.
-          </div>
-          <a
-            href={redirectUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-2 rounded bg-primary text-primary-foreground font-bold mb-2"
-          >
-            Open in Browser
-          </a>
-          <div className="text-sm text-center mt-2">
-            If nothing happens, tap and hold the button above and choose{" "}
-            <b>"Open in browser"</b>.<br />
-            Or use the menu (<b>⋮</b> or <b>...</b>) and select{" "}
-            <b>"Open in browser"</b>.
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (showOpenInBrowser && redirectUrl) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
-        <div className="p-6 rounded bg-accent text-foreground shadow-lg flex flex-col items-center">
-          <div className="mb-4 text-lg font-semibold">
-            Please open this page in your browser
-          </div>
-          <a
-            href={redirectUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-2 rounded bg-primary text-primary-foreground font-bold"
-          >
-            Open in Browser
-          </a>
-        </div>
-      </div>
-    );
+  // Show in-app browser redirect UI if needed
+  if (showInAppBrowserRedirect && redirectUrl) {
+    return <InAppBrowserRedirect redirectUrl={redirectUrl} />;
   }
 
   // This component doesn't render anything visible in production
