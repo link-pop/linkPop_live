@@ -12,7 +12,6 @@ import {
   DASHBOARD_ROUTE,
   MAIN_ROUTE,
 } from "@/lib/utils/constants";
-import InstagramBrowserRedirect from "./InstagramBrowserRedirect";
 import NativeBrowserRedirect from "./NativeBrowserRedirect";
 import { detectInAppBrowser } from "@/lib/utils/detectInAppBrowser";
 
@@ -310,11 +309,6 @@ export default function ClientSideProfileTracker({
   // Add debugging message for development
   if (process.env.DEV_MODE === "true" && error) {
     return <div className="hidden">Tracking error: {error}</div>;
-  }
-
-  // Show Instagram-specific redirect UI if needed
-  if (showInstagramRedirect && redirectUrl) {
-    return <InstagramBrowserRedirect redirectUrl={redirectUrl} />;
   }
 
   // Show native browser redirect UI if needed
