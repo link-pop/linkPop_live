@@ -34,6 +34,7 @@ import ReferralCodeDetector from "@/components/Referral/ReferralCodeDetector";
 import Footer2 from "@/components/Nav/Footer/Footer2";
 import Header2 from "@/components/Nav/Header/Header2";
 import OnboardingRedirector from "@/components/Custom/OnboardingRedirector";
+import InAppRedirectScript from "@/components/ui/shared/InAppRedirectScript";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -64,6 +65,7 @@ export default async function RootLayout({ children }) {
             <meta name="apple-mobile-web-app-title" content="LinkPop" />
           </>
         )}
+        <InAppRedirectScript />
       </head>
       <body className={`${sora.variable} antialiased`}>
         {/* // * Root className needed to select ONLY MY APP elements, not eg Clerk (if select by body)*/}
