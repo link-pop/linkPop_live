@@ -12,7 +12,6 @@ import {
   DASHBOARD_ROUTE,
   MAIN_ROUTE,
 } from "@/lib/utils/constants";
-import InAppBrowserRedirect from "./InAppBrowserRedirect";
 import InstagramBrowserRedirect from "./InstagramBrowserRedirect";
 import NativeBrowserRedirect from "./NativeBrowserRedirect";
 import { detectInAppBrowser } from "@/lib/utils/detectInAppBrowser";
