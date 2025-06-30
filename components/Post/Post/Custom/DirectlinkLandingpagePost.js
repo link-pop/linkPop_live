@@ -22,6 +22,7 @@ export default function DirectlinkLandingpagePost(props) {
     col,
     useCard = false,
     className = "maw700 wf fui !p0 !m0",
+    index = null, // Add index prop for numbering
   } = props;
   const { name, username } = post;
   const [isActive, setIsActive] = useState(post.active);
@@ -68,7 +69,7 @@ export default function DirectlinkLandingpagePost(props) {
     } catch (error) {
       // Revert local state if there was an error
       setIsActive(!e.target.checked);
-      console.error("Error updating active status:", error);
+      console.error("❌ Error updating active status:", error);
       toastSet({
         title: "Failed to update status",
         variant: "destructive",
@@ -103,6 +104,11 @@ export default function DirectlinkLandingpagePost(props) {
           <div className="mb15 bg-accent/20 wf bw1 p10 br10">
             {/* Name */}
             <div className="flex items-center">
+              {index !== null && (
+                <span className="text-sm font-bold text-muted-foreground mr-2">
+                  #{index}
+                </span>
+              )}
               <h3 className="text-lg font-medium">
                 {/* {props.namePrefix || ""} */}
                 {username || name}

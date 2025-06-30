@@ -24,7 +24,7 @@ export default function PostsDepOnMongoCollection(props) {
     onReply,
   } = props;
 
-  const renderPost = (post) => {
+  const renderPost = (post, index) => {
     let CustomPostComponent;
     try {
       // Import custom component based on collection name
@@ -48,6 +48,7 @@ export default function PostsDepOnMongoCollection(props) {
             postsPaginationType,
             setCommentTextState,
             onReply,
+            index: index + 1, // Pass 1-based index for display (e.g., #1, #2, #3)
           }}
         />
       );
@@ -62,7 +63,14 @@ export default function PostsDepOnMongoCollection(props) {
       return (
         <Post
           key={post._id}
-          {...{ post, mongoUser, col, isAdmin, postsPaginationType }}
+          {...{
+            post,
+            mongoUser,
+            col,
+            isAdmin,
+            postsPaginationType,
+            index: index + 1,
+          }}
         />
       );
     }
@@ -80,7 +88,7 @@ export default function PostsDepOnMongoCollection(props) {
         <PostsFoundNum {...{ postsFoundNum, searchParams, col }} />
       )}
       <div className={`${className}`}>
-        {posts.map((post) => renderPost(post))}
+        {posts.map((post, index) => renderPost(post, index))}
       </div>
 
       {/* // * commented to NOT show NoPosts on for comments (ugly)  */}
