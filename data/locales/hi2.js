@@ -1248,6 +1248,14 @@ const hi = {
   drugs: "नशीली दवाएँ",
   offensive: "आपत्तिजनक",
   ok: "ठीक है",
+  MINOR_DETECTED: "नाबालिग का पता चला",
+  NSFW_DETECTED: "अप्रयुक्त सामग्री",
+  NO_FACE_DETECTED: "चेहरा नहीं मिला",
+  SUNGLASSES_DETECTED: "धूप का चश्मा पहना हुआ",
+  LOW_QUALITY_IMAGE: "कम गुणवत्ता वाली छवि",
+  ADD_ANOTHER_IMAGE:
+    "कृपया एक और छवि अपलोड करें या यदि आपको लगता है कि यह त्रुटि है तो समर्थन से संपर्क करें।",
+  inactive: "निष्क्रिय",
 };
 
 export default hi;

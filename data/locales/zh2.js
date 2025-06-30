@@ -1177,6 +1177,13 @@ const zh = {
   drugs: "毒品",
   offensive: "冒犯性内容",
   ok: "确定",
+  MINOR_DETECTED: "未成年人检测到",
+  NSFW_DETECTED: "不适宜内容检测到",
+  NO_FACE_DETECTED: "未检测到人脸",
+  SUNGLASSES_DETECTED: "太阳镜检测到",
+  LOW_QUALITY_IMAGE: "低质量图像",
+  ADD_ANOTHER_IMAGE: "请上传另一张图片或联系支持团队，如果您认为这是错误。",
+  inactive: "未激活",
 };
 
 export default zh;

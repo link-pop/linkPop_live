@@ -18,12 +18,6 @@ export default function Toast() {
     }
   }, [toast.title, toast.text, toast.isOpen]);
 
-  const toastIcon = !toast.icon ? (
-    <CircleCheckBig className="mr5" />
-  ) : (
-    toast.icon
-  );
-
   // Helper function to translate content if it looks like a translation key
   const translateIfKey = (content) => {
     if (
@@ -48,8 +42,6 @@ export default function Toast() {
       >
         <div className="f fwn aic">
           {toast?.comp}
-
-          {toast.showIcon && toastIcon}
 
           {/* Show custom content if provided, otherwise show default title/text */}
           {toast.customContent ? (

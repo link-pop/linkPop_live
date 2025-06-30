@@ -117,6 +117,7 @@ const en = {
   createLandingPageButton: "Create Your Landing Page",
   name: "Name",
   active: "Active",
+  inactive: "Inactive",
 
   // Direct Link Demo Section
   directLinkDemoTitle: "Direct Links for Instant Redirection",
@@ -475,7 +476,6 @@ const en = {
   trialExpired: "Trial Expired",
   trialDaysLeft: "Trial ({{days}} days left)",
   canceledActiveUntilPeriodEnd: "Canceled (Active until period end)",
-  active: "Active",
   canceledOn: "Canceled on",
   trialEndsOn: "Trial ends on",
   trialEndedOn: "Trial ended on",

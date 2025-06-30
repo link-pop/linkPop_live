@@ -1285,6 +1285,7 @@ const en = {
   LOW_QUALITY_IMAGE: "Low Quality Image",
   ADD_ANOTHER_IMAGE:
     "Please upload another image or contact support if you think this is an error.",
+  inactive: "Inactive",
 };
 
 export default en;

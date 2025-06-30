@@ -1245,6 +1245,14 @@ const es = {
   drugs: "Drogas",
   offensive: "Ofensivo",
   ok: "OK",
+  MINOR_DETECTED: "Menor Detectado",
+  NSFW_DETECTED: "Contenido Inapropiado",
+  NO_FACE_DETECTED: "No se Detectó Rostro",
+  SUNGLASSES_DETECTED: "Se Detectaron Gafas de Sol",
+  LOW_QUALITY_IMAGE: "Imagen de Baja Calidad",
+  ADD_ANOTHER_IMAGE:
+    "Por favor, sube otra imagen o contacta con soporte si crees que esto es un error.",
+  inactive: "Inactivo",
 };
 
 export default es;

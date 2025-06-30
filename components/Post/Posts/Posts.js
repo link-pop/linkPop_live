@@ -38,12 +38,15 @@ export default async function Posts({
     data = await postsColSpecialHandling(col, searchParams, data, mongoUser);
   }
 
-  // test com 1
-  // TODO !!!!!!! make sep new fn
-  // * HANDLE DIRECTLINKS ACCESS
+  // * HANDLE DIRECTLINKS/LANDINGPAGES ACCESS
   if (["directlinks", "landingpages"].includes(col.name)) {
-    searchParams = {
-      createdBy: mongoUser._id.toString(),
+    // Apply special handling for directlinks and landingpages to include filtering
+    data = await postsColSpecialHandling(col, searchParams, data, mongoUser);
+
+    // Set the base data filter to only show user's own items
+    data = {
+      ...data,
+      createdBy: mongoUser._id,
     };
   }
 
@@ -67,12 +70,16 @@ export default async function Posts({
               limit,
               mongoUser,
               className,
+              isOwner: ["directlinks", "landingpages"].includes(col.name)
+                ? true
+                : false,
             }}
           />
         )}
         {postsPaginationType === "page" && (
           <PostsServerWithPagination
             {...{
+              data,
               searchParams,
               col,
               isAdmin,

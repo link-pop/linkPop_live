@@ -125,6 +125,24 @@ export const postsColSpecialHandling = async (
     // If storeitemType is "all", no additional filtering is needed
   }
 
+  // * HANDLE DIRECTLINKS AND LANDINGPAGES FILTERING
+  if (["directlinks", "landingpages"].includes(col.name) && searchParams.type) {
+    if (searchParams.type === "active") {
+      // Filter for active directlinks/landingpages
+      data = {
+        ...data,
+        active: true,
+      };
+    } else if (searchParams.type === "inactive") {
+      // Filter for inactive directlinks/landingpages
+      data = {
+        ...data,
+        active: false,
+      };
+    }
+    // If type is "all", no additional filtering is needed
+  }
+
   // * HANDLE FEED FILTERING
   if (["feeds"].includes(col.name) && searchParams.feedType) {
     if (searchParams.feedType === "liked") {

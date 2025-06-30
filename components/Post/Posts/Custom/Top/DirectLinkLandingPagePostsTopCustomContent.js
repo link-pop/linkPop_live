@@ -13,6 +13,8 @@ import {
 import { getSubscription2DisplayInfo } from "@/components/Post/AddPostCustom/LinkPop/subscription2UIUtils";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { DASHBOARD_ROUTE } from "@/lib/utils/constants";
+import DirectlinksTypeSwitch from "@/components/Post/Posts/Custom/MoreThanFriend/DirectlinksTypeSwitch";
+import LandingpagesTypeSwitch from "@/components/Post/Posts/Custom/MoreThanFriend/LandingpagesTypeSwitch";
 
 export default function DirectLinkLandingPagePostsTopCustomContent({
   col,
@@ -71,6 +73,14 @@ export default function DirectLinkLandingPagePostsTopCustomContent({
         <BarChart2 className="w-4 h-4 mr-2" />
         {t("viewAllAnalytics")}
       </Link>
+
+      {/* Type Switch for filtering active/inactive */}
+      {col.name === "directlinks" && (
+        <DirectlinksTypeSwitch mongoUser={mongoUser} />
+      )}
+      {col.name === "landingpages" && (
+        <LandingpagesTypeSwitch mongoUser={mongoUser} />
+      )}
 
       <div className={`fc g4`}>
         {col.name !== "landingpages" && (
