@@ -521,6 +521,7 @@ const en = {
   emailSupport: "Email Support",
   whatsappSupport: "WhatsApp Support",
   telegramSupport: "Telegram Support",
+  supportOption: "Support Option",
   email: "Email",
   whatsapp: "WhatsApp",
   telegram: "Telegram",

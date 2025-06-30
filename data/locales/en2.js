@@ -504,6 +504,7 @@ const en = {
   message: "Message",
   submit: "Submit",
   emailSupport: "Email Support",
+  supportOption: "Support Option",
   whatsappSupport: "WhatsApp Support",
   telegramSupport: "Telegram Support",
   email: "Email",

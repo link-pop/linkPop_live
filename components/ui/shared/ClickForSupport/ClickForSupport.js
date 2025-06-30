@@ -4,7 +4,6 @@ import { useContext } from "@/components/Context/Context";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { useRouter } from "next/navigation";
 
-// ! code start ClickForSupport
 export default function ClickForSupport({
   title,
   hrefs = [
@@ -30,6 +29,25 @@ export default function ClickForSupport({
   buttonText = buttonText || t("getSupport");
   supportSectionTitle = supportSectionTitle || t("needHelp");
   supportSectionText = supportSectionText || t("supportTeamHere");
+
+  // --- Ensure Telegram is always present ---
+  const TELEGRAM_LINK = "t.me/Linkpop_support";
+  const normalizeTelegram = (href) => {
+    if (!href) return "";
+    if (href.startsWith("@")) return href.slice(1).toLowerCase();
+    if (href.startsWith("https://t.me/"))
+      return href.replace("https://t.me/", "").toLowerCase();
+    if (href.startsWith("t.me/"))
+      return href.replace("t.me/", "").toLowerCase();
+    return href.toLowerCase();
+  };
+  const hasTelegram = hrefs.some(
+    (href) => normalizeTelegram(href) === normalizeTelegram(TELEGRAM_LINK)
+  );
+  if (!hasTelegram) {
+    hrefs = [...hrefs, TELEGRAM_LINK];
+  }
+  // --- End ensure Telegram ---
 
   // Helper function to determine if a string is a valid email
   const isValidEmail = (email) => {
@@ -95,6 +113,23 @@ export default function ClickForSupport({
     router.push(ADD_CONTACT_ROUTE);
   };
 
+  // Get default label based on href type
+  const getDefaultLabel = (href) => {
+    if (isValidEmail(href)) {
+      return t("emailSupport");
+    }
+
+    if (href.includes("whatsapp")) {
+      return t("whatsappSupport");
+    }
+
+    if (href.includes("telegram") || href.includes("t.me")) {
+      return t("telegramSupport");
+    }
+
+    return t("supportOption"); // fallback
+  };
+
   // Handle click on the support button
   const handleSupportClick = () => {
     // If only one href is provided, handle it directly
@@ -112,7 +147,7 @@ export default function ClickForSupport({
     // If multiple hrefs are provided, show dialog with options
     dialogSet({
       isOpen: true,
-      title: title,
+      title: t("contactSupport"),
       text: t("selectSupportOption"),
       hasCloseIcon: true,
       comp: (
@@ -204,23 +239,6 @@ export default function ClickForSupport({
     );
   };
 
-  // Get default label based on href type
-  const getDefaultLabel = (href) => {
-    if (isValidEmail(href)) {
-      return `${t("email")}: ${href}`;
-    }
-
-    if (href.includes("whatsapp")) {
-      return t("whatsapp");
-    }
-
-    if (href.includes("telegram") || href.includes("t.me")) {
-      return t("telegram");
-    }
-
-    return href.replace(/https?:\/\//, "");
-  };
-
   // Text-only version for the footer or other minimal contexts
   if (textOnly) {
     // If only one href is provided, return a simple link
@@ -291,4 +309,3 @@ export default function ClickForSupport({
     </div>
   );
 }
-// ? code end ClickForSupport
