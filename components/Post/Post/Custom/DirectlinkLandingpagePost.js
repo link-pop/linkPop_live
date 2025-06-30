@@ -70,7 +70,7 @@ export default function DirectlinkLandingpagePost(props) {
       className={className}
       top={
         <>
-          <div className="mb15 bg-accent/20 wf bw1 p10 br10">
+          <div className="mb15 bg-accent/50 wf bw1 p10 br10">
             {/* Name */}
             <div className="flex items-center">
               {index !== null && (

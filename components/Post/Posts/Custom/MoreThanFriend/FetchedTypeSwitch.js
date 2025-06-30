@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { BRAND_INVERT_CLASS } from "@/lib/utils/constants";
 import HorizontalScroll from "@/components/ui/shared/HorizontalScroll";
+import { SITE1, SITE2 } from "@/config/env";
 
 export default function FetchedTypeSwitch({
   mongoUser,
@@ -95,10 +96,10 @@ export default function FetchedTypeSwitch({
             className={`wsn py5 px15 br20 cp flex-shrink-0 transition-colors ${
               currentValue === type.value
                 ? "bg_brand"
-                : "bg-accent text-foreground hover:bg-accent/50"
+                : "bg-accent hover:bg-accent/50"
             }`}
           >
-            <span className={`${BRAND_INVERT_CLASS}`}>
+            <span className={`${SITE1 ? BRAND_INVERT_CLASS : ""}`}>
               {t(type.label)} {!type.hideCount ? ` ${counts[type.value]}` : ""}
             </span>
           </div>
