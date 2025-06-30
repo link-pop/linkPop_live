@@ -491,15 +491,21 @@ export default function AddDirectlinkForm({
               />
             </FormSection>
 
-            <div className="fcc">
-              <FormSubmitButton
-                loading={loading}
-                isUpdateMode={isUpdateMode}
-                isLoadingData={!isExistingDirectlink && isLoadingData}
-                hasReachedLimits={hasReachedSubscriptionLimits}
-                isAdmin={mongoUser?.isAdmin}
-                additionalText={t("directLink")}
-              />
+            {/* Add margin at the bottom to prevent content from being hidden behind the fixed button */}
+            <div className="mb-20"></div>
+
+            {/* Fixed submit button for step 1 */}
+            <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-t border-border pb-4 pt-4">
+              <div className="maw600 mxa fcc">
+                <FormSubmitButton
+                  loading={loading}
+                  isUpdateMode={isUpdateMode}
+                  isLoadingData={!isExistingDirectlink && isLoadingData}
+                  hasReachedLimits={hasReachedSubscriptionLimits}
+                  isAdmin={mongoUser?.isAdmin}
+                  additionalText={t("directLink")}
+                />
+              </div>
             </div>
           </form>
         </>
