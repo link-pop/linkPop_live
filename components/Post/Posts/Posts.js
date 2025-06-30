@@ -7,6 +7,7 @@ import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import { LOGIN_ROUTE } from "@/lib/utils/constants";
 import { getAll } from "@/lib/actions/crud";
 import { postsColSpecialHandling } from "./PostsColSpecialHandling";
+import DirectlinksLandingpagesSearch from "./DirectlinksLandingpagesSearch";
 
 export default async function Posts({
   searchParams = {},
@@ -19,7 +20,7 @@ export default async function Posts({
       : col?.name === "products"
       ? "g20"
       : col?.name === "directlinks" || col?.name === "landingpages"
-      ? "pt50 px15"
+      ? "pt0 px15"
       : "g15"
   }`,
 }) {
@@ -54,6 +55,7 @@ export default async function Posts({
     <>
       {/* // if new left-side PostsSearch needed => make it from scratch (client-side) don't reuse current PostsSearch !!! */}
       {/* <PostsSearch {...{ searchParams, col, isDefaultSearch }} /> */}
+
       <div
         className={`fcc wf oys ${
           col.name === "chatrooms" ? "h-full w-full" : "maw600 mxa"

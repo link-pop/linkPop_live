@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useSearchParams } from "next/navigation";
 import InfiniteScroll from "@/components/ui/infinite-scroll";
 import PostsDepOnMongoCollection from "./PostsDepOnMongoCollection";
 import { getAllPostsNonOwner } from "@/lib/actions/getAllPostsNonOwner";
@@ -35,6 +36,12 @@ export default function PostsClientInfiniteScroll({
 }) {
   const getAllPostsFn = isOwner ? getAllPostsOwner : getAllPostsNonOwner;
 
+  // Read search parameters directly from URL for real-time updates
+  const currentSearchParams = useSearchParams();
+
+  // Convert URLSearchParams to object for compatibility with existing code
+  const liveSearchParams = Object.fromEntries(currentSearchParams.entries());
+
   const {
     data: postsFetchedData,
     fetchNextPage,
@@ -46,7 +53,7 @@ export default function PostsClientInfiniteScroll({
       "posts",
       col.name,
       JSON.stringify(data),
-      searchParams?.toString(),
+      currentSearchParams?.toString(),
     ],
     queryFn: async ({ pageParam = 0 }) => {
       const [posts, totalPosts] = await Promise.all([
@@ -55,7 +62,7 @@ export default function PostsClientInfiniteScroll({
           col,
           skip: limit * pageParam,
           limit,
-          searchParams,
+          searchParams: liveSearchParams,
           mongoUser,
           populate:
             col?.name === "orders"
@@ -66,7 +73,7 @@ export default function PostsClientInfiniteScroll({
         getAllPostsFn({
           data,
           col,
-          searchParams,
+          searchParams: liveSearchParams,
           mongoUser,
         }),
       ]);
@@ -79,9 +86,11 @@ export default function PostsClientInfiniteScroll({
     initialPageParam: 0,
     refetchOnWindowFocus: false,
     enabled: Boolean(col),
-    staleTime: col.name === "chatrooms" && searchParams?.q ? 0 : 1000 * 60 * 5, // No cache for chatroom search
+    staleTime:
+      col.name === "chatrooms" && liveSearchParams?.q ? 0 : 1000 * 60 * 5, // No cache for chatroom search
     refetchOnMount: true, // Always refetch when component mounts
-    cacheTime: col.name === "chatrooms" && searchParams?.q ? 0 : 1000 * 60 * 5, // Don't cache chatroom search results
+    cacheTime:
+      col.name === "chatrooms" && liveSearchParams?.q ? 0 : 1000 * 60 * 5, // Don't cache chatroom search results
   });
 
   const posts = postsFetchedData?.pages.flatMap((page) => page.posts) ?? [];
@@ -115,7 +124,7 @@ export default function PostsClientInfiniteScroll({
             hasMore,
             mongoUser,
             className: `${className} ${scrollLTR ? "!flex-row fwn" : ""}`,
-            searchParams,
+            searchParams: liveSearchParams,
             showFoundNum,
             showCategories,
             isLoading,

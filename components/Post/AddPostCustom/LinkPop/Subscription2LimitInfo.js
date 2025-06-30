@@ -38,9 +38,9 @@ export default function Subscription2LimitInfo({ displayInfo, errors }) {
   };
 
   return (
-    <>
+    <div className="px15">
       <div
-        className={`👋 maw600 wf mxa p15 mb-4 p-3 rounded-md ${displayInfo.className}`}
+        className={`👋 maw600 wf mxa p15 mb-4 p-3 br10 ${displayInfo.className}`}
       >
         <p className="text-sm">
           <span className="font-medium">
@@ -80,6 +80,6 @@ export default function Subscription2LimitInfo({ displayInfo, errors }) {
       {errors?.subscription && (
         <div className="text-red-500 text-sm mb-4">{errors.subscription}</div>
       )}
-    </>
+    </div>
   );
 }

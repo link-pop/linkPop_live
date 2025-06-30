@@ -16,6 +16,7 @@ import { DASHBOARD_ROUTE } from "@/lib/utils/constants";
 import DirectlinksTypeSwitch from "@/components/Post/Posts/Custom/MoreThanFriend/DirectlinksTypeSwitch";
 import LandingpagesTypeSwitch from "@/components/Post/Posts/Custom/MoreThanFriend/LandingpagesTypeSwitch";
 import Button2 from "@/components/ui/shared/Button/Button2";
+import DirectlinksLandingpagesSearch from "../../DirectlinksLandingpagesSearch";
 
 export default function DirectLinkLandingPagePostsTopCustomContent({
   col,
@@ -61,46 +62,54 @@ export default function DirectLinkLandingPagePostsTopCustomContent({
 
   return (
     <div className={`wf`}>
-      {displayInfo && (
+      {/* Sticky bar must be at the top-level and not inside a flex/column container with overflow! */}
+      <div className="fc wf sticky pt15 t0 z-20 bg-background py-2 items-center shadow-sm">
+        <div className="fcc min-[1000px]:fwn g15 mxa">
+          {col.name !== "landingpages" && (
+            <LeftNavNewPostBtn
+              isMobile={false}
+              showLabels={true}
+              isExpanded={true}
+              className="por t0 wf"
+            />
+          )}
+          {col.name !== "directlinks" && (
+            <LeftNavNewLandingPageBtn
+              isMobile={false}
+              showLabels={true}
+              isExpanded={true}
+              className="por t0 wf"
+            />
+          )}
+          <Button2
+            variant="outline"
+            href={DASHBOARD_ROUTE}
+            className="fcc fwn wf aic px-3 py-2 bg-background text-foreground rounded-md"
+            leftIcon={BarChart2}
+            text={t("viewAllAnalytics")}
+          />
+        </div>
+
+        {/* Search bar at the top */}
+        {["directlinks", "landingpages"].includes(col.name) && (
+          <DirectlinksLandingpagesSearch />
+        )}
+
+        {/* Type Switch for filtering active/inactive */}
+        {col.name === "directlinks" && (
+          <DirectlinksTypeSwitch mongoUser={mongoUser} />
+        )}
+        {col.name === "landingpages" && (
+          <LandingpagesTypeSwitch mongoUser={mongoUser} />
+        )}
+      </div>
+
+      {/* Subscription limit info (if needed) */}
+      {displayInfo && displayInfo.needsUpgrade && (
         <div className="mb-4">
           <Subscription2LimitInfo displayInfo={displayInfo} errors={{}} />
         </div>
       )}
-
-      <Button2
-        variant="outline"
-        href={DASHBOARD_ROUTE}
-        className="mb30 fcc fwn wfc mxa aic px-3 py-2 bg-background text-foreground rounded-md"
-        leftIcon={BarChart2}
-        text={t("viewAllAnalytics")}
-      />
-
-      {/* Type Switch for filtering active/inactive */}
-      {col.name === "directlinks" && (
-        <DirectlinksTypeSwitch mongoUser={mongoUser} />
-      )}
-      {col.name === "landingpages" && (
-        <LandingpagesTypeSwitch mongoUser={mongoUser} />
-      )}
-
-      <div className={`fc g4`}>
-        {col.name !== "landingpages" && (
-          <LeftNavNewPostBtn
-            isMobile={false}
-            showLabels={true}
-            isExpanded={true}
-            className="por t30 mxa wfc"
-          />
-        )}
-        {col.name !== "directlinks" && (
-          <LeftNavNewLandingPageBtn
-            isMobile={false}
-            showLabels={true}
-            isExpanded={true}
-            className="por t30 mxa wfc"
-          />
-        )}
-      </div>
     </div>
   );
 }

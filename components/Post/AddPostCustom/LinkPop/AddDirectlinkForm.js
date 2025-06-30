@@ -398,7 +398,7 @@ export default function AddDirectlinkForm({
         className="fcc mb15"
       />
 
-      {!isExistingDirectlink && (
+      {!isExistingDirectlink && displayInfo && displayInfo.needsUpgrade && (
         <Subscription2LimitInfo displayInfo={displayInfo} errors={errors} />
       )}
 

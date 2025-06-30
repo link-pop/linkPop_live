@@ -1085,7 +1085,7 @@ function AddLandingPageForm({
 
       <FormErrorDisplay error={errors.general} />
 
-      {!isExistingLandingPage && (
+      {!isExistingLandingPage && displayInfo && displayInfo.needsUpgrade && (
         <Subscription2LimitInfo displayInfo={displayInfo} errors={errors} />
       )}
 
