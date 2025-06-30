@@ -4,8 +4,8 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 import { SITE2 } from "@/config/env";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/ui/shared/LoadingSpinner/LoadingSpinner";
+import OverlayPortal from "@/components/ui/shared/OverlayPortal";
 
-// ! code start AuthContent
 const AuthContent = () => {
   const { t, currentLang } = useTranslation();
   const [showLoader, setShowLoader] = useState(false);
@@ -198,9 +198,11 @@ const AuthContent = () => {
     return (
       <>
         {showLoader && (
-          <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-background/80">
-            <LoadingSpinner size="lg" />
-          </div>
+          <OverlayPortal>
+            <div className="fixed top-0 left-0 h-[100dvh] w-[100dvw] z-[999999] flex items-center justify-center bg-background/80">
+              <LoadingSpinner />
+            </div>
+          </OverlayPortal>
         )}
         <p className={`fz38 tac por z-10 white tracking-[1.5]`}>{t("signIn")}</p>
         <p className={`fz15 tal por l5 z-10 white`}>{t("toPowerUpYourLinks")}</p>
@@ -212,9 +214,11 @@ const AuthContent = () => {
   return (
     <>
       {showLoader && (
-        <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-background/80">
-          <LoadingSpinner size="lg" />
-        </div>
+        <OverlayPortal>
+          <div className="fixed top-0 left-0 h-[100dvh] w-[100dvw] z-[999999] flex items-center justify-center bg-background/80">
+            <LoadingSpinner />
+          </div>
+        </OverlayPortal>
       )}
       <p className={`fz38 tac por z-10 white tracking-[1.5]`}>{t("signIn")}</p>
       <p className={`fz15 tal por l5 z-10 white`}>{t("toSupportYour")}</p>
@@ -224,5 +228,3 @@ const AuthContent = () => {
 };
 
 export default AuthContent;
-// ? code end AuthContent 
-// ? code end AuthContent 
