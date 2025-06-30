@@ -34,6 +34,7 @@ import FormSubmitButton from "./FormSubmitButton";
 import FormShieldProtectionSection from "./FormShieldProtectionSection";
 import TitleWithBackButton from "@/components/ui/shared/PageHeading/TitleWithBackButton";
 import { useQueryClient } from "@tanstack/react-query";
+import { DIRECTLINKS_ROUTE } from "@/lib/utils/constants";
 
 export default function AddDirectlinkForm({
   col = "directlinks",
@@ -250,6 +251,7 @@ export default function AddDirectlinkForm({
           col,
           data: { _id: updatingPost._id },
           update: formattedData,
+          revalidate: DIRECTLINKS_ROUTE,
         });
       } else if (savedDirectlinkId) {
         // Update existing directlink that was created earlier in the flow
@@ -261,6 +263,7 @@ export default function AddDirectlinkForm({
           col,
           data: { _id: savedDirectlinkId },
           update: formattedData,
+          revalidate: DIRECTLINKS_ROUTE,
         });
       } else {
         // Create new directlink
@@ -271,6 +274,7 @@ export default function AddDirectlinkForm({
             ...formattedData,
             createdBy: mongoUser?._id,
           },
+          revalidate: DIRECTLINKS_ROUTE,
         });
       }
 

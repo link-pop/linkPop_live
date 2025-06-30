@@ -1132,7 +1132,7 @@ const es = {
   directlinkInfo: "Información del enlace",
   directlinkCreated:
     "¡Enlace directo creado con éxito! Ahora configure el filtro geográfico.",
-  skipGeoFilter: "Omitir filtro geográfico y finalizar",
+  skipGeoFilter: "Finalizar",
   directlinkConfigurationComplete:
     "¡Configuración del enlace directo completa!",
   continueToGeoFiltering: "Filtrado geográfico",

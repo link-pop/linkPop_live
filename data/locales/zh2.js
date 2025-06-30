@@ -710,7 +710,7 @@ const zh = {
   // Direct Link Steps
   directlinkInfo: "链接信息",
   directlinkCreated: "直达链接创建成功！现在设置地理筛选。",
-  skipGeoFilter: "跳过地理筛选并完成",
+  skipGeoFilter: "完成",
   directlinkConfigurationComplete: "直达链接配置完成！",
   continueToGeoFiltering: "继续进行地理筛选",
   finish: "完成设置",

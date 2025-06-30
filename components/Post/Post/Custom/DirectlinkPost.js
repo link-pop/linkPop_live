@@ -4,7 +4,8 @@ import { BadgeMinus, BadgeDollarSign, Shield } from "lucide-react";
 import { useTranslation } from "../../../Context/TranslationContext";
 
 export default function DirectlinkPost(props) {
-  const { name, destinationUrl, freeUrl, safePageUrl } = props.post;
+  const { name, destinationUrl, freeUrl, safePageUrl, shieldProtection } =
+    props.post;
   const { t } = useTranslation();
 
   return (
@@ -49,7 +50,7 @@ export default function DirectlinkPost(props) {
           )}
 
           {/* Safe Page URL (if available) */}
-          {safePageUrl && (
+          {safePageUrl && shieldProtection && (
             <div className="f aic island">
               <Link
                 href={safePageUrl}

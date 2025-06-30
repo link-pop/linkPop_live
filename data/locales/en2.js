@@ -777,7 +777,7 @@ const en = {
   directlinkInfo: "Link Info",
   directlinkCreated:
     "Direct link created successfully! Now set up geo filtering.",
-  skipGeoFilter: "Skip Geo Filter & Finish",
+  skipGeoFilter: "Finish",
   directlinkConfigurationComplete: "Direct link configuration complete!",
   continueToGeoFiltering: "To Geo Filtering",
   finish: "Finish Setup",
