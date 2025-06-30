@@ -75,7 +75,7 @@ export default function Toggle({
                 ref={(el) => (labelsRef.current[index] = el)}
                 onClick={() => handleTabSwitch(index)}
                 className={cn(
-                  "cp py-2 px-4 text-center flex-1",
+                  "wsn cp py-2 px-4 text-center flex-1",
                   switched === index
                     ? "brand font-medium"
                     : "text-foreground hover:bg-accent",
