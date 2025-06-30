@@ -117,6 +117,17 @@ export default function AddDirectlinkForm({
 
   const handleChange = createChangeHandler((e) => {
     const { name, value, type, checked } = e.target;
+
+    // If changing active status, update React Query cache
+    if (name === "active" && isUpdateMode) {
+      queryClient.setQueryData(["posts", col], (oldData) => {
+        if (!oldData) return oldData;
+        return oldData.map((p) =>
+          p._id === updatingPost._id ? { ...p, active: checked } : p
+        );
+      });
+    }
+
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,

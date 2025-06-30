@@ -64,7 +64,7 @@ export default function DirectLinkLandingPagePostsTopCustomContent({
     <div className={`wf`}>
       {/* Sticky bar must be at the top-level and not inside a flex/column container with overflow! */}
       <div className="fc wf sticky pt15 t0 z-20 bg-background py-2 items-center shadow-sm">
-        <div className="fcc min-[1000px]:fwn g15 mxa">
+        <div className="px15 fcc min-[1000px]:fwn g15 mxa">
           {col.name !== "landingpages" && (
             <LeftNavNewPostBtn
               isMobile={false}

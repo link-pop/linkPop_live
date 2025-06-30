@@ -12,9 +12,9 @@ import {
 import { useContext } from "@/components/Context/Context";
 import PostAdminIcons from "../Icons/PostAdminIcons";
 import FormActiveCheckbox from "../../AddPostCustom/LinkPop/FormActiveCheckbox";
-import { update } from "@/lib/actions/crud";
 import { useState } from "react";
 import { useTranslation } from "@/components/Context/TranslationContext";
+import usePostActive from "@/hooks/usePostActive";
 
 export default function DirectlinkLandingpagePost(props) {
   const {
@@ -22,13 +22,13 @@ export default function DirectlinkLandingpagePost(props) {
     col,
     useCard = false,
     className = "maw700 wf fui !p0 !m0",
-    index = null, // Add index prop for numbering
+    index = null,
   } = props;
   const { name, username } = post;
-  const [isActive, setIsActive] = useState(post.active);
   const [copied, setCopied] = useState(false);
   const { toastSet } = useContext();
   const { t } = useTranslation();
+  const { handleActiveChange } = usePostActive({ post, col: col.name });
 
   // Create the URL from the environment variable and name
   const pageUrl = `${process.env.NEXT_PUBLIC_CLIENT_URL}/${name}`;
@@ -45,37 +45,6 @@ export default function DirectlinkLandingpagePost(props) {
 
   // Get locations to display (limit to first 3 for display)
   const locationsToShow = post.geoFilterLocations?.slice(0, 3) || [];
-
-  const handleActiveChange = async (e) => {
-    try {
-      const newActiveState = e.target.checked;
-      setIsActive(newActiveState); // Update local state immediately for UI feedback
-
-      const result = await update({
-        col: col.name,
-        data: { _id: post._id },
-        update: { active: newActiveState },
-      });
-
-      if (result) {
-        // Update was successful
-        toastSet({
-          title: newActiveState
-            ? "Activated successfully"
-            : "Deactivated successfully",
-          showIcon: true,
-        });
-      }
-    } catch (error) {
-      // Revert local state if there was an error
-      setIsActive(!e.target.checked);
-      console.error("❌ Error updating active status:", error);
-      toastSet({
-        title: "Failed to update status",
-        variant: "destructive",
-      });
-    }
-  };
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(pageUrl);
@@ -109,10 +78,7 @@ export default function DirectlinkLandingpagePost(props) {
                   #{index}
                 </span>
               )}
-              <h3 className="text-lg font-medium">
-                {/* {props.namePrefix || ""} */}
-                {username || name}
-              </h3>
+              <h3 className="text-lg font-medium">{username || name}</h3>
             </div>
 
             {/* Description if available */}
@@ -198,7 +164,7 @@ export default function DirectlinkLandingpagePost(props) {
                 }`}
               >
                 <FormActiveCheckbox
-                  isActive={isActive}
+                  isActive={post.active}
                   onChange={handleActiveChange}
                   hideLabel={true}
                   className=""

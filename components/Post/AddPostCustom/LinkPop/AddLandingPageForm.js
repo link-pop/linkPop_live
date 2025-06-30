@@ -323,13 +323,24 @@ function AddLandingPageForm({
     router.replace(window.location.pathname); // Clear URL params
   };
 
-  const handleChange = createChangeHandler((e) => {
+  const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+
+    // If changing active status, update React Query cache
+    if (name === "active" && isUpdateMode) {
+      queryClient.setQueryData(["posts", col], (oldData) => {
+        if (!oldData) return oldData;
+        return oldData.map((p) =>
+          p._id === updatingPost._id ? { ...p, active: checked } : p
+        );
+      });
+    }
+
+    setFormData((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
-    });
-  });
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
