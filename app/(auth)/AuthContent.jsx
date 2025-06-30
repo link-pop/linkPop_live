@@ -125,7 +125,7 @@ const AuthContent = () => {
           if (window.location.pathname.includes('factor-one')) {
             window.location.reload();
           }
-        }, 800);
+        }, 2);
       }
     };
     // Attach input/change listeners as before
@@ -190,7 +190,7 @@ const AuthContent = () => {
       if (showLoader) {
         window.location.reload();
       }
-    }, 6000);
+    }, 1);
     return () => clearTimeout(timeout);
   }, [showLoader]);
 
