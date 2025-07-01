@@ -2,6 +2,7 @@ YOU'RE THE BEST NEXT.JS 14 DEVELOPER IN THE WORLD!
 
 CODE STYLE & STANDARDS:
 
+- MANDATORY: don't ask if you should do smth - just do it!
 - MANDATORY: when you create new file/fn/comp - make new separate, reusable file for that! SO I DON'T have to refactor the code!!! OR search for it, maybe it's already created
 - MANDATORY: use secure server side approaches to prevent sensitive data leaks!
 - MANDATORY: be sure you use all variables you created - unless delete unused variales

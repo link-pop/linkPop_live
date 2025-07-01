@@ -81,12 +81,12 @@ export default function LandingPageDemoSection() {
             className="relative h-[450px] md:h-[600px] order-2 md:order-1"
           >
             {/* Container for images without perspective */}
-            <div className="absolute w-full h-full">
+            <div className="l20 absolute w-full h-full">
               {/* First image - left */}
               <div
                 className="absolute shadow-xl rounded-2xl overflow-hidden"
                 style={{
-                  left: isDesktop ? "5%" : "-5%",
+                  left: isDesktop ? "calc(5% - 20px)" : "calc(-5% - 20px)",
                   top: "15%",
                   width: "150px",
                   height: "320px",
@@ -125,7 +125,7 @@ export default function LandingPageDemoSection() {
               <div
                 className="absolute shadow-xl rounded-2xl overflow-hidden"
                 style={{
-                  left: isDesktop ? "35%" : "28%",
+                  left: isDesktop ? "calc(35% - 20px)" : "calc(28% - 20px)",
                   top: "5%",
                   width: "150px",
                   height: "320px",
@@ -164,7 +164,7 @@ export default function LandingPageDemoSection() {
               <div
                 className="absolute shadow-xl rounded-2xl overflow-hidden"
                 style={{
-                  left: isDesktop ? "65%" : "60%",
+                  left: isDesktop ? "calc(65% - 20px)" : "calc(60% - 20px)",
                   top: "15%",
                   width: "150px",
                   height: "320px",
