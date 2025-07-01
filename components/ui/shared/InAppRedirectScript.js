@@ -1,15 +1,42 @@
 "use client";
 
 import Script from "next/script";
-import { useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
+import {
+  ADD_DIRECTLINK_ROUTE,
+  DIRECTLINKS_ROUTE,
+  ADD_LANDINGPAGE_ROUTE,
+  LANDINGPAGES_ROUTE,
+  DASHBOARD_ROUTE,
+  AFFILIATE_ROUTE,
+  PRICING_ROUTE,
+  LOGIN_ROUTE,
+  TERMS_ROUTE,
+  PRIVACY_ROUTE,
+} from "@/lib/utils/constants";
 
 export default function InAppRedirectScript() {
   if (process.env.NODE_ENV !== "production") return null;
 
-  const searchParams = useSearchParams();
-  const hasIARS = searchParams.get("IARS"); // only run if has IARS=1 in the URL
+  const pathname = usePathname();
 
-  if (!hasIARS) return null;
+  // Excluded routes
+  const excludedRoutes = [
+    ADD_DIRECTLINK_ROUTE,
+    DIRECTLINKS_ROUTE,
+    ADD_LANDINGPAGE_ROUTE,
+    LANDINGPAGES_ROUTE,
+    DASHBOARD_ROUTE,
+    AFFILIATE_ROUTE,
+    PRICING_ROUTE,
+    LOGIN_ROUTE,
+    TERMS_ROUTE,
+    PRIVACY_ROUTE,
+    "/admin",
+  ];
+
+  // If current path is in excluded routes, do not run
+  if (excludedRoutes.includes(pathname)) return null;
 
   console.log("✅ InAppRedirectScript ENABLED");
   return (
