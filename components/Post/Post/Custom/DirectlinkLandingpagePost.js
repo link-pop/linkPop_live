@@ -78,7 +78,9 @@ export default function DirectlinkLandingpagePost(props) {
                   #{index}
                 </span>
               )}
-              <h3 className="text-lg font-medium">{username || name}</h3>
+              <h3 className="text-lg font-medium truncate overflow-hidden whitespace-nowrap max-w-[220px] sm:!max-w-[400px] lg:!max-w-[500px]">
+                {username || name}
+              </h3>
             </div>
 
             {/* Description if available */}
