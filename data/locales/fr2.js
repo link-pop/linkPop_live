@@ -803,7 +803,7 @@ const fr = {
   commissionHistory: "Historique des commissions",
   noEarningsYet: "Pas encore de gains",
   earnCommissionWhenReferralsSubscribe:
-    "Vous gagnerez 20% de commission lorsque vos filleuls s'abonnent. Paiements disponibles à partir de 50$.",
+    "Vous gagnerez 20% de commission lorsque vos filleuls s'abonnent.",
   noReferralsYet: "Vous n'avez encore parrainé personne",
   shareYourReferralCode:
     "Partagez votre code de parrainage pour commencer à gagner",
@@ -819,12 +819,12 @@ const fr = {
   commissionsAutomaticallyTracked:
     "Les commissions sont automatiquement suivies dans votre tableau de bord",
   paymentsProcessed:
-    "Les paiements sont traités selon notre calendrier de paiement (montant minimum de paiement : 50$)",
+    "Les paiements sont traités selon notre calendrier de paiement",
   totalReferrals: "Total des utilisateurs parrainés",
   activeReferrals: "Parrainages actifs",
   commissionStructure: "Structure de commission",
   commissionStructureDesc:
-    "Vous recevrez 20% des frais d'abonnement payés par les utilisateurs que vous parrainez, tant que leur abonnement reste actif. Le montant minimum de paiement est de 50$.",
+    "Vous recevrez 20% des frais d'abonnement payés par les utilisateurs que vous parrainez, tant que leur abonnement reste actif.",
   eligibility: "Éligibilité",
   eligibilityDesc:
     "Tous les utilisateurs enregistrés sont éligibles pour participer à notre programme d'affiliation.",
@@ -833,7 +833,7 @@ const fr = {
     "Un parrainage est considéré comme valide lorsqu'un nouvel utilisateur s'inscrit en utilisant votre lien de parrainage et effectue un paiement d'abonnement.",
   commissionPayments: "Paiements de commission",
   commissionPaymentsDesc:
-    "Les commissions sont payées mensuellement pour les gains du mois précédent. Les paiements sont traités le 1er de chaque mois. Le montant minimum de paiement est de 50$.",
+    "Les commissions sont payées mensuellement pour les gains du mois précédent. Les paiements sont traités le 1er de chaque mois.",
   prohibitedActivities: "Activités interdites",
   prohibitedActivitiesDesc:
     "Le spam, la promotion trompeuse, l'auto-parrainage et toute forme d'activité frauduleuse sont strictement interdits.",
@@ -851,9 +851,6 @@ const fr = {
   referralCodeRequired: "Veuillez entrer un code de parrainage",
   referralCodeApplied: "Code de parrainage appliqué avec succès",
   apply: "Appliquer",
-  minimumPayout: "Paiement minimum : 50,00$",
-  minimumPayoutNote:
-    "Remarque : Le seuil minimum de paiement est de 50$. Les gains inférieurs à ce montant seront reportés à la période de paiement suivante.",
 
   // Cancel Subscription
   cancelSubscription: "Annuler l'abonnement",

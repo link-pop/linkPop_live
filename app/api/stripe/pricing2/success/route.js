@@ -375,7 +375,9 @@ export async function GET(req) {
 
       // Process referral commission if applicable
       if (updatedSubscription) {
-        await processReferralCommission(updatedSubscription, createdBy);
+        console.log(
+          "Referral commission processing will be handled by webhook to prevent duplicates"
+        );
       }
     } catch (updateError) {
       console.error("Error updating subscription record:", updateError.message);

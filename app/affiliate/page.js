@@ -17,7 +17,7 @@ export default async function AffiliatePage() {
 
   return (
     <div className="space-y-10">
-      <AffiliateClient data={referralData} />
+      <AffiliateClient data={referralData} mongoUser={mongoUser} />
     </div>
   );
 }

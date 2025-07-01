@@ -822,7 +822,7 @@ const en = {
   commissionHistory: "Commission History",
   noEarningsYet: "No earnings yet",
   earnCommissionWhenReferralsSubscribe:
-    "You'll earn 20% commission when your referrals subscribe. Payouts available from $50.",
+    "You'll earn 20% commission when your referrals subscribe. Payouts are automatic.",
   noReferralsYet: "You haven't referred anyone yet",
   shareYourReferralCode: "Share your referral code to start earning",
   generateReferralCode: "Generate Referral Code",
@@ -835,13 +835,12 @@ const en = {
     "When someone signs up using your referral link, they're linked to your account",
   commissionsAutomaticallyTracked:
     "Commissions are automatically tracked in your dashboard",
-  paymentsProcessed:
-    "Payments are processed according to our payout schedule (minimum payout: $50)",
+  paymentsProcessed: "Payments are processed automatically when earned",
   totalReferrals: "Total users referred",
   activeReferrals: "Active referrals",
   commissionStructure: "Commission Structure",
   commissionStructureDesc:
-    "You will receive 20% of the subscription fee paid by users you refer, for as long as their subscription remains active. Minimum payout amount is $50.",
+    "You will receive 20% of the subscription fee paid by users you refer, for as long as their subscription remains active. Payouts are automatic.",
   eligibility: "Eligibility",
   eligibilityDesc:
     "All registered users are eligible to participate in our affiliate program.",
@@ -850,7 +849,7 @@ const en = {
     "A referral is considered valid when a new user signs up using your referral link and makes a subscription payment.",
   commissionPayments: "Commission Payments",
   commissionPaymentsDesc:
-    "Commissions are paid monthly for the previous month's earnings. Payments are processed on the 1st of each month. Minimum payout amount is $50.",
+    "Commissions are paid automatically when earned. No waiting period or minimum amount required.",
   prohibitedActivities: "Prohibited Activities",
   prohibitedActivitiesDesc:
     "Spamming, misleading promotion, self-referral, and any form of fraudulent activity are strictly prohibited.",
@@ -868,9 +867,9 @@ const en = {
   referralCodeRequired: "Please enter a referral code",
   referralCodeApplied: "Referral code applied successfully",
   apply: "Apply",
-  minimumPayout: "Minimum payout: $50.00",
-  minimumPayoutNote:
-    "Note: Minimum payout threshold is $50. Earnings below this amount will roll over to the next payout period.",
+  payoutMethod: "Payout method",
+  automatic: "Automatic",
+  automaticPayoutNote: "Note: No minimum threshold required.",
 
   // Cancel Subscription
   cancelSubscription: "Cancel Subscription",
@@ -1719,6 +1718,30 @@ const en = {
   devModeStripeConnectMessage:
     "Developer mode is active. Stripe Connect requirements are bypassed for development purposes.",
 
+  // Affiliate Stripe Connect functionality
+  affiliatePayoutSettings: "Payout Settings",
+  payoutEligibility: "Payout Eligibility",
+  eligibleForPayouts: "Ready to receive payouts",
+  eligible: "Eligible",
+  notEligible: "Not Eligible",
+  earningsCount: "Earnings",
+  eligibleForNextPayout: "Eligible for next payout",
+  moreNeededForPayout: "more needed for payout",
+  stripeConnectAffiliateInfo:
+    "Set up Stripe Connect to receive affiliate commission payouts directly to your bank account.",
+  completeOnboardingToReceivePayouts:
+    "Complete your Stripe Connect onboarding to start receiving affiliate payouts.",
+  stripeReviewInProgress:
+    "Your Stripe Connect account is under review. You'll be able to receive payouts once approved.",
+  affiliatePayoutScheduleInfo:
+    "Affiliate payouts are processed weekly. If the payout is not triggered automatically, please click the 'Claim Payout' button.",
+  stripeConnectNotSetup: "Stripe Connect not set up",
+  stripeConnectPendingOnboarding: "Onboarding incomplete",
+  stripeConnectPendingApproval: "Pending approval",
+  stripeConnectSetupIncomplete: "Setup incomplete",
+  refreshStatus: "Refresh Status",
+  accountStatusUpdated: "Account status updated",
+
   // Store earnings functionality
   storeEarnings: "Store Earnings",
   trackYourStorePerformance: "Track your store performance and earnings",
@@ -2110,6 +2133,9 @@ const en = {
   messagePurchase: "Message Purchase",
   messagePurchased: "Someone purchased your message",
   purchases: "purchases",
+
+  // Affiliate payout claiming
+  claimPayout: "Claim Payout",
 };
 
 export default en;

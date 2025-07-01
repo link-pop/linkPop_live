@@ -748,9 +748,6 @@ const es = {
   copy: "Copiar",
   analytics: "Analíticas",
 
-  minimumPayoutNote:
-    "Nota: El umbral mínimo de pago es de $50. Las ganancias por debajo de este monto se transferirán al siguiente período de pago.",
-
   // Cancel Subscription
   cancelSubscription: "Cancelar Suscripción",
   cancelTrial: "Cancelar Prueba",
@@ -1076,7 +1073,7 @@ const es = {
   commissionHistory: "Historial de Comisiones",
   noEarningsYet: "Aún no hay ganancias",
   earnCommissionWhenReferralsSubscribe:
-    "Ganarás un 20% de comisión cuando tus referidos se suscriban. Pagos disponibles a partir de $50.",
+    "Ganarás un 20% de comisión cuando tus referidos se suscriban.",
   noReferralsYet: "Aún no has referido a nadie",
   shareYourReferralCode: "Comparte tu código de referido para comenzar a ganar",
   generateReferralCode: "Generar Código de Referido",
@@ -1089,13 +1086,12 @@ const es = {
     "Cuando alguien se registra usando tu enlace de referido, se vincula a tu cuenta",
   commissionsAutomaticallyTracked:
     "Las comisiones se rastrean automáticamente en tu panel",
-  paymentsProcessed:
-    "Los pagos se procesan según nuestro calendario de pagos (pago mínimo: $50)",
+  paymentsProcessed: "Los pagos se procesan según nuestro calendario de pagos",
   totalReferrals: "Total de usuarios referidos",
   activeReferrals: "Referidos activos",
   commissionStructure: "Estructura de Comisiones",
   commissionStructureDesc:
-    "Recibirás el 20% de la tarifa de suscripción pagada por los usuarios que refieras, mientras su suscripción permanezca activa. El monto mínimo de pago es de $50.",
+    "Recibirás el 20% de la tarifa de suscripción pagada por los usuarios que refieras, mientras su suscripción permanezca activa.",
   eligibility: "Elegibilidad",
   eligibilityDesc:
     "Todos los usuarios registrados son elegibles para participar en nuestro programa de afiliados.",
@@ -1104,7 +1100,7 @@ const es = {
     "Un referido se considera válido cuando un nuevo usuario se registra usando tu enlace de referido y realiza un pago de suscripción.",
   commissionPayments: "Pagos de Comisiones",
   commissionPaymentsDesc:
-    "Las comisiones se pagan mensualmente por las ganancias del mes anterior. Los pagos se procesan el 1 de cada mes. El monto mínimo de pago es de $50.",
+    "Las comisiones se pagan mensualmente por las ganancias del mes anterior. Los pagos se procesan el 1 de cada mes.",
   prohibitedActivities: "Actividades Prohibidas",
   prohibitedActivitiesDesc:
     "El spam, la promoción engañosa, la auto-referencia y cualquier forma de actividad fraudulenta están estrictamente prohibidos.",
@@ -1122,9 +1118,6 @@ const es = {
   referralCodeRequired: "Por favor ingresa un código de referido",
   referralCodeApplied: "Código de referido aplicado exitosamente",
   apply: "Aplicar",
-  minimumPayout: "Pago mínimo: $50.00",
-  minimumPayoutNote:
-    "Nota: El umbral mínimo de pago es de $50. Las ganancias por debajo de esta cantidad se trasladarán al siguiente período de pago.",
   noReferralCodeYet: "Aún no tienes un código de referido",
   signInToSubscribe: "Inicia sesión para suscribirte",
 

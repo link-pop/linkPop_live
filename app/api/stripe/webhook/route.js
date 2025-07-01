@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import { models } from "@/lib/db/models/models";
 import { update, add } from "@/lib/actions/crud";
 import { isValidForReferralEarnings } from "@/lib/utils/referral/calculateReferralEarnings";
-import { sendErrorToAdmin } from "@/lib/actions/sendErrorToAdmin";
+// import { sendErrorToAdmin } from "@/lib/actions/sendErrorToAdmin"; // Function doesn't exist yet
 
 // ! code start webhook handler
 export async function POST(req) {
@@ -523,7 +523,13 @@ async function handleInvoicePaymentSucceeded(invoice) {
     }
 
     // Process referral commission if applicable
-    await processReferralCommission(subscription, subscription.createdBy);
+    // For invoice payments, we can get the payment intent ID from the invoice
+    const paymentIntentId = invoice.payment_intent || null;
+    await processReferralCommission(
+      subscription,
+      subscription.createdBy,
+      paymentIntentId
+    );
 
     console.log(`Processed payment for subscription: ${invoice.subscription}`);
   } catch (error) {
@@ -870,6 +876,7 @@ async function updateSubscriptionRecord(
     console.log("Updated user record with subscription information");
 
     // Process referral commission if applicable
+    // Note: Payment intent ID might not be available at this stage for subscription payments
     await processReferralCommission(updatedSubscription, createdBy);
 
     return updatedSubscription;
@@ -926,10 +933,16 @@ async function handleCartCheckout(session, userId, cartItemIds) {
 
 /**
  * Process referral commission for a successful subscription payment
+ * Now includes automatic individual payout processing
  * @param {Object} subscription - The subscription record
  * @param {string} userId - The user's MongoDB ID
+ * @param {string} paymentIntentId - Optional Stripe payment intent ID
  */
-async function processReferralCommission(subscription, userId) {
+async function processReferralCommission(
+  subscription,
+  userId,
+  paymentIntentId = null
+) {
   try {
     // Check if subscription is valid for commission
     if (!isValidForReferralEarnings(subscription)) {
@@ -959,21 +972,110 @@ async function processReferralCommission(subscription, userId) {
     const commissionPercentage = 20;
     const commissionAmount = (subscription.amount * commissionPercentage) / 100;
 
-    // Create earnings record
-    await add({
-      col: "referralearnings",
-      data: {
-        referrerId: user.referredBy,
-        referredId: user._id,
-        subscriptionId: subscription._id,
-        subscriptionAmount: subscription.amount,
-        commissionAmount,
-        commissionPercentage,
-        status: "pending",
-        periodStart: subscription.currentPeriodStart,
-        periodEnd: subscription.currentPeriodEnd,
-      },
+    // Create earnings record with optional payment intent ID
+    const earningData = {
+      referrerId: user.referredBy,
+      referredId: user._id,
+      subscriptionId: subscription._id,
+      subscriptionAmount: subscription.amount,
+      commissionAmount,
+      commissionPercentage,
+      status: "pending",
+      periodStart: subscription.currentPeriodStart,
+      periodEnd: subscription.currentPeriodEnd,
+    };
+
+    // Add payment intent ID if available
+    if (paymentIntentId) {
+      earningData.stripePaymentIntentId = paymentIntentId;
+    }
+
+    // Check for existing earning record first to prevent duplicates
+    const existingEarning = await models.referralearnings.findOne({
+      referrerId: user.referredBy,
+      referredId: user._id,
+      subscriptionId: subscription._id,
+      periodStart: subscription.currentPeriodStart,
+      periodEnd: subscription.currentPeriodEnd,
     });
+
+    let earningRecord;
+    if (existingEarning) {
+      console.log(
+        `Found existing earning record: ${existingEarning._id}, status: ${existingEarning.status}`
+      );
+
+      // If it's already paid or processing, skip processing
+      if (
+        existingEarning.status === "paid" ||
+        existingEarning.status === "processing"
+      ) {
+        console.log("Existing earning already processed, skipping");
+        return;
+      }
+
+      // Use the existing record for potential automatic payout
+      earningRecord = existingEarning;
+      console.log("Using existing earning record for payout processing");
+    } else {
+      console.log("Creating referral earning with data:", earningData);
+
+      // Create new earnings record
+      try {
+        earningRecord = await add({
+          col: "referralearnings",
+          data: earningData,
+        });
+        console.log(`Created new earning record: ${earningRecord._id}`);
+      } catch (createError) {
+        // Handle duplicate earning gracefully (in case of race conditions)
+        if (
+          createError.code === 11000 ||
+          createError.message.includes("duplicate")
+        ) {
+          console.log(
+            "Duplicate referral earning detected during creation, checking existing record"
+          );
+
+          // Try to find the existing earning record again
+          const raceConditionEarning = await models.referralearnings.findOne({
+            referrerId: user.referredBy,
+            referredId: user._id,
+            subscriptionId: subscription._id,
+            periodStart: subscription.currentPeriodStart,
+            periodEnd: subscription.currentPeriodEnd,
+          });
+
+          if (raceConditionEarning) {
+            console.log(
+              `Found existing earning record after race condition: ${raceConditionEarning._id}`
+            );
+
+            // If it's already paid or processing, skip automatic payout
+            if (
+              raceConditionEarning.status === "paid" ||
+              raceConditionEarning.status === "processing"
+            ) {
+              console.log(
+                "Existing earning already processed after race condition, skipping"
+              );
+              return;
+            }
+
+            // Use the existing record for potential automatic payout
+            earningRecord = raceConditionEarning;
+          } else {
+            console.log(
+              "No existing earning found despite duplicate error, skipping"
+            );
+            return;
+          }
+        } else {
+          // Re-throw non-duplicate errors
+          throw createError;
+        }
+      }
+    }
 
     // Update subscription with referral info
     await update({
@@ -986,57 +1088,133 @@ async function processReferralCommission(subscription, userId) {
       },
     });
 
-    // Update referral status if it's the first payment
-    if (referral.status === "pending") {
-      await update({
-        col: "referrals",
-        data: { _id: referral._id },
-        update: {
-          status: "active",
-          activatedAt: new Date(),
-        },
-      });
+    // Update referral status if it's the first payment (only for new earnings)
+    if (!existingEarning) {
+      if (referral.status === "pending") {
+        await update({
+          col: "referrals",
+          data: { _id: referral._id },
+          update: {
+            status: "active",
+            activatedAt: new Date(),
+          },
+        });
 
-      // Update referrer stats
-      await update({
-        col: "users",
-        data: { _id: user.referredBy },
-        update: {
-          $inc: {
-            "referralStats.activeReferrals": 1,
-            "referralStats.pendingEarnings": commissionAmount,
-            "referralStats.totalEarnings": commissionAmount,
+        // Update referrer stats
+        await update({
+          col: "users",
+          data: { _id: user.referredBy },
+          update: {
+            $inc: {
+              "referralStats.activeReferrals": 1,
+              "referralStats.pendingEarnings": commissionAmount,
+              "referralStats.totalEarnings": commissionAmount,
+            },
           },
-        },
-      });
+        });
+      } else {
+        // Just update earnings for existing active referrals
+        await update({
+          col: "users",
+          data: { _id: user.referredBy },
+          update: {
+            $inc: {
+              "referralStats.pendingEarnings": commissionAmount,
+              "referralStats.totalEarnings": commissionAmount,
+            },
+          },
+        });
+      }
     } else {
-      // Just update earnings for existing active referrals
-      await update({
-        col: "users",
-        data: { _id: user.referredBy },
-        update: {
-          $inc: {
-            "referralStats.pendingEarnings": commissionAmount,
-            "referralStats.totalEarnings": commissionAmount,
-          },
-        },
-      });
+      console.log(
+        "Using existing earning record, skipping user stats update to prevent duplicates"
+      );
     }
 
     console.log(
       `Processed referral commission of $${commissionAmount} for user ${user.referredBy}`
     );
+
+    // ! Automatic affiliate payout processing (commented out because it's not working)
+    // // Automatic affiliate payout processing
+    // console.log(
+    //   `💰 Referral earning created - attempting automatic payout processing`
+    // );
+
+    // // Automatically process individual payout immediately
+    // const { processIndividualAffiliatePayout } = await import(
+    //   "@/lib/actions/processIndividualAffiliatePayout"
+    // );
+
+    // console.log("🚀 Attempting automatic affiliate payout...");
+    // const payoutResult = await processIndividualAffiliatePayout({
+    //   _id: earningRecord._id,
+    //   referrerId: user.referredBy,
+    //   commissionAmount,
+    //   subscriptionId: subscription._id,
+    // });
+
+    // if (payoutResult.success) {
+    //   console.log(
+    //     `✅ Automatic affiliate payout successful: ${payoutResult.transferId}`
+    //   );
+    // } else {
+    //   console.log(
+    //     `⚠️ Automatic affiliate payout failed: ${payoutResult.error}`
+    //   );
+    //   // Payout failure is handled gracefully - earning remains pending for manual retry
+
+    //   // If insufficient platform balance, notify admin
+    //   if (
+    //     payoutResult.error?.includes("Insufficient platform balance") ||
+    //     payoutResult.error?.includes("insufficient funds") ||
+    //     payoutResult.balanceIssue
+    //   ) {
+    //     const { sendErrorToAdmin } = await import(
+    //       "@/lib/actions/sendErrorToAdmin"
+    //     );
+    //     await sendErrorToAdmin({
+    //       error: new Error(
+    //         `Insufficient platform balance for affiliate payout: $${commissionAmount}`
+    //       ),
+    //       subject: "Affiliate Payout Failed - Insufficient Platform Balance",
+    //       context: {
+    //         earningId: earningRecord._id,
+    //         referrerId: user.referredBy,
+    //         commissionAmount,
+    //         subscriptionId: subscription._id,
+    //         error: payoutResult.error,
+    //         isTestMode: payoutResult.isTestMode,
+    //       },
+    //     });
+    //   }
+    // }
+    // ? Automatic affiliate payout processing (commented out because it's not working)
   } catch (error) {
     console.error("Error processing referral commission:", error);
-    // await sendErrorToAdmin({
-    //   error,
-    //   subject: "Error Processing Referral Commission",
-    //   context: {
-    //     subscriptionId: subscription._id,
-    //     userId,
-    //     amount: subscription.amount,
-    //   },
-    // });
+
+    // Send error notification to admin
+    try {
+      const { sendErrorToAdmin } = await import(
+        "@/lib/actions/sendErrorToAdmin"
+      );
+      await sendErrorToAdmin({
+        error,
+        subject: "Error Processing Referral Commission",
+        context: {
+          subscriptionId: subscription._id,
+          userId,
+          amount: subscription.amount,
+          userReferredBy: user?.referredBy,
+          referralCode: user?.referralCodeUsed,
+        },
+      });
+    } catch (emailError) {
+      console.error(
+        "❌ Failed to send admin notification about referral commission error:",
+        emailError
+      );
+    }
   }
 }
 // ? code end webhook handler

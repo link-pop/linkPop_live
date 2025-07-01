@@ -81,7 +81,10 @@ export default async function AdminReferrals() {
                   (earning) => earning.status === "paid"
                 );
                 const pendingEarnings = earnings.filter(
-                  (earning) => earning.status === "pending"
+                  (earning) =>
+                    earning.status === "pending" ||
+                    earning.status === "failed" ||
+                    earning.status === "processing"
                 );
 
                 const totalPaid = paidEarnings.reduce(

@@ -1,6 +1,6 @@
 "use client";
 
-import { add, getAll } from "@/lib/actions/crud";
+import { add, getAll, update } from "@/lib/actions/crud";
 import { useEffect, useState } from "react";
 import { useUser as useClerkUser } from "@clerk/nextjs";
 import { fetchGeoData } from "@/lib/utils/fetchGeoData";
@@ -243,12 +243,13 @@ export default function useRegisterOrReturnMongoUser() {
               });
 
               // Update referrer's stats
-              await add({
+              await update({
                 col: "users",
                 data: { _id: referrerData.referredBy },
                 update: {
                   $inc: { "referralStats.totalReferrals": 1 },
                 },
+                skipOwnershipCheck: true, // System operation
               });
 
               console.log("Referral record created successfully");

@@ -741,7 +741,7 @@ const zh = {
   commissionHistory: "佣金历史",
   noEarningsYet: "尚无收益",
   earnCommissionWhenReferralsSubscribe:
-    "当您推荐的用户订阅时，您将获得20%的佣金。从$50开始可提取。",
+    "当您推荐的用户订阅时，您将获得20%的佣金。",
   noReferralsYet: "您尚未推荐任何人",
   shareYourReferralCode: "分享您的推荐码开始赚取",
   generateReferralCode: "生成推荐码",
@@ -752,20 +752,19 @@ const zh = {
   affiliateProgramTerms: "联盟计划条款",
   whenSomeoneSignsUp: "当有人使用您的推荐链接注册时，他们将与您的账户关联",
   commissionsAutomaticallyTracked: "佣金将在您的控制面板中自动跟踪",
-  paymentsProcessed: "根据我们的支付时间表处理付款（最低支付额：$50）",
+  paymentsProcessed: "根据我们的支付时间表处理付款",
   totalReferrals: "已推荐用户总数",
   activeReferrals: "活跃推荐",
   commissionStructure: "佣金结构",
   commissionStructureDesc:
-    "只要您推荐的用户的订阅仍然活跃，您将获得他们支付的订阅费的20%。最低支付金额为$50。",
+    "只要您推荐的用户的订阅仍然活跃，您将获得他们支付的订阅费的20%。",
   eligibility: "资格",
   eligibilityDesc: "所有注册用户均有资格参与我们的联盟计划。",
   referralValidation: "推荐验证",
   referralValidationDesc:
     "当新用户使用您的推荐链接注册并支付订阅费用时，推荐被视为有效。",
   commissionPayments: "佣金支付",
-  commissionPaymentsDesc:
-    "佣金按月支付，用于上个月的收入。付款于每月1日处理。最低支付金额为$50。",
+  commissionPaymentsDesc: "佣金按月支付，用于上个月的收入。付款于每月1日处理。",
   prohibitedActivities: "禁止活动",
   prohibitedActivitiesDesc:
     "严禁垃圾邮件、误导性推广、自我推荐和任何形式的欺诈活动。",
@@ -782,9 +781,6 @@ const zh = {
   referralCodeRequired: "请输入推荐码",
   referralCodeApplied: "推荐码应用成功",
   apply: "应用",
-  minimumPayout: "最低支付：$50.00",
-  minimumPayoutNote:
-    "注意：最低支付额为$50。低于此金额的收入将结转到下一个支付期。",
 
   // Cancel Subscription
   cancelSubscription: "取消订阅",

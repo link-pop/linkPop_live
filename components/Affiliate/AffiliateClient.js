@@ -35,8 +35,11 @@ import useShareHelper from "@/components/ui/shared/Share/ShareHelper";
 import TitleWithBackButton from "@/components/ui/shared/PageHeading/TitleWithBackButton";
 import ShareModal from "@/components/ui/shared/Share/ShareModal";
 import Toggle from "@/components/ui/shared/Toggle/Toggle";
+import AffiliateStripeConnectSettings from "@/components/ui/shared/AffiliateStripeConnectSettings/AffiliateStripeConnectSettings";
+import getMongoUser from "@/lib/utils/mongo/getMongoUser";
+import { claimAllAffiliatePayout } from "@/lib/actions/claimAffiliatePayout";
 
-export default function AffiliateClient({ data }) {
+export default function AffiliateClient({ data, mongoUser }) {
   const [copyState, setCopyState] = useState({
     link: false,
     code: false,
@@ -49,6 +52,10 @@ export default function AffiliateClient({ data }) {
     paidEarnings: 0,
   });
   const [referralData, setReferralData] = useState(data);
+  const [userStripeConnect, setUserStripeConnect] = useState(
+    mongoUser?.stripeConnect || null
+  );
+  const [claimingPayout, setClaimingPayout] = useState(false);
   const { t } = useTranslation();
   const { toastSet, dialogSet } = useContext();
   const { shareContent, shareModalState, closeShareModal } = useShareHelper();
@@ -100,6 +107,10 @@ export default function AffiliateClient({ data }) {
   const handleCopyReferralCode = useCallback(() => {
     handleCopy(referralData.referralCode, "code");
   }, [handleCopy, referralData.referralCode]);
+
+  const handleStripeConnectStatusChange = useCallback((newStatus) => {
+    setUserStripeConnect(newStatus);
+  }, []);
 
   const handleShare = useCallback(() => {
     if (referralData.referralUrl) {
@@ -166,6 +177,55 @@ export default function AffiliateClient({ data }) {
       setLoading(false);
     }
   }, [toastSet, t]);
+
+  const handleClaimAllPayouts = useCallback(async () => {
+    if (claimingPayout) return;
+
+    setClaimingPayout(true);
+    try {
+      const result = await claimAllAffiliatePayout();
+
+      if (result.success) {
+        toastSet({
+          isOpen: true,
+          title: t("success"),
+          text: result.message,
+        });
+
+        // Add a small delay before allowing page reload to prevent rapid clicking
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        toastSet({
+          isOpen: true,
+          title: t("error"),
+          text: result.error,
+          type: "error",
+        });
+
+        // If they need onboarding, show relevant message
+        if (result.needsOnboarding) {
+          console.log(
+            "User needs Stripe Connect onboarding for affiliate payouts"
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error claiming payouts:", error);
+      toastSet({
+        isOpen: true,
+        title: t("error"),
+        text: "An error occurred while processing your payout claim",
+        type: "error",
+      });
+    } finally {
+      // Add a minimum delay before re-enabling the button to prevent rapid clicking
+      setTimeout(() => {
+        setClaimingPayout(false);
+      }, 2000);
+    }
+  }, [claimingPayout, toastSet, t]);
 
   const showTermsDialog = useCallback(() => {
     dialogSet({
@@ -421,6 +481,15 @@ export default function AffiliateClient({ data }) {
         </Card>
       </div>
 
+      {/* Stripe Connect Settings */}
+      <div className={`mb-8`}>
+        <AffiliateStripeConnectSettings
+          mongoUser={mongoUser}
+          earnings={referralData.earnings || []}
+          onStatusChange={handleStripeConnectStatusChange}
+        />
+      </div>
+
       <Toggle
         labels={[
           { text: "yourReferrals", className: "" },
@@ -511,9 +580,26 @@ export default function AffiliateClient({ data }) {
             key="earnings"
           >
             <CardHeader>
-              <CardTitle className="text-xl">
-                {t("commissionHistory")}
-              </CardTitle>
+              <div className="flex justify-between items-center">
+                <CardTitle className="text-xl">
+                  {t("commissionHistory")}
+                </CardTitle>
+                {earningStats.pendingEarnings > 0 && (
+                  <Button
+                    onClick={handleClaimAllPayouts}
+                    disabled={claimingPayout}
+                    className="flex items-center gap-2"
+                    variant="default"
+                  >
+                    <DollarSign size={16} />
+                    {claimingPayout
+                      ? t("processing")
+                      : `${t(
+                          "claimPayout"
+                        )} ($${earningStats.pendingEarnings.toFixed(2)})`}
+                  </Button>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               {filteredEarnings.length > 0 ? (
@@ -558,11 +644,15 @@ export default function AffiliateClient({ data }) {
                             className={`ml-2 ${
                               earning.status === "paid"
                                 ? "text-green-500 bg-green-50 dark:bg-green-950/50"
+                                : earning.status === "processing"
+                                ? "text-blue-500 bg-blue-50 dark:bg-blue-950/50"
                                 : "text-yellow-500 bg-yellow-50 dark:bg-yellow-950/50"
                             }`}
                           >
                             {earning.status === "paid"
                               ? t("paidEarnings")
+                              : earning.status === "processing"
+                              ? t("processing")
                               : t("pendingEarnings")}
                           </Badge>
                         </div>
@@ -616,7 +706,7 @@ export default function AffiliateClient({ data }) {
               <li>{t("paymentsProcessed")}</li>
             </ol>
             <p className={`mt-4 text-sm font-semibold text-accent-foreground`}>
-              {t("minimumPayoutNote")}
+              {t("automaticPayoutNote")}
             </p>
           </div>
         </div>

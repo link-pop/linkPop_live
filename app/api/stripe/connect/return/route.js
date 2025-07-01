@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import { update } from "@/lib/actions/crud";
+import { SITE1, SITE2 } from "@/config/env";
+import { AFFILIATE_ROUTE } from "@/lib/utils/constants";
 
 export async function GET(request) {
   try {
@@ -82,12 +84,26 @@ export async function GET(request) {
     if (account.details_submitted && account.charges_enabled) {
       // Onboarding completed successfully
       return NextResponse.redirect(
-        new URL("/add/storeitems?success=onboarding_complete", request.url)
+        new URL(
+          `${
+            SITE1
+              ? "/add/storeitems?success=onboarding_complete"
+              : AFFILIATE_ROUTE
+          }`,
+          request.url
+        )
       );
     } else if (account.details_submitted) {
       // Onboarding submitted but not yet approved
       return NextResponse.redirect(
-        new URL("/add/storeitems?success=onboarding_submitted", request.url)
+        new URL(
+          `${
+            SITE1
+              ? "/add/storeitems?success=onboarding_submitted"
+              : AFFILIATE_ROUTE
+          }`,
+          request.url
+        )
       );
     } else {
       // Onboarding not completed
