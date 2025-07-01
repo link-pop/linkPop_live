@@ -117,7 +117,7 @@ export default function MobileNavItems({
             isActiveLink(item) ? "brand" : ""
           }`}
         >
-          <div className="flex relative">
+          <div className="por b5 flex relative">
             {item.icon}
             <NotificationBadge id={item.id} className="relative -t5" />
             {item.id === "cart" && (
@@ -127,7 +127,9 @@ export default function MobileNavItems({
               <OrderIndicator className="absolute !-t5 !-r9" />
             )}
           </div>
-          <span className="wsn !fz9 mt-1">{item.name.split(" ")[0]}</span>
+          <span className="poa t44 wsn !fz9 mt-1">
+            {item.name.split(" ")[0]}
+          </span>
         </Link>
       )
     );
