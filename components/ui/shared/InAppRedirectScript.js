@@ -1,6 +1,7 @@
 import Script from "next/script";
 
 export default function InAppRedirectScript() {
+  if (process.env.NODE_ENV !== "production") return null;
   return (
     <Script
       id="iar"
