@@ -471,9 +471,6 @@ const es = {
     "Tu suscripción ha sido cancelada. Puedes actualizar a un nuevo plan.",
   trialExpiredUpgradeNow:
     "Tu prueba ha expirado. Puedes actualizar a un nuevo plan.",
-  fiveLandingPagesOrDirectLinks: "5 Páginas de Destino o Enlaces Directos",
-  twentyFiveLandingPagesOrDirectLinks:
-    "25 Páginas de Destino o Enlaces Directos",
   shieldProtection: "Protección Shield",
   startFreeTrial: "Iniciar Prueba Gratuita de {{days}} Días",
   everythingInStarter: "Todo lo de Starter",
@@ -1280,6 +1277,8 @@ const es = {
   // Affiliate payout method translations
   payoutMethod: "Método de pago",
   automatic: "Automático",
+
+  landingPagesOrDirectLinks: "{{count}} Páginas de Destino o Enlaces Directos",
 };
 
 export default es;

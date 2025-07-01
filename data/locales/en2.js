@@ -477,8 +477,6 @@ const en = {
     "Your subscription has been canceled. You can upgrade to a new plan.",
   trialExpiredUpgradeNow:
     "Your trial has expired. You can upgrade to a new plan.",
-  fiveLandingPagesOrDirectLinks: "5 Landing Pages or Direct Links",
-  twentyFiveLandingPagesOrDirectLinks: "25 Landing Pages or Direct Links",
   shieldProtection: "Shield Protection",
   startFreeTrial: "Start {{days}}-Day Free Trial",
   everythingInStarter: "Everything in Starter",
@@ -1314,6 +1312,8 @@ const en = {
 
   // Affiliate payout claiming
   claimPayout: "Claim Payout",
+
+  landingPagesOrDirectLinks: "{{count}} Landing Pages or Direct Links",
 };
 
 export default en;

@@ -435,8 +435,6 @@ const zh = {
     "您的订阅将保持活跃状态直至 {{date}}，之后将被取消，您将恢复为免费计划。",
   subscriptionCanceled: "您的订阅已被取消。您可以升级到新计划。",
   trialExpiredUpgradeNow: "您的试用已过期。您可以升级到新计划。",
-  fiveLandingPagesOrDirectLinks: "5个落地页或直达链接",
-  twentyFiveLandingPagesOrDirectLinks: "25个落地页或直达链接",
   shieldProtection: "盾牌保护",
   startFreeTrial: "开始 {{days}} 天免费试用",
   everythingInStarter: "入门版的所有功能",
@@ -1215,6 +1213,8 @@ const zh = {
   payoutMethod: "支付方式",
   automatic: "自动",
   noMinimumThresholdNote: "注意：无需最低门槛。",
+
+  landingPagesOrDirectLinks: "{{count}} 落地页或直达链接",
 };
 
 export default zh;

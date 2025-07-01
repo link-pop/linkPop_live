@@ -471,8 +471,6 @@ const hi = {
     "आपकी सदस्यता रद्द कर दी गई है। आप नए प्लान में अपग्रेड कर सकते हैं।",
   trialExpiredUpgradeNow:
     "आपका ट्रायल समाप्त हो गया है। आप नए प्लान में अपग्रेड कर सकते हैं।",
-  fiveLandingPagesOrDirectLinks: "5 लैंडिंग पेज या डायरेक्ट लिंक्स",
-  twentyFiveLandingPagesOrDirectLinks: "25 लैंडिंग पेज या डायरेक्ट लिंक्स",
   shieldProtection: "शील्ड प्रोटेक्शन",
   startFreeTrial: "{{days}}-दिन का फ्री ट्रायल शुरू करें",
   everythingInStarter: "स्टार्टर में सब कुछ",
@@ -1287,6 +1285,8 @@ const hi = {
   // Affiliate payout method translations
   payoutMethod: "भुगतान विधि",
   automatic: "स्वचालित",
+
+  landingPagesOrDirectLinks: "{{count}} लैंडिंग पेज या डायरेक्ट लिंक्स",
 };
 
 export default hi;

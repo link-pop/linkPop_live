@@ -482,9 +482,6 @@ const fr = {
     "Votre abonnement a été annulé. Vous pouvez surclasser vers un nouveau plan.",
   trialExpiredUpgradeNow:
     "Votre essai a expiré. Vous pouvez surclasser vers un nouveau plan.",
-  fiveLandingPagesOrDirectLinks: "5 pages d'atterrissage ou liens directs",
-  twentyFiveLandingPagesOrDirectLinks:
-    "25 pages d'atterrissage ou liens directs",
   shieldProtection: "Protection Bouclier",
   startFreeTrial: "Commencer l'essai gratuit de {{days}} jours",
   everythingInStarter: "Tout ce qui est dans Débutant",
@@ -1284,6 +1281,8 @@ const fr = {
   // Affiliate payout method translations
   payoutMethod: "Méthode de paiement",
   automatic: "Automatique",
+
+  landingPagesOrDirectLinks: "{{count}} Pages d'atterrissage ou liens directs",
 };
 
 export default fr;

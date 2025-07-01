@@ -507,9 +507,6 @@ const uk = {
     "Вашу підписку скасовано. Ви можете оновити до нового плану.",
   trialExpiredUpgradeNow:
     "Ваш пробний період закінчився. Ви можете оновити до нового плану.",
-  fiveLandingPagesOrDirectLinks: "5 цільових сторінок або прямих посилань",
-  twentyFiveLandingPagesOrDirectLinks:
-    "25 цільових сторінок або прямих посилань",
   shieldProtection: "Захист Shield",
   startFreeTrial: "{{days}} днів безкоштовно",
   everythingInStarter: "Все з Початкового плану",
@@ -1315,6 +1312,8 @@ const uk = {
   // Affiliate payout method translations
   payoutMethod: "Виплата",
   automatic: "Автоматично",
+
+  landingPagesOrDirectLinks: "{{count}} цільових сторінок або прямих посилань",
 };
 
 export default uk;

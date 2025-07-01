@@ -595,7 +595,7 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
         { name: t("everythingInStarter"), icon: <Zap size={16} /> },
         {
           name: "",
-          value: t("fiveLandingPagesOrDirectLinks"),
+          value: t("landingPagesOrDirectLinks", { count: 5 }),
           info: true,
           icon: <Link2 size={16} />,
         },
@@ -639,10 +639,12 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
         { name: t("everythingInCreator"), icon: <Zap size={16} /> },
         {
           name: "",
-          value:
-            linksCount > 0
-              ? `${planPrices.agency.totalLinks} Landing Pages or Direct Links`
-              : `${planPrices.agency.baseLinks} Landing Pages or Direct Links`,
+          value: t("landingPagesOrDirectLinks", {
+            count:
+              linksCount > 0
+                ? planPrices.agency.totalLinks
+                : planPrices.agency.baseLinks,
+          }),
           info: true,
           icon: <Link2 size={16} />,
         },
