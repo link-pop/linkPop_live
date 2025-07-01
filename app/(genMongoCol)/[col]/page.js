@@ -71,9 +71,10 @@ export default async function postsPage({ searchParams, params }) {
         const hasQueryParams = destinationWithOrigin.includes("?");
 
         // Add our tracking parameters
+        // Added IARS=1 to the destination URL to enable InAppRedirectScript
         destinationWithOrigin += hasQueryParams
-          ? "&fromDirectlink=true&linkId=" + directlink._id
-          : "?fromDirectlink=true&linkId=" + directlink._id;
+          ? "&fromDirectlink=true&linkId=" + directlink._id + "&IARS=1"
+          : "?fromDirectlink=true&linkId=" + directlink._id + "&IARS=1";
 
         // If there's a free URL, also include it (encoded) with the shorter parameter name
         if (directlink.freeUrl) {
