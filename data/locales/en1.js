@@ -869,7 +869,6 @@ const en = {
   apply: "Apply",
   payoutMethod: "Payout method",
   automatic: "Automatic",
-  automaticPayoutNote: "Note: No minimum threshold required.",
 
   // Cancel Subscription
   cancelSubscription: "Cancel Subscription",

@@ -688,7 +688,7 @@ export default function AffiliateClient({ data, mongoUser }) {
       />
 
       <div
-        className={`mt-8 backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 rounded-xl shadow-md p-6`}
+        className={`mt-8 backdrop-blur-sm bg-accent/70 dark:bg-accent/40 border border-accent/30 rounded-xl shadow-md p15`}
       >
         <div className="flex items-start gap-3">
           <div className="rounded-full p-2 mt-1 flex-shrink-0">
@@ -705,9 +705,6 @@ export default function AffiliateClient({ data, mongoUser }) {
               <li>{t("commissionsAutomaticallyTracked")}</li>
               <li>{t("paymentsProcessed")}</li>
             </ol>
-            <p className={`mt-4 text-sm font-semibold text-accent-foreground`}>
-              {t("automaticPayoutNote")}
-            </p>
           </div>
         </div>
       </div>

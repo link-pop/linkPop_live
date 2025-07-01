@@ -1281,6 +1281,40 @@ const uk = {
   ADD_ANOTHER_IMAGE:
     "Будь ласка, завантажте інше зображення або зверніться до служби підтримки, якщо вважаєте, що це помилка.",
   inactive: "Неактивний",
+
+  // Affiliate Stripe Connect functionality
+  affiliatePayoutSettings: "Налаштування виплат",
+  payoutEligibility: "Право на виплату",
+  eligibleForPayouts: "Готовий до отримання виплат",
+  eligible: "Має право",
+  notEligible: "Не має права",
+  earningsCount: "Заробіток",
+  eligibleForNextPayout: "Має право на наступну виплату",
+  moreNeededForPayout: "потрібно ще для виплати",
+  stripeConnectAffiliateInfo:
+    "Налаштуйте Stripe Connect, щоб отримувати виплати партнерських комісій безпосередньо на ваш банківський рахунок.",
+  completeOnboardingToReceivePayouts:
+    "Завершіть реєстрацію Stripe Connect, щоб почати отримувати партнерські виплати.",
+  stripeReviewInProgress:
+    "Ваш обліковий запис Stripe Connect перебуває на розгляді. Ви зможете отримувати виплати після затвердження.",
+  affiliatePayoutScheduleInfo:
+    "Партнерські виплати обробляються щотижня. Якщо виплата не була запущена автоматично, натисніть кнопку 'Отримати виплату'.",
+  stripeConnectNotSetup: "Stripe Connect не налаштовано",
+  stripeConnectPendingOnboarding: "Реєстрація не завершена",
+  stripeConnectPendingApproval: "Очікує на затвердження",
+  stripeConnectSetupIncomplete: "Налаштування не завершено",
+  refreshStatus: "Оновити статус",
+  accountStatusUpdated: "Статус облікового запису оновлено",
+  inactive: "Неактивний",
+  setupStripeConnect: "Налаштувати Stripe Connect",
+  completeStripeOnboarding: "Завершити реєстрацію Stripe",
+
+  // Affiliate payout claiming
+  claimPayout: "Отримати виплату",
+
+  // Affiliate payout method translations
+  payoutMethod: "Виплата",
+  automatic: "Автоматично",
 };
 
 export default uk;

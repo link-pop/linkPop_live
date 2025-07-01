@@ -1250,6 +1250,40 @@ const fr = {
   ADD_ANOTHER_IMAGE:
     "Veuillez télécharger une autre image ou contacter le support si vous pensez qu'il s'agit d'une erreur.",
   inactive: "Inactif",
+
+  // Affiliate Stripe Connect functionality
+  affiliatePayoutSettings: "Paramètres de Paiement",
+  payoutEligibility: "Éligibilité au Paiement",
+  eligibleForPayouts: "Prêt à recevoir des paiements",
+  eligible: "Éligible",
+  notEligible: "Non éligible",
+  earningsCount: "Gains",
+  eligibleForNextPayout: "Éligible pour le prochain paiement",
+  moreNeededForPayout: "plus nécessaire pour le paiement",
+  stripeConnectAffiliateInfo:
+    "Configurez Stripe Connect pour recevoir les paiements de commissions d'affiliation directement sur votre compte bancaire.",
+  completeOnboardingToReceivePayouts:
+    "Complétez votre inscription Stripe Connect pour commencer à recevoir des paiements d'affiliation.",
+  stripeReviewInProgress:
+    "Votre compte Stripe Connect est en cours de révision. Vous pourrez recevoir des paiements une fois approuvé.",
+  affiliatePayoutScheduleInfo:
+    "Les paiements d'affiliation sont traités chaque semaine. Si le paiement n'est pas déclenché automatiquement, veuillez cliquer sur le bouton 'Réclamer le paiement'.",
+  stripeConnectNotSetup: "Stripe Connect non configuré",
+  stripeConnectPendingOnboarding: "Inscription incomplète",
+  stripeConnectPendingApproval: "Approbation en attente",
+  stripeConnectSetupIncomplete: "Configuration incomplète",
+  refreshStatus: "Actualiser le statut",
+  accountStatusUpdated: "Statut du compte mis à jour",
+  inactive: "Inactif",
+  setupStripeConnect: "Configurer Stripe Connect",
+  completeStripeOnboarding: "Terminer l'inscription Stripe",
+
+  // Affiliate payout claiming
+  claimPayout: "Réclamer le paiement",
+
+  // Affiliate payout method translations
+  payoutMethod: "Méthode de paiement",
+  automatic: "Automatique",
 };
 
 export default fr;

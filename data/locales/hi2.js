@@ -1253,6 +1253,40 @@ const hi = {
   ADD_ANOTHER_IMAGE:
     "कृपया एक और छवि अपलोड करें या यदि आपको लगता है कि यह त्रुटि है तो समर्थन से संपर्क करें।",
   inactive: "निष्क्रिय",
+
+  // Affiliate Stripe Connect functionality
+  affiliatePayoutSettings: "भुगतान सेटिंग्स",
+  payoutEligibility: "भुगतान पात्रता",
+  eligibleForPayouts: "भुगतान प्राप्त करने के लिए तैयार",
+  eligible: "पात्र",
+  notEligible: "अपात्र",
+  earningsCount: "आय",
+  eligibleForNextPayout: "अगले भुगतान के लिए पात्र",
+  moreNeededForPayout: "भुगतान के लिए और आवश्यक",
+  stripeConnectAffiliateInfo:
+    "स्ट्राइप कनेक्ट सेटअप करें ताकि आप अपनी बैंक खाते में सीधे एफिलिएट कमीशन भुगतान प्राप्त कर सकें।",
+  completeOnboardingToReceivePayouts:
+    "एफिलिएट भुगतान प्राप्त करने के लिए अपना स्ट्राइप कनेक्ट ऑनबोर्डिंग पूरा करें।",
+  stripeReviewInProgress:
+    "आपका स्ट्राइप कनेक्ट खाता समीक्षा में है। स्वीकृत होने के बाद आप भुगतान प्राप्त कर सकेंगे।",
+  affiliatePayoutScheduleInfo:
+    "एफिलिएट भुगतान साप्ताहिक रूप से प्रोसेस किए जाते हैं। यदि भुगतान स्वचालित रूप से ट्रिगर नहीं होता है, तो कृपया 'भुगतान प्राप्त करें' बटन पर क्लिक करें।",
+  stripeConnectNotSetup: "स्ट्राइप कनेक्ट सेटअप नहीं है",
+  stripeConnectPendingOnboarding: "ऑनबोर्डिंग अधूरी है",
+  stripeConnectPendingApproval: "स्वीकृति लंबित",
+  stripeConnectSetupIncomplete: "सेटअप अधूरा है",
+  refreshStatus: "स्थिति रीफ्रेश करें",
+  accountStatusUpdated: "खाता स्थिति अपडेट हुई",
+  inactive: "निष्क्रिय",
+  setupStripeConnect: "स्ट्राइप कनेक्ट सेटअप करें",
+  completeStripeOnboarding: "स्ट्राइप ऑनबोर्डिंग पूरा करें",
+
+  // Affiliate payout claiming
+  claimPayout: "भुगतान प्राप्त करें",
+
+  // Affiliate payout method translations
+  payoutMethod: "भुगतान विधि",
+  automatic: "स्वचालित",
 };
 
 export default hi;

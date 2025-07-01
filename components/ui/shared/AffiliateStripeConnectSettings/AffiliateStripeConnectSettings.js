@@ -339,7 +339,6 @@ export default function AffiliateStripeConnectSettings({
         {/* Payout Schedule Information */}
         <div className="text-xs text-muted-foreground space-y-1">
           <p>{t("affiliatePayoutScheduleInfo")}</p>
-          <p>{t("automaticPayoutNote")}</p>
         </div>
       </CardContent>
     </Card>

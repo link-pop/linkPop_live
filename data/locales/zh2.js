@@ -1180,6 +1180,41 @@ const zh = {
   LOW_QUALITY_IMAGE: "低质量图像",
   ADD_ANOTHER_IMAGE: "请上传另一张图片或联系支持团队，如果您认为这是错误。",
   inactive: "未激活",
+
+  // Affiliate Stripe Connect functionality
+  affiliatePayoutSettings: "支付设置",
+  payoutEligibility: "支付资格",
+  eligibleForPayouts: "可接收支付",
+  eligible: "有资格",
+  notEligible: "无资格",
+  earningsCount: "收益",
+  eligibleForNextPayout: "有资格获得下次支付",
+  moreNeededForPayout: "还需更多才能支付",
+  stripeConnectAffiliateInfo:
+    "设置 Stripe Connect 以将联盟佣金直接支付到您的银行账户。",
+  completeOnboardingToReceivePayouts:
+    "完成 Stripe Connect 注册以开始接收联盟支付。",
+  stripeReviewInProgress:
+    "您的 Stripe Connect 账户正在审核中。审核通过后即可接收支付。",
+  affiliatePayoutScheduleInfo:
+    "联盟支付每周处理一次。如果未自动触发支付，请点击“申请支付”按钮。",
+  stripeConnectNotSetup: "未设置 Stripe Connect",
+  stripeConnectPendingOnboarding: "注册未完成",
+  stripeConnectPendingApproval: "待审核",
+  stripeConnectSetupIncomplete: "设置未完成",
+  refreshStatus: "刷新状态",
+  accountStatusUpdated: "账户状态已更新",
+  inactive: "未激活",
+  setupStripeConnect: "设置 Stripe Connect",
+  completeStripeOnboarding: "完成 Stripe 注册",
+
+  // Affiliate payout claiming
+  claimPayout: "申请支付",
+
+  // Affiliate payout method translations
+  payoutMethod: "支付方式",
+  automatic: "自动",
+  noMinimumThresholdNote: "注意：无需最低门槛。",
 };
 
 export default zh;
