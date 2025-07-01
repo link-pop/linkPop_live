@@ -5,9 +5,8 @@ import PostsClientInfiniteScroll from "./PostsClientInfiniteScroll";
 import PostsServerWithPagination from "./PostsServerWithPagination";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import { LOGIN_ROUTE } from "@/lib/utils/constants";
-import { getAll } from "@/lib/actions/crud";
 import { postsColSpecialHandling } from "./PostsColSpecialHandling";
-import DirectlinksLandingpagesSearch from "./DirectlinksLandingpagesSearch";
+import { SITE1, SITE2 } from "@/config/env";
 
 export default async function Posts({
   searchParams = {},
@@ -58,7 +57,7 @@ export default async function Posts({
 
       <div
         className={`fcc wf oys ${
-          col.name === "chatrooms" ? "h-full w-full" : "maw600 mxa"
+          col.name === "chatrooms" ? "h-full w-full" : SITE1 ? "maw600 mxa" : ""
         }`}
       >
         {postsPaginationType === "infinite" && (
