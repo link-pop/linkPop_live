@@ -311,10 +311,11 @@ export default function ClientSideProfileTracker({
     return <div className="hidden">Tracking error: {error}</div>;
   }
 
+  // NOT WORKING: FIX LATER: OR DELETE: 1. NativeBrowserRedirect 2. ServerSideNativeBrowserRedirect 3. ForceNativeBrowserClient
   // Show native browser redirect UI if needed
-  if (useNativeBrowser && redirectUrl) {
-    return <NativeBrowserRedirect redirectUrl={redirectUrl} />;
-  }
+  // if (useNativeBrowser && redirectUrl) {
+  //   return <NativeBrowserRedirect redirectUrl={redirectUrl} />;
+  // }
 
   // This component doesn't render anything visible in production
   return null;

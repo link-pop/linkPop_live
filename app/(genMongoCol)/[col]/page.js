@@ -85,10 +85,11 @@ export default async function postsPage({ searchParams, params }) {
         // and ClientSideProfileTracker for analytics
         return (
           <>
-            <ServerSideNativeBrowserRedirect
+            {/* // NOT WORKING: FIX LATER: OR DELETE: 1. NativeBrowserRedirect 2. ServerSideNativeBrowserRedirect 3. ForceNativeBrowserClient */}
+            {/* <ServerSideNativeBrowserRedirect
               redirectUrl={destinationWithOrigin}
               userAgent={userAgent}
-            />
+            /> */}
             <ClientSideProfileTracker
               {...{
                 visitorId: mongoUser?._id?.toString(),
@@ -151,10 +152,11 @@ export default async function postsPage({ searchParams, params }) {
         // and ClientSideProfileTracker for analytics
         return (
           <>
-            <ServerSideNativeBrowserRedirect
+            {/* // NOT WORKING: FIX LATER: OR DELETE: 1. NativeBrowserRedirect 2. ServerSideNativeBrowserRedirect 3. ForceNativeBrowserClient */}
+            {/* <ServerSideNativeBrowserRedirect
               redirectUrl={landingPage.destinationUrl}
               userAgent={userAgent}
-            />
+            /> */}
             <ClientSideProfileTracker
               visitorId={mongoUser?._id?.toString()}
               profileId={landingPage._id.toString()}
