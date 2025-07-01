@@ -40,7 +40,7 @@ export default function Subscription2LimitInfo({ displayInfo, errors }) {
   return (
     <div className="px15">
       <div
-        className={`👋 maw600 wf mxa p15 mb-4 p-3 br10 ${displayInfo.className}`}
+        className={`👋 maw700 wf mxa p15 mb-4 p-3 br10 ${displayInfo.className}`}
       >
         <p className="text-sm">
           <span className="font-medium">
