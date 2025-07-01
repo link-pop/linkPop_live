@@ -202,7 +202,7 @@ export default function LandingPageDemoSection() {
           </div>
 
           {/* Text Column (Right) */}
-          <div className="order-1 md:order-2">
+          <div className="px10 order-1 md:order-2">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
               {t("landingPageDemoTitle").split(" ").slice(0, -2).join(" ")}{" "}
               <span className="inline-block bg-gradient-to-r from-[#F75C9D] to-[#5C7CFA] text-transparent bg-clip-text animate-gradient-x">

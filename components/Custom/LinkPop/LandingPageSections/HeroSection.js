@@ -534,7 +534,7 @@ export default function HeroSection({ mongoUser }) {
       <section ref={sectionRef} className="py-24 relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <div className="sm:ml30">
+            <div className="px10 sm:ml30">
               <h1
                 className={`${
                   currentLang !== "en"

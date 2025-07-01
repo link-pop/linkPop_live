@@ -28,7 +28,10 @@ export default function LanguageSelector({ className = "", onSelect }) {
   };
 
   return (
-    <div className={`${MENU_CLASS} ${className}`} onClick={showLanguagePopup}>
+    <div
+      className={`wsn ${MENU_CLASS} ${className}`}
+      onClick={showLanguagePopup}
+    >
       <Globe className="w24 h24" />
       {languages[currentLang].name}
     </div>

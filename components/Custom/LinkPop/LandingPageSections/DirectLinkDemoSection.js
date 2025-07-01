@@ -65,7 +65,7 @@ export default function DirectLinkDemoSection() {
       className="py-24 relative overflow-hidden bg-background"
     >
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+        <div className="px10 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           {/* Text Column (Left) */}
           <div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight">

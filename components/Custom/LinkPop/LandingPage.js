@@ -10,7 +10,7 @@ import GeoFilterDemoSection from "./LandingPageSections/GeoFilterDemoSection";
 
 export default function LandingPage({ mongoUser }) {
   return (
-    <>
+    <div className="max-w-[100vw] overflow-x-hidden">
       <HeroSection mongoUser={mongoUser} />
       <div className="border-t-[10px] border-dashed rounded-lg !px45 !mx45"></div>{" "}
       <LandingPageDemoSection mongoUser={mongoUser} />
@@ -22,6 +22,6 @@ export default function LandingPage({ mongoUser }) {
       <PricingSectionWrapper />
       <FaqSection />
       <CtaSection mongoUser={mongoUser} />
-    </>
+    </div>
   );
 }

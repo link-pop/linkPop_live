@@ -12,7 +12,7 @@ export function ThemeToggle({ className = "" }) {
   return (
     <div
       onClick={toggleTheme}
-      className={`${MENU_CLASS} ${className}`}
+      className={`wsn ${MENU_CLASS} ${className}`}
       title={theme === "light" ? t("darkMode") : t("lightMode")}
     >
       {theme === "light" ? <Moon size={24} /> : <Sun size={24} />}
