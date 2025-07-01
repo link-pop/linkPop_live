@@ -12,7 +12,6 @@ import { useRouter } from "next/navigation";
 import { allPlatforms, platformIcons } from "@/lib/data/platformData";
 import { formatUrl, validateUrl } from "@/lib/utils/formatUrl";
 
-// v 1.0.0
 const SocialMediaLinkDialog = ({
   editLink = null,
   existingLinks = [],
@@ -49,9 +48,8 @@ const SocialMediaLinkDialog = ({
         setAvailablePlatforms([otherPlatform]);
         setPlatform("other");
 
-        // IMPORTANT: Only set the default label if we're not editing
-        // and the label hasn't been set yet
-        if (!editLink && !label) {
+        // Only set the default label if we're not editing and the label is undefined or null (not empty string)
+        if (!editLink && (label === undefined || label === null)) {
           setLabel(otherPlatform.label);
         }
       }
@@ -303,6 +301,7 @@ const SocialMediaLinkDialog = ({
             onChange={validateLabel}
             error={labelError}
             required
+            placeholder={mode === "other" ? t("myWebsite") : undefined}
           />
         </div>
 

@@ -1314,6 +1314,7 @@ const en = {
   claimPayout: "Claim Payout",
 
   landingPagesOrDirectLinks: "{{count}} Landing Pages or Direct Links",
+  myWebsite: "My Website",
 };
 
 export default en;

@@ -1283,6 +1283,7 @@ const fr = {
   automatic: "Automatique",
 
   landingPagesOrDirectLinks: "{{count}} Pages d'atterrissage ou liens directs",
+  myWebsite: "Mon Site Web",
 };
 
 export default fr;

@@ -1215,6 +1215,7 @@ const zh = {
   noMinimumThresholdNote: "注意：无需最低门槛。",
 
   landingPagesOrDirectLinks: "{{count}} 落地页或直达链接",
+  myWebsite: "我的网站",
 };
 
 export default zh;

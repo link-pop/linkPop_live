@@ -1314,6 +1314,7 @@ const uk = {
   automatic: "Автоматично",
 
   landingPagesOrDirectLinks: "{{count}} цільових сторінок або прямих посилань",
+  myWebsite: "Мій веб-сайт",
 };
 
 export default uk;

@@ -1287,6 +1287,7 @@ const hi = {
   automatic: "स्वचालित",
 
   landingPagesOrDirectLinks: "{{count}} लैंडिंग पेज या डायरेक्ट लिंक्स",
+  myWebsite: "मेरा वेबसाइट",
 };
 
 export default hi;

@@ -1279,6 +1279,7 @@ const es = {
   automatic: "Automático",
 
   landingPagesOrDirectLinks: "{{count}} Páginas de Destino o Enlaces Directos",
+  myWebsite: "Mi Sitio Web",
 };
 
 export default es;
