@@ -771,7 +771,6 @@ const uk = {
   directlinkInfo: "Інформація про посилання",
   directlinkCreated:
     "Пряме посилання успішно створено! Тепер налаштуйте гео-фільтрацію.",
-  skipGeoFilter: "Завершити",
   directlinkConfigurationComplete: "Налаштування прямого посилання завершено!",
   continueToGeoFiltering: "До гео-фільтрації",
   finish: "Завершити налаштування",

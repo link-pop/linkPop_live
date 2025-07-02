@@ -11,6 +11,9 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 import FormActiveCheckbox from "./FormActiveCheckbox";
 import { useFeatureAccess } from "@/lib/utils/useFeatureAccess";
 import UpgradeMessageCard from "@/components/ui/shared/UpgradeMessageCard";
+import { DIRECTLINKS_ROUTE, LANDINGPAGES_ROUTE } from "@/lib/utils/constants";
+import { useQueryClient } from "@tanstack/react-query";
+import { invalidatePostsCache } from "@/lib/utils/reactQuery/invalidatePostsCache";
 
 export default function GeoFilterForm({
   entityId,
@@ -42,6 +45,9 @@ export default function GeoFilterForm({
   });
   const { toastSet, langId } = useContext();
   const { t } = useTranslation();
+  const currentColRevalidate =
+    entityType === "landingpage" ? LANDINGPAGES_ROUTE : DIRECTLINKS_ROUTE;
+  const queryClient = useQueryClient();
 
   // Load existing geo filter data
   useEffect(() => {
@@ -274,12 +280,26 @@ export default function GeoFilterForm({
 
       // Sync the geo filter data with the parent entity (landingpage or directlink)
       if (entityId && entityType) {
-        const syncResult = await syncGeoFilterData(entityId, entityType);
+        const syncResult = await syncGeoFilterData(
+          entityId,
+          entityType,
+          currentColRevalidate
+        );
         console.log(
           `Synced geo filter data to parent ${entityType}: ${
             syncResult ? "Success" : "Failed"
           }`
         );
+
+        // Invalidate posts cache after successful sync
+        // Convert entityType to collection name for cache invalidation
+        const collectionName =
+          entityType === "landingpage"
+            ? "landingpages"
+            : entityType === "directlink"
+            ? "directlinks"
+            : entityType;
+        invalidatePostsCache(queryClient, collectionName);
       }
 
       toastSet({

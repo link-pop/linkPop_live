@@ -534,7 +534,7 @@ export default function AddDirectlinkForm({
               onClick={() => router.push("/directlinks")}
               className="mt-4"
             >
-              {t("skipGeoFilter") || "Skip Geo Filter & Finish"}
+              {t("finish") || "Finish Setup"}
             </Button2>
           </div>
         </>

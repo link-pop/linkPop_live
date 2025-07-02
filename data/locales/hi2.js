@@ -768,7 +768,6 @@ const hi = {
   directlinkInfo: "लिंक जानकारी",
   directlinkCreated:
     "डायरेक्ट लिंक सफलतापूर्वक बनाया गया! अब जियो फिल्टरिंग सेट करें।",
-  skipGeoFilter: "समाप्त करें",
   directlinkConfigurationComplete: "डायरेक्ट लिंक कॉन्फिगरेशन पूरा!",
   continueToGeoFiltering: "जियो फिल्टरिंग पर जारी रखें",
   finish: "सेटअप पूरा करें",
