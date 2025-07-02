@@ -261,10 +261,6 @@ export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
                   city={visitorCity}
                   distance={post.distanceFromVisitor}
                   t={t}
-                  // iconSize={18}
-                  // iconClassName="landing-page-text opacity-75"
-                  // containerClassName="flex items-center justify-center gap-0 p-0"
-                  // textClassName="text-xs landing-page-text text-center"
                 />
               </div>
             )}

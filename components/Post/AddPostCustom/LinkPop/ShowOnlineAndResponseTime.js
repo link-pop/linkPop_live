@@ -10,7 +10,7 @@ export default function ShowOnlineAndResponseTime({
     responseTime && responseTime !== "none" && Number(responseTime) !== 0;
 
   return (
-    <div className={`f aic g10 wrap jcc ${className}`.trim()}>
+    <div className={`px10 f aic g10 wrap jcc ${className}`.trim()}>
       {showOnline && (
         <div className="f aic g5">
           <div className="w-2 h-2 bg-green-500 rounded-full"></div>

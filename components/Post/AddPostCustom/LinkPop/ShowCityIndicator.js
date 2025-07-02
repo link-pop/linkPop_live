@@ -13,7 +13,7 @@ export default function ShowCityIndicator({
   iconSize = 14,
   iconClassName = "ml5 miw20 mih20 landing-page-text opacity-75",
   textClassName = "text-xs landing-page-text",
-  containerClassName = "fcc aic",
+  containerClassName = "px10 fcc aic",
 }) {
   return (
     <div
