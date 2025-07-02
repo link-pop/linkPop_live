@@ -6,6 +6,7 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import GroupByUserView from "./GroupByUserView";
 import GroupByUserSwitch from "./GroupByUserSwitch";
 import SubHeading from "@/components/ui/shared/SubHeading/SubHeading";
+import AdminPageHeader from "@/components/ui/shared/AdminPageHeader/AdminPageHeader";
 
 const PAGE_SIZE = 25;
 
@@ -129,10 +130,13 @@ export default function AdminLinksPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <SubHeading>All Directlinks ({totalCount})</SubHeading>
-        <GroupByUserSwitch checked={byUser} onCheckedChange={setByUser} />
-      </div>
+      <AdminPageHeader
+        title="All Directlinks"
+        totalCount={totalCount}
+        showGroupByUser
+        byUser={byUser}
+        onByUserChange={setByUser}
+      />
 
       <GroupByUserView
         data={links}

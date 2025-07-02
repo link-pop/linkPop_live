@@ -6,6 +6,7 @@ import { platformIcons, getPlatformUrl } from "@/lib/data/platformData";
 import { BarChart3, ArrowUpRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import SubHeading from "@/components/ui/shared/SubHeading/SubHeading";
+import AdminPageHeader from "@/components/ui/shared/AdminPageHeader/AdminPageHeader";
 import PercentageBar from "@/components/ui/shared/PercentageBar/PercentageBar";
 
 export default function AdminSocialLinksClicksPage() {
@@ -86,13 +87,10 @@ export default function AdminSocialLinksClicksPage() {
 
   return (
     <div className="fc g20 w-full">
-      <div className="fc aic mb-4">
-        <SubHeading>Social Links Performance</SubHeading>
-        <div className="text-muted-foreground">
-          Total clicks:{" "}
-          <span className="font-semibold text-foreground">{totalClicks}</span>
-        </div>
-      </div>
+      <AdminPageHeader
+        title="Social Links Performance"
+        totalClicks={totalClicks}
+      />
 
       {/* Platform statistics */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 w-full">

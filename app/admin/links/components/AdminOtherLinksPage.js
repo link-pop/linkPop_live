@@ -5,6 +5,7 @@ import { SITE1, SITE2 } from "@/config/env";
 import { ExternalLink, BarChart3 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import SubHeading from "@/components/ui/shared/SubHeading/SubHeading";
+import AdminPageHeader from "@/components/ui/shared/AdminPageHeader/AdminPageHeader";
 import PercentageBar from "@/components/ui/shared/PercentageBar/PercentageBar";
 
 export default function AdminOtherLinksPage() {
@@ -90,13 +91,10 @@ export default function AdminOtherLinksPage() {
 
   return (
     <div className="fc g20 w-full">
-      <div className="fc aic mb-4">
-        <SubHeading>Other Links Performance</SubHeading>
-        <div className="text-muted-foreground">
-          Total clicks:{" "}
-          <span className="font-semibold text-foreground">{totalClicks}</span>
-        </div>
-      </div>
+      <AdminPageHeader
+        title="Other Links Performance"
+        totalClicks={totalClicks}
+      />
 
       {/* Domain statistics */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 w-full">

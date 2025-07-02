@@ -6,6 +6,7 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import GroupByUserView from "./GroupByUserView";
 import GroupByUserSwitch from "./GroupByUserSwitch";
 import SubHeading from "@/components/ui/shared/SubHeading/SubHeading";
+import AdminPageHeader from "@/components/ui/shared/AdminPageHeader/AdminPageHeader";
 
 const PAGE_SIZE = 25;
 
@@ -108,10 +109,13 @@ export default function AdminLandingPagesPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <SubHeading>All Landing Pages ({totalCount})</SubHeading>
-        <GroupByUserSwitch checked={byUser} onCheckedChange={setByUser} />
-      </div>
+      <AdminPageHeader
+        title="All Landing Pages"
+        totalCount={totalCount}
+        showGroupByUser
+        byUser={byUser}
+        onByUserChange={setByUser}
+      />
 
       <GroupByUserView
         data={landingPages}

@@ -9,6 +9,7 @@ import { ExternalLink } from "lucide-react";
 import GroupByUserView from "./GroupByUserView";
 import GroupByUserSwitch from "./GroupByUserSwitch";
 import SubHeading from "@/components/ui/shared/SubHeading/SubHeading";
+import AdminPageHeader from "@/components/ui/shared/AdminPageHeader/AdminPageHeader";
 
 const PAGE_SIZE = 25;
 
@@ -130,10 +131,13 @@ export default function AdminSocialMediaLinksPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <SubHeading>All Social Media Links ({totalCount})</SubHeading>
-        <GroupByUserSwitch checked={byUser} onCheckedChange={setByUser} />
-      </div>
+      <AdminPageHeader
+        title="All Social Media Links"
+        totalCount={totalCount}
+        showGroupByUser
+        byUser={byUser}
+        onByUserChange={setByUser}
+      />
 
       <GroupByUserView
         data={socialLinks}
