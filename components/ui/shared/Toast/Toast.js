@@ -10,13 +10,23 @@ export default function Toast() {
   const { toast, toastSet } = useContext();
   const { t } = useTranslation();
   const [toastKey, setToastKey] = useState(0);
+  const [lastToastContent, setLastToastContent] = useState("");
 
   useEffect(() => {
-    // Update key when toast content changes
-    if (toast.isOpen) {
+    // Create unique identifier for current toast content
+    const currentContent = `${toast.title}-${toast.text}-${toast.variant}-${toast.isOpen}`;
+
+    // If content changed and toast is open, force re-render
+    if (toast.isOpen && currentContent !== lastToastContent) {
       setToastKey((prev) => prev + 1 + new Date().getTime());
+      setLastToastContent(currentContent);
     }
-  }, [toast.title, toast.text, toast.isOpen]);
+
+    // If toast is closed, reset last content
+    if (!toast.isOpen) {
+      setLastToastContent("");
+    }
+  }, [toast.title, toast.text, toast.isOpen, toast.variant, lastToastContent]);
 
   // Helper function to translate content if it looks like a translation key
   const translateIfKey = (content) => {

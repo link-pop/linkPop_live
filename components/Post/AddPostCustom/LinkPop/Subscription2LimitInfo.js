@@ -38,7 +38,7 @@ export default function Subscription2LimitInfo({ displayInfo, errors }) {
   };
 
   return (
-    <div className="px15">
+    <div>
       <div
         className={`👋 maw700 wf mxa p15 mb-4 p-3 br10 ${displayInfo.className}`}
       >

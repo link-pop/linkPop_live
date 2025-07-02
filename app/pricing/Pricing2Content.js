@@ -29,6 +29,7 @@ import { cancelSubscription2AtPeriodEnd } from "@/lib/actions/cancelSubscription
 import ClickForSupport from "@/components/ui/shared/ClickForSupport/ClickForSupport";
 import AdminTestControls from "@/components/ui/shared/AdminTestControls/AdminTestControls";
 import SubscriptionResubscribeButton from "@/components/ui/shared/SubscriptionResubscribeButton/SubscriptionResubscribeButton";
+import TestSubscriptionButton from "@/components/ui/shared/TestSubscriptionButton/TestSubscriptionButton";
 
 export default function Pricing2Content({ userSubscription, isAdmin = false }) {
   const { t } = useTranslation();
@@ -46,6 +47,9 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
       : 0;
 
   const [linksCount, setLinksCount] = useState(initialLinksCount);
+
+  // Check if test mode is enabled via search params
+  const isTestMode = searchParams.get("subtest") === "true";
 
   // Use the pricing utility to get plan prices with extra links
   const planPrices = getPlanPrices(linksCount);
@@ -808,6 +812,20 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
       <p className={`text-gray-500 text-center mb-12 max-w-2xl mx-auto`}>
         {t("choosePlanDesc")}
       </p>
+
+      {/* Test Subscription - Only visible when ?subtest=true */}
+      {isTestMode && (
+        <div className="mb-8 p-4 border border-orange-200 rounded-lg bg-orange-50 text-center max-w-md mx-auto">
+          <h3 className="text-lg font-semibold mb-2 text-orange-800">
+            Webhook Test Mode
+          </h3>
+          <p className="text-sm text-orange-600 mb-4">
+            Create a test subscription with 1-day trial to verify webhook
+            synchronization
+          </p>
+          <TestSubscriptionButton className="w-full py-2 px-4 rounded-md text-center font-medium text-white bg-orange-500 hover:bg-orange-600 transition-colors" />
+        </div>
+      )}
 
       {/* Admin Test Controls */}
       {/* <AdminTestControls isAdmin={isAdmin} /> */}
