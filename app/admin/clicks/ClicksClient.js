@@ -28,7 +28,7 @@ export default function ClicksClient({ data }) {
   ];
 
   return (
-    <div className="p-6">
+    <div className="p-3 md:p-6">
       <AdminPageHeader />
       <div className="oxh bg-background rounded-lg shadow p15">
         <Toggle
