@@ -69,7 +69,7 @@ export default function PromotionCountdown({
     <div className="fc aic jcc g1 wfc">
       <div className="tac wf">
         <div
-          className="fw700 fz22 landing-page-text2"
+          className="fw700 fz22"
           style={{
             letterSpacing: 1,
             color: ensureValidHexColor(promotionTextColor),
@@ -84,7 +84,7 @@ export default function PromotionCountdown({
             <>
               <div
                 key={idx}
-                className="wsn fcc bg-background rounded-lg shadow px-4 py-2 fz22 fw700 landing-page-text2"
+                className="wsn fcc bg-background rounded-lg shadow px-4 py-2 fz22 fw700"
                 style={{
                   minWidth: 48,
                   width: 48,
@@ -96,7 +96,7 @@ export default function PromotionCountdown({
               </div>
               {idx < arr.length - 1 && (
                 <span
-                  className="fz22 fw700 landing-page-text2 mx-1"
+                  className="fz22 fw700 mx-1"
                   style={{ color: ensureValidHexColor(promotionTextColor) }}
                 >
                   :
