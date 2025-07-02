@@ -20,64 +20,7 @@ import RoundIconButton from "@/components/ui/shared/RoundIconButton/RoundIconBut
 import useShareHelper from "@/components/ui/shared/Share/ShareHelper";
 import { fetchGeoData } from "@/lib/utils/fetchGeoData";
 import ShareModal from "@/components/ui/shared/Share/ShareModal";
-
-// Countdown timer component that updates every second
-const PromotionCountdown = ({ endsAt }) => {
-  const { t } = useTranslation();
-  const [timeLeft, setTimeLeft] = useState("");
-
-  useEffect(() => {
-    // Function to calculate and format time left
-    const calculateTimeLeft = () => {
-      const now = new Date();
-      const endTime = new Date(endsAt);
-      const difference = endTime - now;
-
-      // If countdown is over
-      if (difference <= 0) {
-        return "";
-      }
-
-      // Calculate hours, minutes, seconds
-      const hours = Math.floor(difference / (1000 * 60 * 60));
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-      // Format the time string
-      let timeString = "";
-      if (hours > 0) timeString += `${hours}h `;
-      if (minutes > 0 || hours > 0) timeString += `${minutes}m `;
-      timeString += `${seconds}s`;
-
-      return timeString;
-    };
-
-    // Initial calculation
-    setTimeLeft(calculateTimeLeft());
-
-    // Setup interval to update every second
-    const timer = setInterval(() => {
-      const remaining = calculateTimeLeft();
-      setTimeLeft(remaining);
-
-      // Clear interval when countdown ends
-      if (!remaining) {
-        clearInterval(timer);
-      }
-    }, 1000);
-
-    // Cleanup on unmount
-    return () => clearInterval(timer);
-  }, [endsAt]);
-
-  if (!timeLeft) return null;
-
-  return (
-    <span className="text-xs landing-page-text opacity-75 ml-1 wf tac">
-      {t("endsIn") || "ends in"} {timeLeft}
-    </span>
-  );
-};
+import PromotionCountdown from "@/components/ui/shared/PromotionCountdown/PromotionCountdown";
 
 // Utility function to ensure a valid hex color
 const ensureValidHexColor = (color) => {
@@ -390,19 +333,11 @@ export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
             {/* Display Promotion section - moved outside social links conditional */}
             {post.promotion && (
               <div className="my-2 fc g5 aic px15 promotion-element overflow-visible">
-                <div className="f aic g5 jcc wrap">
-                  <span
-                    className="text-sm font-semibold landing-page-text promotion-text underline"
-                    style={{
-                      color: ensureValidHexColor(post.promotionTextColor),
-                    }}
-                  >
-                    {post.promotion}
-                  </span>
-                  {post.promotionEndsIn && (
-                    <PromotionCountdown endsAt={post.promotionEndsIn} />
-                  )}
-                </div>
+                <PromotionCountdown
+                  endsAt={post.promotionEndsIn}
+                  promotion={post.promotion}
+                  promotionTextColor={post.promotionTextColor}
+                />
               </div>
             )}
 
