@@ -4,6 +4,7 @@ import Stripe from "stripe";
 import { models } from "@/lib/db/models/models";
 import { update, add } from "@/lib/actions/crud";
 import { isValidForReferralEarnings } from "@/lib/utils/referral/calculateReferralEarnings";
+import { activateReferral } from "@/lib/actions/activateReferral";
 import { getPriceByPlanId } from "@/lib/utils/pricing/getPlanPrices";
 
 export async function GET(req) {
@@ -472,42 +473,23 @@ async function processReferralCommission(subscription, userId) {
       },
     });
 
-    // Update referral status if it's the first payment
-    if (referral.status === "pending") {
-      await update({
-        col: "referrals",
-        data: { _id: referral._id },
-        update: {
-          status: "active",
-          activatedAt: new Date(),
-        },
-      });
-
-      // Update referrer stats
-      await update({
-        col: "users",
-        data: { _id: user.referredBy },
-        update: {
-          $inc: {
-            "referralStats.activeReferrals": 1,
-            "referralStats.pendingEarnings": commissionAmount,
-            "referralStats.totalEarnings": commissionAmount,
-          },
-        },
-      });
-    } else {
-      // Just update earnings for existing active referrals
-      await update({
-        col: "users",
-        data: { _id: user.referredBy },
-        update: {
-          $inc: {
-            "referralStats.pendingEarnings": commissionAmount,
-            "referralStats.totalEarnings": commissionAmount,
-          },
-        },
-      });
+    // Activate referral if it's pending
+    const activationResult = await activateReferral(userId);
+    if (activationResult.activated) {
+      console.log(`✅ Successfully activated referral for user ${userId}`);
     }
+
+    // Update earnings stats
+    await update({
+      col: "users",
+      data: { _id: user.referredBy },
+      update: {
+        $inc: {
+          "referralStats.pendingEarnings": commissionAmount,
+          "referralStats.totalEarnings": commissionAmount,
+        },
+      },
+    });
 
     console.log(
       `Processed referral commission of $${commissionAmount} for user ${user.referredBy}`

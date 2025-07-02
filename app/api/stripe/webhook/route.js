@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { models } from "@/lib/db/models/models";
 import { update, add } from "@/lib/actions/crud";
 import { isValidForReferralEarnings } from "@/lib/utils/referral/calculateReferralEarnings";
+import { activateReferral } from "@/lib/actions/activateReferral";
 // import { sendErrorToAdmin } from "@/lib/actions/sendErrorToAdmin"; // Function doesn't exist yet
 
 // ! code start webhook handler
@@ -1088,46 +1089,36 @@ async function processReferralCommission(
       },
     });
 
-    // Update referral status if it's the first payment (only for new earnings)
-    if (!existingEarning) {
-      if (referral.status === "pending") {
-        await update({
-          col: "referrals",
-          data: { _id: referral._id },
-          update: {
-            status: "active",
-            activatedAt: new Date(),
-          },
-        });
+    // Activate referral if it's pending (regardless of earning record existence)
+    const activationResult = await activateReferral(userId);
+    if (activationResult.activated) {
+      console.log(`✅ Successfully activated referral for user ${userId}`);
+    } else if (
+      activationResult.error &&
+      !activationResult.error.includes("already active") &&
+      !activationResult.error.includes("no referrer")
+    ) {
+      console.log(`⚠️ Referral activation note: ${activationResult.error}`);
+    }
 
-        // Update referrer stats
-        await update({
-          col: "users",
-          data: { _id: user.referredBy },
-          update: {
-            $inc: {
-              "referralStats.activeReferrals": 1,
-              "referralStats.pendingEarnings": commissionAmount,
-              "referralStats.totalEarnings": commissionAmount,
-            },
+    // Update earnings stats (only for new earnings to prevent duplicates)
+    if (!existingEarning) {
+      await update({
+        col: "users",
+        data: { _id: user.referredBy },
+        update: {
+          $inc: {
+            "referralStats.pendingEarnings": commissionAmount,
+            "referralStats.totalEarnings": commissionAmount,
           },
-        });
-      } else {
-        // Just update earnings for existing active referrals
-        await update({
-          col: "users",
-          data: { _id: user.referredBy },
-          update: {
-            $inc: {
-              "referralStats.pendingEarnings": commissionAmount,
-              "referralStats.totalEarnings": commissionAmount,
-            },
-          },
-        });
-      }
+        },
+      });
+      console.log(
+        `💰 Added earnings stats for new earning: $${commissionAmount}`
+      );
     } else {
       console.log(
-        "Using existing earning record, skipping user stats update to prevent duplicates"
+        "Using existing earning record, skipping earnings stats update to prevent duplicates"
       );
     }
 
