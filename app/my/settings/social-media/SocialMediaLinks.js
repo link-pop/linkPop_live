@@ -59,7 +59,8 @@ const SocialMediaLinks = memo(function SocialMediaLinks({
   const { dialogSet } = useContext();
   const queryClient = useQueryClient();
 
-  const [isDeleting, setIsDeleting] = useState(false);
+  // Change isDeleting to an object to track individual link deletion states
+  const [deletingLinks, setDeletingLinks] = useState({});
   const [isSaving, setIsSaving] = useState(false);
   const [draggedItem, setDraggedItem] = useState(null);
   const [dragOverItem, setDragOverItem] = useState(null);
@@ -184,7 +185,8 @@ const SocialMediaLinks = memo(function SocialMediaLinks({
   };
 
   const handleDeleteLink = async (linkId) => {
-    setIsDeleting(true);
+    // Set deleting state for this specific link
+    setDeletingLinks((prev) => ({ ...prev, [linkId]: true }));
 
     const formData = new FormData();
     formData.append("linkId", linkId);
@@ -209,7 +211,12 @@ const SocialMediaLinks = memo(function SocialMediaLinks({
       console.error("Error removing social media link:", result.error);
     }
 
-    setIsDeleting(false);
+    // Clear deleting state for this link
+    setDeletingLinks((prev) => {
+      const newState = { ...prev };
+      delete newState[linkId];
+      return newState;
+    });
   };
 
   const confirmDeleteLink = (link) => {
@@ -371,7 +378,7 @@ const SocialMediaLinks = memo(function SocialMediaLinks({
   }
 
   return (
-    <div className={`fc ${isDeleting || isSaving ? "pen" : ""} ${className}`}>
+    <div className={`fc ${isSaving ? "pen" : ""} ${className}`}>
       <p className="tac ml3 mb5 px15">
         {mode === "other"
           ? t("otherMediaLinksDescription")
@@ -394,10 +401,12 @@ const SocialMediaLinks = memo(function SocialMediaLinks({
             <>
               {filteredLinks.map((link, index) => {
                 const IconComponent = getPlatformIcon(link.platform);
+                const isBeingDeleted = deletingLinks[link._id];
+
                 return (
                   <div
                     key={link._id}
-                    className={`wbba f fwn jcsb aic p15 bw1 br5 ${
+                    className={`relative wbba f fwn jcsb aic p15 bw1 br5 ${
                       draggedItem === index ? "opacity-50" : ""
                     } ${dragOverItem === index ? "bg-accent" : ""}`}
                     draggable="true"
@@ -407,6 +416,13 @@ const SocialMediaLinks = memo(function SocialMediaLinks({
                     onDrop={(e) => handleDrop(e, index)}
                     onDragEnd={handleDragEnd}
                   >
+                    {/* Add overlay and loader when link is being deleted */}
+                    {isBeingDeleted && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-md z-10">
+                        <Loader2 className="brand w-6 h-6 animate-spin text-primary" />
+                      </div>
+                    )}
+
                     <div
                       className={`f fwn aic g10 cp`}
                       onClick={() => handleEditLink(link)}

@@ -421,7 +421,7 @@ const AddLandingPageFormPreview = memo(function AddLandingPageFormPreview({
                               )}
                               className="!oh mt10 wf SocialLinkNoAnimation"
                               showTitle={true}
-                              horizontalScrollClassName="mxa wfc overflow-visible"
+                              horizontalScrollClassName="mxa !wfc overflow-visible"
                               buttonClassName="PreviewButton landing-page-button whitespace-nowrap overflow-hidden text-ellipsis flex items-center"
                               iconSize={iconSize}
                               onlyIcon={formData?.socialIconsType === "type2"}

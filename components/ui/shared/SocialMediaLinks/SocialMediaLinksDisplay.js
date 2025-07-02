@@ -58,63 +58,68 @@ export default function SocialMediaLinksDisplay({
   };
 
   return (
-    <div className={`fc ${className}`}>
-      <HorizontalScroll className={`maw600 wf`}>
-        {/* // * round LINK */}
-        {showUpdateLink && (
-          <Link
-            className="fcc miw40 mih40 bw1 br50 flex-shrink-0"
-            href={SOCIAL_MEDIA_ROUTE}
-          >
-            <Pencil className="w16 h16 cp" />
-          </Link>
-        )}
-        {filteredLinks.map((link) => {
-          const platform = allPlatforms.find((p) => p.value === link.platform);
-          const url = getLinkUrl(link);
-          return (
-            <TrackableSocialMediaLink
-              key={link._id || link.id}
-              href={url}
-              linkId={link._id || link.id}
-              className={`f aic g5 p5 overflow-visible ${
-                onlyIcon
-                  ? "px5 fcc"
-                  : "px10 br20 hover:opacity-80 cp flex-shrink-0 " +
-                    (buttonClassName
-                      ? buttonClassName
-                      : "bg-accent text-accent-foreground")
-              }`}
-              title={
-                showTitle
-                  ? `${link.label}: ${
-                      link.platform === "other"
-                        ? link.websiteUrl
-                        : "@" + link.username
-                    }`
-                  : undefined
-              }
+    <div className="min-[600px]:!maw600 max-[600px]:wfc mxa overflow-hidden">
+      <HorizontalScroll
+        className={`flex maw600 items-center gap-2 ${horizontalScrollClassName}`}
+      >
+        <div className="flex items-center gap-2 flex-nowrap min-w-max">
+          {showUpdateLink && (
+            <Link
+              className="fcc miw40 mih40 bw1 br50 flex-shrink-0"
+              href={SOCIAL_MEDIA_ROUTE}
             >
-              {platform && !hideIcons && (
-                <platform.icon
-                  size={iconSize}
-                  className={
-                    (onlyIcon ? "text-foreground" : "flex-shrink-0") +
-                    " transition-transform duration-200 hover:scale-125"
-                  }
-                />
-              )}
-              {!onlyIcon && link.platform !== "other" && (
-                <span>
-                  {useLinkLabel && link.label ? link.label : platform?.label}
-                </span>
-              )}
-              {!onlyIcon && link.platform === "other" && link.label && (
-                <span>{link.label}</span>
-              )}
-            </TrackableSocialMediaLink>
-          );
-        })}
+              <Pencil className="w16 h16 cp" />
+            </Link>
+          )}
+          {filteredLinks.map((link) => {
+            const platform = allPlatforms.find(
+              (p) => p.value === link.platform
+            );
+            const url = getLinkUrl(link);
+            return (
+              <TrackableSocialMediaLink
+                key={link._id || link.id}
+                href={url}
+                linkId={link._id || link.id}
+                className={`f aic g5 p5 overflow-visible ${
+                  onlyIcon
+                    ? "px5 fcc"
+                    : "px10 br20 hover:opacity-80 cp flex-shrink-0 " +
+                      (buttonClassName
+                        ? buttonClassName
+                        : "bg-accent text-accent-foreground")
+                }`}
+                title={
+                  showTitle
+                    ? `${link.label}: ${
+                        link.platform === "other"
+                          ? link.websiteUrl
+                          : "@" + link.username
+                      }`
+                    : undefined
+                }
+              >
+                {platform && !hideIcons && (
+                  <platform.icon
+                    size={iconSize}
+                    className={
+                      (onlyIcon ? "text-foreground" : "flex-shrink-0") +
+                      " transition-transform duration-200 hover:scale-125"
+                    }
+                  />
+                )}
+                {!onlyIcon && link.platform !== "other" && (
+                  <span>
+                    {useLinkLabel && link.label ? link.label : platform?.label}
+                  </span>
+                )}
+                {!onlyIcon && link.platform === "other" && link.label && (
+                  <span>{link.label}</span>
+                )}
+              </TrackableSocialMediaLink>
+            );
+          })}
+        </div>
       </HorizontalScroll>
     </div>
   );

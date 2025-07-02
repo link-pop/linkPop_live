@@ -18,19 +18,16 @@ const HorizontalScroll = forwardRef(function HorizontalScroll(
 ) {
   const scrollRef = useHorizontalScroll();
 
-  // Combine the refs if an external ref is provided
   const combinedRef = (node) => {
     if (typeof ref === "function") ref(node);
     else if (ref) ref.current = node;
     scrollRef.current = node;
   };
 
-  // Add effect to fix right padding and touch scrolling
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
 
-    // Helper function to detect if device has touch capability
     const isTouchDevice = () => {
       return (
         "ontouchstart" in window ||
@@ -42,26 +39,47 @@ const HorizontalScroll = forwardRef(function HorizontalScroll(
     const isTouch = isTouchDevice();
 
     const fixScrolling = () => {
-      const childContainer = container.firstElementChild;
-      if (!childContainer || !childContainer.children.length) return;
+      if (!container) return;
 
-      // Only apply special padding for touch devices
-      if (isTouch) {
-        // Ensure adequate padding to allow scrolling to the last item
-        // This needs to be large enough on mobile to allow the last item to be fully visible
-        // Make sure the container has full width to enable scrolling to the end
-        container.style.width = "100%";
-        container.style.overscrollBehaviorX = "contain";
-      }
+      // Set explicit width for the container
+      container.style.width = "100%";
+      container.style.overflowX = "auto";
+      container.style.overscrollBehaviorX = "contain";
+
+      // Ensure the container can scroll horizontally
+      container.style.whiteSpace = "nowrap";
+      container.style.scrollbarWidth = "none";
+      container.style.msOverflowStyle = "none";
     };
 
     fixScrolling();
     window.addEventListener("resize", fixScrolling);
 
-    // Only apply touch event handlers for touch devices
     let startX, scrollLeft;
-    let touchListenersAdded = false;
+    let isMouseDown = false;
 
+    // Mouse event handlers
+    const handleMouseDown = (e) => {
+      isMouseDown = true;
+      startX = e.pageX - container.offsetLeft;
+      scrollLeft = container.scrollLeft;
+      container.style.cursor = "grabbing";
+    };
+
+    const handleMouseMove = (e) => {
+      if (!isMouseDown) return;
+      e.preventDefault();
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - startX) * 2;
+      container.scrollLeft = scrollLeft - walk;
+    };
+
+    const handleMouseUp = () => {
+      isMouseDown = false;
+      container.style.cursor = "grab";
+    };
+
+    // Touch event handlers
     const touchStart = (e) => {
       startX = e.touches[0].pageX - container.offsetLeft;
       scrollLeft = container.scrollLeft;
@@ -70,10 +88,8 @@ const HorizontalScroll = forwardRef(function HorizontalScroll(
     const touchMove = (e) => {
       if (!startX) return;
       const x = e.touches[0].pageX - container.offsetLeft;
-      const walk = (x - startX) * 1.5; // Multiply by factor for faster scrolling
+      const walk = (x - startX) * 1.5;
       container.scrollLeft = scrollLeft - walk;
-
-      // Prevent page scrolling when horizontally scrolling the container
       if (Math.abs(walk) > 10) {
         e.preventDefault();
       }
@@ -83,19 +99,33 @@ const HorizontalScroll = forwardRef(function HorizontalScroll(
       startX = null;
     };
 
-    // Only add touch event listeners if this is a touch device
+    // Add mouse events for desktop scrolling
+    if (!isTouch) {
+      container.style.cursor = "grab";
+      container.addEventListener("mousedown", handleMouseDown);
+      container.addEventListener("mousemove", handleMouseMove);
+      container.addEventListener("mouseup", handleMouseUp);
+      container.addEventListener("mouseleave", handleMouseUp);
+    }
+
+    // Add touch events for mobile scrolling
     if (isTouch) {
       container.addEventListener("touchstart", touchStart, { passive: false });
       container.addEventListener("touchmove", touchMove, { passive: false });
-      container.addEventListener("touchend", touchEnd, { passive: false });
-      touchListenersAdded = true;
+      container.addEventListener("touchend", touchEnd);
     }
 
     return () => {
       window.removeEventListener("resize", fixScrolling);
 
-      // Only remove event listeners if they were added
-      if (touchListenersAdded) {
+      if (!isTouch) {
+        container.removeEventListener("mousedown", handleMouseDown);
+        container.removeEventListener("mousemove", handleMouseMove);
+        container.removeEventListener("mouseup", handleMouseUp);
+        container.removeEventListener("mouseleave", handleMouseUp);
+      }
+
+      if (isTouch) {
         container.removeEventListener("touchstart", touchStart);
         container.removeEventListener("touchmove", touchMove);
         container.removeEventListener("touchend", touchEnd);
@@ -106,17 +136,23 @@ const HorizontalScroll = forwardRef(function HorizontalScroll(
   return (
     <div
       ref={combinedRef}
-      className={cn("fwn overflow-x-auto scrollbar-hide", `${className}`)}
+      className={cn("overflow-x-auto scrollbar-hide", className)}
       style={{
         WebkitOverflowScrolling: "touch",
-        paddingTop: "10px",
-        paddingBottom: "10px",
-        paddingLeft: "10px",
+        padding: "10px",
+        maxWidth: "100%",
         ...style,
       }}
       {...props}
     >
-      <div className={cn("f fwn g10")} style={{ overflow: "visible" }}>
+      <div
+        className={cn("f fwn g10 flex-nowrap")}
+        style={{
+          overflow: "visible",
+          minWidth: "min-content",
+          width: "100%",
+        }}
+      >
         {children}
       </div>
     </div>
