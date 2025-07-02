@@ -21,6 +21,7 @@ import useShareHelper from "@/components/ui/shared/Share/ShareHelper";
 import { fetchGeoData } from "@/lib/utils/fetchGeoData";
 import ShareModal from "@/components/ui/shared/Share/ShareModal";
 import PromotionCountdown from "@/components/ui/shared/PromotionCountdown/PromotionCountdown";
+import ShowCityIndicator from "@/components/Post/AddPostCustom/LinkPop/ShowCityIndicator";
 
 // Utility function to ensure a valid hex color
 const ensureValidHexColor = (color) => {
@@ -285,36 +286,15 @@ export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
             {/* Location indicator with fixed layout */}
             {post.showCity && (
               <div className="tac mb15">
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "0px",
-                    padding: "0px",
-                  }}
-                >
-                  <MapPin
-                    size={18}
-                    style={{ flexShrink: 0 }}
-                    className="landing-page-text opacity-75"
-                  />
-                  <span
-                    className="text-xs landing-page-text"
-                    style={{ textAlign: "center" }}
-                  >
-                    {visitorCity
-                      ? `${t("youAreIn") || "You are in"} ${visitorCity}`
-                      : `${t("youAreNear") || "You are near"}}`}
-                    {post.distanceFromVisitor && (
-                      <span className="ml-1">
-                        , {t("weAreOnly") || "we are only"}{" "}
-                        {post.distanceFromVisitor} {t("miles") || "miles"}{" "}
-                        {t("away") || "away"}!
-                      </span>
-                    )}
-                  </span>
-                </div>
+                <ShowCityIndicator
+                  city={visitorCity}
+                  distance={post.distanceFromVisitor}
+                  t={t}
+                  // iconSize={18}
+                  // iconClassName="landing-page-text opacity-75"
+                  // containerClassName="flex items-center justify-center gap-0 p-0"
+                  // textClassName="text-xs landing-page-text text-center"
+                />
               </div>
             )}
 

@@ -14,6 +14,7 @@ import ViewPreviewButton from "@/components/Custom/ViewPreviewButton";
 import CopyLinkButton from "@/components/Custom/CopyLinkButton";
 import { fetchGeoData } from "@/lib/utils/fetchGeoData";
 import PromotionCountdown from "@/components/ui/shared/PromotionCountdown/PromotionCountdown";
+import ShowCityIndicator from "./ShowCityIndicator";
 
 // Convert to a memoized component to prevent unnecessary re-renders
 const AddLandingPageFormPreview = memo(function AddLandingPageFormPreview({
@@ -373,7 +374,7 @@ const AddLandingPageFormPreview = memo(function AddLandingPageFormPreview({
                     {/* Display Online and City indicators */}
                     <div className="fc aic jcc g10 my-2">
                       {/* Group Online status and response time together in a single flex container */}
-                      <div className="f aic jcc g10 wrap">
+                      <div className="f aic g10 wrap jcc">
                         {formData.showOnline && (
                           <div className="f aic g5">
                             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -401,31 +402,11 @@ const AddLandingPageFormPreview = memo(function AddLandingPageFormPreview({
                       </div>
 
                       {formData.showCity && (
-                        <div className="f fwn aic g5">
-                          <MapPin
-                            size={14}
-                            className="ml5 miw20 mih20 landing-page-text opacity-75"
-                          />
-                          <span className="text-xs landing-page-text">
-                            {visitorCity
-                              ? `${
-                                  t("youAreIn") || "You are in"
-                                } ${visitorCity}`
-                              : `${t("youAreNear") || "You are near"}`}
-                            {formData.distanceFromVisitor ? (
-                              <span className="ml-1">
-                                , {t("weAreOnly") || "we are only"}{" "}
-                                {formData.distanceFromVisitor}{" "}
-                                {t("miles") || "mi"} {t("away") || "away"}!
-                              </span>
-                            ) : (
-                              <span className="ml-1">
-                                , {t("weAreOnly") || "we are only"} x{" "}
-                                {t("miles") || "mi"} {t("away") || "away"}!
-                              </span>
-                            )}
-                          </span>
-                        </div>
+                        <ShowCityIndicator
+                          city={visitorCity}
+                          distance={formData.distanceFromVisitor}
+                          t={t}
+                        />
                       )}
                     </div>
 
