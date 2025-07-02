@@ -22,6 +22,7 @@ import { fetchGeoData } from "@/lib/utils/fetchGeoData";
 import ShareModal from "@/components/ui/shared/Share/ShareModal";
 import PromotionCountdown from "@/components/ui/shared/PromotionCountdown/PromotionCountdown";
 import ShowCityIndicator from "@/components/Post/AddPostCustom/LinkPop/ShowCityIndicator";
+import ShowOnlineAndResponseTime from "@/components/Post/AddPostCustom/LinkPop/ShowOnlineAndResponseTime";
 
 export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
   const { t } = useTranslation();
@@ -245,32 +246,11 @@ export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
             {/* Display Online and City indicators */}
             <div className="fc aic jcc g10">
               {/* Group Online status and response time together in a single flex container */}
-              <div className="f aic jcc g10 wrap">
-                {post.showOnline && (
-                  <div className="f aic g5">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span className="text-xs landing-page-text">
-                      {t("online") || "Online"}
-                    </span>
-                  </div>
-                )}
-
-                {/* Display response time if set */}
-                {post.responseTime &&
-                  post.responseTime !== "none" &&
-                  Number(post.responseTime) !== 0 && (
-                    <div className="f aic g5">
-                      <Clock
-                        size={14}
-                        className="landing-page-text opacity-75"
-                      />
-                      <span className="text-xs landing-page-text opacity-75">
-                        {t("reply") || "Replies in"}: {post.responseTime}
-                        {t("min") || "m"}
-                      </span>
-                    </div>
-                  )}
-              </div>
+              <ShowOnlineAndResponseTime
+                showOnline={post.showOnline}
+                responseTime={post.responseTime}
+                t={t}
+              />
             </div>
 
             {/* Location indicator with fixed layout */}
