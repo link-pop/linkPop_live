@@ -227,7 +227,7 @@ export default function AffiliateStripeConnectSettings({
               <div className="text-sm text-muted-foreground">
                 {eligibility.eligible
                   ? t("eligibleForPayouts")
-                  : eligibility.reason}
+                  : t(eligibility.reason)}
               </div>
             </div>
           </div>
