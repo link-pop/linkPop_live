@@ -24,6 +24,7 @@ import PromotionCountdown from "@/components/ui/shared/PromotionCountdown/Promot
 import ShowCityIndicator from "@/components/Post/AddPostCustom/LinkPop/ShowCityIndicator";
 import ShowOnlineAndResponseTime from "@/components/Post/AddPostCustom/LinkPop/ShowOnlineAndResponseTime";
 import LandingPageNameAndUsername from "@/components/ui/shared/LandingPageNameAndUsername";
+import LandingPageBio from "./LandingPageBio";
 
 export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
   const { t } = useTranslation();
@@ -233,7 +234,7 @@ export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
           />
         }
         top2={
-          <div className="wbba fc g10 tac py15">
+          <div className="wbba fc g10 tac p15">
             <LandingPageNameAndUsername
               name={
                 post.name ||
@@ -265,14 +266,7 @@ export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
               </div>
             )}
 
-            {post.bio && (
-              <div className="px15 Bio landing-page-text">
-                <RichTextContent
-                  content={post.bio}
-                  className="landing-page-text italic fz14"
-                />
-              </div>
-            )}
+            <LandingPageBio bio={post.bio} />
           </div>
         }
         top3={

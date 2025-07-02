@@ -993,6 +993,7 @@ function AddLandingPageForm({
 
           <div className="wf fz12 tac text-red-400 mb-20">
             {createdLinksCount === 0 &&
+              !isLoadingData &&
               (t("pleaseAddAtLeastOneLink") || "Please add at least one link")}
           </div>
 

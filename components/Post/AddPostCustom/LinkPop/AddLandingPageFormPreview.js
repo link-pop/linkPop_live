@@ -17,6 +17,7 @@ import PromotionCountdown from "@/components/ui/shared/PromotionCountdown/Promot
 import ShowCityIndicator from "./ShowCityIndicator";
 import ShowOnlineAndResponseTime from "./ShowOnlineAndResponseTime";
 import LandingPageNameAndUsername from "@/components/ui/shared/LandingPageNameAndUsername";
+import LandingPageBio from "../../Post/Full/Custom/LandingPageBio";
 
 // Convert to a memoized component to prevent unnecessary re-renders
 const AddLandingPageFormPreview = memo(function AddLandingPageFormPreview({
@@ -357,7 +358,7 @@ const AddLandingPageFormPreview = memo(function AddLandingPageFormPreview({
 
                 {/* Content Container that starts below the profile image */}
                 <div className="por z1 wf pb15">
-                  <div className="wbba fc g10 tac px15">
+                  <div className="wbba fc g10 tac p15">
                     <LandingPageNameAndUsername
                       name={
                         formData.name ||
@@ -385,14 +386,7 @@ const AddLandingPageFormPreview = memo(function AddLandingPageFormPreview({
                       )}
                     </div>
 
-                    {formData.bio && (
-                      <div className="px15 Bio landing-page-text">
-                        <RichTextContent
-                          content={formData.bio}
-                          className="landing-page-text italic fz14"
-                        />
-                      </div>
-                    )}
+                    {formData.bio && <LandingPageBio bio={formData.bio} />}
                   </div>
 
                   {/* Display Promotion section - moved outside social links conditional */}
