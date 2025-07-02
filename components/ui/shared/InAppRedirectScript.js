@@ -2,6 +2,8 @@
 
 import Script from "next/script";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { detectInAppBrowser } from "@/lib/utils/detectInAppBrowser";
 import {
   ADD_DIRECTLINK_ROUTE,
   DIRECTLINKS_ROUTE,
@@ -16,9 +18,15 @@ import {
 } from "@/lib/utils/constants";
 
 export default function InAppRedirectScript() {
-  if (process.env.NODE_ENV !== "production") return null;
-
+  const [isInAppBrowser, setIsInAppBrowser] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    const { isInAppBrowser: detected } = detectInAppBrowser();
+    setIsInAppBrowser(detected);
+  }, []);
+
+  if (process.env.NODE_ENV !== "production") return null;
 
   // Excluded routes
   const excludedRoutes = [
@@ -35,10 +43,10 @@ export default function InAppRedirectScript() {
     "/admin",
   ];
 
-  // If current path is in excluded routes, do not run
-  if (excludedRoutes.includes(pathname)) return null;
+  // If current path is in excluded routes or not in in-app browser, do not run
+  if (excludedRoutes.includes(pathname) || !isInAppBrowser) return null;
 
-  console.log("✅ InAppRedirectScript ENABLED");
+  console.log("✅ InAppRedirectScript ENABLED - Running in in-app browser");
   return (
     <Script
       id="iar"
