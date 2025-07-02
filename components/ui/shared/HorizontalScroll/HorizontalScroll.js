@@ -106,13 +106,7 @@ const HorizontalScroll = forwardRef(function HorizontalScroll(
   return (
     <div
       ref={combinedRef}
-      // ! SENSITIVE: very important to use flex and items-center to make it work on mobile
-      className={cn(
-        "fwn overflow-x-auto scrollbar-hide",
-        "max-[600px]:!wfc max-[600px]:!fcc mxa", // mobile
-        "min-[600px]:!maw600 min-[600px]:!wf", // desktop
-        `${className}`
-      )}
+      className={cn("fwn overflow-x-auto scrollbar-hide", `${className}`)}
       style={{
         WebkitOverflowScrolling: "touch",
         paddingTop: "10px",

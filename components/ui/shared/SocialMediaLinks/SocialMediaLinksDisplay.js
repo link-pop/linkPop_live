@@ -59,12 +59,7 @@ export default function SocialMediaLinksDisplay({
 
   return (
     <div className={`fc ${className}`}>
-      {/* // !!! removed ${className} ${horizontalScrollClassName} to keep scrollable on mobile + pc !!! */}
-      {/* // !!! HACK: if there are 14 or less links, center the scrollable container */}
-      {/* // !!! DON'T DELETE "fcc" : "por r15" !!! */}
-      <HorizontalScroll
-        className={`${filteredLinks.length <= 14 ? "fcc" : "por r15"}`}
-      >
+      <HorizontalScroll className={`maw600 wf`}>
         {/* // * round LINK */}
         {showUpdateLink && (
           <Link

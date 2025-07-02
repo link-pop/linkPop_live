@@ -3,6 +3,7 @@
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import HorizontalScroll from "@/components/ui/shared/HorizontalScroll/HorizontalScroll";
 
 export default function Toggle({
   labels = [
@@ -61,7 +62,7 @@ export default function Toggle({
   return (
     <div className={`fc w-full ${className}`} style={style}>
       <div className={`w-full ${labelsClassName}`}>
-        <div className="w-full">
+        <HorizontalScroll>
           <div className="flex relative w-full" ref={tabsContainerRef}>
             {/* Animated indicator - slides between tabs */}
             <div
@@ -75,7 +76,7 @@ export default function Toggle({
                 ref={(el) => (labelsRef.current[index] = el)}
                 onClick={() => handleTabSwitch(index)}
                 className={cn(
-                  "wsn cp py-2 px-4 text-center flex-1",
+                  "wsn cp py-2 px-4 text-center flex-1 min-w-fit",
                   switched === index
                     ? "brand font-medium"
                     : "text-foreground hover:bg-accent",
@@ -93,7 +94,7 @@ export default function Toggle({
               </div>
             ))}
           </div>
-        </div>
+        </HorizontalScroll>
       </div>
 
       <div className="mt-4 relative overflow-hidden w-full">
