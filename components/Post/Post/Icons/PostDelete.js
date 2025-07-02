@@ -42,13 +42,28 @@ export default function PostDelete({
       text: `${post.title || post?.text || post?.name}`,
       isDanger: true,
       action: async () => {
+        console.log(
+          `🗑️ PostDelete: Starting deletion for ${col.name} post ${post._id}`
+        );
+        console.log(`📄 Post data:`, post);
+
         // DEFAULT PostDelete LOGIC for any collection
         const res = await removeOne({
           col,
           data: { _id: post._id },
           postsPaginationType,
         });
-        if (!res) return;
+
+        if (!res) {
+          console.error(
+            `❌ PostDelete: Failed to delete ${col.name} post ${post._id}`
+          );
+          return;
+        }
+
+        console.log(
+          `✅ PostDelete: Successfully deleted ${col.name} post ${post._id}`
+        );
 
         // ! 2 CUSTOM LOGIC FOR COMMENTS
         if (col.name === "comments") {

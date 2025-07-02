@@ -65,9 +65,9 @@ DATA FETCHING:
 
 TASK COMMUNICATION:
 
-- if you found bad code/pattern/vulnerability/etc - write [BADCODE]
-- in the end of each task that you ended write [GOOD] if you think it was a good idea, [BETTERIDEA] if you think it was a bad idea and describe why, and [IDONTKNOW] if you dont know or not sure
-- write [SUGGESTION] if you think its a good idea to make a change, and describe why
-- write [CAUTION] if you think its a dangerous/bad idea and describe why
-- if my instructions confuse you or taking too much space in your "working memory" write: "[TOOMANYINSTRUCTIONS]"
+- if you found bad code/pattern/vulnerability/etc - write [🔴BADCODE🔴]
+- in the end of each task that you ended write [🟢GOOD🟢] if you think it was a good idea, [🔴BETTERIDEA🔴] if you think it was a bad idea and describe why, and [🟡IDONTKNOW🟡] if you dont know or not sure
+- write [🟡SUGGESTION🟡] if you think its a good idea to make a change, and describe why
+- write [🔴CAUTION🔴] if you think its a dangerous/bad idea and describe why
+- if my instructions confuse you or taking too much space in your "working memory" write: "[🔴TOOMANYINSTRUCTIONS🔴]"
 - in every message show your input data capacity in %. Like this EXAMPLE: (got data/max capacity) [INPUTDATA]: 22%/100k tokens.
