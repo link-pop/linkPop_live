@@ -311,7 +311,7 @@ export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
                 <OtherLinksDisplay
                   key={`other-display-${refreshTrigger}`}
                   links={socialLinks}
-                  buttonClassName={`LandingPageButton landing-page-button whitespace-nowrap overflow-hidden text-ellipsis flex items-center`}
+                  buttonClassName={`LandingPageButton landing-page-button overflow-hidden text-ellipsis flex items-center`}
                   iconSize={iconSize}
                   hideIcons={post?.disableLinkLogos}
                 />

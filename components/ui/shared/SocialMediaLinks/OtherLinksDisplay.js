@@ -49,23 +49,23 @@ export default function OtherLinksDisplay({
             linkId={link._id || link.id}
             className={`f aic jcsb wf py15 px20 br15 hover:opacity-80 transition-all group cp overflow-visible OtherLinkButton ${buttonClassName}`}
           >
-            <div className="f fwn aic g10">
+            <div className="f wf fwn aic g10">
               {!hideIcons && (
                 <ExternalLink
                   size={iconSize}
-                  className="group-hover:text-brand transition-colors"
+                  className="miw20 mih20 group-hover:text-brand transition-colors"
                 />
               )}
-              <span className="fz16 fw600">{link.label}</span>
-            </div>
-            <div
-              className="share-button"
-              onClick={(e) => handleShare(e, link.websiteUrl, link.label)}
-            >
-              <Share2
-                size={iconSize}
-                className="group-hover:text-brand transition-colors"
-              />
+              <span className="tac fz16 fw600">{link.label}</span>
+              <div
+                className="mla share-button"
+                onClick={(e) => handleShare(e, link.websiteUrl, link.label)}
+              >
+                <Share2
+                  size={iconSize}
+                  className="miw20 mih20 group-hover:text-brand transition-colors"
+                />
+              </div>
             </div>
           </TrackableSocialMediaLink>
         ))}

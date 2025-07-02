@@ -446,7 +446,7 @@ const AddLandingPageFormPreview = memo(function AddLandingPageFormPreview({
                                     : refreshTrigger
                                 }`}
                                 links={socialLinks}
-                                buttonClassName="PreviewButton landing-page-button whitespace-nowrap overflow-hidden text-ellipsis flex items-center"
+                                buttonClassName="PreviewButton landing-page-button overflow-hidden text-ellipsis flex items-center"
                                 iconSize={iconSize}
                                 hideIcons={formData?.disableLinkLogos}
                               />
