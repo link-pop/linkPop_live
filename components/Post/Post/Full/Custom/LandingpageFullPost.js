@@ -23,16 +23,6 @@ import ShareModal from "@/components/ui/shared/Share/ShareModal";
 import PromotionCountdown from "@/components/ui/shared/PromotionCountdown/PromotionCountdown";
 import ShowCityIndicator from "@/components/Post/AddPostCustom/LinkPop/ShowCityIndicator";
 
-// Utility function to ensure a valid hex color
-const ensureValidHexColor = (color) => {
-  // If color is undefined, empty, or not a valid hex, return default
-  if (!color || color === "") return "#FF0000";
-
-  // Check if it's a valid hex color pattern
-  const isValidHex = /^#([0-9A-F]{3}){1,2}$/i.test(color);
-  return isValidHex ? color : "#FF0000";
-};
-
 export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
   const { t } = useTranslation();
   const { toastSet } = useContext();
