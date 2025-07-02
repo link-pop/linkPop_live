@@ -23,6 +23,7 @@ import ShareModal from "@/components/ui/shared/Share/ShareModal";
 import PromotionCountdown from "@/components/ui/shared/PromotionCountdown/PromotionCountdown";
 import ShowCityIndicator from "@/components/Post/AddPostCustom/LinkPop/ShowCityIndicator";
 import ShowOnlineAndResponseTime from "@/components/Post/AddPostCustom/LinkPop/ShowOnlineAndResponseTime";
+import LandingPageNameAndUsername from "@/components/ui/shared/LandingPageNameAndUsername";
 
 export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
   const { t } = useTranslation();
@@ -233,15 +234,15 @@ export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
         }
         top2={
           <div className="wbba fc g10 tac py15">
-            <h1 className="fz28 fw600 Username landing-page-text">
-              {post.name ||
+            <LandingPageNameAndUsername
+              name={
+                post.name ||
                 post.displayName ||
                 (post.createdBy &&
-                  (post.createdBy.displayName || post.createdBy.name))}
-            </h1>
-            <div className="text-sm landing-page-text opacity-85 mt-1">
-              @{post.username}
-            </div>
+                  (post.createdBy.displayName || post.createdBy.name))
+              }
+              username={post.username}
+            />
 
             {/* Display Online and City indicators */}
             <div className="fc aic jcc g10">

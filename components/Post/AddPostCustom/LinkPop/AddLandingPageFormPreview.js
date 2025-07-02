@@ -16,6 +16,7 @@ import { fetchGeoData } from "@/lib/utils/fetchGeoData";
 import PromotionCountdown from "@/components/ui/shared/PromotionCountdown/PromotionCountdown";
 import ShowCityIndicator from "./ShowCityIndicator";
 import ShowOnlineAndResponseTime from "./ShowOnlineAndResponseTime";
+import LandingPageNameAndUsername from "@/components/ui/shared/LandingPageNameAndUsername";
 
 // Convert to a memoized component to prevent unnecessary re-renders
 const AddLandingPageFormPreview = memo(function AddLandingPageFormPreview({
@@ -357,20 +358,14 @@ const AddLandingPageFormPreview = memo(function AddLandingPageFormPreview({
                 {/* Content Container that starts below the profile image */}
                 <div className="por z1 wf pb15">
                   <div className="wbba fc g10 tac px15">
-                    <div className="wf">
-                      <h1
-                        className={`${
-                          !formData?.textColor ? "text-foreground" : ""
-                        } !fz28 fw600 Username landing-page-text`}
-                      >
-                        {formData.name ||
-                          mongoUser?.displayName ||
-                          mongoUser?.name}
-                      </h1>
-                      <div className="text-sm landing-page-text opacity-85 mt-1">
-                        @{formData.username}
-                      </div>
-                    </div>
+                    <LandingPageNameAndUsername
+                      name={
+                        formData.name ||
+                        mongoUser?.displayName ||
+                        mongoUser?.name
+                      }
+                      username={formData.username}
+                    />
 
                     {/* Display Online and City indicators */}
                     <div className="fc aic jcc g10 my-2">
