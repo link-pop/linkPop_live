@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { fetchGeoData } from "@/lib/utils/fetchGeoData";
 import { add } from "@/lib/actions/crud";
 import { usePathname } from "next/navigation";
@@ -12,7 +12,7 @@ import {
   DASHBOARD_ROUTE,
   MAIN_ROUTE,
 } from "@/lib/utils/constants";
-import { detectInAppBrowser } from "@/lib/utils/detectInAppBrowser";
+import { checkForThreats } from "@/lib/utils/shieldProtection/checkForThreats";
 
 export default function ClientSideProfileTracker({
   visitorId,
@@ -31,10 +31,6 @@ export default function ClientSideProfileTracker({
 }) {
   const [tracked, setTracked] = useState(false);
   const [error, setError] = useState(null);
-  const [showInAppBrowserRedirect, setShowInAppBrowserRedirect] =
-    useState(false);
-  const [showInstagramRedirect, setShowInstagramRedirect] = useState(false);
-  const [useNativeBrowser, setUseNativeBrowser] = useState(false);
   const pathname = usePathname();
 
   // Check if current path is in excluded routes
@@ -58,63 +54,6 @@ export default function ClientSideProfileTracker({
     }
   }, []);
 
-  // Function to check if visitor is potentially a bot or moderator
-  function checkForThreats(userAgent, geoData, referrer) {
-    // Check user agent for common bot signatures
-    const botPatterns = [
-      /bot/i,
-      /crawler/i,
-      /spider/i,
-      /google/i,
-      /baidu/i,
-      /bing/i,
-      /yahoo/i,
-      /facebook/i,
-      /instagram/i,
-      /moderator/i,
-      /monitor/i,
-      /scraper/i,
-      /headless/i,
-      /archive/i,
-      /semrush/i,
-      /ahrefs/i,
-      /yandex/i,
-      /lighthouse/i,
-      /slurp/i,
-      /phantom/i,
-      /selenium/i,
-      /puppeteer/i,
-      /httrack/i,
-      /wget/i,
-      /curl/i,
-      /python-requests/i,
-      /twitterbot/i,
-      /whatsapp/i,
-      /telegram/i,
-      /screaming frog/i,
-      /sitechecker/i,
-      /proximic/i,
-      /mediapartners/i,
-      /applebot/i,
-      /duckduckbot/i,
-      /bingpreview/i,
-      /facebookexternalhit/i,
-      /scanner/i,
-      /inspect/i,
-      /audit/i,
-    ];
-
-    const isUserAgentSuspicious = botPatterns.some((pattern) =>
-      pattern.test(userAgent || "")
-    );
-
-    // Check for proxy, VPN or hosting indicators
-    const isProxyOrHosting = !!(geoData?.proxy || geoData?.hosting);
-
-    // Flag visitor if any of these conditions are true
-    return isUserAgentSuspicious || isProxyOrHosting;
-  }
-
   useEffect(() => {
     async function trackVisit() {
       try {
@@ -128,14 +67,8 @@ export default function ClientSideProfileTracker({
           );
           setTracked(true);
 
-          // Handle redirects even if we skip tracking
+          // Handle redirects even if we skip tracking (no in-app browser check)
           if (redirectUrl) {
-            // Check for in-app browsers and show redirect UI
-            const { isInAppBrowser } = detectInAppBrowser();
-            if (isInAppBrowser) {
-              setUseNativeBrowser(true);
-              return;
-            }
             window.location.href = redirectUrl;
           }
           return;
@@ -166,14 +99,8 @@ export default function ClientSideProfileTracker({
           );
           setTracked(true);
 
-          // Handle redirects even if we skip tracking
+          // Handle redirects even if we skip tracking (no in-app browser check)
           if (redirectUrl) {
-            // Check for in-app browsers and show redirect UI
-            const { isInAppBrowser } = detectInAppBrowser();
-            if (isInAppBrowser) {
-              setUseNativeBrowser(true);
-              return;
-            }
             window.location.href = redirectUrl;
           }
           return;
@@ -245,38 +172,20 @@ export default function ClientSideProfileTracker({
             console.log("Shield Protection: Redirecting to safe page");
             window.location.href = safePageUrl;
           } else {
-            // Redirect to original destination
+            // Redirect to original destination (no in-app browser check)
             console.log("Shield Protection: Redirecting to destination");
-            // Check for in-app browsers and show redirect UI
-            const { isInAppBrowser } = detectInAppBrowser();
-            if (isInAppBrowser) {
-              setUseNativeBrowser(true);
-              return;
-            }
             window.location.href = redirectUrl;
           }
         } else if (redirectUrl) {
-          // No shield protection, redirect directly
-          // Check for in-app browsers and show redirect UI
-          const { isInAppBrowser } = detectInAppBrowser();
-          if (isInAppBrowser) {
-            setUseNativeBrowser(true);
-            return;
-          }
+          // No shield protection, redirect directly (no in-app browser check)
           window.location.href = redirectUrl;
         }
       } catch (err) {
         console.error("❌ Error tracking profile visit:", err);
         setError(err.message || "Unknown error occurred");
 
-        // Still redirect even if tracking fails
+        // Still redirect even if tracking fails (no in-app browser check)
         if (redirectUrl) {
-          // Check for in-app browsers and show redirect UI
-          const { isInAppBrowser } = detectInAppBrowser();
-          if (isInAppBrowser) {
-            setUseNativeBrowser(true);
-            return;
-          }
           window.location.href = redirectUrl;
         }
       }
