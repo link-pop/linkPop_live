@@ -12,7 +12,6 @@ import {
   DASHBOARD_ROUTE,
   MAIN_ROUTE,
 } from "@/lib/utils/constants";
-import NativeBrowserRedirect from "./NativeBrowserRedirect";
 import { detectInAppBrowser } from "@/lib/utils/detectInAppBrowser";
 
 export default function ClientSideProfileTracker({
@@ -310,12 +309,6 @@ export default function ClientSideProfileTracker({
   if (process.env.DEV_MODE === "true" && error) {
     return <div className="hidden">Tracking error: {error}</div>;
   }
-
-  // NOT WORKING: FIX LATER: OR DELETE: 1. NativeBrowserRedirect 2. ServerSideNativeBrowserRedirect 3. ForceNativeBrowserClient
-  // Show native browser redirect UI if needed
-  // if (useNativeBrowser && redirectUrl) {
-  //   return <NativeBrowserRedirect redirectUrl={redirectUrl} />;
-  // }
 
   // This component doesn't render anything visible in production
   return null;

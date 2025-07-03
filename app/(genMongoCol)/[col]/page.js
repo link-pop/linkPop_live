@@ -13,7 +13,6 @@ import ProfileNotFound from "@/components/ui/shared/ProfileNotFound/ProfileNotFo
 import { checkDirectlinkLandingpageAccess } from "@/lib/actions/checkDirectlinkLandingpageAccess";
 import DirectlinkFullPost from "@/components/Post/Post/Full/Custom/DirectlinkFullPost";
 import SubscriptionExpiredMessage from "@/components/ui/shared/ProfileNotFound/SubscriptionExpiredMessage";
-import ServerSideNativeBrowserRedirect from "@/components/ui/shared/ServerSideNativeBrowserRedirect";
 
 // posts for provided collection
 export default async function postsPage({ searchParams, params }) {
@@ -81,15 +80,8 @@ export default async function postsPage({ searchParams, params }) {
             "&FU=" + encodeURIComponent(directlink.freeUrl);
         }
 
-        // Use the ServerSideNativeBrowserRedirect for instant native browser redirection
-        // and ClientSideProfileTracker for analytics
         return (
           <>
-            {/* // NOT WORKING: FIX LATER: OR DELETE: 1. NativeBrowserRedirect 2. ServerSideNativeBrowserRedirect 3. ForceNativeBrowserClient */}
-            {/* <ServerSideNativeBrowserRedirect
-              redirectUrl={destinationWithOrigin}
-              userAgent={userAgent}
-            /> */}
             <ClientSideProfileTracker
               {...{
                 visitorId: mongoUser?._id?.toString(),
@@ -148,15 +140,8 @@ export default async function postsPage({ searchParams, params }) {
         // Found a landing page with this name
         const col = { name: "landingpages" };
 
-        // Use the ServerSideNativeBrowserRedirect for instant native browser redirection
-        // and ClientSideProfileTracker for analytics
         return (
           <>
-            {/* // NOT WORKING: FIX LATER: OR DELETE: 1. NativeBrowserRedirect 2. ServerSideNativeBrowserRedirect 3. ForceNativeBrowserClient */}
-            {/* <ServerSideNativeBrowserRedirect
-              redirectUrl={landingPage.destinationUrl}
-              userAgent={userAgent}
-            /> */}
             <ClientSideProfileTracker
               visitorId={mongoUser?._id?.toString()}
               profileId={landingPage._id.toString()}
