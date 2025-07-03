@@ -42,6 +42,7 @@ import FormBioTextarea from "./FormBioTextarea";
 import FormSubmitButton from "./FormSubmitButton";
 import TitleWithBackButton from "@/components/ui/shared/PageHeading/TitleWithBackButton";
 import { useQueryClient } from "@tanstack/react-query";
+import ShieldProtectionEnabledInfo from "./ShieldProtectionEnabledInfo";
 
 function AddLandingPageForm({
   col = "landingpages",
@@ -733,6 +734,7 @@ function AddLandingPageForm({
       // Step 1: Basic landing page info
       return (
         <>
+          <ShieldProtectionEnabledInfo className="!mb0" />
           {/* // ! ProfileImagesUploader */}
           <ProfileImagesUploader
             profileImage={profileImage}

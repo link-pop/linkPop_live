@@ -35,6 +35,7 @@ import FormShieldProtectionSection from "./FormShieldProtectionSection";
 import TitleWithBackButton from "@/components/ui/shared/PageHeading/TitleWithBackButton";
 import { useQueryClient } from "@tanstack/react-query";
 import { DIRECTLINKS_ROUTE } from "@/lib/utils/constants";
+import ShieldProtectionEnabledInfo from "./ShieldProtectionEnabledInfo";
 
 export default function AddDirectlinkForm({
   col = "directlinks",
@@ -413,6 +414,8 @@ export default function AddDirectlinkForm({
         className="fcc mb15"
       />
 
+      <ShieldProtectionEnabledInfo />
+
       {!isExistingDirectlink && displayInfo && displayInfo.needsUpgrade && (
         <Subscription2LimitInfo displayInfo={displayInfo} errors={errors} />
       )}
@@ -481,7 +484,7 @@ export default function AddDirectlinkForm({
               />
             </FormSection>
 
-            <FormSection showBorder={false}>
+            {/* <FormSection showBorder={false}>
               <FormShieldProtectionSection
                 shieldProtection={formData.shieldProtection}
                 safePageUrl={formData.safePageUrl}
@@ -489,7 +492,7 @@ export default function AddDirectlinkForm({
                 errors={errors}
                 hideHelperText={true}
               />
-            </FormSection>
+            </FormSection> */}
 
             <FormSection showBorder={false}>
               {/* Other */}
