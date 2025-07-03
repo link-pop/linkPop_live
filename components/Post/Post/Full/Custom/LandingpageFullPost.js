@@ -290,7 +290,7 @@ export default function LandingpageFullPost({ post, col, isAdmin, mongoUser }) {
               showUpdateLink={false}
               links={socialLinks.filter((link) => link.platform !== "other")}
               className="!px10 !oh mt10 ml3 SocialLinkNoAnimation"
-              showTitle={true}
+              showTitle={false}
               horizontalScrollClassName={`mxa wfc overflow-visible`}
               buttonClassName={`LandingPageButton landing-page-button whitespace-nowrap overflow-hidden text-ellipsis flex items-center`}
               iconSize={iconSize}
