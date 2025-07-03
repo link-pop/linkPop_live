@@ -1,7 +1,7 @@
 "use client";
 
 import { getAll } from "@/lib/actions/crud";
-import { SITE1, SITE2 } from "@/config/env";
+import { getSocialLinksCollectionName } from "@/lib/utils/linkProtection";
 import { platformIcons, getPlatformUrl } from "@/lib/data/platformData";
 import { BarChart3, ArrowUpRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -14,7 +14,7 @@ export default function AdminSocialLinksClicksPage() {
     queryKey: ["adminSocialLinks"],
     queryFn: async () => {
       // Determine the collection based on site config
-      const colName = SITE1 ? "s1sociallinks" : "s2sociallinks";
+      const colName = getSocialLinksCollectionName();
 
       const fetchedLinks = await getAll({
         col: colName,

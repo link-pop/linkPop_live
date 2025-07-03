@@ -10,6 +10,7 @@ import GroupByUserView from "./GroupByUserView";
 import GroupByUserSwitch from "./GroupByUserSwitch";
 import SubHeading from "@/components/ui/shared/SubHeading/SubHeading";
 import AdminPageHeader from "@/components/ui/shared/AdminPageHeader/AdminPageHeader";
+import { getSocialLinksCollectionName } from "@/lib/utils/linkProtection";
 
 const PAGE_SIZE = 25;
 
@@ -20,7 +21,7 @@ export default function AdminSocialMediaLinksPage() {
   const { data: totalCountData } = useQuery({
     queryKey: ["adminSocialMediaLinksCount"],
     queryFn: async () => {
-      const colName = SITE1 ? "s1sociallinks" : "s2sociallinks";
+      const colName = getSocialLinksCollectionName();
       const countResult = await getAll({
         col: colName,
         data: { platform: { $ne: "other" } },
@@ -43,7 +44,7 @@ export default function AdminSocialMediaLinksPage() {
     queryKey: ["adminSocialMediaLinks"],
     queryFn: async ({ pageParam = 0 }) => {
       // Determine the collection based on site config
-      const colName = SITE1 ? "s1sociallinks" : "s2sociallinks";
+      const colName = getSocialLinksCollectionName();
       const skip = pageParam * PAGE_SIZE;
 
       try {

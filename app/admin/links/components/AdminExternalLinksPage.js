@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { getAll } from "@/lib/actions/crud";
-import { SITE1 } from "@/config/env";
+import { getSocialLinksCollectionName } from "@/lib/utils/linkProtection";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import GroupByUserView from "./GroupByUserView";
@@ -19,7 +19,7 @@ export default function AdminExternalLinksPage() {
   const { data: totalCountData } = useQuery({
     queryKey: ["adminExternalLinksCount"],
     queryFn: async () => {
-      const colName = SITE1 ? "s1sociallinks" : "s2sociallinks";
+      const colName = getSocialLinksCollectionName();
       const countResult = await getAll({
         col: colName,
         data: { platform: "other" },
@@ -42,7 +42,7 @@ export default function AdminExternalLinksPage() {
     queryKey: ["adminExternalLinks"],
     queryFn: async ({ pageParam = 0 }) => {
       // Determine the collection based on site config
-      const colName = SITE1 ? "s1sociallinks" : "s2sociallinks";
+      const colName = getSocialLinksCollectionName();
       const skip = pageParam * PAGE_SIZE;
 
       try {

@@ -10,6 +10,7 @@ import {
   platformUrls,
   allPlatforms,
 } from "@/lib/data/platformData";
+import { getLinkDisplayUrl } from "@/lib/utils/linkProtection";
 
 export default function SocialMediaLinksDisplay({
   links = [],
@@ -38,23 +39,9 @@ export default function SocialMediaLinksDisplay({
   // If no social media links after filtering, don't render anything
   if (!filteredLinks || !filteredLinks.length) return null;
 
-  // Get link URL - handle both username and websiteUrl
+  // Get link URL - now uses the secure protection system
   const getLinkUrl = (link) => {
-    // For "other" platform, use the websiteUrl directly
-    if (link.platform === "other" && link.websiteUrl) {
-      // URL should already be formatted correctly from the backend
-      return link.websiteUrl;
-    }
-
-    // For other platforms, use the standard URLs with username
-    const baseUrl = platformUrls[link.platform] || "";
-    if (!baseUrl || !link.username) return "#";
-
-    // Clean username (remove @ if present)
-    const cleanUsername = link.username.startsWith("@")
-      ? link.username.substring(1)
-      : link.username;
-    return baseUrl + cleanUsername;
+    return getLinkDisplayUrl(link);
   };
 
   return (

@@ -1,6 +1,5 @@
 import React from "react";
 
-// OnlyFans SVG icon as a React component
 const OnlyfansIcon = ({
   size = 24,
   width,
@@ -17,7 +16,6 @@ const OnlyfansIcon = ({
       role="img"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
-      // aria-label="OnlyFans" // ! don't uncomment !
       width={width || iconSize}
       height={height || iconSize}
       fill="currentColor"

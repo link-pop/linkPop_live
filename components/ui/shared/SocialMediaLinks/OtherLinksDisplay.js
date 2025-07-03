@@ -4,6 +4,7 @@ import { ExternalLink, Share2 } from "lucide-react";
 import TrackableSocialMediaLink from "./TrackableSocialMediaLink";
 import useShareHelper from "../Share/ShareHelper";
 import ShareModal from "../Share/ShareModal";
+import { getLinkDisplayUrl } from "@/lib/utils/linkProtection";
 
 export default function OtherLinksDisplay({
   links = [],
@@ -45,7 +46,7 @@ export default function OtherLinksDisplay({
         {otherLinks.map((link) => (
           <TrackableSocialMediaLink
             key={link._id || link.id}
-            href={link.websiteUrl}
+            href={getLinkDisplayUrl(link)}
             linkId={link._id || link.id}
             className={`f aic jcsb wf py15 px20 br15 hover:opacity-80 transition-all group cp overflow-visible OtherLinkButton ${buttonClassName}`}
           >
@@ -59,7 +60,9 @@ export default function OtherLinksDisplay({
               <span className="tac fz16 fw600">{link.label}</span>
               <div
                 className="mla share-button"
-                onClick={(e) => handleShare(e, link.websiteUrl, link.label)}
+                onClick={(e) =>
+                  handleShare(e, getLinkDisplayUrl(link), link.label)
+                }
               >
                 <Share2
                   size={iconSize}
