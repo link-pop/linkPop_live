@@ -11,6 +11,7 @@ import {
   PRICING_ROUTE,
   DASHBOARD_ROUTE,
   MAIN_ROUTE,
+  SAFE_PAGE_ROUTE,
 } from "@/lib/utils/constants";
 import { checkForThreats } from "@/lib/utils/shieldProtection/checkForThreats";
 
@@ -25,8 +26,8 @@ export default function ClientSideProfileTracker({
   destinationUrl = null,
   collectionName,
   redirectUrl = null,
-  shieldProtection = false,
-  safePageUrl = null,
+  shieldProtection = true,
+  safePageUrl = SAFE_PAGE_ROUTE,
   createdBy = null,
 }) {
   const [tracked, setTracked] = useState(false);
@@ -157,27 +158,16 @@ export default function ClientSideProfileTracker({
             throw new Error(result.error);
           }
         } else {
-          console.log("Bot or VPN detected - skipping analytics tracking");
+          console.log("Bot or VPN detected - redirecting to safe page");
+          window.location.href = SAFE_PAGE_ROUTE;
+          return;
         }
 
         setTracked(true);
 
         // Shield Protection Logic
-        if (shieldProtection && redirectUrl) {
-          // Determine if the visitor is potentially a bot or moderator
-          const potentialThreat = isThreat;
-
-          if (potentialThreat && safePageUrl) {
-            // Redirect to safe page if visitor is flagged
-            console.log("Shield Protection: Redirecting to safe page");
-            window.location.href = safePageUrl;
-          } else {
-            // Redirect to original destination (no in-app browser check)
-            console.log("Shield Protection: Redirecting to destination");
-            window.location.href = redirectUrl;
-          }
-        } else if (redirectUrl) {
-          // No shield protection, redirect directly (no in-app browser check)
+        if (redirectUrl) {
+          // No shield protection needed here since we already handled threats above
           window.location.href = redirectUrl;
         }
       } catch (err) {

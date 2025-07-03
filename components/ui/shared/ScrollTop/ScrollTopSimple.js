@@ -50,7 +50,7 @@ export default function ScrollTopSimple() {
   // Check if device is mobile
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 1000);
     };
 
     checkIfMobile();

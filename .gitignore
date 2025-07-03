@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+/puppeteer-bot-scan/node_modules
+/puppeteer-bot-scan/
+
 # next.js
 /.next/
 /out/

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Body -->
+  <rect x="106" y="156" width="300" height="280" rx="40" fill="#E2E8F0"/>
+  <rect x="126" y="176" width="260" height="240" rx="30" fill="#F8FAFC"/>
+  
+  <!-- Head -->
+  <rect x="156" y="76" width="200" height="120" rx="60" fill="#E2E8F0"/>
+  <rect x="176" y="96" width="160" height="80" rx="40" fill="#F8FAFC"/>
+  
+  <!-- Eyes -->
+  <circle cx="226" cy="136" r="20" fill="#3B82F6"/>
+  <circle cx="286" cy="136" r="20" fill="#3B82F6"/>
+  <circle cx="226" cy="136" r="10" fill="#FFFFFF"/>
+  <circle cx="286" cy="136" r="10" fill="#FFFFFF"/>
+  
+  <!-- Antenna -->
+  <rect x="246" y="36" width="20" height="40" fill="#E2E8F0"/>
+  <circle cx="256" cy="26" r="16" fill="#3B82F6"/>
+  
+  <!-- Mouth -->
+  <path d="M216 316C216 316 246 336 296 316" stroke="#3B82F6" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- Heart -->
+  <path d="M256 260
+    C256 250, 276 236, 286 246
+    C296 256, 276 286, 256 276
+    C236 286, 216 256, 226 246
+    C236 236, 256 250, 256 260Z"
+    fill="#EF4444"/>
+</svg> 
