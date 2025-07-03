@@ -60,7 +60,7 @@ export default function AddDirectlinkForm({
       updatingPost?.shieldProtection !== undefined
         ? updatingPost.shieldProtection
         : true,
-    safePageUrl: updatingPost?.safePageUrl || "https://www.google.com",
+    safePageUrl: updatingPost?.safePageUrl || "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -110,7 +110,7 @@ export default function AddDirectlinkForm({
       active: true,
       facebookPixelId: "",
       shieldProtection: true,
-      safePageUrl: "https://www.google.com",
+      safePageUrl: "",
     });
     clearAllErrors();
     formRef.current?.reset();
@@ -193,7 +193,7 @@ export default function AddDirectlinkForm({
         freeUrl: formData.freeUrl ? formatUrl(formData.freeUrl) : "",
         safePageUrl: formData.safePageUrl
           ? formatUrl(formData.safePageUrl)
-          : "https://www.google.com",
+          : "",
       };
 
       // Check name uniqueness (case-insensitive)

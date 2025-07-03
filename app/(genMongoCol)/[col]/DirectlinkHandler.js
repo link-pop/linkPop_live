@@ -66,7 +66,7 @@ export default async function DirectlinkHandler({
             directlink.shieldProtection !== undefined
               ? directlink.shieldProtection
               : true,
-          safePageUrl: directlink.safePageUrl || "https://www.google.com",
+          safePageUrl: directlink.safePageUrl || "",
           createdBy: directlink.createdBy,
         }}
       />

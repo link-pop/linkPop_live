@@ -53,7 +53,7 @@ export default async function UserProfileHandler({
             ? visitedMongoUser.shieldProtection
             : true
         }
-        safePageUrl={visitedMongoUser.safePageUrl || "https://www.google.com"}
+        safePageUrl={visitedMongoUser.safePageUrl || ""}
         createdBy={visitedMongoUser._id.toString()}
       />
       <FullPost

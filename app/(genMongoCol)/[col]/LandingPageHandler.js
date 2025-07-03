@@ -54,7 +54,7 @@ export default async function LandingPageHandler({
             ? landingPage.shieldProtection
             : true
         }
-        safePageUrl={landingPage.safePageUrl || "https://www.google.com"}
+        safePageUrl={landingPage.safePageUrl || ""}
         createdBy={landingPage.createdBy}
       />
       <FullPost
