@@ -199,6 +199,7 @@ async function handleCheckoutSessionCompleted(session) {
       );
     }
 
+    // 🟢 IMPORTANT: Now handle the NEW subscription creation
     // Retrieve expanded subscription data
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     let expandedSession;
@@ -207,8 +208,10 @@ async function handleCheckoutSessionCompleted(session) {
       expandedSession = await stripe.checkout.sessions.retrieve(session.id, {
         expand: ["subscription", "customer"],
       });
+      console.log(
+        `✅ Retrieved expanded session with subscription: ${expandedSession.subscription?.id}`
+      );
     } catch (error) {
-      console.error(`Error retrieving expanded session: ${error.message}`);
       // await sendErrorToAdmin({
       //   error,
       //   subject: "Stripe Checkout Session Retrieval Error",
@@ -218,6 +221,8 @@ async function handleCheckoutSessionCompleted(session) {
       //     planId: planId,
       //   },
       // });
+      console.error(`❌ Error retrieving expanded session: ${error.message}`);
+      throw new Error(`Failed to retrieve expanded session: ${error.message}`);
       return;
     }
 
@@ -225,11 +230,18 @@ async function handleCheckoutSessionCompleted(session) {
     const customer = expandedSession.customer;
 
     if (!subscription) {
-      console.log(`No subscription found for session ${session.id}`);
-      return;
+      console.error(`❌ No subscription found for session ${session.id}`);
+      // This is problematic for subscription mode checkouts
+      throw new Error(
+        `No subscription created for checkout session ${session.id}`
+      );
     }
 
-    // Update or create the subscription record
+    console.log(
+      `✅ Found subscription in Stripe: ${subscription.id}, status: ${subscription.status}`
+    );
+
+    // Update or create the subscription record using the existing function
     await updateSubscriptionRecord(
       session.id,
       subscription,
@@ -243,19 +255,36 @@ async function handleCheckoutSessionCompleted(session) {
       session.metadata
     );
 
-    console.log(`Successfully processed checkout session: ${session.id}`);
+    console.log(`✅ Successfully processed checkout session: ${session.id}`);
   } catch (error) {
-    console.error(`Error handling checkout session: ${error.message}`);
-    // await sendErrorToAdmin({
-    //   error,
-    //   subject: "Stripe Checkout Session Handler Error",
-    //   context: {
-    //     sessionId: session.id,
-    //     paymentStatus: session.payment_status,
-    //     sessionStatus: session.status,
-    //     metadata: session.metadata,
-    //   },
-    // });
+    console.error(
+      `❌ Error handling checkout session completed: ${error.message}`
+    );
+    console.error(`Full error:`, error);
+
+    // If there was an error, we should clean up any pending subscription records
+    if (session.metadata?.subscriptionId) {
+      try {
+        const pendingSubscription = await models.subscriptions2.findById(
+          session.metadata.subscriptionId
+        );
+        if (
+          pendingSubscription &&
+          pendingSubscription.subscriptionId === "pending"
+        ) {
+          console.log(
+            `Cleaning up failed pending subscription: ${pendingSubscription._id}`
+          );
+          await models.subscriptions2.findByIdAndDelete(
+            pendingSubscription._id
+          );
+        }
+      } catch (cleanupError) {
+        console.error(`Error during cleanup: ${cleanupError.message}`);
+      }
+    }
+
+    throw error; // Re-throw to ensure webhook returns error status
   }
 }
 
