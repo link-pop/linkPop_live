@@ -1,5 +1,9 @@
 import ClickForSupport from "@/components/ui/shared/ClickForSupport/ClickForSupport";
 import Image from "next/image";
+import { Suspense } from "react";
+
+// Make the page dynamic
+export const dynamic = "force-dynamic";
 
 export default function SafePage() {
   return (
@@ -26,12 +30,14 @@ export default function SafePage() {
         </p>
 
         <div className="mt-8">
-          <ClickForSupport
-            mini={true}
-            supportSectionTitle="Need help?"
-            supportSectionText="Our support team is here to help you resolve this issue."
-            buttonText="Contact Support"
-          />
+          <Suspense fallback={<div>Loading support...</div>}>
+            <ClickForSupport
+              mini={true}
+              supportSectionTitle="Need help?"
+              supportSectionText="Our support team is here to help you resolve this issue."
+              buttonText="Contact Support"
+            />
+          </Suspense>
         </div>
       </div>
     </div>
