@@ -1,18 +1,15 @@
 import Posts from "@/components/Post/Posts/Posts";
-import FullPost from "@/components/Post/Post/Full/FullPost";
 import { getAllMongoCollectionsData } from "@/lib/utils/mongo/getAllMongoCollectionsData";
 import { checkCollectionAccess } from "@/lib/utils/mongo/checkCollectionAccess";
 import { getOne } from "@/lib/actions/crud";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
-import { SITE1, SITE2 } from "@/config/env";
-import ClientSideProfileTracker from "./ClientSideProfileTracker";
-import HideLeftNav from "./HideLeftNav";
+import { SITE2 } from "@/config/env";
 import { getClientIP } from "@/lib/utils/visitor/getClientIP";
 import { getVisitInfo } from "@/lib/utils/visitor/getVisitInfo";
 import ProfileNotFound from "@/components/ui/shared/ProfileNotFound/ProfileNotFound";
-import { checkDirectlinkLandingpageAccess } from "@/lib/actions/checkDirectlinkLandingpageAccess";
-import DirectlinkFullPost from "@/components/Post/Post/Full/Custom/DirectlinkFullPost";
-import SubscriptionExpiredMessage from "@/components/ui/shared/ProfileNotFound/SubscriptionExpiredMessage";
+import DirectlinkHandler from "./DirectlinkHandler";
+import LandingPageHandler from "./LandingPageHandler";
+import UserProfileHandler from "./UserProfileHandler";
 
 // posts for provided collection
 export default async function postsPage({ searchParams, params }) {
@@ -44,68 +41,17 @@ export default async function postsPage({ searchParams, params }) {
       });
 
       if (directlink) {
-        // Check if this directlink can be accessed
-        const accessCheck = await checkDirectlinkLandingpageAccess({
-          entity: directlink,
-          entityType: "directlink",
-          ipAddress,
-          isAdmin,
-        });
-
-        if (!accessCheck.allowed) {
-          // Check if subscription is expired and user is not geo-blocked
-          if (
-            (accessCheck.reason === "subscription_required" ||
-              accessCheck.reason === "subscription_limit_exceeded" ||
-              accessCheck.reason === "subscription_error") &&
-            accessCheck.reason !== "geo_blocked"
-          ) {
-            return <SubscriptionExpiredMessage entityType="link" />;
-          }
-          return <ProfileNotFound />;
-        }
-
-        // Add tracking parameters to the destination URL
-        let destinationWithOrigin = directlink.destinationUrl;
-        const hasQueryParams = destinationWithOrigin.includes("?");
-
-        // Add our tracking parameters
-        destinationWithOrigin += hasQueryParams
-          ? "&fromDirectlink=true&linkId=" + directlink._id
-          : "?fromDirectlink=true&linkId=" + directlink._id;
-
-        // If there's a free URL, also include it (encoded) with the shorter parameter name
-        if (directlink.freeUrl) {
-          destinationWithOrigin +=
-            "&FU=" + encodeURIComponent(directlink.freeUrl);
-        }
-
         return (
-          <>
-            <ClientSideProfileTracker
-              {...{
-                visitorId: mongoUser?._id?.toString(),
-                profileId: directlink._id.toString(),
-                profileType: "directlink",
-                ipAddress,
-                userAgent,
-                referrer,
-                redirected: true,
-                destinationUrl: destinationWithOrigin,
-                collectionName: SITE1
-                  ? "s1profilevisitors"
-                  : "s2profilevisitors",
-                redirectUrl: destinationWithOrigin,
-                shieldProtection:
-                  directlink.shieldProtection !== undefined
-                    ? directlink.shieldProtection
-                    : true,
-                safePageUrl: directlink.safePageUrl || "https://www.google.com",
-                createdBy: directlink.createdBy,
-              }}
-            />
-            <DirectlinkFullPost post={directlink} />
-          </>
+          <DirectlinkHandler
+            {...{
+              directlink,
+              mongoUser,
+              isAdmin,
+              ipAddress,
+              userAgent,
+              referrer,
+            }}
+          />
         );
       }
 
@@ -116,59 +62,17 @@ export default async function postsPage({ searchParams, params }) {
       });
 
       if (landingPage) {
-        // Check if this landing page can be accessed
-        const accessCheck = await checkDirectlinkLandingpageAccess({
-          entity: landingPage,
-          entityType: "landingpage",
-          ipAddress,
-          isAdmin,
-        });
-
-        if (!accessCheck.allowed) {
-          // Check if subscription is expired and user is not geo-blocked
-          if (
-            (accessCheck.reason === "subscription_required" ||
-              accessCheck.reason === "subscription_limit_exceeded" ||
-              accessCheck.reason === "subscription_error") &&
-            accessCheck.reason !== "geo_blocked"
-          ) {
-            return <SubscriptionExpiredMessage entityType="landingpage" />;
-          }
-          return <ProfileNotFound />;
-        }
-
-        // Found a landing page with this name
-        const col = { name: "landingpages" };
-
         return (
-          <>
-            <ClientSideProfileTracker
-              visitorId={mongoUser?._id?.toString()}
-              profileId={landingPage._id.toString()}
-              profileType="landingpage"
-              ipAddress={ipAddress}
-              userAgent={userAgent}
-              referrer={referrer}
-              redirected={false}
-              collectionName={SITE1 ? "s1profilevisitors" : "s2profilevisitors"}
-              shieldProtection={
-                landingPage.shieldProtection !== undefined
-                  ? landingPage.shieldProtection
-                  : true
-              }
-              safePageUrl={landingPage.safePageUrl || "https://www.google.com"}
-              createdBy={landingPage.createdBy}
-            />
-            <FullPost
-              {...{
-                post: landingPage,
-                col,
-                isAdmin,
-                mongoUser,
-              }}
-            />
-            <HideLeftNav />
-          </>
+          <LandingPageHandler
+            {...{
+              landingPage,
+              mongoUser,
+              isAdmin,
+              ipAddress,
+              userAgent,
+              referrer,
+            }}
+          />
         );
       }
     }
@@ -181,61 +85,17 @@ export default async function postsPage({ searchParams, params }) {
     });
 
     if (visitedMongoUser) {
-      // Check if this user can be accessed
-      const accessCheck = await checkDirectlinkLandingpageAccess({
-        entity: visitedMongoUser,
-        entityType: "user",
-        ipAddress,
-        isAdmin,
-      });
-
-      if (!accessCheck.allowed) {
-        // Check if subscription is expired and user is not geo-blocked
-        if (
-          (accessCheck.reason === "subscription_required" ||
-            accessCheck.reason === "subscription_limit_exceeded" ||
-            accessCheck.reason === "subscription_error") &&
-          accessCheck.reason !== "geo_blocked"
-        ) {
-          return <SubscriptionExpiredMessage entityType="profile" />;
-        }
-        return <ProfileNotFound />;
-      }
-
-      // Found a user with this name
-      const col = { name: "users" };
-
       return (
-        <>
-          <ClientSideProfileTracker
-            visitorId={mongoUser?._id?.toString()}
-            profileId={visitedMongoUser._id.toString()}
-            profileType="user"
-            ipAddress={ipAddress}
-            userAgent={userAgent}
-            referrer={referrer}
-            redirected={false}
-            collectionName={SITE1 ? "s1profilevisitors" : "s2profilevisitors"}
-            shieldProtection={
-              visitedMongoUser.shieldProtection !== undefined
-                ? visitedMongoUser.shieldProtection
-                : true
-            }
-            safePageUrl={
-              visitedMongoUser.safePageUrl || "https://www.google.com"
-            }
-            createdBy={visitedMongoUser._id.toString()}
-          />
-          <FullPost
-            {...{
-              post: visitedMongoUser,
-              col,
-              isAdmin,
-              mongoUser,
-              visitedMongoUser,
-            }}
-          />
-        </>
+        <UserProfileHandler
+          {...{
+            visitedMongoUser,
+            mongoUser,
+            isAdmin,
+            ipAddress,
+            userAgent,
+            referrer,
+          }}
+        />
       );
     }
 
