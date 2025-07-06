@@ -40,7 +40,7 @@ export default function AdminPageHeader({ actionLink, actionText, actions }) {
               <Link
                 key={index}
                 href={action.link}
-                className={`inline-flex items-center rounded-md px-2 py-1 md:px-3 md:py-2 text-xs md:text-sm font-medium md:font-semibold ring-1 ring-inset ring-gray-300 transition-colors duration-200 ease-in-out text-foreground ${
+                className={`!h38 inline-flex items-center rounded-md px-2 py-1 md:px-3 md:py-2 text-xs md:text-sm font-medium md:font-semibold ring-1 ring-inset ring-gray-300 transition-colors duration-200 ease-in-out text-foreground ${
                   isActive ? "bg-primary text-primary-foreground" : "bg-accent"
                 }`}
               >
