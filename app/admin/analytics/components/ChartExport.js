@@ -87,7 +87,7 @@ export function ExportButton({ chartInstance, title, timeRangeLabel }) {
   return (
     <button
       onClick={handleExport}
-      className="flex items-center px-3 py-1.5 md:px-4 md:py-2 border rounded-md bg-primary text-xs md:text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors duration-200 shadow-sm"
+      className="!h38 flex items-center px-3 py-1.5 md:px-4 md:py-2 border rounded-md bg-primary text-xs md:text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors duration-200 shadow-sm"
       title={t("export")}
     >
       <FileDown size={14} className="mr-1.5" />
