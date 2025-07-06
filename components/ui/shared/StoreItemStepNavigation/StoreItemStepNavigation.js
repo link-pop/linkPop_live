@@ -84,7 +84,7 @@ export default function StoreItemStepNavigation({
                 ) : (
                   <span
                     className={`fz14 fw600 ${
-                      isActive ? "brand" : canClick ? "brand/70" : "text-muted"
+                      isActive ? "brand" : canClick ? "brand/70" : "opacity-50"
                     }`}
                   >
                     {stepNumber}
@@ -100,13 +100,13 @@ export default function StoreItemStepNavigation({
                       ? "text-foreground/80"
                       : canClick
                       ? "text-foreground/80"
-                      : "text-muted"
+                      : "opacity-50"
                   }`}
                 >
                   {step.title}
                 </span>
                 {step.description && (
-                  <span className="fz12 text-muted">{step.description}</span>
+                  <span className="fz12 opacity-50">{step.description}</span>
                 )}
               </div>
             </div>

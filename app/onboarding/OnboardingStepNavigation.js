@@ -85,7 +85,7 @@ export default function OnboardingStepNavigation({
                       ? "text-foreground/80"
                       : canClick
                       ? "text-foreground/80"
-                      : "text-muted"
+                      : "opacity-50"
                   }`}
                 >
                   {stepNumber}
@@ -100,7 +100,7 @@ export default function OnboardingStepNavigation({
                       ? "text-foreground/80"
                       : canClick
                       ? "text-foreground/80"
-                      : "text-muted"
+                      : "opacity-50"
                   }`}
                 >
                   {t(step.title)}
