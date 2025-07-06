@@ -298,7 +298,7 @@ export default function AffiliateClient({ data, mongoUser }) {
 
   return (
     <div className={`container mx-auto p-4`}>
-      <div className={`mb-8`}>
+      <div className={`p15 mb-8`}>
         <TitleWithBackButton
           title={t("affiliateProgram")}
           className="text-3xl font-bold mb-2"

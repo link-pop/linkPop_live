@@ -15,6 +15,7 @@ CODE STYLE & STANDARDS:
 - MANDATORY: for window width detection: use tailwind or if can not use tailwind - use useWindowWidth.js
 - MANDATORY: use constants.js file, for url routes eg: MAIN_ROUTE!
 - MANDATORY: for DB ops use crud.js!
+- MANDATORY: don't use raw components from components/ui outside /components/ui/shared (eg: card.jsx, badge.jsx, etc...) - use that raw components ONLY to build components in /components/ui/shared!
 - don't hardcode values!
 - don't run: npm run dev, npm run build, npm run lint (and any forms of it)
 - say "🟢🟢🟢🟢🟢 Hi there!!! 🟢🟢🟢🟢🟢" in the start on each message + add number (use emoji numbers) of the reply in this chat

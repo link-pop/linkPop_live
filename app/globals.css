@@ -12,7 +12,7 @@
   max-width: 100vw;
   /* !!! */
   word-break: normal !important;
-  overflow-wrap: anywhere !important;
+  /* overflow-wrap: anywhere !important; */
 }
 
 body {
