@@ -580,7 +580,7 @@ export default function AffiliateClient({ data, mongoUser }) {
             key="earnings"
           >
             <CardHeader>
-              <div className="flex justify-between items-center">
+              <div className="f g10 justify-between items-center">
                 <CardTitle className="text-xl">
                   {t("commissionHistory")}
                 </CardTitle>
