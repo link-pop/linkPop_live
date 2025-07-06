@@ -641,7 +641,7 @@ export default function AffiliateClient({ data, mongoUser }) {
                           )}
                           <Badge
                             variant="outline"
-                            className={`ml-2 ${
+                            className={`mx-2 !break-words ${
                               earning.status === "paid"
                                 ? "text-green-500 bg-green-50 dark:bg-green-950/50"
                                 : earning.status === "processing"
