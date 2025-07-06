@@ -7,15 +7,34 @@ import { getPaymentInfo } from "@/lib/utils/subscription/paymentUtils";
 import { getPriceByPlanId } from "@/lib/utils/pricing/getPlanPrices";
 import { AGENCY_BASE_LINKS } from "@/lib/utils/constants";
 import HorizontalTableScroll from "@/components/ui/shared/HorizontalScroll/HorizontalTableScroll";
+import { fixSubscriptionReferralData } from "@/lib/utils/subscription/fixSubscriptionReferralData";
+import AdminReferralDataFixButton from "@/components/Admin/AdminReferralDataFixButton";
 
 export default async function AdminSubscriptions2() {
   const { mongoUser } = await getMongoUser();
   if (!mongoUser?.isAdmin) return null;
 
+  // Fix missing referral data before displaying
+  try {
+    const fixResult = await fixSubscriptionReferralData();
+    if (fixResult.success && fixResult.fixed > 0) {
+      console.log(
+        `🔧 Fixed ${fixResult.fixed} subscriptions with missing referral data`
+      );
+    }
+  } catch (error) {
+    console.error("❌ Error fixing referral data:", error);
+  }
+
   const subscriptions = await getAll({
     col: "subscriptions2",
     populate: ["createdBy", "referrerId"],
   });
+
+  // Filter out incomplete subscriptions
+  const filteredSubscriptions = subscriptions.filter(
+    (sub) => sub.status !== "incomplete" && sub.status !== "incomplete_expired"
+  );
 
   // Function to calculate days between dates
   const calculateDaysBetween = (startDate, endDate) => {
@@ -43,6 +62,9 @@ export default async function AdminSubscriptions2() {
     let statusClass = "bg-gray-500/20 text-gray-600";
     let secondStatus = null;
 
+    // Get payment info to check for upgrade/downgrade status
+    const paymentInfo = getPaymentInfo(sub, allSubscriptions);
+
     // Check for upgrade/downgrade status
     if (sub.metadata) {
       if (
@@ -68,9 +90,27 @@ export default async function AdminSubscriptions2() {
         }
       }
 
-      // Check for extraLinks changes
+      // Check for links decrease based on cancelReason first
       if (
-        sub.metadata.extraLinks !== undefined &&
+        (sub.status === "canceled" || sub.cancelAtPeriodEnd) &&
+        (sub.cancelReason === "extra_links_decrease" ||
+          sub.metadata?.cancelReason === "extra_links_decrease")
+      ) {
+        secondStatus = {
+          text: "links decrease planned",
+          class: "bg-yellow-500/20 text-yellow-600",
+        };
+      }
+      // Check for Links Downgrade in payment info
+      else if (paymentInfo.text?.includes("Links Downgrade")) {
+        secondStatus = {
+          text: "links decreased",
+          class: "bg-yellow-500/20 text-yellow-600",
+        };
+      }
+      // Then check for other extraLinks changes
+      else if (
+        sub.metadata?.extraLinks !== undefined &&
         sub.metadata.previousSubscriptionId
       ) {
         const prevSub = allSubscriptions.find(
@@ -86,13 +126,16 @@ export default async function AdminSubscriptions2() {
               text: `+${currExtraLinks - prevExtraLinks} links`,
               class: "bg-green-500/20 text-green-600",
             };
-          } else if (currExtraLinks < prevExtraLinks) {
-            secondStatus = {
-              text: `-${prevExtraLinks - currExtraLinks} links`,
-              class: "bg-yellow-500/20 text-yellow-600",
-            };
           }
         }
+      }
+
+      // Check payment info note for "canceled for upgrade"
+      if (paymentInfo.note?.toLowerCase().includes("canceled for upgrade")) {
+        secondStatus = {
+          text: "canceled for upgrade",
+          class: "bg-blue-500/20 text-blue-600",
+        };
       }
     }
 
@@ -109,7 +152,7 @@ export default async function AdminSubscriptions2() {
     else if (sub.status === "trialing") {
       if (sub.canceledAt) {
         statusText = "canceled trial";
-        statusClass = "bg-red-500/20 text-red-600";
+        statusClass = "bg-purple-500/20 text-purple-600";
       } else if (new Date(sub.trialEnd) < new Date()) {
         statusText = "trial expired";
         statusClass = "bg-red-500/20 text-red-600";
@@ -119,77 +162,106 @@ export default async function AdminSubscriptions2() {
     }
     // Canceled subscription
     else if (sub.status === "canceled") {
-      // Check if canceled due to plan change
-      const isCanceledForPlanChange =
-        sub.cancelReason === "plan_change" ||
-        sub.cancelReason === "plan_upgrade" ||
-        sub.cancelReason === "plan_downgrade" ||
-        sub.cancelReason === "extra_links_increase" ||
-        sub.cancelReason === "extra_links_decrease" ||
-        (sub.metadata &&
-          (sub.metadata.cancelReason === "plan_change" ||
-            sub.metadata.cancelReason === "plan_upgrade" ||
-            sub.metadata.cancelReason === "plan_downgrade" ||
-            sub.metadata.cancelReason === "extra_links_increase" ||
-            sub.metadata.cancelReason === "extra_links_decrease"));
-
-      if (isCanceledForPlanChange) {
-        // Find the replacement subscription
-        const nextSub = allSubscriptions.find((s) => {
-          // If this is the subscription that replaced the current one
-          return s.metadata?.previousSubscriptionId === sub._id.toString();
-        });
-
-        // Directly use the cancelReason if available
-        if (
+      // First check if it was a trial cancellation
+      if (sub.trialEnd && new Date(sub.canceledAt) <= new Date(sub.trialEnd)) {
+        statusText = "canceled trial";
+        statusClass = "bg-purple-500/20 text-purple-600";
+      } else {
+        // Check if canceled due to plan change
+        const isCanceledForPlanChange =
+          sub.cancelReason === "plan_change" ||
           sub.cancelReason === "plan_upgrade" ||
-          (sub.metadata && sub.metadata.cancelReason === "plan_upgrade")
-        ) {
-          statusText = "canceled to upgrade";
-          statusClass = "bg-blue-500/20 text-blue-600";
-        } else if (
           sub.cancelReason === "plan_downgrade" ||
-          (sub.metadata && sub.metadata.cancelReason === "plan_downgrade")
-        ) {
-          statusText = "canceled to downgrade";
-          statusClass = "bg-red-500/20 text-red-600";
-        } else if (
           sub.cancelReason === "extra_links_increase" ||
-          (sub.metadata && sub.metadata.cancelReason === "extra_links_increase")
-        ) {
-          statusText = "canceled to add links";
-          statusClass = "bg-green-500/20 text-green-600";
-        } else if (
           sub.cancelReason === "extra_links_decrease" ||
-          (sub.metadata && sub.metadata.cancelReason === "extra_links_decrease")
-        ) {
-          statusText = "canceled to remove links";
-          statusClass = "bg-yellow-500/20 text-yellow-600";
-        } else if (nextSub) {
-          // Check if it's an upgrade or downgrade
+          (sub.metadata &&
+            (sub.metadata.cancelReason === "plan_change" ||
+              sub.metadata.cancelReason === "plan_upgrade" ||
+              sub.metadata.cancelReason === "plan_downgrade" ||
+              sub.metadata.cancelReason === "extra_links_increase" ||
+              sub.metadata.cancelReason === "extra_links_decrease"));
+
+        if (isCanceledForPlanChange) {
+          // Find the replacement subscription
+          const nextSub = allSubscriptions.find((s) => {
+            // If this is the subscription that replaced the current one
+            return s.metadata?.previousSubscriptionId === sub._id.toString();
+          });
+
+          // Directly use the cancelReason if available
           if (
-            sub.planId?.includes("agency") &&
-            nextSub.planId?.includes("creator")
+            sub.cancelReason === "plan_upgrade" ||
+            (sub.metadata && sub.metadata.cancelReason === "plan_upgrade")
+          ) {
+            statusText = "canceled to upgrade";
+            statusClass = "bg-blue-500/20 text-blue-600";
+          } else if (
+            sub.cancelReason === "plan_downgrade" ||
+            (sub.metadata && sub.metadata.cancelReason === "plan_downgrade")
           ) {
             statusText = "canceled to downgrade";
             statusClass = "bg-red-500/20 text-red-600";
           } else if (
-            sub.planId?.includes("creator") &&
-            nextSub.planId?.includes("agency")
+            sub.cancelReason === "extra_links_increase" ||
+            (sub.metadata &&
+              sub.metadata.cancelReason === "extra_links_increase")
           ) {
-            statusText = "canceled to upgrade";
-            statusClass = "bg-blue-500/20 text-blue-600";
-          } else if (sub.planId === nextSub.planId) {
-            // Check if it's an extraLinks change
-            const prevExtraLinks = sub.extraLinks || 0;
-            const nextExtraLinks = nextSub.extraLinks || 0;
+            statusText = "canceled to add links";
+            statusClass = "bg-green-500/20 text-green-600";
+          } else if (
+            sub.cancelReason === "extra_links_decrease" ||
+            (sub.metadata &&
+              sub.metadata.cancelReason === "extra_links_decrease")
+          ) {
+            statusText = "links decreased";
+            statusClass = "bg-red-400/20 text-red-400";
+          } else if (nextSub) {
+            // Check if it's an upgrade or downgrade
+            if (
+              sub.planId?.includes("agency") &&
+              nextSub.planId?.includes("creator")
+            ) {
+              statusText = "canceled to downgrade";
+              statusClass = "bg-red-500/20 text-red-600";
+            } else if (
+              sub.planId?.includes("creator") &&
+              nextSub.planId?.includes("agency")
+            ) {
+              statusText = "canceled to upgrade";
+              statusClass = "bg-blue-500/20 text-blue-600";
+            } else if (sub.planId === nextSub.planId) {
+              // Check if it's an extraLinks change
+              const prevExtraLinks = sub.extraLinks || 0;
+              const nextExtraLinks = nextSub.extraLinks || 0;
 
-            if (nextExtraLinks > prevExtraLinks) {
-              statusText = "canceled to add links";
-              statusClass = "bg-green-500/20 text-green-600";
-            } else if (nextExtraLinks < prevExtraLinks) {
-              statusText = "canceled to remove links";
+              if (nextExtraLinks > prevExtraLinks) {
+                statusText = "canceled to add links";
+                statusClass = "bg-green-500/20 text-green-600";
+              } else if (nextExtraLinks < prevExtraLinks) {
+                statusText = "links decreased";
+                statusClass = "bg-red-400/20 text-red-400";
+              } else {
+                statusText = "canceled for plan change";
+                statusClass = "bg-yellow-500/20 text-yellow-600";
+              }
+            } else {
+              statusText = "canceled for plan change";
               statusClass = "bg-yellow-500/20 text-yellow-600";
+            }
+          } else if (sub.newPlanId) {
+            // If we have the new plan ID stored, we can determine the change
+            if (
+              sub.planId?.includes("agency") &&
+              sub.newPlanId?.includes("creator")
+            ) {
+              statusText = "canceled to downgrade";
+              statusClass = "bg-red-500/20 text-red-600";
+            } else if (
+              sub.planId?.includes("creator") &&
+              sub.newPlanId?.includes("agency")
+            ) {
+              statusText = "canceled to upgrade";
+              statusClass = "bg-blue-500/20 text-blue-600";
             } else {
               statusText = "canceled for plan change";
               statusClass = "bg-yellow-500/20 text-yellow-600";
@@ -198,43 +270,13 @@ export default async function AdminSubscriptions2() {
             statusText = "canceled for plan change";
             statusClass = "bg-yellow-500/20 text-yellow-600";
           }
-        } else if (sub.newPlanId) {
-          // If we have the new plan ID stored, we can determine the change
-          if (
-            sub.planId?.includes("agency") &&
-            sub.newPlanId?.includes("creator")
-          ) {
-            statusText = "canceled to downgrade";
-            statusClass = "bg-red-500/20 text-red-600";
-          } else if (
-            sub.planId?.includes("creator") &&
-            sub.newPlanId?.includes("agency")
-          ) {
-            statusText = "canceled to upgrade";
-            statusClass = "bg-blue-500/20 text-blue-600";
-          } else {
-            statusText = "canceled for plan change";
-            statusClass = "bg-yellow-500/20 text-yellow-600";
-          }
         } else {
-          statusText = "canceled for plan change";
-          statusClass = "bg-yellow-500/20 text-yellow-600";
+          statusClass = "bg-red-500/20 text-red-600";
         }
-      } else {
-        statusClass = "bg-red-500/20 text-red-600";
       }
     }
     // Past due subscription
     else if (sub.status === "past_due") {
-      statusClass = "bg-red-500/20 text-red-600";
-    }
-    // Incomplete subscription
-    else if (sub.status === "incomplete") {
-      statusClass = "bg-yellow-500/20 text-yellow-600";
-    }
-    // Incomplete expired subscription
-    else if (sub.status === "incomplete_expired") {
-      statusText = "incomplete expired";
       statusClass = "bg-red-500/20 text-red-600";
     }
     // Unpaid subscription
@@ -270,24 +312,21 @@ export default async function AdminSubscriptions2() {
     const extraLinks = sub.extraLinks || 0;
     const totalLinks = baseLinks + extraLinks;
 
-    // Calculate extra cost
-    const extraLinksCost = extraLinks > 0 ? extraLinks : 0;
-
     return {
       text: `${totalLinks} (${baseLinks}+${extraLinks})`,
       class: extraLinks > 0 ? "text-green-600" : "text-gray-600",
-      extraCost: extraLinksCost > 0 ? `+$${extraLinksCost.toFixed(2)}` : null,
     };
   };
 
   return (
     <div className="space-y-6 p-4 bg-background rounded-lg shadow-sm">
-      <h2 className="text-xl font-bold text-foreground mb-4">
-        All Subscriptions
-      </h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold text-foreground">All Subscriptions</h2>
+        <AdminReferralDataFixButton mongoUser={mongoUser} />
+      </div>
 
       {/* Revenue Dashboard */}
-      <AdminSubscriptions2Revenue subscriptions={subscriptions} />
+      <AdminSubscriptions2Revenue subscriptions={filteredSubscriptions} />
 
       {/* Subscriptions Table */}
       <div className="mt-8">
@@ -308,16 +347,16 @@ export default async function AdminSubscriptions2() {
               </tr>
             </thead>
             <tbody>
-              {subscriptions.length === 0 ? (
+              {filteredSubscriptions.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="p-2 text-center">
                     No subscriptions found
                   </td>
                 </tr>
               ) : (
-                subscriptions.map((sub) => {
+                filteredSubscriptions.map((sub) => {
                   const { statusText, statusClass, secondStatus } =
-                    getSubscriptionStatusInfo(sub, subscriptions);
+                    getSubscriptionStatusInfo(sub, filteredSubscriptions);
 
                   // Calculate actual trial duration from actual dates
                   const actualTrialDuration =
@@ -331,7 +370,10 @@ export default async function AdminSubscriptions2() {
                   );
 
                   // Get payment information
-                  const paymentInfo = getPaymentInfo(sub, subscriptions);
+                  const paymentInfo = getPaymentInfo(
+                    sub,
+                    filteredSubscriptions
+                  );
 
                   // Get links information
                   const linksInfo = getLinksDisplay(sub);
@@ -360,11 +402,6 @@ export default async function AdminSubscriptions2() {
                           className={`flex flex-col items-center ${linksInfo.class}`}
                         >
                           <span>{linksInfo.text}</span>
-                          {linksInfo.extraCost && (
-                            <span className="text-xs text-green-600">
-                              {linksInfo.extraCost}
-                            </span>
-                          )}
                         </div>
                       </td>
                       <td className="p-2 text-center">

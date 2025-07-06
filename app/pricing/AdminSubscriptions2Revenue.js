@@ -3,6 +3,17 @@
 import { useState, useEffect } from "react";
 import { getPaymentAmount } from "@/lib/utils/subscription/paymentUtils";
 import { isValidForReferralEarnings } from "@/lib/utils/referral/calculateReferralEarnings";
+import {
+  validateAndEnrichSubscriptionData,
+  getSafeReferrerInfo,
+  calculateCommissionAmount,
+  groupSubscriptionsByReferrer,
+  validateSubscriptionDataIntegrity,
+} from "@/lib/utils/subscription/subscriptionDataUtils";
+import { getAll } from "@/lib/actions/crud";
+import Link from "next/link";
+import { ADMIN_REFERRALS_ROUTE } from "@/lib/utils/constants";
+import { ArrowRightIcon } from "lucide-react";
 
 // ! code start AdminSubscriptions2Revenue
 export default function AdminSubscriptions2Revenue({ subscriptions }) {
@@ -20,8 +31,8 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
       active: 0,
       trialing: 0,
       canceled: 0,
+      canceledTrial: 0, // Added new stat for canceled trials
       pastDue: 0,
-      incomplete: 0,
       upgraded: 0,
       downgraded: 0,
       linksIncreased: 0,
@@ -29,8 +40,8 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
       activePercent: 0,
       trialingPercent: 0,
       canceledPercent: 0,
+      canceledTrialPercent: 0, // Added new percentage for canceled trials
       pastDuePercent: 0,
-      incompletePercent: 0,
       upgradedPercent: 0,
       downgradedPercent: 0,
       linksIncreasedPercent: 0,
@@ -44,6 +55,8 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
     },
     commissions: {
       total: 0,
+      paid: 0,
+      pending: 0,
       byMonth: {},
       totalReferrers: 0,
     },
@@ -55,262 +68,336 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
   });
 
   useEffect(() => {
-    if (!subscriptions || !subscriptions.length) return;
+    async function fetchReferralEarnings() {
+      try {
+        // Fetch all referral earnings
+        const referralEarnings = await getAll({
+          col: "referralearnings",
+          populate: ["referrerId", "referredId", "subscriptionId"],
+        });
 
-    // Get unique users
-    const uniqueUsers = new Set();
-    subscriptions.forEach((sub) => {
-      if (sub.createdBy && sub.createdBy._id) {
-        uniqueUsers.add(sub.createdBy._id.toString());
-      }
-    });
-    const totalUsers = uniqueUsers.size;
-
-    // Count by plan type (only count active or trialing)
-    const activeOrTrialingSubs = subscriptions.filter(
-      (sub) => sub.status === "active" || sub.status === "trialing"
-    );
-
-    const agencyCount = activeOrTrialingSubs.filter((sub) =>
-      sub.planId?.includes("agency")
-    ).length;
-
-    const creatorCount = activeOrTrialingSubs.filter((sub) =>
-      sub.planId?.includes("creator")
-    ).length;
-
-    const freeCount = totalUsers - (agencyCount + creatorCount);
-
-    // Calculate percentages
-    const agencyPercent = totalUsers
-      ? Math.round((agencyCount / totalUsers) * 100)
-      : 0;
-    const creatorPercent = totalUsers
-      ? Math.round((creatorCount / totalUsers) * 100)
-      : 0;
-    const freePercent = totalUsers
-      ? Math.round((freeCount / totalUsers) * 100)
-      : 0;
-
-    // Count by subscription status
-    const activeCount = subscriptions.filter(
-      (sub) => sub.status === "active" && !sub.cancelAtPeriodEnd
-    ).length;
-    const trialingCount = subscriptions.filter(
-      (sub) => sub.status === "trialing"
-    ).length;
-
-    // Count upgraded subscriptions
-    const upgradedCount = subscriptions.filter(
-      (sub) =>
-        (sub.status === "canceled" || sub.cancelAtPeriodEnd) &&
-        (sub.cancelReason === "plan_upgrade" ||
-          sub.metadata?.cancelReason === "plan_upgrade")
-    ).length;
-
-    // Count downgraded subscriptions
-    const downgradedCount = subscriptions.filter(
-      (sub) =>
-        (sub.status === "canceled" || sub.cancelAtPeriodEnd) &&
-        (sub.cancelReason === "plan_downgrade" ||
-          sub.metadata?.cancelReason === "plan_downgrade")
-    ).length;
-
-    // Count links increased subscriptions
-    const linksIncreasedCount = subscriptions.filter(
-      (sub) =>
-        (sub.status === "canceled" || sub.cancelAtPeriodEnd) &&
-        (sub.cancelReason === "extra_links_increase" ||
-          sub.metadata?.cancelReason === "extra_links_increase")
-    ).length;
-
-    // Count links decreased subscriptions
-    const linksDecreasedCount = subscriptions.filter(
-      (sub) =>
-        (sub.status === "canceled" || sub.cancelAtPeriodEnd) &&
-        (sub.cancelReason === "extra_links_decrease" ||
-          sub.metadata?.cancelReason === "extra_links_decrease")
-    ).length;
-
-    // Updated canceled count to exclude plan changes and links changes
-    const canceledCount = subscriptions.filter(
-      (sub) =>
-        (sub.status === "canceled" || sub.cancelAtPeriodEnd) &&
-        (!sub.cancelReason ||
-          (sub.cancelReason !== "plan_upgrade" &&
-            sub.cancelReason !== "plan_downgrade" &&
-            sub.cancelReason !== "extra_links_increase" &&
-            sub.cancelReason !== "extra_links_decrease")) &&
-        (!sub.metadata?.cancelReason ||
-          (sub.metadata.cancelReason !== "plan_upgrade" &&
-            sub.metadata.cancelReason !== "plan_downgrade" &&
-            sub.metadata.cancelReason !== "extra_links_increase" &&
-            sub.metadata.cancelReason !== "extra_links_decrease"))
-    ).length;
-
-    const pastDueCount = subscriptions.filter(
-      (sub) => sub.status === "past_due"
-    ).length;
-    const incompleteCount = subscriptions.filter(
-      (sub) =>
-        sub.status === "incomplete" || sub.status === "incomplete_expired"
-    ).length;
-
-    const totalStatusCount =
-      activeCount +
-      trialingCount +
-      canceledCount +
-      pastDueCount +
-      incompleteCount +
-      upgradedCount +
-      downgradedCount +
-      linksIncreasedCount +
-      linksDecreasedCount;
-
-    // Separate count for plan changes and links changes
-    const totalPlanChangesCount = upgradedCount + downgradedCount;
-    const totalLinksChangesCount = linksIncreasedCount + linksDecreasedCount;
-
-    // Calculate percentages
-    const activePercent = totalStatusCount
-      ? Math.round((activeCount / totalStatusCount) * 100)
-      : 0;
-    const trialingPercent = totalStatusCount
-      ? Math.round((trialingCount / totalStatusCount) * 100)
-      : 0;
-    const canceledPercent = totalStatusCount
-      ? Math.round((canceledCount / totalStatusCount) * 100)
-      : 0;
-    const pastDuePercent = totalStatusCount
-      ? Math.round((pastDueCount / totalStatusCount) * 100)
-      : 0;
-    const incompletePercent = totalStatusCount
-      ? Math.round((incompleteCount / totalStatusCount) * 100)
-      : 0;
-
-    // Calculate percentages for upgraded and downgraded in the status section
-    const upgradedPercent = totalStatusCount
-      ? Math.round((upgradedCount / totalStatusCount) * 100)
-      : 0;
-    const downgradedPercent = totalStatusCount
-      ? Math.round((downgradedCount / totalStatusCount) * 100)
-      : 0;
-
-    // Calculate percentages for links increased and decreased
-    const linksIncreasedPercent = totalStatusCount
-      ? Math.round((linksIncreasedCount / totalStatusCount) * 100)
-      : 0;
-    const linksDecreasedPercent = totalStatusCount
-      ? Math.round((linksDecreasedCount / totalStatusCount) * 100)
-      : 0;
-
-    // Calculate average extra links for active agency plans
-    const activeAgencyPlans = activeOrTrialingSubs.filter((sub) =>
-      sub.planId?.includes("agency")
-    );
-    const totalExtraLinks = activeAgencyPlans.reduce(
-      (sum, sub) => sum + (sub.extraLinks || 0),
-      0
-    );
-    const averageExtraLinks = activeAgencyPlans.length
-      ? Math.round((totalExtraLinks / activeAgencyPlans.length) * 10) / 10
-      : 0;
-
-    // Calculate revenue based on the "Paid" column, not the "Amount" column
-    const revenueByMonth = {};
-    let totalRevenue = 0;
-
-    console.log("===== REVENUE CALCULATION DETAILS =====");
-    console.log(`Total subscriptions: ${subscriptions.length}`);
-
-    // Calculate revenue using the "Paid" column logic
-    subscriptions.forEach((sub) => {
-      console.log(`\nEvaluating subscription: ${sub._id?.toString()}`);
-      console.log(`Status: ${sub.status}, Plan: ${sub.planId}`);
-      console.log(`Amount: ${sub.amount}, Currency: ${sub.currency}`);
-
-      if (sub.trialEnd) {
-        console.log(`Trial end: ${new Date(sub.trialEnd).toISOString()}`);
-      }
-
-      if (sub.canceledAt) {
-        console.log(`Canceled at: ${new Date(sub.canceledAt).toISOString()}`);
-      }
-
-      console.log(`Metadata: ${JSON.stringify(sub.metadata || {})}`);
-
-      const paidAmount = getPaymentAmount(sub, subscriptions);
-
-      console.log(`Payment amount calculated: ${paidAmount}`);
-
-      if (paidAmount > 0) {
-        console.log(
-          `Adding to revenue: ${sub._id?.toString()}, status: ${
-            sub.status
-          }, paid amount: ${paidAmount}`
-        );
-        totalRevenue += paidAmount;
-
-        // Group by month for the chart
-        if (sub.currentPeriodStart) {
-          const date = new Date(sub.currentPeriodStart);
-          const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
-
-          if (!revenueByMonth[monthYear]) {
-            revenueByMonth[monthYear] = 0;
+        // Create a map of subscription ID to earnings
+        const earningsBySubscription = {};
+        referralEarnings.forEach((earning) => {
+          const subId = earning.subscriptionId?._id?.toString();
+          if (subId) {
+            if (!earningsBySubscription[subId]) {
+              earningsBySubscription[subId] = [];
+            }
+            earningsBySubscription[subId].push(earning);
           }
-          revenueByMonth[monthYear] += paidAmount;
+        });
+
+        // Attach earnings to subscriptions
+        const enrichedSubscriptions = subscriptions.map((sub) => ({
+          ...sub,
+          referralEarnings: earningsBySubscription[sub._id?.toString()] || [],
+        }));
+
+        processSubscriptions(enrichedSubscriptions);
+      } catch (error) {
+        console.error("❌ Error fetching referral earnings:", error);
+        // Process subscriptions without earnings data as fallback
+        processSubscriptions(subscriptions);
+      }
+    }
+
+    function processSubscriptions(subsWithEarnings) {
+      if (!subsWithEarnings || !subsWithEarnings.length) return;
+
+      // Validate and enrich subscription data
+      const validatedSubscriptions =
+        validateAndEnrichSubscriptionData(subsWithEarnings);
+
+      // Log data integrity issues
+      const integrityReport = validateSubscriptionDataIntegrity(
+        validatedSubscriptions
+      );
+      if (integrityReport.issues.length > 0) {
+        console.warn(
+          "⚠️ Subscription data integrity issues found:",
+          integrityReport
+        );
+      }
+
+      // Get unique users
+      const uniqueUsers = new Set();
+      validatedSubscriptions.forEach((sub) => {
+        if (sub.createdBy && sub.createdBy._id) {
+          uniqueUsers.add(sub.createdBy._id.toString());
         }
-      } else {
-        console.log(
-          `Zero payment for: ${sub._id?.toString()}, status: ${
-            sub.status
-          }, amount: ${sub.amount}`
-        );
-      }
-    });
+      });
+      const totalUsers = uniqueUsers.size;
 
-    console.log("Total revenue (from Paid column):", totalRevenue);
-    console.log("===== END REVENUE CALCULATION =====");
+      // Count by plan type (only count active or trialing)
+      const activeOrTrialingSubs = validatedSubscriptions.filter(
+        (sub) => sub.status === "active" || sub.status === "trialing"
+      );
 
-    // Calculate commissions
-    const commissionsByMonth = {};
-    let totalCommissions = 0;
+      const agencyCount = activeOrTrialingSubs.filter((sub) =>
+        sub.planId?.includes("agency")
+      ).length;
 
-    // Get unique referrers
-    const referrers = new Set();
-    const referrerStats = {};
+      const creatorCount = activeOrTrialingSubs.filter((sub) =>
+        sub.planId?.includes("creator")
+      ).length;
 
-    console.log("===== COMMISSIONS CALCULATION DETAILS =====");
+      const freeCount = totalUsers - (agencyCount + creatorCount);
 
-    subscriptions.forEach((sub) => {
-      // Skip any subscription that doesn't qualify for referral earnings
-      if (!isValidForReferralEarnings(sub)) {
-        console.log(
-          `Subscription ${sub._id?.toString()} not valid for commission calculation (trial or canceled trial)`
-        );
-        return;
-      }
+      // Calculate percentages
+      const agencyPercent = totalUsers
+        ? Math.round((agencyCount / totalUsers) * 100)
+        : 0;
+      const creatorPercent = totalUsers
+        ? Math.round((creatorCount / totalUsers) * 100)
+        : 0;
+      const freePercent = totalUsers
+        ? Math.round((freeCount / totalUsers) * 100)
+        : 0;
 
-      if (sub.amount && sub.referralCommissionPercentage) {
-        // Use the same payment amount logic we use for revenue calculation
-        const paidAmount = getPaymentAmount(sub, subscriptions);
+      // Count by subscription status
+      const activeCount = validatedSubscriptions.filter(
+        (sub) => sub.status === "active" && !sub.cancelAtPeriodEnd
+      ).length;
+      const trialingCount = validatedSubscriptions.filter(
+        (sub) => sub.status === "trialing"
+      ).length;
 
-        console.log(
-          `Evaluating commission for: ${sub._id?.toString()}, paid amount: ${paidAmount}`
-        );
+      // Count upgraded subscriptions
+      const upgradedCount = validatedSubscriptions.filter(
+        (sub) =>
+          (sub.status === "canceled" || sub.cancelAtPeriodEnd) &&
+          (sub.cancelReason === "plan_upgrade" ||
+            sub.metadata?.cancelReason === "plan_upgrade")
+      ).length;
+
+      // Count downgraded subscriptions
+      const downgradedCount = validatedSubscriptions.filter(
+        (sub) =>
+          (sub.status === "canceled" || sub.cancelAtPeriodEnd) &&
+          (sub.cancelReason === "plan_downgrade" ||
+            sub.metadata?.cancelReason === "plan_downgrade")
+      ).length;
+
+      // Count links increased subscriptions
+      const linksIncreasedCount = validatedSubscriptions.filter(
+        (sub) =>
+          (sub.status === "canceled" || sub.cancelAtPeriodEnd) &&
+          (sub.cancelReason === "extra_links_increase" ||
+            sub.metadata?.cancelReason === "extra_links_increase")
+      ).length;
+
+      // Count links decreased subscriptions
+      const linksDecreasedCount = validatedSubscriptions.filter(
+        (sub) =>
+          (sub.status === "canceled" || sub.cancelAtPeriodEnd) &&
+          (sub.cancelReason === "extra_links_decrease" ||
+            sub.metadata?.cancelReason === "extra_links_decrease")
+      ).length;
+
+      // Count canceled trial subscriptions
+      const canceledTrialCount = validatedSubscriptions.filter(
+        (sub) =>
+          (sub.status === "canceled" || sub.status === "trialing") &&
+          sub.trialEnd &&
+          sub.canceledAt &&
+          new Date(sub.canceledAt) <= new Date(sub.trialEnd)
+      ).length;
+
+      // Updated canceled count to exclude trial cancellations, plan changes and links changes
+      const canceledCount = validatedSubscriptions.filter(
+        (sub) =>
+          (sub.status === "canceled" || sub.cancelAtPeriodEnd) &&
+          (!sub.trialEnd ||
+            new Date(sub.canceledAt) > new Date(sub.trialEnd)) && // Exclude trial cancellations
+          (!sub.cancelReason ||
+            (sub.cancelReason !== "plan_upgrade" &&
+              sub.cancelReason !== "plan_downgrade" &&
+              sub.cancelReason !== "extra_links_increase" &&
+              sub.cancelReason !== "extra_links_decrease")) &&
+          (!sub.metadata?.cancelReason ||
+            (sub.metadata.cancelReason !== "plan_upgrade" &&
+              sub.metadata.cancelReason !== "plan_downgrade" &&
+              sub.metadata.cancelReason !== "extra_links_increase" &&
+              sub.metadata.cancelReason !== "extra_links_decrease"))
+      ).length;
+
+      const pastDueCount = validatedSubscriptions.filter(
+        (sub) => sub.status === "past_due"
+      ).length;
+
+      const totalStatusCount =
+        activeCount +
+        trialingCount +
+        canceledCount +
+        canceledTrialCount + // Added to total
+        pastDueCount +
+        upgradedCount +
+        downgradedCount +
+        linksIncreasedCount +
+        linksDecreasedCount;
+
+      // Separate count for plan changes and links changes
+      const totalPlanChangesCount = upgradedCount + downgradedCount;
+      const totalLinksChangesCount = linksIncreasedCount + linksDecreasedCount;
+
+      // Calculate percentages
+      const activePercent = totalStatusCount
+        ? Math.round((activeCount / totalStatusCount) * 100)
+        : 0;
+      const trialingPercent = totalStatusCount
+        ? Math.round((trialingCount / totalStatusCount) * 100)
+        : 0;
+      const canceledPercent = totalStatusCount
+        ? Math.round((canceledCount / totalStatusCount) * 100)
+        : 0;
+      const canceledTrialPercent = totalStatusCount
+        ? Math.round((canceledTrialCount / totalStatusCount) * 100)
+        : 0;
+      const pastDuePercent = totalStatusCount
+        ? Math.round((pastDueCount / totalStatusCount) * 100)
+        : 0;
+
+      // Calculate percentages for upgraded and downgraded in the status section
+      const upgradedPercent = totalStatusCount
+        ? Math.round((upgradedCount / totalStatusCount) * 100)
+        : 0;
+      const downgradedPercent = totalStatusCount
+        ? Math.round((downgradedCount / totalStatusCount) * 100)
+        : 0;
+
+      // Calculate percentages for links increased and decreased
+      const linksIncreasedPercent = totalStatusCount
+        ? Math.round((linksIncreasedCount / totalStatusCount) * 100)
+        : 0;
+      const linksDecreasedPercent = totalStatusCount
+        ? Math.round((linksDecreasedCount / totalStatusCount) * 100)
+        : 0;
+
+      // Calculate average extra links for active agency plans
+      const activeAgencyPlans = activeOrTrialingSubs.filter((sub) =>
+        sub.planId?.includes("agency")
+      );
+      const totalExtraLinks = activeAgencyPlans.reduce(
+        (sum, sub) => sum + (sub.extraLinks || 0),
+        0
+      );
+      const averageExtraLinks = activeAgencyPlans.length
+        ? Math.round((totalExtraLinks / activeAgencyPlans.length) * 10) / 10
+        : 0;
+
+      // Calculate revenue based on the "Paid" column, not the "Amount" column
+      const revenueByMonth = {};
+      let totalRevenue = 0;
+
+      console.log("===== REVENUE CALCULATION DETAILS =====");
+      console.log(`Total subscriptions: ${validatedSubscriptions.length}`);
+
+      // Calculate revenue using the "Paid" column logic
+      validatedSubscriptions.forEach((sub) => {
+        console.log(`\nEvaluating subscription: ${sub._id?.toString()}`);
+        console.log(`Status: ${sub.status}, Plan: ${sub.planId}`);
+        console.log(`Amount: ${sub.amount}, Currency: ${sub.currency}`);
+
+        if (sub.trialEnd) {
+          console.log(`Trial end: ${new Date(sub.trialEnd).toISOString()}`);
+        }
+
+        if (sub.canceledAt) {
+          console.log(`Canceled at: ${new Date(sub.canceledAt).toISOString()}`);
+        }
+
+        console.log(`Metadata: ${JSON.stringify(sub.metadata || {})}`);
+
+        const paidAmount = getPaymentAmount(sub, validatedSubscriptions);
+
+        console.log(`Payment amount calculated: ${paidAmount}`);
 
         if (paidAmount > 0) {
-          const commission =
-            (paidAmount * sub.referralCommissionPercentage) / 100;
-
           console.log(
-            `Commission calculated: ${commission} (${sub.referralCommissionPercentage}% of ${paidAmount})`
+            `Adding to revenue: ${sub._id?.toString()}, status: ${
+              sub.status
+            }, paid amount: ${paidAmount}`
           );
+          totalRevenue += paidAmount;
 
-          if (sub.referrerId) {
+          // Group by month for the chart
+          if (sub.currentPeriodStart) {
+            const date = new Date(sub.currentPeriodStart);
+            const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
+
+            if (!revenueByMonth[monthYear]) {
+              revenueByMonth[monthYear] = 0;
+            }
+            revenueByMonth[monthYear] += paidAmount;
+          }
+        } else {
+          console.log(
+            `Zero payment for: ${sub._id?.toString()}, status: ${
+              sub.status
+            }, amount: ${sub.amount}`
+          );
+        }
+      });
+
+      console.log("Total revenue (from Paid column):", totalRevenue);
+      console.log("===== END REVENUE CALCULATION =====");
+
+      // Calculate commissions
+      const commissionsByMonth = {};
+      let totalCommissions = 0;
+      let paidCommissions = 0;
+      let pendingCommissions = 0;
+
+      // Get unique referrers
+      const referrers = new Set();
+      const referrerStats = {};
+
+      console.log("===== COMMISSIONS CALCULATION DETAILS =====");
+
+      validatedSubscriptions.forEach((sub) => {
+        // Skip any subscription that doesn't qualify for referral earnings
+        if (!isValidForReferralEarnings(sub)) {
+          console.log(
+            `Subscription ${sub._id?.toString()} not valid for commission calculation (trial or canceled trial)`
+          );
+          return;
+        }
+
+        // Use the new utility function for safer commission calculation
+        const commission = calculateCommissionAmount(
+          sub,
+          validatedSubscriptions
+        );
+
+        console.log(
+          `Evaluating commission for: ${sub._id?.toString()}, commission: ${commission}`
+        );
+
+        if (commission > 0) {
+          const referrerInfo = getSafeReferrerInfo(sub);
+
+          if (referrerInfo.hasReferrer) {
             // Only count commission if there is an actual referrer
             totalCommissions += commission;
+
+            // Check referral earnings status
+            if (sub.referralEarnings && Array.isArray(sub.referralEarnings)) {
+              sub.referralEarnings.forEach((earning) => {
+                if (earning.status === "paid") {
+                  paidCommissions += parseFloat(earning.commissionAmount) || 0;
+                } else if (
+                  ["pending", "processing", "failed"].includes(earning.status)
+                ) {
+                  pendingCommissions +=
+                    parseFloat(earning.commissionAmount) || 0;
+                }
+              });
+            } else {
+              // If no earnings records found, consider it pending
+              pendingCommissions += commission;
+            }
+
             console.log(
               `Adding to total commissions: ${commission}, new total: ${totalCommissions}`
             );
@@ -326,13 +413,8 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
               commissionsByMonth[monthYear] += commission;
             }
 
-            // Track referrer info - ensure we're getting the referrer object properly
-            const referrerId =
-              typeof sub.referrerId === "object" && sub.referrerId?._id
-                ? sub.referrerId._id.toString()
-                : typeof sub.referrerId === "string"
-                ? sub.referrerId
-                : null;
+            // Track referrer info using the safe utility
+            const referrerId = referrerInfo.referrerId;
 
             if (referrerId) {
               referrers.add(referrerId);
@@ -340,13 +422,8 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
               if (!referrerStats[referrerId]) {
                 referrerStats[referrerId] = {
                   id: referrerId,
-                  name:
-                    (sub.referrerId &&
-                      (sub.referrerId.name || sub.referrerId.displayName)) ||
-                    "Unknown",
-                  avatar:
-                    sub.referrerId &&
-                    (sub.referrerId.avatar || sub.referrerId.profilePicture),
+                  name: referrerInfo.referrerName || "Unknown",
+                  avatar: referrerInfo.referrerAvatar,
                   commissions: 0,
                   referrals: 0,
                 };
@@ -362,103 +439,104 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
           }
         } else {
           console.log(
-            `Zero paid amount for subscription ${sub._id?.toString()}, no commission calculated`
+            `Zero commission calculated for subscription ${sub._id?.toString()}`
           );
         }
-      } else {
-        console.log(
-          `Subscription ${sub._id?.toString()} missing amount or commission percentage`
-        );
+      });
+
+      console.log("Total commissions:", totalCommissions);
+      console.log("===== END COMMISSIONS CALCULATION =====");
+
+      // Get top referrers
+      const topReferrers = Object.values(referrerStats)
+        .sort((a, b) => b.commissions - a.commissions)
+        .slice(0, 5);
+
+      // Calculate last month revenue and growth
+      const sortedMonths = Object.keys(revenueByMonth).sort((a, b) => {
+        const [monthA, yearA] = a.split("/").map(Number);
+        const [monthB, yearB] = b.split("/").map(Number);
+        if (yearA !== yearB) return yearA - yearB;
+        return monthA - monthB;
+      });
+
+      let lastMonthRevenue = 0;
+      let previousMonthRevenue = 0;
+      let growth = 0;
+
+      if (sortedMonths.length >= 1) {
+        lastMonthRevenue =
+          revenueByMonth[sortedMonths[sortedMonths.length - 1]];
       }
-    });
 
-    console.log("Total commissions:", totalCommissions);
-    console.log("===== END COMMISSIONS CALCULATION =====");
+      if (sortedMonths.length >= 2) {
+        previousMonthRevenue =
+          revenueByMonth[sortedMonths[sortedMonths.length - 2]];
+        if (previousMonthRevenue > 0) {
+          growth = Math.round(
+            ((lastMonthRevenue - previousMonthRevenue) / previousMonthRevenue) *
+              100
+          );
+        }
+      }
 
-    // Get top referrers
-    const topReferrers = Object.values(referrerStats)
-      .sort((a, b) => b.commissions - a.commissions)
-      .slice(0, 5);
+      const netRevenue = totalRevenue - totalCommissions;
+      console.log(
+        `Final calculations: Total Revenue: ${totalRevenue}, Total Commissions: ${totalCommissions}, Net Revenue: ${netRevenue}`
+      );
 
-    // Calculate last month revenue and growth
-    const sortedMonths = Object.keys(revenueByMonth).sort((a, b) => {
-      const [monthA, yearA] = a.split("/").map(Number);
-      const [monthB, yearB] = b.split("/").map(Number);
-      if (yearA !== yearB) return yearA - yearB;
-      return monthA - monthB;
-    });
-
-    let lastMonthRevenue = 0;
-    let previousMonthRevenue = 0;
-    let growth = 0;
-
-    if (sortedMonths.length >= 1) {
-      lastMonthRevenue = revenueByMonth[sortedMonths[sortedMonths.length - 1]];
+      setStats({
+        totalUsers,
+        usersByPlan: {
+          agency: agencyCount,
+          creator: creatorCount,
+          free: freeCount,
+          agencyPercent,
+          creatorPercent,
+          freePercent,
+        },
+        subscriptionStats: {
+          active: activeCount,
+          trialing: trialingCount,
+          canceled: canceledCount,
+          canceledTrial: canceledTrialCount,
+          pastDue: pastDueCount,
+          upgraded: upgradedCount,
+          downgraded: downgradedCount,
+          linksIncreased: linksIncreasedCount,
+          linksDecreased: linksDecreasedCount,
+          activePercent,
+          trialingPercent,
+          canceledPercent,
+          canceledTrialPercent,
+          pastDuePercent,
+          upgradedPercent,
+          downgradedPercent,
+          linksIncreasedPercent,
+          linksDecreasedPercent,
+        },
+        revenue: {
+          total: totalRevenue,
+          byMonth: revenueByMonth,
+          lastMonth: lastMonthRevenue,
+          growth,
+        },
+        commissions: {
+          total: totalCommissions,
+          paid: paidCommissions,
+          pending: pendingCommissions,
+          byMonth: commissionsByMonth,
+          totalReferrers: referrers.size,
+        },
+        netRevenue,
+        topReferrers,
+        totalPlanChangesCount,
+        totalLinksChangesCount,
+        averageExtraLinks,
+      });
     }
 
-    if (sortedMonths.length >= 2) {
-      previousMonthRevenue =
-        revenueByMonth[sortedMonths[sortedMonths.length - 2]];
-      if (previousMonthRevenue > 0) {
-        growth = Math.round(
-          ((lastMonthRevenue - previousMonthRevenue) / previousMonthRevenue) *
-            100
-        );
-      }
-    }
-
-    const netRevenue = totalRevenue - totalCommissions;
-    console.log(
-      `Final calculations: Total Revenue: ${totalRevenue}, Total Commissions: ${totalCommissions}, Net Revenue: ${netRevenue}`
-    );
-
-    setStats({
-      totalUsers,
-      usersByPlan: {
-        agency: agencyCount,
-        creator: creatorCount,
-        free: freeCount,
-        agencyPercent,
-        creatorPercent,
-        freePercent,
-      },
-      subscriptionStats: {
-        active: activeCount,
-        trialing: trialingCount,
-        canceled: canceledCount,
-        pastDue: pastDueCount,
-        incomplete: incompleteCount,
-        upgraded: upgradedCount,
-        downgraded: downgradedCount,
-        linksIncreased: linksIncreasedCount,
-        linksDecreased: linksDecreasedCount,
-        activePercent,
-        trialingPercent,
-        canceledPercent,
-        pastDuePercent,
-        incompletePercent,
-        upgradedPercent,
-        downgradedPercent,
-        linksIncreasedPercent,
-        linksDecreasedPercent,
-      },
-      revenue: {
-        total: totalRevenue,
-        byMonth: revenueByMonth,
-        lastMonth: lastMonthRevenue,
-        growth,
-      },
-      commissions: {
-        total: totalCommissions,
-        byMonth: commissionsByMonth,
-        totalReferrers: referrers.size,
-      },
-      netRevenue,
-      topReferrers,
-      totalPlanChangesCount,
-      totalLinksChangesCount,
-      averageExtraLinks,
-    });
+    fetchReferralEarnings();
   }, [subscriptions]);
 
   // Format currency
@@ -526,6 +604,21 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
               {formatCurrency(stats.commissions.total)}
             </span>
             <span className="text-xs text-gray-500 ml-2">in commissions</span>
+            <span className="text-xs font-semibold text-green-600 ml-4">
+              {formatCurrency(stats.commissions.paid)}
+            </span>
+            <span className="text-xs text-gray-500 ml-2">paid</span>
+            <span className="text-xs font-semibold text-yellow-500 ml-4">
+              {formatCurrency(stats.commissions.pending)}
+            </span>
+            <span className="text-xs text-gray-500 ml-2">pending</span>
+            <Link
+              className="fcc ml10 hover:underline"
+              href={ADMIN_REFERRALS_ROUTE}
+            >
+              <span>more details</span>
+              <ArrowRightIcon className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </div>
@@ -594,8 +687,8 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
             {stats.subscriptionStats.active +
               stats.subscriptionStats.trialing +
               stats.subscriptionStats.canceled +
+              stats.subscriptionStats.canceledTrial +
               stats.subscriptionStats.pastDue +
-              stats.subscriptionStats.incomplete +
               stats.subscriptionStats.upgraded +
               stats.subscriptionStats.downgraded +
               stats.subscriptionStats.linksIncreased +
@@ -630,20 +723,20 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
                 barColor: "bg-red-600",
               },
               {
+                type: "Canceled Trial",
+                count: stats.subscriptionStats.canceledTrial,
+                percent: stats.subscriptionStats.canceledTrialPercent,
+                textColor: "text-purple-600",
+                bgColor: "bg-purple-200",
+                barColor: "bg-purple-600",
+              },
+              {
                 type: "Past Due",
                 count: stats.subscriptionStats.pastDue,
                 percent: stats.subscriptionStats.pastDuePercent,
                 textColor: "text-yellow-600",
                 bgColor: "bg-yellow-200",
                 barColor: "bg-yellow-600",
-              },
-              {
-                type: "Incomplete",
-                count: stats.subscriptionStats.incomplete,
-                percent: stats.subscriptionStats.incompletePercent,
-                textColor: "text-gray-600",
-                bgColor: "bg-gray-200",
-                barColor: "bg-gray-600",
               },
               {
                 type: "Upgraded",
@@ -657,9 +750,9 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
                 type: "Downgraded",
                 count: stats.subscriptionStats.downgraded,
                 percent: stats.subscriptionStats.downgradedPercent,
-                textColor: "text-purple-600",
-                bgColor: "bg-purple-200",
-                barColor: "bg-purple-600",
+                textColor: "text-red-500",
+                bgColor: "bg-red-200",
+                barColor: "bg-red-500",
               },
               {
                 type: "Links Increased",
@@ -673,9 +766,9 @@ export default function AdminSubscriptions2Revenue({ subscriptions }) {
                 type: "Links Decreased",
                 count: stats.subscriptionStats.linksDecreased,
                 percent: stats.subscriptionStats.linksDecreasedPercent,
-                textColor: "text-amber-600",
-                bgColor: "bg-amber-200",
-                barColor: "bg-amber-600",
+                textColor: "text-red-400",
+                bgColor: "bg-red-100",
+                barColor: "bg-red-400",
               },
             ]
               .filter((status) => status.count > 0) // Only show statuses with at least 1 item

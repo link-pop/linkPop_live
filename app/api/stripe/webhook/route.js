@@ -4,6 +4,7 @@ import { models } from "@/lib/db/models/models";
 import { update, add } from "@/lib/actions/crud";
 import { isValidForReferralEarnings } from "@/lib/utils/referral/calculateReferralEarnings";
 import { activateReferral } from "@/lib/actions/activateReferral";
+import { getUserReferralDataForSubscription } from "@/lib/utils/subscription/fixSubscriptionReferralData";
 // import { sendErrorToAdmin } from "@/lib/actions/sendErrorToAdmin"; // Function doesn't exist yet
 
 // ! code start webhook handler
@@ -324,6 +325,9 @@ async function handleSubscriptionCreated(subscription) {
       return;
     }
 
+    // Get referral data for the user
+    const referralData = await getUserReferralDataForSubscription(createdBy);
+
     // Create a new subscription record
     await models.subscriptions2.create({
       createdBy,
@@ -344,6 +348,12 @@ async function handleSubscriptionCreated(subscription) {
       currency: subscription.currency,
       trialActivated: subscription.status === "trialing",
       cancelAtPeriodEnd: subscription.cancel_at_period_end,
+      // Include referral data if available
+      ...(referralData && {
+        referrerId: referralData.referrerId,
+        referralCode: referralData.referralCode,
+        referralCommissionPercentage: referralData.referralCommissionPercentage,
+      }),
     });
 
     console.log(`Created database record for subscription: ${subscription.id}`);
@@ -774,6 +784,9 @@ async function updateSubscriptionRecord(
   metadata
 ) {
   try {
+    // Get referral data for the user
+    const referralData = await getUserReferralDataForSubscription(createdBy);
+
     // First, try to find by session ID
     let updatedSubscription = await models.subscriptions2.findOneAndUpdate(
       { stripeSessionId: sessionId },
@@ -796,6 +809,13 @@ async function updateSubscriptionRecord(
           : 0,
         trialActivated: subscription.status === "trialing",
         extraLinks: extraLinksCount > 0 ? extraLinksCount : undefined,
+        // Include referral data if available and not already set
+        ...(referralData && {
+          referrerId: referralData.referrerId,
+          referralCode: referralData.referralCode,
+          referralCommissionPercentage:
+            referralData.referralCommissionPercentage,
+        }),
       },
       { new: true }
     );
@@ -829,6 +849,13 @@ async function updateSubscriptionRecord(
               : 0,
             trialActivated: subscription.status === "trialing",
             extraLinks: extraLinksCount > 0 ? extraLinksCount : undefined,
+            // Include referral data if available and not already set
+            ...(referralData && {
+              referrerId: referralData.referrerId,
+              referralCode: referralData.referralCode,
+              referralCommissionPercentage:
+                referralData.referralCommissionPercentage,
+            }),
           },
           { new: true }
         );
