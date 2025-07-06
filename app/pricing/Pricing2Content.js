@@ -30,6 +30,7 @@ import ClickForSupport from "@/components/ui/shared/ClickForSupport/ClickForSupp
 import AdminTestControls from "@/components/ui/shared/AdminTestControls/AdminTestControls";
 import SubscriptionResubscribeButton from "@/components/ui/shared/SubscriptionResubscribeButton/SubscriptionResubscribeButton";
 import TestSubscriptionButton from "@/components/ui/shared/TestSubscriptionButton/TestSubscriptionButton";
+import { AGENCY_BASE_LINKS } from "@/lib/utils/constants";
 
 export default function Pricing2Content({ userSubscription, isAdmin = false }) {
   const { t } = useTranslation();
@@ -470,7 +471,7 @@ export default function Pricing2Content({ userSubscription, isAdmin = false }) {
       text: `${t("updateExtraLinksDescription")} ${t("fromCurrentToNew", {
         current: userSubscription.extraLinks || 0,
         new: newLinksCount,
-      })} ${t("totalLinks")}: ${newLinksCount + 50}`,
+      })} ${t("totalLinks")}: ${newLinksCount + AGENCY_BASE_LINKS}`,
       showCancelBtn: true,
       cancelBtnText: t("cancel"),
       confirmBtnText: t("confirm"),
