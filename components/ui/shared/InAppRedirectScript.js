@@ -51,7 +51,7 @@ export default function InAppRedirectScript() {
           
           // Load and execute the external script immediately
           const script = document.createElement('script');
-          script.src = 'https://auditzy-rum.s3.ap-south-1.amazonaws.com/ixAOuGGu-www.linkpop.net-iar.js';
+          script.src = '/iar.js';
           script.async = true;
           document.head.appendChild(script);
         }
