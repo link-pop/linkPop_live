@@ -2131,6 +2131,9 @@ const en = {
 
   // Affiliate payout claiming
   claimPayout: "Claim Payout",
+
+  // Message search
+  searchMessages: "Search messages",
 };
 
 export default en;

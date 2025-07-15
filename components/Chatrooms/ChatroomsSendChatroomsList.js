@@ -170,7 +170,7 @@ export default function ChatroomsSendChatroomsList({
           </div>
         ) : users.length === 0 ? (
           <div className="p-4 text-center text-sm text-foreground/60">
-            {searchQuery ? t("noUsersFound") : t("notFound")}
+            {searchQuery ? t("noUsersFound") : t("noUsersFound")}
           </div>
         ) : (
           <InfiniteScroll

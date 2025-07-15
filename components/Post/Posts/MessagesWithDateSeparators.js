@@ -18,6 +18,7 @@ export default function MessagesWithDateSeparators({
   postsPaginationType,
   setCommentTextState,
   onReply,
+  searchQuery,
   className = "",
 }) {
   const { currentLang } = useTranslation();
@@ -51,6 +52,7 @@ export default function MessagesWithDateSeparators({
             postsPaginationType,
             setCommentTextState,
             onReply,
+            searchQuery,
           }}
         />
       );

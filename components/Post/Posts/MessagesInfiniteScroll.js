@@ -16,6 +16,7 @@ export default function MessagesInfiniteScroll({
   limit = 10,
   chatRoomId,
   onReply,
+  searchQuery,
 }) {
   const scrollContainerRef = useRef(null);
   const lastScrollHeightRef = useRef(0);
@@ -29,12 +30,25 @@ export default function MessagesInfiniteScroll({
     const { data: { chatRoomId: id, ...otherData } = {}, ...otherArgs } = args;
     const now = new Date();
 
+    // Build base data object
+    let baseData = {
+      ...otherData,
+      chatRoomId: id,
+    };
+
+    // Add search filter if search query is provided
+    if (searchQuery && searchQuery.trim()) {
+      const trimmedQuery = searchQuery.trim();
+      // Escape special regex characters to prevent regex injection
+      const escapedQuery = trimmedQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      baseData.chatMsgText = { $regex: escapedQuery, $options: "i" };
+    }
+
     // * For messages, we need to check if mongoUser is the creator of each message
     return getAllPostsOwner({
       ...otherArgs,
       data: {
-        ...otherData,
-        chatRoomId: id,
+        ...baseData,
         $or: [
           // * User's own messages - show all (including scheduled)
           {
@@ -74,6 +88,7 @@ export default function MessagesInfiniteScroll({
     mongoUser,
     limit,
     chatRoomId,
+    searchQuery,
   });
 
   // Function to scroll to bottom
@@ -183,6 +198,7 @@ export default function MessagesInfiniteScroll({
             col={col}
             mongoUser={mongoUser}
             onReply={onReply}
+            searchQuery={searchQuery}
           />
         </div>
       </InfiniteScroll>

@@ -16,7 +16,12 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 import ChatNotificationHandler from "@/components/Chat/ChatNotificationHandler";
 
 // * shows chatroom & its messages
-export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
+export default function ChatroomFullPost({
+  post: chat,
+  isAdmin,
+  mongoUser,
+  searchQuery,
+}) {
   if (!chat) return null;
   const chatId = chat._id;
   const { socket, connected, userId, replyTo, onReply, onCancelReply } =
@@ -192,6 +197,7 @@ export default function ChatroomFullPost({ post: chat, isAdmin, mongoUser }) {
           showFoundNum={false}
           chatRoomId={chatId}
           onReply={onReply}
+          searchQuery={searchQuery}
         />
       </div>
 

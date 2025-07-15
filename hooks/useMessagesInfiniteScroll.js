@@ -24,6 +24,7 @@ export default function useMessagesInfiniteScroll({
   mongoUser,
   limit = 20,
   chatRoomId,
+  searchQuery,
 }) {
   const debouncedFetchRef = useRef();
   const { socket } = useChat();
@@ -37,7 +38,7 @@ export default function useMessagesInfiniteScroll({
     isFetchingNextPage,
     refetch,
   } = useInfiniteQuery({
-    queryKey: ["chat", "messages", chatRoomId],
+    queryKey: ["chat", "messages", chatRoomId, searchQuery || ""],
     queryFn: async ({ pageParam = 0 }) => {
       console.log("Fetching page:", pageParam);
 

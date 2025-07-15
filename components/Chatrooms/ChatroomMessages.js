@@ -4,7 +4,12 @@ import ChatroomFullPost from "@/components/Post/Post/Full/Custom/ChatroomFullPos
 import useLayoutWidth from "@/hooks/useLayoutWidth";
 
 // * Component to show messages for a specific chatroom
-export default function ChatroomMessages({ chatroom, mongoUser, isAdmin }) {
+export default function ChatroomMessages({
+  chatroom,
+  mongoUser,
+  isAdmin,
+  searchQuery,
+}) {
   useLayoutWidth("1000");
 
   if (!chatroom) {
@@ -22,6 +27,7 @@ export default function ChatroomMessages({ chatroom, mongoUser, isAdmin }) {
         post={chatroom}
         isAdmin={isAdmin}
         mongoUser={mongoUser}
+        searchQuery={searchQuery}
       />
     </div>
   );

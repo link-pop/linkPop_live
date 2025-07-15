@@ -10,6 +10,7 @@ import ReplyButton from "@/components/Reply/ReplyButton";
 import ReplyPreview from "@/components/Reply/ReplyPreview";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import PaidContentOverlay from "../PaidContentOverlay";
+import HighlightedRichText from "@/components/ui/shared/RichTextContent/HighlightedRichText";
 
 export default function ChatmessagePost(props) {
   const {
@@ -20,6 +21,7 @@ export default function ChatmessagePost(props) {
     chatRoomMainPersona,
     onReply,
     col,
+    searchQuery,
   } = props;
   if (!post) return null;
   let isOwnMessage =
@@ -134,12 +136,19 @@ export default function ChatmessagePost(props) {
                   />
                 )}
 
-                <RichTextContent
-                  content={post.chatMsgText}
-                  className={`${
-                    isOwnMessage ? "text-foreground" : "text-foreground"
-                  } ${isChatRoom ? "line-clamp-1" : "px10"}`}
-                />
+                {searchQuery ? (
+                  <HighlightedRichText
+                    htmlContent={post.chatMsgText}
+                    query={searchQuery}
+                    className={`${isOwnMessage ? "text-foreground" : "text-foreground"} ${isChatRoom ? "line-clamp-1" : "px10"}`}
+                  />
+                ) : (
+                  <RichTextContent
+                    content={post.chatMsgText}
+                    className={`${isOwnMessage ? "text-foreground" : "text-foreground"} ${isChatRoom ? "line-clamp-1" : "px10"}`}
+                  />
+                )}
+
                 <div
                   className={`f g10 fwn text-xs mt0 ${
                     isOwnMessage

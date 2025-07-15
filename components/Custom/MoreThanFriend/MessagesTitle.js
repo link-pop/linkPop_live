@@ -17,6 +17,9 @@ import MessagesSearchInput from "./MessagesSearchInput";
 import MassMessagesSearchInput from "./MassMessagesSearchInput";
 import MessagesNewIcon from "./MessagesNewIcon";
 import MessagesSentStatisticsIcon from "./MessagesSentStatisticsIcon";
+import MessagesInChatFindIcon from "./MessagesInChatFindIcon";
+import ChatMessageSearchInput from "./ChatMessageSearchInput";
+import { useChatSearch } from "@/contexts/ChatSearchContext";
 
 const MessagesTitle = () => {
   if (SITE2) return null;
@@ -25,11 +28,15 @@ const MessagesTitle = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { handleChatMessageSearch } = useChatSearch();
 
   // Initialize search mode based on URL search params
   const [isSearchMode, setIsSearchMode] = useState(() => {
     return !!searchParams.get("q") || searchParams.get("search") === "true";
   });
+
+  // State for chat message search (specific to current chat room)
+  const [isChatSearchMode, setIsChatSearchMode] = useState(false);
 
   // Update search mode when URL parameters change
   useEffect(() => {
@@ -56,6 +63,10 @@ const MessagesTitle = () => {
   // Check if we're on the mass message send page or statistics page
   const isOnSendPage = pathname === CHATROOMS_SEND_ROUTE;
   const isOnStatsPage = pathname === CHATROOMS_STATISTICS_ROUTE;
+
+  // Check if we're on a specific chat room page
+  const isOnSpecificChatRoom =
+    pathname && pathname.match(/^\/chatrooms\/[^\/]+$/);
 
   const handleSearchIconClick = () => {
     // Check if we're on a specific chat room page
@@ -92,6 +103,19 @@ const MessagesTitle = () => {
     router.push(CHATROOMS_SEND_ROUTE);
   };
 
+  const handleChatFindClick = () => {
+    setIsChatSearchMode(true);
+  };
+
+  const handleChatSearchCancel = () => {
+    setIsChatSearchMode(false);
+    handleChatMessageSearch?.("");
+  };
+
+  const handleChatSearch = (searchQuery) => {
+    handleChatMessageSearch?.(searchQuery);
+  };
+
   const getTitle = () => {
     if (isOnSendPage) {
       return t("newMessage").toUpperCase();
@@ -113,10 +137,10 @@ const MessagesTitle = () => {
 
   return (
     <div
-      className={`mxa z50 sticky t0 h60 ${width} wf bg-background wf f aic jcsb p15 border-[1px]`}
+      className={`f fwn aic jcsb mxa z50 sticky t0 h60 ${width} bg-background wf p15 border-[1px]`}
     >
       <div className="f maw370 wf aic">
-        {!isSearchMode ? (
+        {!isSearchMode && !isChatSearchMode ? (
           <>
             <ArrowLeft
               className="cursor-pointer mr-2 hs"
@@ -141,11 +165,25 @@ const MessagesTitle = () => {
               </div>
             )}
           </>
+        ) : isChatSearchMode ? (
+          // Show chat message search input for current chat room
+          <ChatMessageSearchInput
+            onCancel={handleChatSearchCancel}
+            onSearch={handleChatSearch}
+          />
         ) : // Show different search input based on current page
         isOnStatsPage ? (
           <MassMessagesSearchInput onCancel={handleCancelSearch} />
         ) : (
           <MessagesSearchInput onCancel={handleCancelSearch} />
+        )}
+      </div>
+      <div>
+        {/* Show find icon only on specific chat room pages */}
+        {isOnSpecificChatRoom && (
+          <div onClick={handleChatFindClick}>
+            <MessagesInChatFindIcon />
+          </div>
         )}
       </div>
     </div>

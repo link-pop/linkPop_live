@@ -7,6 +7,7 @@ import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import { redirect } from "next/navigation";
 import { LOGIN_ROUTE } from "@/lib/utils/constants";
 import { Suspense } from "react";
+import ChatroomPageClient from "./ChatroomPageClient";
 
 // * individual chatroom messages page
 export default async function ChatroomPage({ params, searchParams }) {
@@ -27,20 +28,15 @@ export default async function ChatroomPage({ params, searchParams }) {
   const plainMongoUser = JSON.parse(JSON.stringify(mongoUser));
 
   return (
-    <div className="flex h-full w-full">
-      {/* Left side - Chatrooms list with search support */}
-      <div className="w-[400px] max-w-[400px] flex-shrink-0 border-r LeftChatroomPart">
+    <ChatroomPageClient
+      chatroom={plainChatroom}
+      mongoUser={plainMongoUser}
+      isAdmin={isAdmin}
+      chatroomsListComponent={
         <Suspense fallback={<PostsLoader isLoading={true} />}>
           <ChatroomsListServer searchParams={searchParams} />
         </Suspense>
-      </div>
-
-      {/* Right side - Chat messages */}
-      <ChatroomMessages
-        chatroom={plainChatroom}
-        mongoUser={plainMongoUser}
-        isAdmin={isAdmin}
-      />
-    </div>
+      }
+    />
   );
 }
