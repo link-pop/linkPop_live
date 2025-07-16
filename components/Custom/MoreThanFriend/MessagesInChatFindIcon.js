@@ -7,7 +7,7 @@ const MessagesInChatFindIcon = ({ onClick }) => {
   const { t } = useTranslation();
 
   return (
-    <div title={t("searchMessages")} className="mla pl8" onClick={onClick}>
+    <div title={t("searchMessages")} className="" onClick={onClick}>
       <TextSearch className="w24 h24 cursor-pointer hs" />
     </div>
   );

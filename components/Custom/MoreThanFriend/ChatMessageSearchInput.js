@@ -21,7 +21,7 @@ const ChatMessageSearchInput = ({ onCancel, onSearch }) => {
   };
 
   return (
-    <div className="absolute r10 t15 f aic">
+    <div className="absolute r10 t15 z2 f aic">
       <SearchInput
         value={searchQuery}
         onChange={handleSearchChange}

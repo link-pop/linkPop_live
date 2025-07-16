@@ -2134,6 +2134,10 @@ const en = {
 
   // Message search
   searchMessages: "Search messages",
+  gallery: "Gallery",
+  pinned: "Pinned",
+  lists: "Lists",
+  notes: "Notes",
 };
 
 export default en;

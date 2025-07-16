@@ -20,6 +20,11 @@ import MessagesSentStatisticsIcon from "./MessagesSentStatisticsIcon";
 import MessagesInChatFindIcon from "./MessagesInChatFindIcon";
 import ChatMessageSearchInput from "./ChatMessageSearchInput";
 import { useChatSearch } from "@/contexts/ChatSearchContext";
+import MessagesListsIcon from "./MessagesListsIcon";
+import MessagesGalleryIcon from "./MessagesGalleryIcon";
+import MessagesNotesIcon from "./MessagesNotesIcon";
+import MessagesPinIcon from "./MessagesPinIcon";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 const MessagesTitle = () => {
   if (SITE2) return null;
@@ -29,6 +34,7 @@ const MessagesTitle = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { handleChatMessageSearch } = useChatSearch();
+  const { isMobileSm } = useWindowWidth();
 
   // Initialize search mode based on URL search params
   const [isSearchMode, setIsSearchMode] = useState(() => {
@@ -139,14 +145,16 @@ const MessagesTitle = () => {
     <div
       className={`f fwn aic jcsb mxa z50 sticky t0 h60 ${width} bg-background wf p15 border-[1px]`}
     >
-      <div className="f maw370 wf aic">
+      <div className="f maw370 wfc aic">
         {!isSearchMode && !isChatSearchMode ? (
           <>
             <ArrowLeft
               className="cursor-pointer mr-2 hs"
               onClick={handleBackClick}
             />
-            <div className="title">{getTitle()}</div>
+            <div className={`title pr30 ${isMobileSm ? "hidden" : ""}`}>
+              {getTitle()}
+            </div>
             {!isOnSendPage && (
               <div className="mla f aic g10">
                 {!isOnStatsPage && <MessagesScheduledIcon />}
@@ -181,7 +189,11 @@ const MessagesTitle = () => {
       <div>
         {/* Show find icon only on specific chat room pages */}
         {isOnSpecificChatRoom && (
-          <div onClick={handleChatFindClick}>
+          <div className="f aic g10" onClick={handleChatFindClick}>
+            <MessagesListsIcon />
+            <MessagesGalleryIcon />
+            <MessagesNotesIcon />
+            <MessagesPinIcon />
             <MessagesInChatFindIcon />
           </div>
         )}

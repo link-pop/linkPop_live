@@ -8,6 +8,7 @@ import { getAllPostsOwner } from "@/lib/actions/getAllPostsOwner";
 import PostsLoader from "./PostsLoader";
 import useMessagesInfiniteScroll from "@/hooks/useMessagesInfiniteScroll";
 import { useChat } from "@/components/Context/ChatContext";
+import MessagesInfiniteScrollUpDown from "./MessagesInfiniteScrollUpDown";
 
 export default function MessagesInfiniteScroll({
   col,
@@ -177,6 +178,7 @@ export default function MessagesInfiniteScroll({
       ref={scrollContainerRef}
       onScroll={handleScroll}
     >
+      <MessagesInfiniteScrollUpDown scrollContainerRef={scrollContainerRef} />
       <InfiniteScroll
         loading={isFetchingNextPage}
         hasMore={hasMore}
