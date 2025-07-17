@@ -6,6 +6,7 @@ import PostAddToArchive from "./PostAddToArchive";
 import PostHide from "./PostHide";
 import PostHideUser from "./PostHideUser";
 import PostCopyText from "./PostCopyText";
+import PostPinMessage from "./PostPinMessage";
 import { BRAND_INVERT_CLASS } from "@/lib/utils/constants";
 import { canMessageBeModified } from "@/lib/utils/canMessageBeModified";
 
@@ -58,6 +59,9 @@ export default function PostOtherIcons({
       {["chatmessages"].includes(col.name) && (
         <>
           <PostCopyText {...{ post, iconClassName }} />
+          {mongoUser && (
+            <PostPinMessage {...{ post, iconClassName, mongoUser }} />
+          )}
           {mongoUser && !isOwner && canModify && (
             <>
               <PostHide

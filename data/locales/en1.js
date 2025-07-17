@@ -2138,6 +2138,16 @@ const en = {
   pinned: "Pinned",
   lists: "Lists",
   notes: "Notes",
+
+  // Pinned messages
+  pin: "Pin",
+  unpin: "Unpin",
+  messagePinned: "Message pinned",
+  messageUnpinned: "Message unpinned",
+  errorTogglingPin: "Error toggling pin status",
+  pinnedMessages: "Pinned Messages",
+  noPinnedMessages: "No pinned messages",
+  showAllMessages: "Show all messages",
 };
 
 export default en;

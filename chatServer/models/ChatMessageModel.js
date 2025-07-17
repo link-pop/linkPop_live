@@ -55,6 +55,10 @@ const chatMessageSchema = new mongoose.Schema(
       type: Number,
       default: null,
     },
+    isPinned: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

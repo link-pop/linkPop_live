@@ -14,6 +14,7 @@ import { formatAttachmentData } from "@/lib/utils/files/formatFileData";
 import SOCKET_EVENTS from "@/chatServer/constants/socketEvents";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import ChatNotificationHandler from "@/components/Chat/ChatNotificationHandler";
+import { useChatSearch } from "@/contexts/ChatSearchContext";
 
 // * shows chatroom & its messages
 export default function ChatroomFullPost({
@@ -31,6 +32,7 @@ export default function ChatroomFullPost({
   const feedFormRef = useRef();
   const { t } = useTranslation();
   const [isSubmittingMessage, setIsSubmittingMessage] = useState(false);
+  const { showPinnedOnly } = useChatSearch();
 
   useEffect(() => {
     if (!socket || !userId) return;
@@ -198,6 +200,7 @@ export default function ChatroomFullPost({
           chatRoomId={chatId}
           onReply={onReply}
           searchQuery={searchQuery}
+          showPinnedOnly={showPinnedOnly}
         />
       </div>
 

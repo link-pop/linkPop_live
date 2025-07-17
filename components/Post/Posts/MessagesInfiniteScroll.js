@@ -9,6 +9,7 @@ import PostsLoader from "./PostsLoader";
 import useMessagesInfiniteScroll from "@/hooks/useMessagesInfiniteScroll";
 import { useChat } from "@/components/Context/ChatContext";
 import MessagesInfiniteScrollUpDown from "./MessagesInfiniteScrollUpDown";
+import { useTranslation } from "@/components/Context/TranslationContext";
 
 export default function MessagesInfiniteScroll({
   col,
@@ -18,6 +19,7 @@ export default function MessagesInfiniteScroll({
   chatRoomId,
   onReply,
   searchQuery,
+  showPinnedOnly = false,
 }) {
   const scrollContainerRef = useRef(null);
   const lastScrollHeightRef = useRef(0);
@@ -25,6 +27,7 @@ export default function MessagesInfiniteScroll({
   const scrollPositionRef = useRef({ scrollTop: 0, scrollHeight: 0 });
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
   const { replyTo } = useChat();
+  const { t } = useTranslation();
 
   // * Set isOwner based on whether the current user is the message creator
   const getAllPostsFn = async (args) => {
@@ -43,6 +46,11 @@ export default function MessagesInfiniteScroll({
       // Escape special regex characters to prevent regex injection
       const escapedQuery = trimmedQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       baseData.chatMsgText = { $regex: escapedQuery, $options: "i" };
+    }
+
+    // Add pinned filter if showPinnedOnly is true
+    if (showPinnedOnly) {
+      baseData.isPinned = true;
     }
 
     // * For messages, we need to check if mongoUser is the creator of each message
@@ -90,6 +98,7 @@ export default function MessagesInfiniteScroll({
     limit,
     chatRoomId,
     searchQuery,
+    showPinnedOnly,
   });
 
   // Function to scroll to bottom
@@ -179,31 +188,37 @@ export default function MessagesInfiniteScroll({
       onScroll={handleScroll}
     >
       <MessagesInfiniteScrollUpDown scrollContainerRef={scrollContainerRef} />
-      <InfiniteScroll
-        loading={isFetchingNextPage}
-        hasMore={hasMore}
-        next={fetchNextPage}
-        threshold={0.2}
-        reverse={true}
-        rootMargin="0px"
-        root={scrollContainerRef.current}
-      >
-        <div className="wf h-full">
-          {hasMore && isFetchingNextPage && <PostsLoader className="!mt0" />}
-
-          {showFoundNum && totalCount && (
-            <div className="text-center fz14">Found: {totalCount}</div>
-          )}
-
-          <MessagesWithDateSeparators
-            posts={allPosts}
-            col={col}
-            mongoUser={mongoUser}
-            onReply={onReply}
-            searchQuery={searchQuery}
-          />
+      {showPinnedOnly && allPosts.length === 0 && !isFetchingNextPage ? (
+        <div className="flex items-center justify-center h-full text-gray-500">
+          {t("noPinnedMessages")}
         </div>
-      </InfiniteScroll>
+      ) : (
+        <InfiniteScroll
+          loading={isFetchingNextPage}
+          hasMore={hasMore}
+          next={fetchNextPage}
+          threshold={0.2}
+          reverse={true}
+          rootMargin="0px"
+          root={scrollContainerRef.current}
+        >
+          <div className="wf h-full">
+            {hasMore && isFetchingNextPage && <PostsLoader className="!mt0" />}
+
+            {showFoundNum && totalCount && (
+              <div className="text-center fz14">Found: {totalCount}</div>
+            )}
+
+            <MessagesWithDateSeparators
+              posts={allPosts}
+              col={col}
+              mongoUser={mongoUser}
+              onReply={onReply}
+              searchQuery={searchQuery}
+            />
+          </div>
+        </InfiniteScroll>
+      )}
     </div>
   );
 }

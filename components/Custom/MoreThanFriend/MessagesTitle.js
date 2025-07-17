@@ -20,6 +20,7 @@ import MessagesSentStatisticsIcon from "./MessagesSentStatisticsIcon";
 import MessagesInChatFindIcon from "./MessagesInChatFindIcon";
 import ChatMessageSearchInput from "./ChatMessageSearchInput";
 import { useChatSearch } from "@/contexts/ChatSearchContext";
+import { useContext } from "@/components/Context/Context";
 import MessagesListsIcon from "./MessagesListsIcon";
 import MessagesGalleryIcon from "./MessagesGalleryIcon";
 import MessagesNotesIcon from "./MessagesNotesIcon";
@@ -33,7 +34,9 @@ const MessagesTitle = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { handleChatMessageSearch } = useChatSearch();
+  const { handleChatMessageSearch, showPinnedOnly, togglePinnedMode } =
+    useChatSearch();
+  const { mongoUser } = useContext();
   const { isMobileSm } = useWindowWidth();
 
   // Initialize search mode based on URL search params
@@ -122,6 +125,13 @@ const MessagesTitle = () => {
     handleChatMessageSearch?.(searchQuery);
   };
 
+  const handlePinIconClick = () => {
+    togglePinnedMode();
+  };
+
+  // Extract chatId from pathname for pinned messages
+  const currentChatId = isOnSpecificChatRoom ? pathname.split("/").pop() : null;
+
   const getTitle = () => {
     if (isOnSendPage) {
       return t("newMessage").toUpperCase();
@@ -189,12 +199,16 @@ const MessagesTitle = () => {
       <div>
         {/* Show find icon only on specific chat room pages */}
         {isOnSpecificChatRoom && (
-          <div className="f aic g10" onClick={handleChatFindClick}>
+          <div className="f aic g10">
             <MessagesListsIcon />
             <MessagesGalleryIcon />
             <MessagesNotesIcon />
-            <MessagesPinIcon />
-            <MessagesInChatFindIcon />
+            <div onClick={handlePinIconClick}>
+              <MessagesPinIcon isActive={showPinnedOnly} />
+            </div>
+            <div onClick={handleChatFindClick}>
+              <MessagesInChatFindIcon />
+            </div>
           </div>
         )}
       </div>
