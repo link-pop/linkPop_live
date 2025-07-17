@@ -200,7 +200,7 @@ const MessagesTitle = () => {
         {/* Show find icon only on specific chat room pages */}
         {isOnSpecificChatRoom && (
           <div className="f aic g10">
-            <MessagesListsIcon />
+            {/* <MessagesListsIcon /> */}
             <MessagesGalleryIcon />
             <MessagesNotesIcon />
             <div onClick={handlePinIconClick}>
