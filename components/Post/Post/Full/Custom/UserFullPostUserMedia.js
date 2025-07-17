@@ -12,6 +12,8 @@ export default function UserFullPostUserMedia({
   mongoUser,
   visitedMongoUser,
   isOwner: isOwnerProp,
+  isChatGallery = false,
+  chatId = null,
 }) {
   const searchParams = useSearchParams();
   const [refreshKey, setRefreshKey] = useState(0);
@@ -40,6 +42,29 @@ export default function UserFullPostUserMedia({
     console.log("UserFullPostUserMedia - mediaType:", mediaType);
     console.log("UserFullPostUserMedia - tagsParam:", tagsParam);
     console.log("UserFullPostUserMedia - selectedTags:", selectedTags);
+
+    // Special handling for chat gallery
+    if (isChatGallery && chatId) {
+      // For chat gallery, we want to show files from all chatmessages in this specific chat
+      // We'll use a special flag that will be handled by the data fetching functions
+      const result = {
+        isChatGallery: true,
+        chatId: chatId, // Filter by specific chat ID
+        ...(mediaType === "video" ? { fileType: "video" } : {}),
+        ...(mediaType === "photo"
+          ? { fileType: "image", fileUrl_not_contains: ".gif" }
+          : {}),
+        ...(mediaType === "gif"
+          ? { fileType: "image", fileUrl_contains: ".gif" }
+          : {}),
+        ...(selectedTags.length > 0 ? { tags: selectedTags } : {}),
+      };
+      console.log(
+        "UserFullPostUserMedia - Chat Gallery searchParamsObject:",
+        result
+      );
+      return result;
+    }
 
     // Handle special case for video type (for both owner and visitor)
     if (mediaType === "video") {
@@ -109,6 +134,8 @@ export default function UserFullPostUserMedia({
     mongoUser,
     post,
     isOwnerProp,
+    isChatGallery,
+    chatId,
   ]); // Use searchParams.toString() for better dependency tracking
 
   const col = {
@@ -118,12 +145,14 @@ export default function UserFullPostUserMedia({
   };
 
   return (
-    <div className="">
+    <div className="bb">
       <MediaTypeFetchedSwitch
         {...{
           mongoUser,
           visitedUserId: visitedMongoUser?._id,
           isOwner, // Pass isOwner flag to allow filtering visible types
+          isChatGallery, // Pass chat gallery flag
+          chatId, // Pass chat ID for filtering
         }}
       />
 

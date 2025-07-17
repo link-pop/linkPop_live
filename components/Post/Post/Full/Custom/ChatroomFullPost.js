@@ -15,6 +15,7 @@ import SOCKET_EVENTS from "@/chatServer/constants/socketEvents";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import ChatNotificationHandler from "@/components/Chat/ChatNotificationHandler";
 import { useChatSearch } from "@/contexts/ChatSearchContext";
+import ChatroomGallery from "./ChatroomGallery";
 
 // * shows chatroom & its messages
 export default function ChatroomFullPost({
@@ -32,7 +33,7 @@ export default function ChatroomFullPost({
   const feedFormRef = useRef();
   const { t } = useTranslation();
   const [isSubmittingMessage, setIsSubmittingMessage] = useState(false);
-  const { showPinnedOnly } = useChatSearch();
+  const { showPinnedOnly, showGallery, exitGallery } = useChatSearch();
 
   useEffect(() => {
     if (!socket || !userId) return;
@@ -184,41 +185,57 @@ export default function ChatroomFullPost({
       {/* Handle notifications for this chat */}
       <ChatNotificationHandler chatId={chatId} mongoUser={mongoUser} />
 
-      {/* // * ABSOLUTE */}
-      <ChatroomFullPostHeader {...{ chat, mongoUser }} />
-
-      <div className="oh flex-1">
-        {/* // * MESSAGES  */}
-        <MessagesInfiniteScroll
-          col={{
-            name: "chatmessages",
-            settings: { noFullPost: true, noUpdateIcon: true, hasLikes: true },
-            // * isAdmin,
-          }}
+      {showGallery ? (
+        // Show gallery view
+        <ChatroomGallery
+          chat={chat}
           mongoUser={mongoUser}
-          showFoundNum={false}
-          chatRoomId={chatId}
-          onReply={onReply}
-          searchQuery={searchQuery}
-          showPinnedOnly={showPinnedOnly}
+          isAdmin={isAdmin}
+          onClose={exitGallery}
         />
-      </div>
+      ) : (
+        <>
+          {/* // * ABSOLUTE */}
+          <ChatroomFullPostHeader {...{ chat, mongoUser }} />
 
-      <div className="h-auto max-h-[50dvh] oya shrink-0 border-t">
-        <AddFeedChatmessageForm
-          hideExpirationPeriod={true}
-          placeholder={t("writeMessage")}
-          ref={feedFormRef}
-          col={{ name: "chatmessages" }}
-          mongoUser={mongoUser}
-          customOnSubmit={handleMessageSubmit}
-          submitBtnClassName={`!poa !b20 !-r35 !ml0 !mla !mta`}
-          submitBtnText={t("send")}
-          replyTo={replyTo}
-          onCancelReply={onCancelReply}
-          customIsLoading={isSubmittingMessage}
-        />
-      </div>
+          <div className="oh flex-1">
+            {/* // * MESSAGES  */}
+            <MessagesInfiniteScroll
+              col={{
+                name: "chatmessages",
+                settings: {
+                  noFullPost: true,
+                  noUpdateIcon: true,
+                  hasLikes: true,
+                },
+                // * isAdmin,
+              }}
+              mongoUser={mongoUser}
+              showFoundNum={false}
+              chatRoomId={chatId}
+              onReply={onReply}
+              searchQuery={searchQuery}
+              showPinnedOnly={showPinnedOnly}
+            />
+          </div>
+
+          <div className="h-auto max-h-[50dvh] oya shrink-0 border-t">
+            <AddFeedChatmessageForm
+              hideExpirationPeriod={true}
+              placeholder={t("writeMessage")}
+              ref={feedFormRef}
+              col={{ name: "chatmessages" }}
+              mongoUser={mongoUser}
+              customOnSubmit={handleMessageSubmit}
+              submitBtnClassName={`!poa !b20 !-r35 !ml0 !mla !mta`}
+              submitBtnText={t("send")}
+              replyTo={replyTo}
+              onCancelReply={onCancelReply}
+              customIsLoading={isSubmittingMessage}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }
