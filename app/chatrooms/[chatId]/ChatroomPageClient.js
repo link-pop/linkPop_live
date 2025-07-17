@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import ChatroomMessages from "@/components/Chatrooms/ChatroomMessages";
 import { useChatSearch } from "@/contexts/ChatSearchContext";
 
@@ -9,7 +10,17 @@ export default function ChatroomPageClient({
   isAdmin,
   chatroomsListComponent,
 }) {
-  const { chatSearchQuery } = useChatSearch();
+  const { chatSearchQuery, setCurrentChatroom } = useChatSearch();
+
+  // Set the current chatroom in context when component mounts
+  useEffect(() => {
+    setCurrentChatroom(chatroom);
+
+    // Cleanup when unmounting
+    return () => {
+      setCurrentChatroom(null);
+    };
+  }, [chatroom, setCurrentChatroom]);
 
   return (
     <div className="flex h-full w-full">

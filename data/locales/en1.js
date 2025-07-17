@@ -2148,6 +2148,14 @@ const en = {
   pinnedMessages: "Pinned Messages",
   noPinnedMessages: "No pinned messages",
   showAllMessages: "Show all messages",
+
+  // Notes functionality
+  noteTextRequired: "Note text is required",
+  noteSaved: "Note saved",
+  noteDeleted: "Note deleted",
+  errorSavingNote: "Error saving note",
+  errorDeletingNote: "Error deleting note",
+  clear: "Clear",
 };
 
 export default en;

@@ -8,6 +8,7 @@ export function ChatSearchProvider({ children }) {
   const [chatSearchQuery, setChatSearchQuery] = useState("");
   const [showPinnedOnly, setShowPinnedOnly] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
+  const [currentChatroom, setCurrentChatroom] = useState(null);
 
   const handleChatMessageSearch = (searchQuery) => {
     setChatSearchQuery(searchQuery);
@@ -52,6 +53,8 @@ export function ChatSearchProvider({ children }) {
         showGallery,
         toggleGallery,
         exitGallery,
+        currentChatroom,
+        setCurrentChatroom,
       }}
     >
       {children}
