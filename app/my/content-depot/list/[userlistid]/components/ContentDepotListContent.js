@@ -10,7 +10,8 @@ import PostsLoader from "@/components/Post/Posts/PostsLoader";
 import { ContentDepotContext } from "@/components/Context/ContentDepotContext";
 
 export default function ContentDepotListContent({ mongoUser, userListId }) {
-  const { setMongoUser, setRefreshUserLists } = useContext(ContentDepotContext);
+  const { setMongoUser, setRefreshUserLists, setCurrentList } =
+    useContext(ContentDepotContext);
   const [userLists, setUserLists] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [customListAttachments, setCustomListAttachments] = useState(null);
@@ -85,6 +86,8 @@ export default function ContentDepotListContent({ mongoUser, userListId }) {
         filterCriteria: customList.filterCriteria,
         attachmentIds: customList.attachmentIds, // Include attachmentIds for filtering
         isCustom: true,
+        _id: customList._id, // Include the MongoDB ID for operations
+        fullData: customList, // Include full data for dropdown operations
       };
     }
 
@@ -194,11 +197,12 @@ export default function ContentDepotListContent({ mongoUser, userListId }) {
     }
   };
 
-  // Set mongoUser and refreshUserLists in context when component mounts
+  // Set mongoUser, refreshUserLists, and currentList in context when component mounts
   useEffect(() => {
     setMongoUser(mongoUser);
     setRefreshUserLists(() => refreshUserLists);
-  }, [mongoUser, setMongoUser, setRefreshUserLists]);
+    setCurrentList(currentList);
+  }, [mongoUser, setMongoUser, setRefreshUserLists, setCurrentList, currentList]);
 
   // ! currently this loader prevents showing all attachments from ALL USERS, for some short period of time!
   if (isLoading) return <PostsLoader isLoading={isLoading} />;

@@ -7,6 +7,7 @@ export const ContentDepotProvider = ({ children }) => {
     useState(null);
   const [mongoUser, setMongoUser] = useState(null);
   const [refreshUserLists, setRefreshUserLists] = useState(null);
+  const [currentList, setCurrentList] = useState(null);
 
   return (
     <ContentDepotContext.Provider
@@ -17,6 +18,8 @@ export const ContentDepotProvider = ({ children }) => {
         setMongoUser,
         refreshUserLists,
         setRefreshUserLists,
+        currentList,
+        setCurrentList,
       }}
     >
       {children}

@@ -116,13 +116,15 @@ export default function ContentDepotListNavigation({
           <div
             key={list.id}
             onClick={() => handleListChange(list.id)}
-            className={`wsn py8 px12 br8 cp transition-colors fc ${
+            className={`py8 px12 br8 cp transition-colors fc ${
               currentListId === list.id
                 ? "bg-accent text-white"
                 : "bg-transparent hover:bg-accent/50 text-foreground"
             }`}
           >
-            <span className={`fz14 fw500 ${SITE1 ? BRAND_INVERT_CLASS : ""}`}>
+            <span
+              className={`!wbba fz14 fw500 ${SITE1 ? BRAND_INVERT_CLASS : ""}`}
+            >
               {t(list?.name) || list.name}
             </span>
             <span

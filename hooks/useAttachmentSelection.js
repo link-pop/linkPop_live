@@ -235,7 +235,7 @@ export default function useAttachmentSelection({ allAttachments = [] }) {
                           )}
                         </div>
 
-                        <div className="fw600 flex-1">{list.name}</div>
+                        <div className="!wbba fw600 flex-1">{list.name}</div>
                       </div>
 
                       <div className="f aic gap10 ml30">
