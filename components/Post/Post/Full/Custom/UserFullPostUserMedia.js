@@ -145,7 +145,7 @@ export default function UserFullPostUserMedia({
   };
 
   return (
-    <div className="bb">
+    <div className="">
       <MediaTypeFetchedSwitch
         {...{
           mongoUser,

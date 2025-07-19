@@ -18,6 +18,7 @@ import {
   ADD_STOREITEM_ROUTE,
   AUCTION_PAYMENT_ROUTE,
   STOREITEMS_ROUTE,
+  CONTENT_DEPOT_LIST_ROUTE,
 } from "@/lib/utils/constants";
 import { ArrowLeft } from "lucide-react";
 import { CHATS_ROUTE } from "../../../lib/utils/constants";
@@ -29,6 +30,7 @@ const PageTitle = () => {
 
   const pathname = usePathname();
   if (pathname?.startsWith(ONBOARDING_ROUTE)) return null;
+  if (pathname?.startsWith(CONTENT_DEPOT_LIST_ROUTE)) return null;
   // Don't show PageTitle on chatrooms routes - MessagesTitle handles those
   if (pathname?.includes("/chatrooms")) return null;
   const searchParams = useSearchParams();
@@ -89,6 +91,8 @@ const PageTitle = () => {
     title = null;
   } else if (pathname.includes(AUCTION_PAYMENT_ROUTE)) {
     title = t("auction") + " " + t("payment");
+  } else if (pathname.includes(CONTENT_DEPOT_LIST_ROUTE)) {
+    title = t("contentDepot");
   } else if (pathname.match(/^\/[^\/]+$/)) {
     // ! MUST BE LAST
     title = t("profile");
@@ -108,7 +112,8 @@ const PageTitle = () => {
     pathname?.includes("/discover/search") ||
     pathname?.includes(CART_ROUTE) ||
     pathname?.includes(ORDERS_ROUTE) ||
-    pathname?.includes(AUCTION_PAYMENT_ROUTE);
+    pathname?.includes(AUCTION_PAYMENT_ROUTE) ||
+    pathname?.includes(CONTENT_DEPOT_LIST_ROUTE);
 
   const width = isWiderPath ? "maw1000" : "maw597";
 

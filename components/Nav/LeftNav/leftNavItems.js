@@ -12,6 +12,7 @@ import {
   CART_ROUTE,
   ORDERS_ROUTE,
   STOREITEMS_ROUTE,
+  CONTENT_DEPOT_LISTS_HUB,
 } from "@/lib/utils/constants";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import {
@@ -101,7 +102,7 @@ export const navItems = () => {
       id: "vault",
       name: showTitles ? t("vault") : "",
       icon: <Images className="w-6 h-6" />,
-      href: `${MY_ROUTE}/content-depot`,
+      href: `${CONTENT_DEPOT_LISTS_HUB}`,
     },
     {
       id: "queue",

@@ -180,7 +180,7 @@ export default function ChatroomFullPost({
 
   return (
     <div
-      className={`RightChatroomPart fixed w-[100vw] max-w-[1000px] min-[1301px]:!max-w-[600px] bb wf h-[calc(100dvh-60px)] flex flex-col ChatroomFullPostAllMsg !oh !oyh`}
+      className={`RightChatroomPart fixed w-[100vw] max-w-[1000px] min-[1301px]:!max-w-[600px] wf h-[calc(100dvh-60px)] flex flex-col ChatroomFullPostAllMsg !oh !oyh`}
     >
       {/* Handle notifications for this chat */}
       <ChatNotificationHandler chatId={chatId} mongoUser={mongoUser} />

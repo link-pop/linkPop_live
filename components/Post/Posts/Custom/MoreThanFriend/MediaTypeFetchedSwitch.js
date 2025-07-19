@@ -3,6 +3,7 @@
 import { getAll } from "@/lib/actions/crud";
 import { getChatAttachments } from "@/lib/actions/getChatAttachments";
 import FetchedTypeSwitch from "./FetchedTypeSwitch";
+import mongoose from "mongoose";
 
 export default function MediaTypeFetchedSwitch({
   mongoUser,
@@ -10,6 +11,8 @@ export default function MediaTypeFetchedSwitch({
   isOwner = false,
   isChatGallery = false,
   chatId = null,
+  currentListContext = null, // New prop for current list context
+  preloadedPosts = null, // New prop for pre-fetched posts (custom lists)
 }) {
   // Define media types for the switch based on the AttachmentModel enum values
   const allMediaTypes = [
@@ -18,30 +21,6 @@ export default function MediaTypeFetchedSwitch({
       label: "all",
       query: {
         createdBy: visitedUserId || mongoUser?._id,
-      },
-    },
-    {
-      value: "feeds",
-      label: "posts",
-      query: {
-        createdBy: visitedUserId || mongoUser?._id,
-        uploadedFrom: "feeds",
-      },
-    },
-    {
-      value: "chatmessages",
-      label: "messages",
-      query: {
-        createdBy: visitedUserId || mongoUser?._id,
-        uploadedFrom: "chatmessages",
-      },
-    },
-    {
-      value: "welcomeMessage",
-      label: "welcome",
-      query: {
-        createdBy: visitedUserId || mongoUser?._id,
-        uploadedFrom: "welcomeMessage",
       },
     },
     {
@@ -166,6 +145,37 @@ export default function MediaTypeFetchedSwitch({
 
   // Custom query function for media types
   const mediaQueryFn = async () => {
+    // Handle preloaded posts (custom lists) - count from JavaScript arrays
+    if (preloadedPosts && Array.isArray(preloadedPosts)) {
+      console.log(
+        "🔍 MediaTypeFetchedSwitch - Using preloaded posts for counting"
+      );
+
+      return mediaTypes.reduce((acc, type) => {
+        if (type.value === "all") {
+          acc[type.value] = preloadedPosts.length;
+        } else if (type.value === "video") {
+          acc[type.value] = preloadedPosts.filter(
+            (post) => post.fileType === "video"
+          ).length;
+        } else if (type.value === "photo") {
+          acc[type.value] = preloadedPosts.filter(
+            (post) =>
+              post.fileType === "image" && !post.fileUrl?.includes(".gif")
+          ).length;
+        } else if (type.value === "gif") {
+          acc[type.value] = preloadedPosts.filter(
+            (post) =>
+              post.fileType === "image" && post.fileUrl?.includes(".gif")
+          ).length;
+        } else {
+          acc[type.value] = 0;
+        }
+        return acc;
+      }, {});
+    }
+
+    // Handle database queries (system lists and chat galleries)
     if (!isChatGallery && !mongoUser?._id && !visitedUserId) {
       return mediaTypes.reduce((acc, type) => {
         acc[type.value] = 0;
@@ -199,43 +209,129 @@ export default function MediaTypeFetchedSwitch({
 
             return getChatAttachments(chatId, filters, mongoUser);
           } else {
-            // Original logic for non-chat gallery
-            // Special handling for GIF type
-            if (type.value === "gif") {
-              // We need to directly search for GIFs by fileUrl extension since our custom
-              // fileUrl_contains parameter doesn't work with the count functions correctly
-              const baseData = {
+            // Handle custom lists by applying attachmentIds filtering
+            if (
+              currentListContext &&
+              currentListContext.isCustom &&
+              currentListContext.attachmentIds
+            ) {
+              // For custom lists, we need to filter by specific attachment IDs
+              let baseQuery = {
                 createdBy: visitedUserId || mongoUser?._id,
-                ...(isOwner ? {} : { uploadedFrom: "feeds" }),
               };
+
+              // Apply attachmentIds filter
+              if (currentListContext.attachmentIds.length > 0) {
+                const objectIds = currentListContext.attachmentIds
+                  .filter(
+                    (id) =>
+                      id && typeof id === "string" && /^[a-f\d]{24}$/i.test(id)
+                  )
+                  .map((id) => new mongoose.Types.ObjectId(id));
+                baseQuery._id = { $in: objectIds };
+              } else {
+                // If no attachment IDs, return empty result
+                baseQuery._id = { $in: [] };
+              }
+
+              // Apply media type filters
+              if (type.value === "gif") {
+                baseQuery.fileType = "image";
+                return getAll({
+                  col: "attachments",
+                  data: baseQuery,
+                  searchParams: { fileUrl_contains: ".gif" },
+                });
+              } else if (type.value === "photo") {
+                baseQuery.fileType = "image";
+                return getAll({
+                  col: "attachments",
+                  data: baseQuery,
+                  searchParams: { fileUrl_not_contains: ".gif" },
+                });
+              } else if (type.value === "video") {
+                baseQuery.fileType = "video";
+                return getAll({
+                  col: "attachments",
+                  data: baseQuery,
+                });
+              } else {
+                // For "all" type, no additional fileType filter
+                return getAll({
+                  col: "attachments",
+                  data: baseQuery,
+                });
+              }
+            } else {
+              // Original logic for system lists
+              // Special handling for GIF type
+              if (type.value === "gif") {
+                // We need to directly search for GIFs by fileUrl extension since our custom
+                // fileUrl_contains parameter doesn't work with the count functions correctly
+                const baseData = {
+                  createdBy: visitedUserId || mongoUser?._id,
+                  ...(isOwner ? {} : { uploadedFrom: "feeds" }),
+                  // Apply current list context for system lists
+                  ...(currentListContext && !currentListContext.isCustom
+                    ? {
+                        ...(currentListContext.uploadedFrom
+                          ? { uploadedFrom: currentListContext.uploadedFrom }
+                          : {}),
+                        ...(currentListContext.fileType
+                          ? { fileType: currentListContext.fileType }
+                          : {}),
+                      }
+                    : {}),
+                };
+
+                return getAll({
+                  col: "attachments",
+                  data: baseData,
+                  searchParams: { fileUrl_contains: ".gif" },
+                });
+              }
+
+              // Special handling for photo type to exclude GIFs
+              if (type.value === "photo") {
+                const baseData = {
+                  createdBy: visitedUserId || mongoUser?._id,
+                  fileType: "image",
+                  ...(isOwner ? {} : { uploadedFrom: "feeds" }),
+                  // Apply current list context for system lists
+                  ...(currentListContext && !currentListContext.isCustom
+                    ? {
+                        ...(currentListContext.uploadedFrom
+                          ? { uploadedFrom: currentListContext.uploadedFrom }
+                          : {}),
+                      }
+                    : {}),
+                };
+
+                return getAll({
+                  col: "attachments",
+                  data: baseData,
+                  searchParams: { fileUrl_not_contains: ".gif" },
+                });
+              }
+
+              // Normal query for other types
+              let queryData = { ...type.query };
+
+              // Apply current list context for system lists
+              if (currentListContext && !currentListContext.isCustom) {
+                if (currentListContext.uploadedFrom) {
+                  queryData.uploadedFrom = currentListContext.uploadedFrom;
+                }
+                if (currentListContext.fileType) {
+                  queryData.fileType = currentListContext.fileType;
+                }
+              }
 
               return getAll({
                 col: "attachments",
-                data: baseData,
-                searchParams: { fileUrl_contains: ".gif" },
+                data: queryData,
               });
             }
-
-            // Special handling for photo type to exclude GIFs
-            if (type.value === "photo") {
-              const baseData = {
-                createdBy: visitedUserId || mongoUser?._id,
-                fileType: "image",
-                ...(isOwner ? {} : { uploadedFrom: "feeds" }),
-              };
-
-              return getAll({
-                col: "attachments",
-                data: baseData,
-                searchParams: { fileUrl_not_contains: ".gif" },
-              });
-            }
-
-            // Normal query for other types
-            return getAll({
-              col: "attachments",
-              data: type.query,
-            });
           }
         })
       );
@@ -248,7 +344,7 @@ export default function MediaTypeFetchedSwitch({
 
       return counts;
     } catch (error) {
-      console.error("Error fetching media counts:", error);
+      console.error("❌ Error fetching media counts:", error);
       return mediaTypes.reduce((acc, type) => {
         acc[type.value] = 0;
         return acc;
@@ -256,12 +352,27 @@ export default function MediaTypeFetchedSwitch({
     }
   };
 
+  // Create a unique query key that includes the current list context and preloaded posts
+  const queryKey = [
+    "attachments",
+    "mediaStats",
+    mongoUser?._id || visitedUserId,
+    currentListContext?.id || "default",
+    isChatGallery ? chatId : null,
+    // Add preloadedPosts info to key so it updates when posts change
+    preloadedPosts ? `preloaded-${preloadedPosts.length}` : "db-query",
+    // Add a hash of the preloaded posts to detect content changes
+    preloadedPosts
+      ? JSON.stringify(preloadedPosts.map((p) => p._id)).slice(0, 20)
+      : null,
+  ].filter(Boolean);
+
   return (
     <FetchedTypeSwitch
       mongoUser={mongoUser}
       types={mediaTypes}
       collection="attachments"
-      queryKey={["attachments", "mediaStats"]}
+      queryKey={queryKey}
       queryFn={mediaQueryFn}
       paramName="mediaType"
       defaultType="all"

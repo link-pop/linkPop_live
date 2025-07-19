@@ -1,3 +1,6 @@
+// npm run generate-users
+// npm run generate-users -- --mongodb-uri mongodb://localhost:27017/mydb --type creator --count 20
+
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const { faker } = require("@faker-js/faker");
