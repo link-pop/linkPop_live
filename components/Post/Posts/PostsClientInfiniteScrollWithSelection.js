@@ -28,7 +28,7 @@ export default function PostsClientInfiniteScrollWithSelection(props) {
         <SelectionControls />
 
         {/* Grid of attachments with selection */}
-        <div className="p10 grid grid-cols-3 gap-4 w-full">
+        <div className="p10 !pt0 grid grid-cols-3 gap-4 w-full">
           {posts.map((post) => {
             const isSelected = isAttachmentSelected(post._id);
             return (
