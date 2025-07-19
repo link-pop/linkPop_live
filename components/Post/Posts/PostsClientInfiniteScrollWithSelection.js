@@ -5,6 +5,7 @@ import Carousel from "@/components/ui/shared/Carousel/Carousel";
 import PostsClientInfiniteScroll from "./PostsClientInfiniteScroll";
 import useAttachmentSelection from "@/hooks/useAttachmentSelection";
 import { Circle, CircleCheck } from "lucide-react";
+import NoPosts from "./NoPosts";
 
 export default function PostsClientInfiniteScrollWithSelection(props) {
   // Custom posts component that adds selection functionality
@@ -19,7 +20,7 @@ export default function PostsClientInfiniteScrollWithSelection(props) {
     } = useAttachmentSelection({ allAttachments: posts });
 
     if (!posts || posts.length === 0) {
-      return null;
+      return <NoPosts col={props.col} />;
     }
 
     return (
@@ -27,7 +28,7 @@ export default function PostsClientInfiniteScrollWithSelection(props) {
         <SelectionControls />
 
         {/* Grid of attachments with selection */}
-        <div className="grid grid-cols-3 gap-4 w-full">
+        <div className="p10 grid grid-cols-3 gap-4 w-full">
           {posts.map((post) => {
             const isSelected = isAttachmentSelected(post._id);
             return (

@@ -52,7 +52,11 @@ export default function ContentDepotListNavigation({
     }
 
     fetchCounts();
-  }, [mongoUser?._id, safeUserLists.length]);
+  }, [
+    mongoUser?._id,
+    safeUserLists.length,
+    JSON.stringify(safeUserLists.map((list) => list.attachmentCount)),
+  ]);
 
   function handleListChange(listId) {
     router.push(`${CONTENT_DEPOT_LIST_ROUTE}/${listId}`);
@@ -104,7 +108,7 @@ export default function ContentDepotListNavigation({
       } wf h-full fc g0 bg-background border-r border-border `}
     >
       {/* List items */}
-      <div className="fc g2 py10 !pt0">
+      <div className="fc g0 py10 !pt0">
         {/* Search results or No results message */}
         {isSearchMode && displayLists.length === 0 && (
           <div className="py8 px12 text-center">
@@ -116,7 +120,7 @@ export default function ContentDepotListNavigation({
           <div
             key={list.id}
             onClick={() => handleListChange(list.id)}
-            className={`py8 px12 br8 cp transition-colors fc ${
+            className={`py8 px12 cp transition-colors border-b fc ${
               currentListId === list.id
                 ? "bg-accent text-white"
                 : "bg-transparent hover:bg-accent/50 text-foreground"

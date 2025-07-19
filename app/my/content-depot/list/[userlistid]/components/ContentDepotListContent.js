@@ -187,11 +187,19 @@ export default function ContentDepotListContent({ mongoUser, userListId }) {
   // In the content depot, the user is always the owner
   const isOwner = mongoUser.isOwner !== undefined ? mongoUser.isOwner : true;
 
-  // Function to refresh user lists (for when a new list is created)
+  // Function to refresh user lists (for when a new list is created or updated)
   const refreshUserLists = async () => {
     try {
       const lists = await getUserLists();
       setUserLists(Array.isArray(lists) ? lists : []);
+
+      // If we're currently viewing a custom list, we might need to refresh its attachments
+      const updatedCurrentList = lists.find((list) => list.slug === userListId);
+      if (updatedCurrentList && currentList.isCustom) {
+        // Trigger re-fetch of custom list attachments by updating the dependency
+        setCustomListAttachments(null);
+        setIsLoadingAttachments(true);
+      }
     } catch (error) {
       console.error("❌ Error refreshing user lists:", error);
     }
@@ -202,7 +210,13 @@ export default function ContentDepotListContent({ mongoUser, userListId }) {
     setMongoUser(mongoUser);
     setRefreshUserLists(() => refreshUserLists);
     setCurrentList(currentList);
-  }, [mongoUser, setMongoUser, setRefreshUserLists, setCurrentList, currentList]);
+  }, [
+    mongoUser,
+    setMongoUser,
+    setRefreshUserLists,
+    setCurrentList,
+    currentList,
+  ]);
 
   // ! currently this loader prevents showing all attachments from ALL USERS, for some short period of time!
   if (isLoading) return <PostsLoader isLoading={isLoading} />;

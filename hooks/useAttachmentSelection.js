@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useContext } from "react";
 import { FolderInput } from "lucide-react";
-import { useContext } from "@/components/Context/Context";
+import { useContext as useCustomContext } from "@/components/Context/Context";
+import { ContentDepotContext } from "@/components/Context/ContentDepotContext";
 import { getUserLists } from "@/lib/actions/getUserLists";
 import { addAttachmentsToUserList } from "@/lib/actions/addAttachmentsToUserList";
 import { useTranslation } from "@/components/Context/TranslationContext";
@@ -16,7 +17,10 @@ export default function useAttachmentSelection({ allAttachments = [] }) {
   const [userLists, setUserLists] = useState([]);
   const [isLoadingLists, setIsLoadingLists] = useState(false);
   const [isAddingToList, setIsAddingToList] = useState(false);
-  const { dialogSet, toastSet } = useContext();
+  const [keepDialogOpen, setKeepDialogOpen] = useState(false);
+  const { dialogSet, toastSet } = useCustomContext();
+  const { refreshUserLists: contextRefreshUserLists } =
+    useContext(ContentDepotContext);
   const { t } = useTranslation();
 
   const selectAllAttachments = useCallback(() => {
@@ -129,6 +133,21 @@ export default function useAttachmentSelection({ allAttachments = [] }) {
             );
           }
 
+          // Trigger refresh in parent components (ContentDepotListContent and ContentDepotListNavigation)
+          // We delay this to prevent dialog from closing and ensure dialog stays open
+          setTimeout(async () => {
+            if (
+              contextRefreshUserLists &&
+              typeof contextRefreshUserLists === "function"
+            ) {
+              await contextRefreshUserLists();
+            }
+            // Keep the dialog open after refresh
+            if (keepDialogOpen) {
+              setIsListDialogOpen(true);
+            }
+          }, 100);
+
           // Create appropriate success message based on action
           let successMessage = "";
           if (result.addedCount > 0 && result.removedCount > 0) {
@@ -164,7 +183,14 @@ export default function useAttachmentSelection({ allAttachments = [] }) {
       }
       setIsAddingToList(false);
     },
-    [selectedAttachments, t, toastSet, setUserLists]
+    [
+      selectedAttachments,
+      t,
+      toastSet,
+      setUserLists,
+      contextRefreshUserLists,
+      keepDialogOpen,
+    ]
   );
 
   // Show the list selection dialog
@@ -178,13 +204,29 @@ export default function useAttachmentSelection({ allAttachments = [] }) {
       return;
     }
     setIsListDialogOpen(true);
+    setKeepDialogOpen(true);
   }, [selectedAttachments.length, t, toastSet]);
+
+  // Close the list selection dialog
+  const closeListSelectionDialog = useCallback(() => {
+    setIsListDialogOpen(false);
+    setKeepDialogOpen(false);
+  }, []);
 
   useEffect(() => {
     if (isListDialogOpen) {
       loadUserLists();
     }
   }, [isListDialogOpen, loadUserLists]);
+
+  // Handle dialog close state
+  useEffect(() => {
+    if (!isListDialogOpen && !keepDialogOpen) {
+      dialogSet({
+        isOpen: false,
+      });
+    }
+  }, [isListDialogOpen, keepDialogOpen, dialogSet]);
 
   useEffect(() => {
     if (isListDialogOpen) {
@@ -194,8 +236,9 @@ export default function useAttachmentSelection({ allAttachments = [] }) {
         showBtns: false,
         hasCloseIcon: true,
         contentClassName: "max-h-[50dvh] fc",
+        onClose: closeListSelectionDialog,
         comp: (
-          <div className="fcc gap10 p10">
+          <div className="AttachmentSelectionDialog fcc gap10 p10">
             <div className="text-sm text-center mb15">
               {t("selectListToAdd", { count: selectedAttachments.length })}
             </div>
@@ -270,6 +313,7 @@ export default function useAttachmentSelection({ allAttachments = [] }) {
     toggleAttachmentsInList,
     checkAttachmentsInList,
     dialogSet,
+    closeListSelectionDialog,
     t,
   ]);
 
@@ -281,12 +325,12 @@ export default function useAttachmentSelection({ allAttachments = [] }) {
 
     return (
       <div className="fixed z-50 bottom-4 left-1/2 -translate-x-1/2 w-auto">
-        <div className="fcc gap-4 bg-background border shadow-lg rounded-full py-2 px-4">
+        <div className="fcc fwn gap-4 bg-background border-2 border-[var(--color-brand)] shadow-lg rounded-full py-2 px-4">
           <IconButton
             icon={allSelected ? CheckSquare : Square}
             onClick={toggleSelectAll}
             title={allSelected ? t("deselectAll") : t("selectAll")}
-            className="w-8 h-8"
+            className="fcc w-8 h-8"
           />
 
           <div className="wsn">
@@ -298,7 +342,7 @@ export default function useAttachmentSelection({ allAttachments = [] }) {
             icon={FolderInput}
             onClick={showListSelectionDialog}
             title={t("manageUserLists")}
-            className="w-8 h-8"
+            className="fcc w-8 h-8"
           />
 
           <div className="w-px h-6 bg-border" />
@@ -308,7 +352,7 @@ export default function useAttachmentSelection({ allAttachments = [] }) {
             icon={X}
             onClick={clearSelection}
             title={t("clearSelection")}
-            className="w-8 h-8"
+            className="fcc w-8 h-8"
           />
         </div>
       </div>
@@ -328,6 +372,7 @@ export default function useAttachmentSelection({ allAttachments = [] }) {
     clearSelection,
     isAttachmentSelected,
     showListSelectionDialog,
+    closeListSelectionDialog,
     SelectionControls,
     toggleAttachmentsInList,
     isListDialogOpen,
