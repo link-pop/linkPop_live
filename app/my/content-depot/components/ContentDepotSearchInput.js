@@ -8,6 +8,7 @@ import { CONTENT_DEPOT_LISTS_HUB } from "@/lib/utils/constants";
 import { searchUserLists } from "@/lib/actions/searchUserLists";
 import { useContext } from "react";
 import { ContentDepotContext } from "@/components/Context/ContentDepotContext";
+import SearchInput from "@/components/ui/shared/SearchInput/SearchInput";
 
 const ContentDepotSearchInput = ({ onCancel }) => {
   const { t } = useTranslation();
@@ -54,8 +55,7 @@ const ContentDepotSearchInput = ({ onCancel }) => {
     }
   };
 
-  const handleInputChange = (e) => {
-    const value = e.target.value;
+  const handleInputChange = (value) => {
     setSearchQuery(value);
 
     // Update URL with search query
@@ -89,30 +89,14 @@ const ContentDepotSearchInput = ({ onCancel }) => {
 
   return (
     <div className="f aic wf">
-      <div className="relative f aic wf">
-        <Search size={18} className="poa l10 text-muted-foreground" />
-        <input
-          ref={inputRef}
-          type="text"
+      <div className="absolute r10 t15 z2 f aic">
+        <SearchInput
           value={searchQuery}
           onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
+          onClear={handleCancel}
           placeholder={t("search")}
-          className="h40 pl35 pr40 wf bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+          autoFocus={true}
         />
-        {(searchQuery || isSearching) && (
-          <div className="poa r10 f aic">
-            {isSearching ? (
-              <div className="w4 h4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <X
-                size={18}
-                className="text-muted-foreground cp hover:text-foreground"
-                onClick={handleCancel}
-              />
-            )}
-          </div>
-        )}
       </div>
     </div>
   );
