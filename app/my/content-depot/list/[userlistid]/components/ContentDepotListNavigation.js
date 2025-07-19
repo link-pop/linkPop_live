@@ -73,6 +73,7 @@ export default function ContentDepotListNavigation({
         count: counts[list.slug] || 0,
         color: list.color,
         icon: list.icon,
+        lastAttachmentUrls: list.lastAttachmentUrls || [], // Add lastAttachmentUrls for search results
         isSearchResult: true,
       }));
     }
@@ -91,6 +92,7 @@ export default function ContentDepotListNavigation({
         count: counts[list.slug] || 0,
         color: list.color,
         icon: list.icon,
+        lastAttachmentUrls: list.lastAttachmentUrls || [], // Add lastAttachmentUrls
       })),
     ];
   };
@@ -120,22 +122,53 @@ export default function ContentDepotListNavigation({
           <div
             key={list.id}
             onClick={() => handleListChange(list.id)}
-            className={`py8 px12 cp transition-colors border-b fc ${
+            className={`f fwn py8 px12 cp transition-colors border-b ${
               currentListId === list.id
                 ? "bg-accent text-white"
                 : "bg-transparent hover:bg-accent/50 text-foreground"
             }`}
           >
-            <span
-              className={`!wbba fz14 fw500 ${SITE1 ? BRAND_INVERT_CLASS : ""}`}
-            >
-              {t(list?.name) || list.name}
-            </span>
-            <span
-              className={`fz12 opacity-70 ${SITE1 ? BRAND_INVERT_CLASS : ""}`}
-            >
-              {list.count} items
-            </span>
+            <div className="fc g5">
+              <span
+                className={`!wbba fz14 fw500 ${
+                  SITE1 ? BRAND_INVERT_CLASS : ""
+                }`}
+              >
+                {t(list?.name) || list.name}
+              </span>
+              <span
+                className={`fz12 opacity-70 ${SITE1 ? BRAND_INVERT_CLASS : ""}`}
+              >
+                {list.count} items
+              </span>
+            </div>
+
+            {/* Attachment Preview Images */}
+            {list.lastAttachmentUrls && list.lastAttachmentUrls.length > 0 && (
+              <div className="relative f fwn wfc mla pl10 g2 mt3">
+                {list.lastAttachmentUrls.slice(0, 3).map((url, index) => (
+                  <div
+                    key={index}
+                    className="w50 h50 bg-muted rounded overflow-hidden flex-shrink-0"
+                  >
+                    <img
+                      src={url}
+                      alt={`Preview ${index + 1}`}
+                      className="w50 h50 object-cover"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                      }}
+                    />
+                  </div>
+                ))}
+                {/* Show count indicator if more than 3 attachments */}
+                {list.count > 3 && (
+                  <div className="absolute r0 w20 h20 bg-muted/50 rounded fcc fz10 text-foreground">
+                    +{list.count - 3}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>
