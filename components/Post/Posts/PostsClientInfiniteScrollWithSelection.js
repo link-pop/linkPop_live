@@ -44,16 +44,16 @@ export default function PostsClientInfiniteScrollWithSelection(props) {
                   imageClassName="w-full h-full object-cover rounded-md"
                 />
                 <div
-                  className={`absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center transition-all duration-200 ${
+                  className={`absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 ${
                     isSelected
                       ? "bg-primary text-primary-foreground"
                       : "bg-background/60 text-foreground group-hover:bg-background/80"
                   }`}
                 >
                   {isSelected ? (
-                    <CircleCheck className="brand w-4 h-4" />
+                    <CircleCheck className="brand w-7 h-7" />
                   ) : (
-                    <Circle className="w-4 h-4" />
+                    <Circle className="w-7 h-7" />
                   )}
                 </div>
               </div>
