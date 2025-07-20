@@ -13,6 +13,7 @@ import {
   ORDERS_ROUTE,
   STOREITEMS_ROUTE,
   CONTENT_DEPOT_LISTS_HUB,
+  COLLECTIONS_ROUTE,
 } from "@/lib/utils/constants";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import {
@@ -90,14 +91,12 @@ export const navItems = () => {
       icon: <Package className="w-6 h-6" />,
       href: ORDERS_ROUTE,
     },
-    // { id: "collections", name: t("collections"), icon: <Bookmark className="w-6 h-6" />, href: "/collections" },
-    // {
-    //   id: "subscriptions",
-    //   name: t("subscriptions"),
-    //   icon: <UserCircle2 className="w-6 h-6" />,
-    //   href: "/subscriptions",
-    // },
-    // { id: "addCard", name: t("addCard"), icon: <CreditCard className="w-6 h-6" />, href: "/add-card" },
+    {
+      id: "collections",
+      name: t("collections"),
+      icon: <Bookmark className="w-6 h-6" />,
+      href: COLLECTIONS_ROUTE,
+    },
     {
       id: "vault",
       name: showTitles ? t("vault") : "",

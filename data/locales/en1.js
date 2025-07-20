@@ -2189,6 +2189,36 @@ const en = {
   attachmentsAddedAndRemovedFromList:
     "{{addedCount}} added, {{removedCount}} removed",
   attachmentCount: "{{count}} attachment(s)",
+
+  // Collections/User Lists
+  subscribers: "Subscribers",
+  unknownUser: "Unknown User",
+  subscribedOn: "Subscribed on",
+  expires: "Expires",
+  paidSubscription: "Paid Subscription",
+  freeSubscription: "Free Subscription",
+  users: "users",
+  availableNow: "Available now",
+
+  // User selection and user lists
+  selectUsers: "Select Users",
+  selectListToAddUsers: "Select a list to add/remove {{count}} user(s)",
+  usersAddedToList: "{{count}} user(s) added to list",
+  usersRemovedFromList: "{{count}} user(s) removed from list",
+  usersAddedAndRemovedFromList:
+    "{{addedCount}} user(s) added and {{removedCount}} user(s) removed from list",
+  userCount: "{{count}} user(s)",
+  clearSelection: "Clear Selection",
+
+  // Subscription type filters
+  allSubscriptions: "All",
+  activeSubscriptions: "Active",
+  expiredSubscriptions: "Expired",
+
+  // Collections toggle navigation
+  userLists: "User Lists",
+  bookmarks: "Bookmarks",
+  postLabels: "Post Labels",
 };
 
 export default en;

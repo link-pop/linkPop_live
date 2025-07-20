@@ -15,6 +15,7 @@ export default function Toggle({
   labelsClassName = "",
   style,
   initialTab = 0,
+  onTabChange,
 }) {
   const [switched, setSwitched] = useState(initialTab);
   const [prevSwitched, setPrevSwitched] = useState(initialTab);
@@ -32,6 +33,11 @@ export default function Toggle({
     setPrevSwitched(switched);
     setSwitched(index);
     setIsTransitioning(true);
+
+    // Call onTabChange callback if provided
+    if (onTabChange) {
+      onTabChange(index);
+    }
 
     // Reset transition state after animation completes
     setTimeout(() => {

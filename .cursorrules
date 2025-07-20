@@ -11,6 +11,7 @@ CODE STYLE & STANDARDS:
 - MANDATORY: don't use emojis or signs (eg: ✓) in app UI!
 - MANDATORY: - use all MCPs if you need it (browser-tools, cursor-rules-mcp, context7, sequential-thinking, MongoDB)!
 - MANDATORY: don't use helper text near the loaders. Eg: "loading", "redirecting", etc...
+- MANDATORY: don't use grid - use flex for styles/classNames/etc...!
 - append new translations in the bottom of translations file and only to en1.js file! If you need to use variables in translations, make it like this: {{variable}}
 - MANDATORY: for window width detection: use tailwind or if can not use tailwind - use useWindowWidth.js
 - MANDATORY: use constants.js file, for url routes eg: MAIN_ROUTE!

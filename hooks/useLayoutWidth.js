@@ -6,6 +6,7 @@ import { SITE2 } from "@/config/env";
 import {
   AUCTION_PAYMENT_ROUTE,
   CART_ROUTE,
+  COLLECTIONS_BASE_ROUTE,
   CONTENT_DEPOT_LIST_ROUTE,
   ORDERS_ROUTE,
 } from "@/lib/utils/constants";
@@ -26,7 +27,8 @@ export default function useLayoutWidth(width = "1000") {
       pathname?.includes(CART_ROUTE) ||
       pathname?.includes(ORDERS_ROUTE) ||
       pathname?.includes(AUCTION_PAYMENT_ROUTE) ||
-      pathname?.includes(CONTENT_DEPOT_LIST_ROUTE);
+      pathname?.includes(CONTENT_DEPOT_LIST_ROUTE) ||
+      pathname?.includes(COLLECTIONS_BASE_ROUTE);
     const layoutElement = document.querySelector(".LayoutMidContent");
 
     if (layoutElement) {

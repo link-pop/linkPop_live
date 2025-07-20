@@ -19,6 +19,7 @@ import {
   AUCTION_PAYMENT_ROUTE,
   STOREITEMS_ROUTE,
   CONTENT_DEPOT_LIST_ROUTE,
+  COLLECTIONS_BASE_ROUTE,
 } from "@/lib/utils/constants";
 import { ArrowLeft } from "lucide-react";
 import { CHATS_ROUTE } from "../../../lib/utils/constants";
@@ -31,8 +32,10 @@ const PageTitle = () => {
   const pathname = usePathname();
   if (pathname?.startsWith(ONBOARDING_ROUTE)) return null;
   if (pathname?.startsWith(CONTENT_DEPOT_LIST_ROUTE)) return null;
+  if (pathname?.startsWith(COLLECTIONS_BASE_ROUTE)) return null;
   // Don't show PageTitle on chatrooms routes - MessagesTitle handles those
   if (pathname?.includes("/chatrooms")) return null;
+
   const searchParams = useSearchParams();
   const { t } = useTranslation();
   console.log("Pathname:", pathname);
