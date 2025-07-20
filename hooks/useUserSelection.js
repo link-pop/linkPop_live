@@ -10,6 +10,7 @@ import { useTranslation } from "@/components/Context/TranslationContext";
 import IconButton from "@/components/ui/shared/IconButton/IconButton";
 
 import { CheckSquare, Square, X } from "lucide-react";
+import Button2 from "@/components/ui/shared/Button/Button2";
 
 export default function useUserSelection({ allUsers = [] }) {
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -237,10 +238,14 @@ export default function useUserSelection({ allUsers = [] }) {
 
             {isLoadingLists ? null : userLists.length === 0 ? (
               <div className="fcc p20 text-center">
-                <div className="mb10">{t("noListsAvailable")}</div>
-                <div className="text-sm text-foreground/70">
+                <Button2
+                  onClick={() =>
+                    document.querySelector(".CreateNewListIcon").click()
+                  }
+                  className="text-sm text-foreground/70"
+                >
                   {t("createListFirst")}
-                </div>
+                </Button2>
               </div>
             ) : (
               <div className="fc gap10 w-full">

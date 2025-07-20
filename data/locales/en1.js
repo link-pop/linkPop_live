@@ -2180,7 +2180,6 @@ const en = {
   pleaseSelectAttachmentsFirst: "Please select attachments first",
   manageUserLists: "Manage Lists",
   selectListToAdd: "Select a list to add/remove {{count}} attachment(s)",
-  noListsAvailable: "No lists available",
   createListFirst: "Create a list first",
   attachmentsAddedToList: "{{count}} attachment(s) added to list",
   failedToLoadLists: "Failed to load lists",

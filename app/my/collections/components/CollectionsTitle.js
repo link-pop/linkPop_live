@@ -268,7 +268,7 @@ const CollectionsTitle = () => {
 
               {/* Create New List Button */}
               {mongoUser && (
-                <div onClick={handleCreateNewList}>
+                <div className="CreateNewListIcon" onClick={handleCreateNewList}>
                   <Plus size={24} className={ICONBUTTON_CLASS} />
                 </div>
               )}
