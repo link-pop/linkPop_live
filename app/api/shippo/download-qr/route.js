@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { downloadLabelBrokerQRCode } from "@/lib/actions/shippoActions";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request) {
   try {
     // Parse request body

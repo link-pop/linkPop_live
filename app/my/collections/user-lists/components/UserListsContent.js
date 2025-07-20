@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect, useContext } from "react";
+import { useMemo, useState, useEffect, useContext, Suspense } from "react";
 import UserListsNavigation from "./UserListsNavigation";
 import UserListsDisplay from "./UserListsDisplay";
 import { getUserCustomLists } from "@/lib/actions/getUserCustomLists";
@@ -174,15 +174,17 @@ export default function UserListsContent({ mongoUser, userListId }) {
 
       {/* Right Side Content Display */}
       <div className="flex-1 h-full overflow-hidden">
-        <UserListsDisplay
-          mongoUser={mongoUser}
-          currentListId={userListId}
-          currentListContext={currentList}
-          isLoadingData={isLoadingUsers}
-          subscriptions={subscriptions}
-          subscribers={subscribers}
-          customListUsers={customListUsers}
-        />
+        <Suspense fallback={<PostsLoader isLoading={true} />}>
+          <UserListsDisplay
+            mongoUser={mongoUser}
+            currentListId={userListId}
+            currentListContext={currentList}
+            isLoadingData={isLoadingUsers}
+            subscriptions={subscriptions}
+            subscribers={subscribers}
+            customListUsers={customListUsers}
+          />
+        </Suspense>
       </div>
     </div>
   );

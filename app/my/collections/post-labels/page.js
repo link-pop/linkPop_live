@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 export default async function PostLabelsPage() {
   return (
     <div className="w-full h-full fc g0">

@@ -3,6 +3,8 @@ import Stripe from "stripe";
 import { models } from "@/lib/db/models/models";
 import { handleMessagePurchaseComplete } from "@/lib/actions/handleMessagePurchaseComplete";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);

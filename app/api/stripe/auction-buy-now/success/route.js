@@ -1,4 +1,3 @@
-export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { redirect } from "next/navigation";
@@ -9,6 +8,8 @@ import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import { sendAuctionWinnerPaymentNotificationToStoreOwner } from "@/lib/actions/emailNotifications";
 import shippoService from "@/lib/utils/shippo/shippoService";
 import { getStoreOwnerShippingAddress } from "@/lib/actions/getStoreOwnerShippingAddress";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(request) {
   try {

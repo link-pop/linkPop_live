@@ -6,6 +6,8 @@ import { checkForThreats } from "@/lib/utils/shieldProtection/checkForThreats";
 import { fetchGeoData } from "@/lib/utils/fetchGeoData";
 import { SAFE_PAGE_ROUTE } from "@/lib/utils/constants";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);

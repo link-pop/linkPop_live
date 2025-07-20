@@ -1,7 +1,8 @@
-export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(request) {
   try {

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 export default async function BookmarksPage() {
   return (
     <div className="w-full h-full fc g0">

@@ -3,6 +3,8 @@ import Stripe from "stripe";
 import { processCartItems } from "@/lib/actions/processCartItems";
 import { isStripeConnectReadyIncludingDevBypass } from "@/lib/utils/stripe/stripeConnectHelpers";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request) {
   try {
     // Parse request body for shipping information

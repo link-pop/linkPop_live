@@ -1,10 +1,11 @@
-export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import { update } from "@/lib/actions/crud";
 import { SITE1, SITE2 } from "@/config/env";
 import { AFFILIATE_ROUTE } from "@/lib/utils/constants";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(request) {
   try {

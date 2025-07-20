@@ -5,6 +5,8 @@ import { createNotification } from "@/lib/utils/notifications/createNotification
 
 const __stripe = _stripe(process.env.STRIPE_SECRET_KEY);
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);

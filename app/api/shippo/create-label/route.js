@@ -1,31 +1,21 @@
-export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { createShippingLabel } from "@/lib/actions/shippoActions";
-import getMongoUser from "@/lib/utils/mongo/getMongoUser";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(request) {
   try {
-    // Get the authenticated user
-    const { mongoUser } = await getMongoUser();
-    if (!mongoUser) {
-      console.error("User not authenticated");
-      return NextResponse.json(
-        { error: "User not authenticated" },
-        { status: 401 }
-      );
-    }
-
     // Parse request body
     const { orderId, rateId } = await request.json();
 
-    if (!orderId) {
+    if (!orderId || !rateId) {
       return NextResponse.json(
-        { error: "Order ID is required" },
+        { error: "Order ID and Rate ID are required" },
         { status: 400 }
       );
     }
 
-    // Create shipping label
+    // Create shipping label with proper ownership checks
     const result = await createShippingLabel({
       orderId,
       rateId,

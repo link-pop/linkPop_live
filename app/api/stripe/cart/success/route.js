@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { models } from "@/lib/db/models/models";
@@ -13,6 +11,8 @@ import { createShippoShipmentsForOrders } from "@/lib/actions/createShippoShipme
 import { processStripeConnectTransfers } from "@/lib/actions/processStripeConnectTransfers";
 import { updateMultipleStoreItemsStock } from "@/lib/actions/updateStoreItemStock";
 import { sendOrderPurchaseNotificationToStoreOwner } from "@/lib/actions/emailNotifications";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(request) {
   try {
