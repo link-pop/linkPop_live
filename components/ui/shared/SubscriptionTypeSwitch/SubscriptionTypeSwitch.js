@@ -91,7 +91,7 @@ export default function SubscriptionTypeSwitch({
   const currentValue = typeParam || "all";
 
   return (
-    <div className={`maw600 wf oxa f g5 ${className}`}>
+    <div className={`px15 maw600 wf oxa f g5 ${className}`}>
       <HorizontalScroll
         className={`px10 pb8 g15`}
         style={horizontalScrollstyle}

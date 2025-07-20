@@ -37,7 +37,7 @@ export default function UsersWithSelection({
       {enableSelection && <SelectionControls />}
 
       {/* Users with selection */}
-      <div className={`fcc g15 !p15`}>
+      <div className={`fcc g15 p15 !pt0`}>
         {users.map((user) => {
           const isSelected = isUserSelected(user._id);
 
