@@ -8,9 +8,6 @@ import AddCommentForm from "../../../Comment/AddCommentForm";
 import useAddCommentForm from "../../../Comment/useAddCommentForm";
 import { usePathname } from "next/navigation";
 import { MAIN_ROUTE } from "@/lib/utils/constants";
-import ExpiresAt from "../ExpiresAt";
-import CreatedAtTimeAgo from "../CreatedAtTimeAgo";
-import ScheduleAt from "../ScheduleAt";
 import RichTextContent from "@/components/ui/shared/RichTextContent/RichTextContent";
 import { useTranslation } from "@/components/Context/TranslationContext";
 

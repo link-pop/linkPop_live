@@ -1,8 +1,6 @@
 export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
-import PostsSearch from "../Search/PostsSearch";
 import PostsClientInfiniteScroll from "./PostsClientInfiniteScroll";
-import PostsServerWithPagination from "./PostsServerWithPagination";
 import getMongoUser from "@/lib/utils/mongo/getMongoUser";
 import { LOGIN_ROUTE } from "@/lib/utils/constants";
 import { postsColSpecialHandling } from "./PostsColSpecialHandling";
@@ -74,20 +72,6 @@ export default async function Posts({
               isOwner: ["directlinks", "landingpages"].includes(col.name)
                 ? true
                 : false,
-            }}
-          />
-        )}
-        {postsPaginationType === "page" && (
-          <PostsServerWithPagination
-            {...{
-              data,
-              searchParams,
-              col,
-              isAdmin,
-              postsPaginationType,
-              limit,
-              mongoUser,
-              className,
             }}
           />
         )}
