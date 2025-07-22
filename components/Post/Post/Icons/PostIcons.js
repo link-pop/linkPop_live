@@ -1,6 +1,7 @@
 "use client";
 
 import PostLike from "../../../Like/PostLike";
+import PostBookmark from "../../../Bookmark/PostBookmark";
 import PostViews from "./PostViews";
 import PostComment from "@/components/Comment/PostComment";
 import CommentIcon from "@/components/Comment/CommentIcon";
@@ -9,6 +10,7 @@ export default function PostIcons({
   col,
   postsPaginationType,
   showLike = true,
+  showBookmark = true,
   showComment = false,
   mongoUser,
   showAdminIcons = true,
@@ -36,6 +38,16 @@ export default function PostIcons({
             }}
           />
         </>
+      )}
+      {showBookmark && col.name === "feeds" && mongoUser && (
+        <PostBookmark
+          {...{
+            col,
+            mongoUser,
+            postsPaginationType,
+            post,
+          }}
+        />
       )}
       {showComment && col.settings?.hasComments && (
         <PostComment
