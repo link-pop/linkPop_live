@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import { useContext as useMainContext } from "@/components/Context/Context";
@@ -12,7 +12,7 @@ import {
   COLLECTIONS_BASE_ROUTE,
   COLLECTIONS_USER_LISTS_HUB,
   ICONBUTTON_CLASS,
-  COLLECTIONS_USER_LISTS_ROUTE,
+  COLLECTIONS_BOOKMARKS_HUB,
 } from "@/lib/utils/constants";
 import CollectionsSearchIcon from "./CollectionsSearchIcon";
 import CollectionsSearchInput from "./CollectionsSearchInput";
@@ -22,6 +22,8 @@ import RenameUserListModal from "./RenameUserListModal";
 import DeleteUserListConfirmationDialog from "./DeleteUserListConfirmationDialog";
 import DropdownIcon from "@/components/ui/shared/DropdownIcon/DropdownIcon";
 import { deleteUserList } from "@/lib/actions/deleteUserList";
+import CreateBookmarkListModal from "./CreateBookmarkListModal";
+import BookmarkViewToggle from "@/components/ui/shared/BookmarkViewToggle/BookmarkViewToggle";
 
 const CollectionsTitle = () => {
   const pathname = usePathname();
@@ -30,8 +32,16 @@ const CollectionsTitle = () => {
   const searchParams = useSearchParams();
   const { isMobileSm } = useWindowWidth();
   const { dialogSet, toastSet } = useMainContext();
-  const { collectionsSearchResults, mongoUser, refreshUserLists, currentList } =
-    useContext(CollectionsContext);
+  const {
+    collectionsSearchResults,
+    mongoUser,
+    refreshUserLists,
+    currentList,
+    bookmarkViewMode,
+    setBookmarkViewMode,
+  } = useContext(CollectionsContext);
+  const collection = pathname.split("/")?.[3]; // user-lists / bookmarks / post-labels
+  const collectionName = pathname.split("/")?.[4]; // userlistshub / all-bookmarks / post-labels / anyCustomListName
 
   // Initialize search mode based on URL search params
   const [isSearchMode, setIsSearchMode] = useState(() => {
@@ -81,13 +91,20 @@ const CollectionsTitle = () => {
       isOpen: true,
       hasCloseIcon: true,
       showBtns: false,
-      comp: (
-        <CreateUserListModal
-          mongoUser={mongoUser}
-          onListCreated={handleListCreated}
-          onClose={() => dialogSet({ isOpen: false })}
-        />
-      ),
+      comp:
+        collection === "user-lists" ? (
+          <CreateUserListModal
+            mongoUser={mongoUser}
+            onListCreated={handleListCreated}
+            onClose={() => dialogSet({ isOpen: false })}
+          />
+        ) : collection === "bookmarks" ? (
+          <CreateBookmarkListModal
+            mongoUser={mongoUser}
+            onListCreated={handleListCreated}
+            onClose={() => dialogSet({ isOpen: false })}
+          />
+        ) : null,
     });
   };
 
@@ -97,8 +114,13 @@ const CollectionsTitle = () => {
       refreshUserLists();
     }
     if (newList?.slug) {
-      router.push(`${COLLECTIONS_USER_LISTS_ROUTE}/${newList.slug}`);
+      if (collection === "user-lists") {
+        router.push(`${COLLECTIONS_USER_LISTS_HUB}`);
+      } else if (collection === "bookmarks") {
+        router.push(`${COLLECTIONS_BOOKMARKS_HUB}`);
+      }
     }
+    window.location.reload();
   };
 
   const handleRenameList = () => {
@@ -133,7 +155,11 @@ const CollectionsTitle = () => {
     }
     // Redirect to the updated slug in case the slug changed
     if (updatedList?.slug && updatedList.slug !== currentList?.id) {
-      router.push(`${COLLECTIONS_USER_LISTS_ROUTE}/${updatedList.slug}`);
+      if (collection === "user-lists") {
+        router.push(`${COLLECTIONS_USER_LISTS_HUB}`);
+      } else if (collection === "bookmarks") {
+        router.push(`${COLLECTIONS_BOOKMARKS_HUB}`);
+      }
     }
   };
 
@@ -180,7 +206,11 @@ const CollectionsTitle = () => {
       if (refreshUserLists) {
         refreshUserLists();
       }
-      router.push(COLLECTIONS_USER_LISTS_HUB);
+      if (collection === "bookmarks") {
+        router.push(COLLECTIONS_BOOKMARKS_HUB);
+      } else {
+        router.push(COLLECTIONS_USER_LISTS_HUB);
+      }
     } catch (error) {
       console.error("❌ Error deleting list:", error);
       toastSet({
@@ -194,10 +224,14 @@ const CollectionsTitle = () => {
 
   const handleBackClick = () => {
     // If we're on the main collections route, go to main route, otherwise go to collections route
-    if (pathname === COLLECTIONS_USER_LISTS_HUB) {
+    if (collectionName === "userlistshub") {
       router.push(MAIN_ROUTE);
     } else {
-      router.push(COLLECTIONS_USER_LISTS_HUB);
+      if (collection === "user-lists") {
+        router.push(COLLECTIONS_USER_LISTS_HUB);
+      } else if (collection === "bookmarks") {
+        router.push(COLLECTIONS_BOOKMARKS_HUB);
+      }
     }
   };
 
@@ -266,9 +300,20 @@ const CollectionsTitle = () => {
                 </DropdownIcon>
               )}
 
+              {/* Bookmark View Mode Toggle - only show for bookmarks collection */}
+              {collection === "bookmarks" && (
+                <BookmarkViewToggle
+                  viewMode={bookmarkViewMode}
+                  onViewModeChange={setBookmarkViewMode}
+                />
+              )}
+
               {/* Create New List Button */}
               {mongoUser && (
-                <div className="CreateNewListIcon" onClick={handleCreateNewList}>
+                <div
+                  className="CreateNewListIcon"
+                  onClick={handleCreateNewList}
+                >
                   <Plus size={24} className={ICONBUTTON_CLASS} />
                 </div>
               )}

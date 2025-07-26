@@ -117,31 +117,31 @@ export default function UserListsDisplay({
   // Don't show UserListsDisplay on mobile if not on userlistshub
   if (currentListId === "userlistshub" && isMobileSm) return null;
 
-  // Show empty state if no data
-  if (!processedUsers || processedUsers.length === 0) {
-    return <NoPosts />;
-  }
-
   const handleUserClick = (user) => {
     console.log("User clicked:", user);
   };
 
   return (
     <div className="UserListsDisplay">
-      {/* Show subscription type switch only for subscriptions list */}
+      {/* Show subscription type switch only for subscriptions list - Always show regardless of data */}
       {currentListId === "subscriptions" && (
         <SubscriptionTypeSwitch mongoUser={mongoUser} className="mb-4" />
       )}
 
-      <UsersWithSelection
-        users={processedUsers}
-        mongoUser={mongoUser}
-        showActions={true}
-        showSubscriptionStatus={true}
-        enableSelection={true}
-        onUserClick={handleUserClick}
-        noUsersMessage="No users found"
-      />
+      {/* Show empty state if no data */}
+      {!processedUsers || processedUsers.length === 0 ? (
+        <NoPosts />
+      ) : (
+        <UsersWithSelection
+          users={processedUsers}
+          mongoUser={mongoUser}
+          showActions={true}
+          showSubscriptionStatus={true}
+          enableSelection={true}
+          onUserClick={handleUserClick}
+          noUsersMessage="No users found"
+        />
+      )}
     </div>
   );
 }

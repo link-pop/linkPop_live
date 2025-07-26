@@ -32,9 +32,6 @@ export default function DeleteUserListConfirmationDialog({
         <p className="tac text-foreground mb10">
           Are you sure you want to delete "{listName}"?
         </p>
-        <p className="tac text-muted-foreground text-sm">
-          This action cannot be undone. All users in this list will be removed.
-        </p>
       </div>
 
       <div className="f g10">

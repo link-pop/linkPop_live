@@ -2218,6 +2218,18 @@ const en = {
   userLists: "User Lists",
   bookmarks: "Bookmarks",
   postLabels: "Post Labels",
+  // Bookmarks translations
+  bookmark: "Bookmark",
+  removeBookmark: "Remove bookmark",
+  addToCollection: "Add to collection",
+  selectListToAddBookmarks: "Select a list to add/remove {{count}} bookmark(s)",
+  selectBookmarks: "Select Bookmarks",
+  pleaseSelectBookmarksFirst: "Please select bookmarks first",
+  bookmarksAddedToList: "{{count}} bookmark(s) added to list",
+  bookmarksRemovedFromList: "{{count}} bookmark(s) removed from list",
+  bookmarkCount: "{{count}} bookmark(s)",
+  addBookmark: "Add bookmark",
+  bookmarkOptions: "Bookmark options",
 };
 
 export default en;

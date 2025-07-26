@@ -81,6 +81,8 @@ export default function Carousel({
   mongoUser = null,
   children, // For custom overlay content (backward compatibility)
   contentOverlay = null, // New prop for passing ContentOverlay component
+  showFileCount = false,
+  filesCount = 0,
 }) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
 
@@ -117,6 +119,15 @@ export default function Carousel({
         <div key="videos" className="f g5 aic">
           <Video className="w15 h15" />
           <span className="fz12">{fileCounts.videos}</span>
+        </div>
+      );
+    }
+
+    if (showFileCount) {
+      return (
+        <div className="poa b5 l5 bg-black/30 white px10 py5 br10 f aic g10">
+          <Image className="w15 h15" />
+          <span className="fz12">{filesCount}</span>
         </div>
       );
     }

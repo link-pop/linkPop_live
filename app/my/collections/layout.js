@@ -16,9 +16,7 @@ export default function CollectionsLayout({ children }) {
         >
           <CollectionsTitle />
         </Suspense>
-        <div className="px-4">
-          <CollectionsToggle />
-        </div>
+        <CollectionsToggle />
         {children}
       </div>
     </CollectionsProvider>

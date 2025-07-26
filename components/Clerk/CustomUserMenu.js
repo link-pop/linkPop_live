@@ -29,6 +29,7 @@ import { SITE1, SITE2 } from "@/config/env";
 import { useRouter } from "next/navigation";
 import { useNavPosition } from "@/components/Context/NavPositionContext";
 import Switch from "@/components/ui/shared/Switch/Switch";
+import MobileUserMenuNavItems from "./MobileUserMenuNavItems";
 
 export default function CustomUserMenu({
   isBurgerClickedSet,
@@ -311,6 +312,16 @@ export default function CustomUserMenu({
                 labelClassName="ml-[-5px]"
               />
             </div>
+
+            {isMobile && (
+              <MobileUserMenuNavItems
+                mongoUser={mongoUser}
+                onNavItemClick={() => {
+                  setIsOpen(false);
+                  isBurgerClickedSet && isBurgerClickedSet(false);
+                }}
+              />
+            )}
 
             <div>
               {menuItems.map((item, index) =>

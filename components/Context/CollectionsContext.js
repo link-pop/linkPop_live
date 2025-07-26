@@ -8,13 +8,16 @@ export const CollectionsProvider = ({ children }) => {
   const [subscriptions, setSubscriptions] = useState([]);
   const [subscribers, setSubscribers] = useState([]);
   const [customLists, setCustomLists] = useState([]);
+  const [bookmarks, setBookmarks] = useState([]);
   const [mongoUser, setMongoUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [refreshData, setRefreshData] = useState(null);
   const [collectionsSearchResults, setCollectionsSearchResults] =
     useState(null);
   const [refreshUserLists, setRefreshUserLists] = useState(null);
+  const [refreshBookmarkLists, setRefreshBookmarkLists] = useState(null);
   const [currentList, setCurrentList] = useState(null);
+  const [bookmarkViewMode, setBookmarkViewMode] = useState("feeds");
 
   return (
     <CollectionsContext.Provider
@@ -25,6 +28,8 @@ export const CollectionsProvider = ({ children }) => {
         setSubscribers,
         customLists,
         setCustomLists,
+        bookmarks,
+        setBookmarks,
         mongoUser,
         setMongoUser,
         isLoading,
@@ -35,8 +40,12 @@ export const CollectionsProvider = ({ children }) => {
         setCollectionsSearchResults,
         refreshUserLists,
         setRefreshUserLists,
+        refreshBookmarkLists,
+        setRefreshBookmarkLists,
         currentList,
         setCurrentList,
+        bookmarkViewMode,
+        setBookmarkViewMode,
       }}
     >
       {children}

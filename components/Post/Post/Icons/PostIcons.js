@@ -1,10 +1,10 @@
 "use client";
 
 import PostLike from "../../../Like/PostLike";
-import PostBookmark from "../../../Bookmark/PostBookmark";
 import PostViews from "./PostViews";
 import PostComment from "@/components/Comment/PostComment";
 import CommentIcon from "@/components/Comment/CommentIcon";
+import BookmarkMenu from "@/components/Bookmark/BookmarkMenu";
 
 export default function PostIcons({
   col,
@@ -40,7 +40,7 @@ export default function PostIcons({
         </>
       )}
       {showBookmark && col.name === "feeds" && mongoUser && (
-        <PostBookmark
+        <BookmarkMenu
           {...{
             col,
             mongoUser,

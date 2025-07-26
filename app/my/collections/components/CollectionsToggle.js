@@ -4,9 +4,9 @@ import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import Toggle from "@/components/ui/shared/Toggle/Toggle";
 import {
-  COLLECTIONS_ROUTE,
-  COLLECTIONS_BOOKMARKS_ROUTE,
-  COLLECTIONS_POST_LABELS_ROUTE,
+  COLLECTIONS_USER_LISTS_HUB,
+  COLLECTIONS_BOOKMARKS_HUB,
+  COLLECTIONS_POST_LABELS_HUB,
 } from "@/lib/utils/constants";
 
 export default function CollectionsToggle() {
@@ -16,25 +16,25 @@ export default function CollectionsToggle() {
 
   // Determine current active tab based on pathname
   const getCurrentTab = () => {
-    if (pathname.startsWith(COLLECTIONS_ROUTE)) return 0;
-    if (pathname.startsWith(COLLECTIONS_BOOKMARKS_ROUTE)) return 1;
-    if (pathname.startsWith(COLLECTIONS_POST_LABELS_ROUTE)) return 2;
+    if (pathname.startsWith(COLLECTIONS_BOOKMARKS_HUB)) return 1;
+    if (pathname.startsWith(COLLECTIONS_POST_LABELS_HUB)) return 2;
+    if (pathname.startsWith(COLLECTIONS_USER_LISTS_HUB)) return 0;
     return 0; // Default to user-lists
   };
 
   const handleTabChange = (index) => {
     switch (index) {
       case 0:
-        router.push(COLLECTIONS_ROUTE);
+        router.push(COLLECTIONS_USER_LISTS_HUB);
         break;
       case 1:
-        router.push(COLLECTIONS_BOOKMARKS_ROUTE);
+        router.push(COLLECTIONS_BOOKMARKS_HUB);
         break;
       case 2:
-        router.push(COLLECTIONS_POST_LABELS_ROUTE);
+        router.push(COLLECTIONS_POST_LABELS_HUB);
         break;
       default:
-        router.push(COLLECTIONS_ROUTE);
+        router.push(COLLECTIONS_USER_LISTS_HUB);
     }
   };
 

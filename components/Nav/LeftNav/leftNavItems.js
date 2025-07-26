@@ -13,7 +13,7 @@ import {
   ORDERS_ROUTE,
   STOREITEMS_ROUTE,
   CONTENT_DEPOT_LISTS_HUB,
-  COLLECTIONS_ROUTE,
+  COLLECTIONS_USER_LISTS_HUB,
 } from "@/lib/utils/constants";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import {
@@ -95,7 +95,7 @@ export const navItems = () => {
       id: "collections",
       name: t("collections"),
       icon: <Bookmark className="w-6 h-6" />,
-      href: COLLECTIONS_ROUTE,
+      href: COLLECTIONS_USER_LISTS_HUB,
     },
     {
       id: "vault",
