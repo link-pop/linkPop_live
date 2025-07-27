@@ -1,14 +1,16 @@
 export const dynamic = "force-dynamic";
 
+import { redirect } from "next/navigation";
+import getMongoUser from "@/lib/utils/mongo/getMongoUser";
+import {
+  LOGIN_ROUTE,
+  COLLECTIONS_POST_LABELS_HUB,
+} from "@/lib/utils/constants";
+
 export default async function PostLabelsPage() {
-  return (
-    <div className="w-full h-full fc g0">
-      <div className="p-4">
-        <h1 className="text-2xl font-bold mb-4">Post Labels</h1>
-        <p className="text-muted-foreground">
-          Your post labels will appear here.
-        </p>
-      </div>
-    </div>
-  );
+  const { mongoUser } = await getMongoUser();
+  if (!mongoUser) redirect(LOGIN_ROUTE);
+
+  // Redirect to the default hub
+  redirect(COLLECTIONS_POST_LABELS_HUB);
 }

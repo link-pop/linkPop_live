@@ -13,6 +13,7 @@ import {
   COLLECTIONS_USER_LISTS_HUB,
   ICONBUTTON_CLASS,
   COLLECTIONS_BOOKMARKS_HUB,
+  COLLECTIONS_POST_LABELS_HUB,
 } from "@/lib/utils/constants";
 import CollectionsSearchIcon from "./CollectionsSearchIcon";
 import CollectionsSearchInput from "./CollectionsSearchInput";
@@ -23,7 +24,9 @@ import DeleteUserListConfirmationDialog from "./DeleteUserListConfirmationDialog
 import DropdownIcon from "@/components/ui/shared/DropdownIcon/DropdownIcon";
 import { deleteUserList } from "@/lib/actions/deleteUserList";
 import CreateBookmarkListModal from "./CreateBookmarkListModal";
+import CreatePostLabelListModal from "./CreatePostLabelListModal";
 import BookmarkViewToggle from "@/components/ui/shared/BookmarkViewToggle/BookmarkViewToggle";
+import PostLabelViewToggle from "@/components/ui/shared/PostLabelViewToggle/PostLabelViewToggle";
 
 const CollectionsTitle = () => {
   const pathname = usePathname();
@@ -39,6 +42,9 @@ const CollectionsTitle = () => {
     currentList,
     bookmarkViewMode,
     setBookmarkViewMode,
+    postLabelViewMode,
+    setPostLabelViewMode,
+    refreshPostLabelLists,
   } = useContext(CollectionsContext);
   const collection = pathname.split("/")?.[3]; // user-lists / bookmarks / post-labels
   const collectionName = pathname.split("/")?.[4]; // userlistshub / all-bookmarks / post-labels / anyCustomListName
@@ -104,6 +110,12 @@ const CollectionsTitle = () => {
             onListCreated={handleListCreated}
             onClose={() => dialogSet({ isOpen: false })}
           />
+        ) : collection === "post-labels" ? (
+          <CreatePostLabelListModal
+            mongoUser={mongoUser}
+            onListCreated={handleListCreated}
+            onClose={() => dialogSet({ isOpen: false })}
+          />
         ) : null,
     });
   };
@@ -153,12 +165,17 @@ const CollectionsTitle = () => {
     if (refreshUserLists) {
       refreshUserLists();
     }
+    if (refreshPostLabelLists) {
+      refreshPostLabelLists();
+    }
     // Redirect to the updated slug in case the slug changed
     if (updatedList?.slug && updatedList.slug !== currentList?.id) {
       if (collection === "user-lists") {
         router.push(`${COLLECTIONS_USER_LISTS_HUB}`);
       } else if (collection === "bookmarks") {
         router.push(`${COLLECTIONS_BOOKMARKS_HUB}`);
+      } else if (collection === "post-labels") {
+        router.push(`${COLLECTIONS_POST_LABELS_HUB}`);
       }
     }
   };
@@ -206,8 +223,13 @@ const CollectionsTitle = () => {
       if (refreshUserLists) {
         refreshUserLists();
       }
+      if (refreshPostLabelLists) {
+        refreshPostLabelLists();
+      }
       if (collection === "bookmarks") {
         router.push(COLLECTIONS_BOOKMARKS_HUB);
+      } else if (collection === "post-labels") {
+        router.push(COLLECTIONS_POST_LABELS_HUB);
       } else {
         router.push(COLLECTIONS_USER_LISTS_HUB);
       }
@@ -231,6 +253,8 @@ const CollectionsTitle = () => {
         router.push(COLLECTIONS_USER_LISTS_HUB);
       } else if (collection === "bookmarks") {
         router.push(COLLECTIONS_BOOKMARKS_HUB);
+      } else if (collection === "post-labels") {
+        router.push(COLLECTIONS_POST_LABELS_HUB);
       }
     }
   };
@@ -305,6 +329,14 @@ const CollectionsTitle = () => {
                 <BookmarkViewToggle
                   viewMode={bookmarkViewMode}
                   onViewModeChange={setBookmarkViewMode}
+                />
+              )}
+              
+              {/* PostLabel View Mode Toggle - only show for post-labels collection */}
+              {collection === "post-labels" && (
+                <PostLabelViewToggle
+                  viewMode={postLabelViewMode}
+                  onViewModeChange={setPostLabelViewMode}
                 />
               )}
 

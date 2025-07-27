@@ -33,7 +33,8 @@ export default function UserFullPostUserPosts({
 
   return (
     <div>
-      {isOwner && <PostsFetchedTypeSwitch {...{ mongoUser }} />}
+      {/* // ! don't delete/modify/uncomment this! */}
+      {/* {isOwner && <PostsFetchedTypeSwitch {...{ mongoUser }} />} */}
       <PostsClientInfiniteScroll
         {...{
           isOwner,

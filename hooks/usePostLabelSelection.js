@@ -1,70 +1,73 @@
 "use client";
 
 import { useState, useCallback, useEffect, useContext, useRef } from "react";
-import { Minus, Plus } from "lucide-react";
+import { Tag, Plus, Minus } from "lucide-react";
 import { useContext as useCustomContext } from "@/components/Context/Context";
 import { CollectionsContext } from "@/components/Context/CollectionsContext";
-import { getUserBookmarkLists } from "@/lib/actions/getUserBookmarkLists";
-import { addBookmarksToBookmarkList } from "@/lib/actions/addBookmarksToBookmarkList";
-import { removeBookmarksFromBookmarkList } from "@/lib/actions/removeBookmarksFromBookmarkList";
+import { getUserPostLabelLists } from "@/lib/actions/getUserPostLabelLists";
+import { addPostLabelsToPostLabelList } from "@/lib/actions/addPostLabelsToPostLabelList";
+import { removePostLabelsFromPostLabelList } from "@/lib/actions/removePostLabelsFromPostLabelList";
 import { useTranslation } from "@/components/Context/TranslationContext";
-import IconButton from "@/components/ui/shared/IconButton/IconButton";
 
-import { CheckSquare, Square, X } from "lucide-react";
 import Button2 from "@/components/ui/shared/Button/Button2";
 import { useRouter } from "next/navigation";
-import { COLLECTIONS_BOOKMARKS_HUB } from "@/lib/utils/constants";
+import { COLLECTIONS_POST_LABELS_HUB } from "@/lib/utils/constants";
 
-export default function useBookmarkSelection({ selectedBookmarks = [] }) {
+export default function usePostLabelSelection({ selectedPostLabels = [] }) {
   const [isListDialogOpen, setIsListDialogOpen] = useState(false);
-  const [bookmarkLists, setBookmarkLists] = useState([]);
+  const [postLabelLists, setPostLabelLists] = useState([]);
   const [isLoadingLists, setIsLoadingLists] = useState(false);
   const [isAddingToList, setIsAddingToList] = useState(false);
   const [keepDialogOpen, setKeepDialogOpen] = useState(false);
   const { dialogSet, toastSet } = useCustomContext();
   const collectionsContext = useContext(CollectionsContext);
-  const contextRefreshBookmarkLists = collectionsContext?.refreshBookmarkLists;
+  const contextRefreshPostLabelLists =
+    collectionsContext?.refreshPostLabelLists;
   const { t } = useTranslation();
   const dialogJustOpened = useRef(false);
   const router = useRouter();
 
-  // Check if selected bookmarks are in a specific list
-  const checkBookmarksInList = useCallback(
+  // Check if selected post labels are in a specific list
+  const checkPostLabelsInList = useCallback(
     (list) => {
-      const selectedIds = selectedBookmarks.map((b) => b._id.toString());
-      const listBookmarkIds = (list.bookmarkIds || []).map((bookmark) =>
-        bookmark._id ? bookmark._id.toString() : bookmark.toString()
-      );
+      const selectedIds = selectedPostLabels.map((pl) => pl._id.toString());
+      const listPostLabelIds = (list.postLabelIds || []).map((postLabel) => {
+        // Handle both populated objects and raw ObjectIds
+        if (postLabel && typeof postLabel === "object" && postLabel._id) {
+          return postLabel._id.toString();
+        }
+        return postLabel.toString();
+      });
 
-      const bookmarksInList = selectedIds.filter((id) =>
-        listBookmarkIds.includes(id)
+      const postLabelsInList = selectedIds.filter((id) =>
+        listPostLabelIds.includes(id)
       );
-      const bookmarksNotInList = selectedIds.filter(
-        (id) => !listBookmarkIds.includes(id)
+      const postLabelsNotInList = selectedIds.filter(
+        (id) => !listPostLabelIds.includes(id)
       );
 
       return {
-        inList: bookmarksInList.length,
-        notInList: bookmarksNotInList.length,
-        allInList: bookmarksInList.length === selectedIds.length,
-        someInList: bookmarksInList.length > 0,
+        inList: postLabelsInList.length,
+        notInList: postLabelsNotInList.length,
+        allInList: postLabelsInList.length === selectedIds.length,
+        someInList: postLabelsInList.length > 0,
       };
     },
-    [selectedBookmarks]
+    [selectedPostLabels]
   );
 
-  // Load bookmark lists
-  const loadBookmarkLists = useCallback(async () => {
-    console.log("🔍 loadBookmarkLists called");
+  // Load post label lists
+  const loadPostLabelLists = useCallback(async () => {
+    console.log("🔍 loadPostLabelLists called");
     setIsLoadingLists(true);
     try {
-      console.log("🔍 Calling getUserBookmarkLists...");
-      const lists = await getUserBookmarkLists();
-      console.log("🔍 getUserBookmarkLists returned:", lists);
+      console.log("🔍 Calling getUserPostLabelLists...");
+      const lists = await getUserPostLabelLists();
+      console.log("🔍 getUserPostLabelLists returned:", lists);
       // Force a new array reference to trigger React re-render
-      setBookmarkLists([...lists]);
+      setPostLabelLists([...lists]);
     } catch (error) {
-      console.error("❌ Error loading bookmark lists:", error);
+      console.error("❌ Error loading post label lists:", error);
       toastSet({
         isOpen: true,
         title: t("error"),
@@ -74,25 +77,28 @@ export default function useBookmarkSelection({ selectedBookmarks = [] }) {
     setIsLoadingLists(false);
   }, [t, toastSet]);
 
-  // Toggle bookmarks in a specific list
-  const toggleBookmarksInList = useCallback(
+  // Toggle post labels in a specific list
+  const togglePostLabelsInList = useCallback(
     async (listId) => {
-      if (selectedBookmarks.length === 0) return;
+      if (selectedPostLabels.length === 0) return;
 
       setIsAddingToList(true);
       try {
-        const bookmarkIds = selectedBookmarks.map((b) => b._id);
-        const listStatus = checkBookmarksInList(
-          bookmarkLists.find((list) => list._id === listId)
+        const postLabelIds = selectedPostLabels.map((pl) => pl._id);
+        const listStatus = checkPostLabelsInList(
+          postLabelLists.find((list) => list._id === listId)
         );
 
         let result;
         if (listStatus.allInList) {
-          // Remove bookmarks from list
-          result = await removeBookmarksFromBookmarkList(listId, bookmarkIds);
+          // Remove post labels from list
+          result = await removePostLabelsFromPostLabelList(
+            listId,
+            postLabelIds
+          );
         } else {
-          // Add bookmarks to list
-          result = await addBookmarksToBookmarkList(listId, bookmarkIds);
+          // Add post labels to list
+          result = await addPostLabelsToPostLabelList(listId, postLabelIds);
         }
 
         if (result.error) {
@@ -102,21 +108,21 @@ export default function useBookmarkSelection({ selectedBookmarks = [] }) {
             text: result.error,
           });
         } else {
-          // First refresh the local bookmark lists immediately
-          console.log("🔄 Refreshing bookmark lists after toggle...");
-          await loadBookmarkLists();
+          // First refresh the local post label lists immediately
+          console.log("🔄 Refreshing post label lists after toggle...");
+          await loadPostLabelLists();
 
           // Then trigger refresh in parent components
           if (
-            contextRefreshBookmarkLists &&
-            typeof contextRefreshBookmarkLists === "function"
+            contextRefreshPostLabelLists &&
+            typeof contextRefreshPostLabelLists === "function"
           ) {
             try {
-              await contextRefreshBookmarkLists();
-              console.log("✅ Context bookmark lists refreshed");
+              await contextRefreshPostLabelLists();
+              console.log("✅ Context post label lists refreshed");
             } catch (error) {
               console.error(
-                "❌ Error refreshing context bookmark lists:",
+                "❌ Error refreshing context post label lists:",
                 error
               );
             }
@@ -134,8 +140,10 @@ export default function useBookmarkSelection({ selectedBookmarks = [] }) {
           // Show success message
           const action = listStatus.allInList ? "removed" : "added";
           const successMessage = listStatus.allInList
-            ? t("bookmarksRemovedFromList", { count: selectedBookmarks.length })
-            : t("bookmarksAddedToList", { count: selectedBookmarks.length });
+            ? t("postLabelsRemovedFromList", {
+                count: selectedPostLabels.length,
+              })
+            : t("postLabelsAddedToList", { count: selectedPostLabels.length });
 
           toastSet({
             isOpen: true,
@@ -144,7 +152,7 @@ export default function useBookmarkSelection({ selectedBookmarks = [] }) {
           });
         }
       } catch (error) {
-        console.error("❌ Error toggling bookmarks in list:", error);
+        console.error("❌ Error toggling post labels in list:", error);
         toastSet({
           isOpen: true,
           title: t("error"),
@@ -154,14 +162,14 @@ export default function useBookmarkSelection({ selectedBookmarks = [] }) {
       setIsAddingToList(false);
     },
     [
-      selectedBookmarks,
+      selectedPostLabels,
       t,
       toastSet,
-      bookmarkLists,
-      checkBookmarksInList,
-      contextRefreshBookmarkLists,
+      postLabelLists,
+      checkPostLabelsInList,
+      contextRefreshPostLabelLists,
       keepDialogOpen,
-      loadBookmarkLists,
+      loadPostLabelLists,
     ]
   );
 
@@ -169,25 +177,25 @@ export default function useBookmarkSelection({ selectedBookmarks = [] }) {
   const showListSelectionDialog = useCallback(async () => {
     console.log(
       "🔍 showListSelectionDialog called with:",
-      selectedBookmarks.length,
-      "bookmarks"
+      selectedPostLabels.length,
+      "post labels"
     );
-    if (selectedBookmarks.length === 0) {
+    if (selectedPostLabels.length === 0) {
       toastSet({
         isOpen: true,
-        title: t("selectBookmarks"),
-        text: t("pleaseSelectBookmarksFirst"),
+        title: t("selectPostLabels"),
+        text: t("pleaseSelectPostLabelsFirst"),
       });
       return;
     }
 
-    console.log("🔍 About to load bookmark lists...");
-    // Load bookmark lists before opening dialog
-    await loadBookmarkLists();
-    console.log("🔍 Bookmark lists loaded, opening dialog...");
+    console.log("🔍 About to load post label lists...");
+    // Load post label lists before opening dialog
+    await loadPostLabelLists();
+    console.log("🔍 Post label lists loaded, opening dialog...");
     setIsListDialogOpen(true);
     setKeepDialogOpen(true);
-  }, [selectedBookmarks.length, t, toastSet, loadBookmarkLists]);
+  }, [selectedPostLabels.length, t, toastSet, loadPostLabelLists]);
 
   // Close the list selection dialog
   const closeListSelectionDialog = useCallback(() => {
@@ -206,18 +214,18 @@ export default function useBookmarkSelection({ selectedBookmarks = [] }) {
         contentClassName: "max-h-[50dvh] fc",
         onClose: closeListSelectionDialog,
         comp: (
-          <div className="BookmarkSelectionDialog fcc gap10 p10">
+          <div className="PostLabelSelectionDialog fcc gap10 p10">
             <div className="text-sm text-center mb15">
-              {t("selectListToAddBookmarks", {
-                count: selectedBookmarks.length,
+              {t("selectListToAddPostLabels", {
+                count: selectedPostLabels.length,
               })}
             </div>
 
-            {isLoadingLists ? null : bookmarkLists.length === 0 ? (
+            {isLoadingLists ? null : postLabelLists.length === 0 ? (
               <div className="fcc p20 text-center">
                 <Button2
                   onClick={() => {
-                    router.push(COLLECTIONS_BOOKMARKS_HUB);
+                    router.push(COLLECTIONS_POST_LABELS_HUB);
                     setTimeout(() => {
                       document.querySelector(".CreateNewListIcon").click();
                     }, 1000);
@@ -229,27 +237,27 @@ export default function useBookmarkSelection({ selectedBookmarks = [] }) {
               </div>
             ) : (
               <div className="fc gap10 w-full">
-                {bookmarkLists.map((list) => {
-                  const listStatus = checkBookmarksInList(list);
+                {postLabelLists.map((list) => {
+                  const listStatus = checkPostLabelsInList(list);
                   const isProcessing = isAddingToList;
 
                   return (
                     <div
                       key={list._id}
                       onClick={() =>
-                        !isProcessing && toggleBookmarksInList(list._id)
+                        !isProcessing && togglePostLabelsInList(list._id)
                       }
                       className="cursor-pointer hover:bg-accent p15 rounded border transition-colors fc gap5"
                     >
                       <div className="f aic gap10">
-                        {/* Show icon based on bookmark status */}
+                        {/* Show icon based on post label status */}
                         <div className="fcc gap5">
                           {listStatus.allInList ? (
-                            <div className="pb5 fcc w20 h20 rounded-full flex-shrink-0 white bg-red-500">
+                            <div className="fcc w20 h20 rounded-full flex-shrink-0 bg-red-500 text-white">
                               <Minus size={12} />
                             </div>
                           ) : (
-                            <div className="pb5 fcc w20 h20 rounded-full flex-shrink-0 white bg-green-500">
+                            <div className="fcc w20 h20 rounded-full flex-shrink-0 bg-green-500 text-white">
                               <Plus size={12} />
                             </div>
                           )}
@@ -265,10 +273,10 @@ export default function useBookmarkSelection({ selectedBookmarks = [] }) {
                           </div>
                         )}
 
-                        {/* Show bookmark count */}
+                        {/* Show post label count */}
                         <div className="text-xs text-foreground/50">
-                          {t("bookmarkCount", {
-                            count: list.bookmarkCount || 0,
+                          {t("postLabelCount", {
+                            count: list.postLabelCount || 0,
                           })}
                         </div>
                       </div>
@@ -287,11 +295,11 @@ export default function useBookmarkSelection({ selectedBookmarks = [] }) {
   }, [
     isListDialogOpen,
     isLoadingLists,
-    bookmarkLists,
-    selectedBookmarks.length,
+    postLabelLists,
+    selectedPostLabels.length,
     isAddingToList,
-    toggleBookmarksInList,
-    checkBookmarksInList,
+    togglePostLabelsInList,
+    checkPostLabelsInList,
     dialogSet,
     closeListSelectionDialog,
     t,
@@ -301,8 +309,8 @@ export default function useBookmarkSelection({ selectedBookmarks = [] }) {
   return {
     showListSelectionDialog,
     closeListSelectionDialog,
-    toggleBookmarksInList,
+    togglePostLabelsInList,
     isListDialogOpen,
-    loadBookmarkLists,
+    loadPostLabelLists,
   };
 }

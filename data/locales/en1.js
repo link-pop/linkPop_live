@@ -2230,6 +2230,20 @@ const en = {
   bookmarkCount: "{{count}} bookmark(s)",
   addBookmark: "Add bookmark",
   bookmarkOptions: "Bookmark options",
+
+  // Post Labels
+  addPostLabel: "Add post label",
+  removePostLabel: "Remove post label",
+  postLabelOptions: "Post label options",
+  allPostLabels: "All Post Labels",
+  selectPostLabels: "Select Post Labels",
+  pleaseSelectPostLabelsFirst: "Please select post labels first",
+  selectListToAddPostLabels: "Select list to add {{count}} post label(s)",
+  postLabelsAddedToList: "{{count}} post label(s) added to list",
+  postLabelsRemovedFromList: "{{count}} post label(s) removed from list",
+  postLabelCount: "{{count}} post label(s)",
+  createPostLabelList: "Create Post Label List",
+  postLabel: "post label",
 };
 
 export default en;

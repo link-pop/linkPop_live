@@ -9,6 +9,7 @@ export const CollectionsProvider = ({ children }) => {
   const [subscribers, setSubscribers] = useState([]);
   const [customLists, setCustomLists] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
+  const [postLabels, setPostLabels] = useState([]);
   const [mongoUser, setMongoUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [refreshData, setRefreshData] = useState(null);
@@ -16,8 +17,10 @@ export const CollectionsProvider = ({ children }) => {
     useState(null);
   const [refreshUserLists, setRefreshUserLists] = useState(null);
   const [refreshBookmarkLists, setRefreshBookmarkLists] = useState(null);
+  const [refreshPostLabelLists, setRefreshPostLabelLists] = useState(null);
   const [currentList, setCurrentList] = useState(null);
   const [bookmarkViewMode, setBookmarkViewMode] = useState("feeds");
+  const [postLabelViewMode, setPostLabelViewMode] = useState("feeds");
 
   return (
     <CollectionsContext.Provider
@@ -30,6 +33,8 @@ export const CollectionsProvider = ({ children }) => {
         setCustomLists,
         bookmarks,
         setBookmarks,
+        postLabels,
+        setPostLabels,
         mongoUser,
         setMongoUser,
         isLoading,
@@ -42,10 +47,14 @@ export const CollectionsProvider = ({ children }) => {
         setRefreshUserLists,
         refreshBookmarkLists,
         setRefreshBookmarkLists,
+        refreshPostLabelLists,
+        setRefreshPostLabelLists,
         currentList,
         setCurrentList,
         bookmarkViewMode,
         setBookmarkViewMode,
+        postLabelViewMode,
+        setPostLabelViewMode,
       }}
     >
       {children}

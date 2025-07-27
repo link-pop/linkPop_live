@@ -5,12 +5,14 @@ import PostViews from "./PostViews";
 import PostComment from "@/components/Comment/PostComment";
 import CommentIcon from "@/components/Comment/CommentIcon";
 import BookmarkMenu from "@/components/Bookmark/BookmarkMenu";
+import PostLabelMenu from "@/components/PostLabel/PostLabelMenu";
 
 export default function PostIcons({
   col,
   postsPaginationType,
   showLike = true,
   showBookmark = true,
+  showPostLabel = true,
   showComment = false,
   mongoUser,
   showAdminIcons = true,
@@ -41,6 +43,16 @@ export default function PostIcons({
       )}
       {showBookmark && col.name === "feeds" && mongoUser && (
         <BookmarkMenu
+          {...{
+            col,
+            mongoUser,
+            postsPaginationType,
+            post,
+          }}
+        />
+      )}
+      {showPostLabel && col.name === "feeds" && mongoUser && (
+        <PostLabelMenu
           {...{
             col,
             mongoUser,

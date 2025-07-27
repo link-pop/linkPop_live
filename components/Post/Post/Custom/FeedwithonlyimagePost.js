@@ -8,7 +8,8 @@ import CreatedBy from "../CreatedBy";
 import { usePathname, useRouter } from "next/navigation";
 import { DISCOVER_MEDIA_ROUTE, FEEDS_ROUTE } from "@/lib/utils/constants";
 
-export default function BookmarkattachmentPost(props) {
+// * used in BookmarksDisplay and PostLabelsDisplay
+export default function FeedwithonlyimagePost(props) {
   const { post, col, isAdmin, mongoUser } = props;
   if (!post) return null;
 

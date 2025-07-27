@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useContext } from "react";
-import { FolderInput } from "lucide-react";
+import { FolderInput, Minus, Plus } from "lucide-react";
 import { useContext as useCustomContext } from "@/components/Context/Context";
 import { ContentDepotContext } from "@/components/Context/ContentDepotContext";
 import { getUserLists } from "@/lib/actions/getUserLists";
@@ -274,11 +274,11 @@ export default function useAttachmentSelection({ allAttachments = [] }) {
                         <div className="fcc gap5">
                           {listStatus.allInList ? (
                             <div className="pb5 fcc w20 h20 rounded-full flex-shrink-0 white bg-red-500">
-                              <span className="mb5">-</span>
+                              <Minus size={12} />
                             </div>
                           ) : (
                             <div className="pb5 fcc w20 h20 rounded-full flex-shrink-0 white bg-green-500">
-                              <span className="mb5">+</span>
+                              <Plus size={12} />
                             </div>
                           )}
                         </div>
