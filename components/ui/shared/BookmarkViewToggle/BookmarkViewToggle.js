@@ -21,7 +21,7 @@ export default function BookmarkViewToggle({
         isFeeds ? "Switch to images only view" : "Switch to full posts view"
       }
     >
-      {isFeeds ? <StickyNote size={24} /> : <Image size={24} />}
+      {isFeeds ? <Image size={24} /> : <StickyNote size={24} />}
     </div>
   );
 }
