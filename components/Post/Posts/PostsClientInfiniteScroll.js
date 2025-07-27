@@ -42,6 +42,9 @@ export default function PostsClientInfiniteScroll({
   // Convert URLSearchParams to object for compatibility with existing code
   const liveSearchParams = Object.fromEntries(currentSearchParams.entries());
 
+  // Use passed searchParams prop if available, otherwise use URL params
+  const finalSearchParams = searchParams || liveSearchParams;
+
   const {
     data: postsFetchedData,
     fetchNextPage,
@@ -53,7 +56,7 @@ export default function PostsClientInfiniteScroll({
       "posts",
       col.name,
       JSON.stringify(data),
-      currentSearchParams?.toString(),
+      JSON.stringify(finalSearchParams),
     ],
     queryFn: async ({ pageParam = 0 }) => {
       const [posts, totalPosts] = await Promise.all([
@@ -62,7 +65,7 @@ export default function PostsClientInfiniteScroll({
           col,
           skip: limit * pageParam,
           limit,
-          searchParams: liveSearchParams,
+          searchParams: finalSearchParams,
           mongoUser,
           populate:
             col?.name === "orders"
@@ -73,7 +76,7 @@ export default function PostsClientInfiniteScroll({
         getAllPostsFn({
           data,
           col,
-          searchParams: liveSearchParams,
+          searchParams: finalSearchParams,
           mongoUser,
         }),
       ]);
@@ -87,10 +90,10 @@ export default function PostsClientInfiniteScroll({
     refetchOnWindowFocus: false,
     enabled: Boolean(col),
     staleTime:
-      col.name === "chatrooms" && liveSearchParams?.q ? 0 : 1000 * 60 * 5, // No cache for chatroom search
+      col.name === "chatrooms" && finalSearchParams?.q ? 0 : 1000 * 60 * 5, // No cache for chatroom search
     refetchOnMount: true, // Always refetch when component mounts
     cacheTime:
-      col.name === "chatrooms" && liveSearchParams?.q ? 0 : 1000 * 60 * 5, // Don't cache chatroom search results
+      col.name === "chatrooms" && finalSearchParams?.q ? 0 : 1000 * 60 * 5, // Don't cache chatroom search results
   });
 
   const posts = postsFetchedData?.pages.flatMap((page) => page.posts) ?? [];
@@ -124,7 +127,7 @@ export default function PostsClientInfiniteScroll({
             hasMore,
             mongoUser,
             className: `${className} ${scrollLTR ? "!flex-row fwn" : ""}`,
-            searchParams: liveSearchParams,
+            searchParams: finalSearchParams,
             showFoundNum,
             showCategories,
             isLoading,

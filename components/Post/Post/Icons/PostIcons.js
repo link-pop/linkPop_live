@@ -23,6 +23,12 @@ export default function PostIcons({
   defaultShowComments,
   onCommentClick,
 }) {
+  // Check if current user is the owner of the post
+  const isOwner =
+    mongoUser &&
+    post?.createdBy?._id &&
+    mongoUser._id.toString() === post?.createdBy?._id.toString();
+
   return (
     <div
       className={`if aic g8 br10 p5 px10 ${className}`}
@@ -51,7 +57,7 @@ export default function PostIcons({
           }}
         />
       )}
-      {showPostLabel && col.name === "feeds" && mongoUser && (
+      {showPostLabel && col.name === "feeds" && mongoUser && isOwner && (
         <PostLabelMenu
           {...{
             col,

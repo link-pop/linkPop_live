@@ -275,6 +275,59 @@ export const postsColSpecialHandling = async (
     }
   }
 
+  // Handle post label filtering
+  if (["feeds"].includes(col.name) && searchParams.postLabel) {
+    const getPostLabelPosts = async () => {
+      try {
+        // Get the post label list
+        const postLabelList = await getAll({
+          col: "userlists",
+          data: {
+            _id: searchParams.postLabel,
+            targetCollection: "postlabels",
+            active: true,
+          },
+        });
+
+        if (postLabelList && postLabelList.length > 0) {
+          const list = postLabelList[0];
+
+          if (list.postLabelIds && list.postLabelIds.length > 0) {
+            // postLabelIds contains feed post IDs directly (not post label IDs)
+            // Add filter to only show posts that are in this post label list
+            data = {
+              ...data,
+              _id: { $in: list.postLabelIds },
+            };
+            console.log("🔍 PostsColSpecialHandling - Filtering by post label list:", searchParams.postLabel, "with", list.postLabelIds.length, "posts");
+          } else {
+            // If no post label IDs in the list, show no posts
+            data = {
+              ...data,
+              _id: "no-posts", // This ensures no posts will match
+            };
+          }
+        } else {
+          // If post label list not found, show no posts
+          data = {
+            ...data,
+            _id: "no-posts", // This ensures no posts will match
+          };
+        }
+      } catch (error) {
+        console.error("❌ Error fetching post label posts:", error);
+        // If error, show no posts
+        data = {
+          ...data,
+          _id: "no-posts", // This ensures no posts will match
+        };
+      }
+    };
+
+    // Execute the function
+    await getPostLabelPosts();
+  }
+
   return data;
 };
 
