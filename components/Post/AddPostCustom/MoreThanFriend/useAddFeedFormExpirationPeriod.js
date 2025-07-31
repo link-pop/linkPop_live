@@ -39,11 +39,13 @@ export default function useAddFeedFormExpirationPeriod({
             {t("expiresIn")} {expirationPeriod}{" "}
             {t(expirationPeriod === 1 ? "day" : "days")}
           </span>
-          <X
-            size={16}
-            className={`brand cp hs`}
+          <button
+            type="button"
             onClick={() => expirationPeriodSet(null)}
-          />
+            className="p0 b0 bg-transparent"
+          >
+            <X size={16} className={`brand cp hs`} />
+          </button>
         </div>
       </div>
     );
@@ -100,7 +102,9 @@ export default function useAddFeedFormExpirationPeriod({
         icon={Clock}
         onClick={showExpirationDialog}
         disabled={expirationPeriod || price > 0}
-        title={price > 0 ? t("cannotSetExpirationWithPrice") : t("expirationPeriod")}
+        title={
+          price > 0 ? t("cannotSetExpirationWithPrice") : t("expirationPeriod")
+        }
       />
     );
   }

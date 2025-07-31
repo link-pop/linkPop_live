@@ -75,7 +75,13 @@ export default function useAddFeedFormPostPrice({
           <BadgeDollarSign size={16} className={`brand`} />
           <span>{t("postPrice")}</span>
           <span className={`mla fz16`}>{formatPrice(price)}</span>
-          <X size={16} className={`brand cp hs`} onClick={() => priceSet(0)} />
+          <button
+            type="button"
+            onClick={() => priceSet(0)}
+            className="p0 b0 bg-transparent"
+          >
+            <X size={16} className={`brand cp hs`} />
+          </button>
         </div>
       </div>
     );

@@ -18,6 +18,10 @@ import { useContext } from "@/components/Context/Context";
 import VideoRecorder from "@/components/ui/shared/VideoRecorder/VideoRecorder";
 import ReplyPreview from "@/components/Reply/ReplyPreview";
 import { useTranslation } from "@/components/Context/TranslationContext";
+import PollForm from "./PollForm";
+import PollButton from "./PollButton";
+import { createPoll } from "@/lib/actions/createPoll";
+import { updatePostWithPoll } from "@/lib/actions/updatePostWithPoll";
 
 // TODO !!!!! prevent empty messages from being submitted
 export default function AddFeedChatmessageForm({
@@ -52,6 +56,17 @@ export default function AddFeedChatmessageForm({
     updatingPost?.scheduleAt || null
   );
   const [price, priceSet] = useState(updatingPost?.price || 0);
+  const [poll, setPoll] = useState(updatingPost?.pollId || null);
+  const [isPollFormVisible, setIsPollFormVisible] = useState(false);
+
+  // Debug logging
+  console.log("AddFeedChatmessageForm - updatingPost:", updatingPost);
+  console.log("AddFeedChatmessageForm - poll state:", poll);
+  console.log(
+    "AddFeedChatmessageForm - updatingPost?.pollId:",
+    updatingPost?.pollId
+  );
+
   const { toastSet } = useContext();
 
   const { TipTapSettings, isTipTapSettingsVisible } =
@@ -84,6 +99,8 @@ export default function AddFeedChatmessageForm({
     expirationPeriodSet(null);
     scheduleAtSet(null);
     priceSet(0);
+    setPoll(null);
+    setIsPollFormVisible(false);
     formRef.current?.reset();
     onReset?.();
   };
@@ -98,7 +115,25 @@ export default function AddFeedChatmessageForm({
       expirationPeriod,
       scheduleAt,
       price,
-      onSuccess: ({ res, formData, mode }) => {
+      requireFiles: false, // Make files optional for chat messages
+      onSuccess: async ({ res, formData, mode }) => {
+        // Create poll if exists
+        if (poll && res?._id) {
+          try {
+            const createdPoll = await createPoll(poll, res._id);
+            if (createdPoll && createdPoll._id) {
+              await updatePostWithPoll(res._id, createdPoll._id);
+            }
+          } catch (error) {
+            console.error("❌ Error creating poll:", error);
+            toastSet({
+              isOpen: true,
+              title: "Post created but poll creation failed",
+              text: error.message,
+            });
+          }
+        }
+
         // Reset form and files after successful submission
         if (mode === "add") {
           resetForm();
@@ -187,6 +222,36 @@ export default function AddFeedChatmessageForm({
 
         <AddFilesPreview {...{ files, filesSet }} />
 
+        {/* Poll Form */}
+        {(() => {
+          const shouldShowPoll =
+            isPollFormVisible || poll || (updatingPost && updatingPost.pollId);
+          console.log(
+            "AddFeedChatmessageForm - shouldShowPoll:",
+            shouldShowPoll
+          );
+          console.log(
+            "AddFeedChatmessageForm - isPollFormVisible:",
+            isPollFormVisible
+          );
+          console.log("AddFeedChatmessageForm - poll:", poll);
+          console.log(
+            "AddFeedChatmessageForm - updatingPost?.pollId:",
+            updatingPost?.pollId
+          );
+          return shouldShowPoll;
+        })() && (
+          <PollForm
+            poll={updatingPost?.pollId || poll}
+            onPollChange={setPoll}
+            onClose={() => {
+              setIsPollFormVisible(false);
+              setPoll(null);
+            }}
+            disabled={!!updatingPost}
+          />
+        )}
+
         <TipTapInput
           settingsPosition="bottom"
           name="text"
@@ -226,6 +291,11 @@ export default function AddFeedChatmessageForm({
           <PostPriceButton />
           {!hideExpirationPeriod && <ExpirationPeriodButton />}
           {!hideSchedule && <ScheduleButton />}
+          <PollButton
+            onPollChange={setPoll}
+            currentPoll={poll}
+            onTogglePollForm={() => setIsPollFormVisible(!isPollFormVisible)}
+          />
           <TipTapSettings />
         </div>
       </form>

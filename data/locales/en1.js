@@ -2244,6 +2244,21 @@ const en = {
   postLabelCount: "{{count}} post label(s)",
   createPostLabelList: "Create Post Label List",
   postLabel: "post label",
+
+  // Poll functionality
+  poll: "Poll",
+  addPoll: "Add Poll",
+  enterPollQuestion: "Enter poll question...",
+  enterFirstOption: "Enter first option...",
+  enterSecondOption: "Enter second option...",
+  enterAnotherOption: "Enter another option...",
+  addAnotherOption: "+ Add another option",
+  pollDuration: "Poll Duration",
+  noLimit: "No limit",
+  pollExpired: "Poll expired",
+  votes: "votes",
+  totalVotes: "Total votes",
+  atLeast2OptionsRequired: "At least 2 options are required",
 };
 
 export default en;

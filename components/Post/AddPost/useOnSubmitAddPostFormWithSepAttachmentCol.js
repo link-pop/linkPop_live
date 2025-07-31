@@ -19,6 +19,7 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
   customData = {},
   onSuccess,
   onError,
+  requireFiles = true, // New parameter to control file requirement
 }) {
   const [isFormLoading, setIsFormLoading] = useState(false);
   const { dialogSet } = useContext();
@@ -28,8 +29,8 @@ export default function useOnSubmitAddPostFormWithSepAttachmentCol({
     e.preventDefault();
     setIsFormLoading(true);
     try {
-      // VALIDATE FILES
-      if (!files || files?.length === 0) {
+      // VALIDATE FILES (only if requireFiles is true)
+      if (requireFiles && (!files || files?.length === 0)) {
         dialogSet({
           isOpen: true,
           title: t("noFilesSelected"),

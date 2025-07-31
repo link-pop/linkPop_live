@@ -11,7 +11,11 @@ import AddStoreItemForms from "@/components/ui/shared/AddStoreItemForms/AddStore
 
 export default async function updatePostPage({ params }) {
   const col = await getAllMongoCollectionsData(params.col);
-  let updatingPost = await getOne({ col, data: { _id: params.postId } });
+  let updatingPost = await getOne({
+    col,
+    data: { _id: params.postId },
+    populate: ["files", "pollId"],
+  });
   const { mongoUser, isDev } = await getMongoUser();
   await checkCollectionAccess({ col, place: "addPost", postId: params.postId });
 

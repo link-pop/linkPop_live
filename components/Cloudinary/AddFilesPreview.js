@@ -37,47 +37,61 @@ export default function AddFilesPreview({
     // show server-uploaded-files in preview
     // * 2: else show blobs in preview
     previewsSet(
-      files.map((file) => {
-        if (file.fileUrl) {
-          console.log("Server file:", file);
-          // For server files, use _id as identifier
-          // ! 1: real file
+      files
+        .map((file) => {
+          if (file.fileUrl) {
+            console.log("Server file:", file);
+            // For server files, use _id as identifier
+            // ! 1: real file
+            return {
+              fileUrl: file.fileUrl,
+              fileBytes: file.fileBytes,
+              fileType: file.fileType,
+              _id: file._id,
+              // Use _id as identifier for server files
+              identifier:
+                file._id ||
+                `file-${Math.random().toString(36).substring(2, 11)}`,
+            };
+          }
+          console.log("Local file:", file);
+          // For new files, use name as identifier
+          // ! 2: blob
+
+          // Determine file type
+          let fileType = file.fileType || file.type || "";
+          if (fileType && fileType.startsWith("video/")) {
+            fileType = "video";
+          } else if (fileType && fileType.startsWith("image/")) {
+            fileType = "image";
+          }
+
+          // Ensure file has a unique identifier
+          const identifier =
+            file.name ||
+            `new-file-${Math.random().toString(36).substring(2, 11)}`;
+
+          // Safely create object URL only if file is a valid Blob/File
+          let fileUrl = file.preview;
+          if (!fileUrl && file instanceof Blob) {
+            try {
+              fileUrl = URL.createObjectURL(file);
+            } catch (error) {
+              console.error("❌ Error creating object URL:", error);
+              fileUrl = null;
+            }
+          }
+
           return {
-            fileUrl: file.fileUrl,
-            fileBytes: file.fileBytes,
-            fileType: file.fileType,
-            _id: file._id,
-            // Use _id as identifier for server files
-            identifier:
-              file._id || `file-${Math.random().toString(36).substring(2, 11)}`,
+            fileUrl,
+            fileBytes: file.size,
+            fileType,
+            // Use name as identifier for local files
+            identifier,
+            originalFile: file, // Keep reference to original file
           };
-        }
-        console.log("Local file:", file);
-        // For new files, use name as identifier
-        // ! 2: blob
-
-        // Determine file type
-        let fileType = file.fileType || file.type;
-        if (fileType.startsWith("video/")) {
-          fileType = "video";
-        } else if (fileType.startsWith("image/")) {
-          fileType = "image";
-        }
-
-        // Ensure file has a unique identifier
-        const identifier =
-          file.name ||
-          `new-file-${Math.random().toString(36).substring(2, 11)}`;
-
-        return {
-          fileUrl: file.preview || URL.createObjectURL(file),
-          fileBytes: file.size,
-          fileType,
-          // Use name as identifier for local files
-          identifier,
-          originalFile: file, // Keep reference to original file
-        };
-      })
+        })
+        .filter((preview) => preview.fileUrl) // Only include previews with valid fileUrl
     );
   }, [files]);
 

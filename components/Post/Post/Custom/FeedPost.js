@@ -10,10 +10,17 @@ import { usePathname } from "next/navigation";
 import { MAIN_ROUTE } from "@/lib/utils/constants";
 import RichTextContent from "@/components/ui/shared/RichTextContent/RichTextContent";
 import { useTranslation } from "@/components/Context/TranslationContext";
+import PollDisplay from "../../AddPostCustom/MoreThanFriend/PollDisplay";
+import usePollDataWithRefetch from "@/hooks/usePollDataWithRefetch";
 
 export default function FeedPost(props) {
   const { post, mongoUser } = props;
   const { t } = useTranslation();
+  const {
+    poll,
+    loading: pollLoading,
+    refetch: refetchPoll,
+  } = usePollDataWithRefetch(post.pollId);
 
   const pathname = usePathname();
   const [showComments, setShowComments] = useState(
@@ -35,7 +42,19 @@ export default function FeedPost(props) {
       showCreatedAtTimeAgo={true}
       showAutoGenMongoFields={false}
       className="mxa maw600 wf"
-      top2={<RichTextContent content={post.text} className="px15 pb15 mt-4" />}
+      top2={
+        <>
+          <RichTextContent content={post.text} className="px15 pb15 mt-4" />
+          {poll && (
+            <PollDisplay
+              poll={poll}
+              postId={post._id}
+              currentUser={mongoUser}
+              onPollUpdate={refetchPoll}
+            />
+          )}
+        </>
+      }
       top3={
         <>
           <PostIcons

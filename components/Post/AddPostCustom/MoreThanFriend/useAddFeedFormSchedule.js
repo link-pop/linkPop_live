@@ -28,11 +28,13 @@ export default function useAddFeedFormSchedule({ scheduleAtSet, scheduleAt }) {
               hour12: currentLang === "en" ? true : false,
             })}
           </span>
-          <X
-            size={16}
-            className={`brand cp hs`}
+          <button
+            type="button"
             onClick={() => scheduleAtSet(null)}
-          />
+            className="p0 b0 bg-transparent"
+          >
+            <X size={16} className={`brand cp hs`} />
+          </button>
         </div>
       </div>
     );
