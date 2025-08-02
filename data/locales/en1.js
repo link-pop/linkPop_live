@@ -2265,6 +2265,16 @@ const en = {
   noVotersYet: "No voters yet",
   errorLoadingVoters: "Error loading voters",
 
+  // Quiz functionality
+  quiz: "Quiz",
+  addQuiz: "Add Quiz",
+  enterQuizQuestion: "Enter quiz question...",
+  quizDuration: "Quiz Duration",
+  exactlyOneCorrectAnswerRequired: "Exactly one correct answer is required",
+  correct: "Correct!",
+  incorrect: "Incorrect",
+  voteSubmitted: "Vote submitted",
+
   // Single user list management
   userAddedToList: "{{userName}} added to list",
   userRemovedFromList: "{{userName}} removed from list",

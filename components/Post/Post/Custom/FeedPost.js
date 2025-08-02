@@ -11,7 +11,9 @@ import { MAIN_ROUTE } from "@/lib/utils/constants";
 import RichTextContent from "@/components/ui/shared/RichTextContent/RichTextContent";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import PollDisplay from "../../AddPostCustom/MoreThanFriend/PollDisplay";
+import QuizDisplay from "../../AddPostCustom/MoreThanFriend/QuizDisplay";
 import usePollDataWithRefetch from "@/hooks/usePollDataWithRefetch";
+import useQuizDataWithRefetch from "@/hooks/useQuizDataWithRefetch";
 
 export default function FeedPost(props) {
   const { post, mongoUser } = props;
@@ -21,6 +23,12 @@ export default function FeedPost(props) {
     loading: pollLoading,
     refetch: refetchPoll,
   } = usePollDataWithRefetch(post.pollId);
+
+  const {
+    quiz,
+    loading: quizLoading,
+    refetch: refetchQuiz,
+  } = useQuizDataWithRefetch(post.quizId);
 
   const pathname = usePathname();
   const [showComments, setShowComments] = useState(
@@ -52,6 +60,15 @@ export default function FeedPost(props) {
               currentUser={mongoUser}
               onPollUpdate={refetchPoll}
               postOwner={post.createdBy}
+            />
+          )}
+          {quiz && (
+            <QuizDisplay
+              quiz={quiz}
+              postId={post._id}
+              currentUser={mongoUser}
+              isCreator={post.createdBy?._id === mongoUser?._id}
+              onQuizUpdate={refetchQuiz}
             />
           )}
         </>

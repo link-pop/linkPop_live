@@ -20,8 +20,12 @@ import ReplyPreview from "@/components/Reply/ReplyPreview";
 import { useTranslation } from "@/components/Context/TranslationContext";
 import PollForm from "./PollForm";
 import PollButton from "./PollButton";
+import QuizForm from "./QuizForm";
+import QuizButton from "./QuizButton";
 import { createPoll } from "@/lib/actions/createPoll";
 import { updatePostWithPoll } from "@/lib/actions/updatePostWithPoll";
+import { createQuiz } from "@/lib/actions/createQuiz";
+import { updatePostWithQuiz } from "@/lib/actions/updatePostWithQuiz";
 
 // TODO !!!!! prevent empty messages from being submitted
 export default function AddFeedChatmessageForm({
@@ -58,6 +62,8 @@ export default function AddFeedChatmessageForm({
   const [price, priceSet] = useState(updatingPost?.price || 0);
   const [poll, setPoll] = useState(updatingPost?.pollId || null);
   const [isPollFormVisible, setIsPollFormVisible] = useState(false);
+  const [quiz, setQuiz] = useState(updatingPost?.quizId || null);
+  const [isQuizFormVisible, setIsQuizFormVisible] = useState(false);
 
   // Debug logging
   console.log("AddFeedChatmessageForm - updatingPost:", updatingPost);
@@ -101,6 +107,8 @@ export default function AddFeedChatmessageForm({
     priceSet(0);
     setPoll(null);
     setIsPollFormVisible(false);
+    setQuiz(null);
+    setIsQuizFormVisible(false);
     formRef.current?.reset();
     onReset?.();
   };
@@ -129,6 +137,23 @@ export default function AddFeedChatmessageForm({
             toastSet({
               isOpen: true,
               title: "Post created but poll creation failed",
+              text: error.message,
+            });
+          }
+        }
+
+        // Create quiz if exists
+        if (quiz && res?._id) {
+          try {
+            const createdQuiz = await createQuiz(quiz, res._id);
+            if (createdQuiz && createdQuiz._id) {
+              await updatePostWithQuiz(res._id, createdQuiz._id);
+            }
+          } catch (error) {
+            console.error("❌ Error creating quiz:", error);
+            toastSet({
+              isOpen: true,
+              title: "Post created but quiz creation failed",
               text: error.message,
             });
           }
@@ -173,15 +198,17 @@ export default function AddFeedChatmessageForm({
     // Don't submit if loading
     if (currentIsLoading) return;
 
-    if (customOnSubmit) {
-      try {
-        const result = await customOnSubmit({
-          files,
-          tipTapInputContent,
-          expirationPeriod,
-          scheduleAt,
-          price,
-        });
+            if (customOnSubmit) {
+          try {
+            const result = await customOnSubmit({
+              files,
+              tipTapInputContent,
+              expirationPeriod,
+              scheduleAt,
+              price,
+              poll,
+              quiz,
+            });
         // Reset form if customOnSubmit completes successfully
         // Either when it explicitly returns success: true, or when it doesn't throw an error
         if (result?.success !== false) {
@@ -252,6 +279,36 @@ export default function AddFeedChatmessageForm({
           />
         )}
 
+        {/* Quiz Form */}
+        {(() => {
+          const shouldShowQuiz =
+            isQuizFormVisible || quiz || (updatingPost && updatingPost.quizId);
+          console.log(
+            "AddFeedChatmessageForm - shouldShowQuiz:",
+            shouldShowQuiz
+          );
+          console.log(
+            "AddFeedChatmessageForm - isQuizFormVisible:",
+            isQuizFormVisible
+          );
+          console.log("AddFeedChatmessageForm - quiz:", quiz);
+          console.log(
+            "AddFeedChatmessageForm - updatingPost?.quizId:",
+            updatingPost?.quizId
+          );
+          return shouldShowQuiz;
+        })() && (
+          <QuizForm
+            quiz={updatingPost?.quizId || quiz}
+            onQuizChange={setQuiz}
+            onClose={() => {
+              setIsQuizFormVisible(false);
+              setQuiz(null);
+            }}
+            disabled={!!updatingPost}
+          />
+        )}
+
         <TipTapInput
           settingsPosition="bottom"
           name="text"
@@ -295,6 +352,11 @@ export default function AddFeedChatmessageForm({
             onPollChange={setPoll}
             currentPoll={poll}
             onTogglePollForm={() => setIsPollFormVisible(!isPollFormVisible)}
+          />
+          <QuizButton
+            onQuizChange={setQuiz}
+            currentQuiz={quiz}
+            onToggleQuizForm={() => setIsQuizFormVisible(!isQuizFormVisible)}
           />
           <TipTapSettings />
         </div>

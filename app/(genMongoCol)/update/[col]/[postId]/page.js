@@ -14,7 +14,7 @@ export default async function updatePostPage({ params }) {
   let updatingPost = await getOne({
     col,
     data: { _id: params.postId },
-    populate: ["files", "pollId"],
+    populate: ["files", "pollId", "quizId"],
   });
   const { mongoUser, isDev } = await getMongoUser();
   await checkCollectionAccess({ col, place: "addPost", postId: params.postId });
