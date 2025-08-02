@@ -2,19 +2,27 @@
 
 import { useState } from "react";
 import { useTranslation } from "@/components/Context/TranslationContext";
-import { BarChart3, Check } from "lucide-react";
+import { useContext } from "@/components/Context/Context";
+import { BarChart3, Check, Users } from "lucide-react";
 import { voteOnPoll } from "@/lib/actions/voteOnPoll";
+import PollVotersDialog from "@/components/ui/shared/PollVotersDialog/PollVotersDialog";
 
 export default function PollDisplay({
   poll,
   postId,
   currentUser,
   onPollUpdate,
+  postOwner,
 }) {
   const { t } = useTranslation();
+  const { dialogSet } = useContext();
   const [selectedOption, setSelectedOption] = useState(null);
   const [hasVoted, setHasVoted] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
+
+  // Check if current user is the post owner
+  const isPostOwner =
+    currentUser?._id?.toString() === postOwner?._id?.toString();
 
   const handleVote = async (optionIndex) => {
     if (hasVoted || isVoting) return;
@@ -32,6 +40,28 @@ export default function PollDisplay({
       console.error("❌ Error voting:", error);
     } finally {
       setIsVoting(false);
+    }
+  };
+
+  const handleOptionClick = (optionIndex) => {
+    if (isPostOwner) {
+      // Show voters dialog for post owner
+      dialogSet({
+        isOpen: true,
+        hasCloseIcon: true,
+        showBtns: false,
+        contentClassName: "max-w-md p-0",
+        comp: (
+          <PollVotersDialog
+            poll={poll}
+            optionIndex={optionIndex}
+            onClose={() => dialogSet({ isOpen: false })}
+          />
+        ),
+      });
+    } else {
+      // Allow voting for non-owners
+      handleVote(optionIndex);
     }
   };
 
@@ -74,7 +104,7 @@ export default function PollDisplay({
                   ? "border-[var(--color-brand)] bg-accent"
                   : "border-border hover:border-[var(--color-brand)]"
               }`}
-              onClick={() => handleVote(index)}
+              onClick={() => handleOptionClick(index)}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 flex-1">

@@ -2259,6 +2259,17 @@ const en = {
   votes: "votes",
   totalVotes: "Total votes",
   atLeast2OptionsRequired: "At least 2 options are required",
+
+  // Poll voters
+  voters: "voters",
+  noVotersYet: "No voters yet",
+  errorLoadingVoters: "Error loading voters",
+
+  // Single user list management
+  userAddedToList: "{{userName}} added to list",
+  userRemovedFromList: "{{userName}} removed from list",
+  invalidUser: "Invalid user",
+  addToRemoveFromLists: "Add to / remove from lists",
 };
 
 export default en;

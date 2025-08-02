@@ -51,6 +51,7 @@ export default function FeedPost(props) {
               postId={post._id}
               currentUser={mongoUser}
               onPollUpdate={refetchPoll}
+              postOwner={post.createdBy}
             />
           )}
         </>
